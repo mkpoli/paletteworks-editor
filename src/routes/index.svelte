@@ -1,2 +1,13 @@
 <h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<a href="/edit">Editor</a>
+
+<style>
+  a {
+    display: block;
+    font-size: 5em;
+    margin: 1em 0.8em;
+    padding: 1em 0.8em;
+    background: aquamarine;
+    border-radius: 15px;
+  }
+</style>
