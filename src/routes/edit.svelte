@@ -253,223 +253,222 @@
 </script>
 
 
-<div class="container">
-{#if app}
-  <div class="canvas-container" bind:this={canvasContainer} style={`width: ${width}px;`}>
-    <Pixi {app}>
-      <Loader resources={TEXTURE_NAMES}>
-        <!-- <Sprite
-          texture={PIXI.Texture.from('bg.png')}
-          anchor={new PIXI.Point(0, 0)}
-          x={0}
-          y={0}
-        /> -->
-        <Graphics
-          x={MARGIN}
-          y={0}
-          draw={(graphics) => { drawBackground(graphics, zoom) }}
-        />
-        <Text
-          text="BPM"
-          anchor={new PIXI.Point(0, 0.5)}
-          x={width - MARGIN + TEXT_MARGIN}
-          y={innerHeight - MARGIN_BOTTOM}
-          style={{
-            fill: 'white'
-          }}
-        />
-
-        <!-- MEASURE (BAR) NUMBER -->
-        {#each Array(score.maxMeasure + 2) as _, i}
+<main>
+  {#if app}
+    <div class="canvas-container" bind:this={canvasContainer} style={`width: ${width}px;`}>
+      <Pixi {app}>
+        <Loader resources={TEXTURE_NAMES}>
+          <!-- <Sprite
+            texture={PIXI.Texture.from('bg.png')}
+            anchor={new PIXI.Point(0, 0)}
+            x={0}
+            y={0}
+          /> -->
+          <Graphics
+            x={MARGIN}
+            y={0}
+            draw={(graphics) => { drawBackground(graphics, zoom) }}
+          />
           <Text
-            text={`#${i + 1}`}
-            anchor={new PIXI.Point(1, 0.5)}
-            x={MARGIN - TEXT_MARGIN}
-            y={innerHeight - (MARGIN_BOTTOM + (i * measureHeight))}
+            text="BPM"
+            anchor={new PIXI.Point(0, 0.5)}
+            x={width - MARGIN + TEXT_MARGIN}
+            y={innerHeight - MARGIN_BOTTOM}
             style={{
               fill: 'white'
             }}
           />
-        {/each}
 
-        <!-- SINGLE NOTES -->
-        {#each singleNotes as { lane, tick, width, critical, flick }}
-          {#if flick}
-            <!-- FLICK ARROW -->
-            <Sprite
-              texture={
-                TEXTURES[
-                  `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(width / 2) }${(flick === 'left' || flick === 'right') ? '_diagonal': ''}.png`
-                ]
-              }
-              anchor={new PIXI.Point(0, 0.5)}
-              x={calcX(lane) + {
-                'left': -NOTE_WIDTH,
-                'right': 3 * NOTE_WIDTH,
-                'middle': 0
-              }[flick]}
-              y={calcY(tick, zoom) - NOTE_HEIGHT + 10}
-              width={width * NOTE_WIDTH * (flick === 'right' ? -1: 1) * 0.75}
-              height={NOTE_HEIGHT}
+          <!-- MEASURE (BAR) NUMBER -->
+          {#each Array(score.maxMeasure + 2) as _, i}
+            <Text
+              text={`#${i + 1}`}
+              anchor={new PIXI.Point(1, 0.5)}
+              x={MARGIN - TEXT_MARGIN}
+              y={innerHeight - (MARGIN_BOTTOM + (i * measureHeight))}
+              style={{
+                fill: 'white'
+              }}
             />
-          {/if}
+          {/each}
 
-          <Sprite
-            texture={
-              critical
-                ? TEXTURES['noteC.png']
-                : flick
-                  ? TEXTURES['noteF.png']
-                  : TEXTURES['noteN.png']
-            }
-            anchor={new PIXI.Point(...NOTE_PIVOT)}
-            x={calcX(lane)}
-            y={calcY(tick, zoom)}
-            width={width * NOTE_WIDTH}
-            height={NOTE_HEIGHT}
-          />
-        {/each}
-
-        <!-- SLIDE NOTES -->
-        {#each slides as { start, steps, end, critical }}
-          <!-- SLIDE PATH -->
-          <Graphics
-            x={0}
-            y={0}
-            draw={(graphics) => {drawSlidePath(graphics, [start, ...steps, end], critical, zoom)}}
-          />
-          <!-- SLIDE START -->
-          <Sprite
-            texture={critical ? TEXTURES['noteC.png'] : TEXTURES['noteL.png']}
-            anchor={new PIXI.Point(...NOTE_PIVOT)}
-            x={calcX(start.lane)}
-            y={calcY(start.tick, zoom)}
-            width={start.width * NOTE_WIDTH}
-            height={NOTE_HEIGHT}
-          />
-
-          <!-- SLIDE STEPS -->
-          {#each steps as { lane, tick, width }}
-            <Sprite
-              texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
-              anchor={new PIXI.Point(...DIAMOND_PIVOT)}
-              x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
-              y={calcY(tick, zoom)}
-              width={DIAMOND_WIDTH}
-              height={DIAMOND_HEIGHT}
-              />
-
-            <!-- SLIDE END -->
-            {#if end.flick}
+          <!-- SINGLE NOTES -->
+          {#each singleNotes as { lane, tick, width, critical, flick }}
+            {#if flick}
+              <!-- FLICK ARROW -->
               <Sprite
                 texture={
                   TEXTURES[
-                    `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(end.width / 2) }${(end.flick === 'left' || end.flick === 'right') ? '_diagonal': ''}.png`
+                    `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(width / 2) }${(flick === 'left' || flick === 'right') ? '_diagonal': ''}.png`
                   ]
                 }
                 anchor={new PIXI.Point(0, 0.5)}
-                x={calcX(end.lane) + {
+                x={calcX(lane) + {
                   'left': -NOTE_WIDTH,
                   'right': 3 * NOTE_WIDTH,
                   'middle': 0
-                }[end.flick]}
-                y={calcY(end.tick, zoom) - NOTE_HEIGHT + 10}
-                width={end.width * NOTE_WIDTH * (end.flick === 'right' ? -1: 1) * 0.75}
+                }[flick]}
+                y={calcY(tick, zoom) - NOTE_HEIGHT + 10}
+                width={width * NOTE_WIDTH * (flick === 'right' ? -1: 1) * 0.75}
                 height={NOTE_HEIGHT}
               />
             {/if}
+
             <Sprite
               texture={
                 critical
                   ? TEXTURES['noteC.png']
-                  : end.flick
+                  : flick
                     ? TEXTURES['noteF.png']
-                    : TEXTURES['noteL.png']
+                    : TEXTURES['noteN.png']
               }
               anchor={new PIXI.Point(...NOTE_PIVOT)}
-              x={calcX(end.lane)}
-              y={calcY(end.tick, zoom)}
-              width={end.width * NOTE_WIDTH}
+              x={calcX(lane)}
+              y={calcY(tick, zoom)}
+              width={width * NOTE_WIDTH}
               height={NOTE_HEIGHT}
             />
           {/each}
-        {/each}
-      </Loader>
-    </Pixi>
-    <div class="zoom-indicator-container">
-      <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
-    </div>
-  </div>
-  <div class="panel-container">
-    <div class="panel">
-      <h2>コントロール</h2>
-      <label>
-        Playhead {playhead.toFixed(3)}
-        <input type="range" bind:value={playhead} min={0} max={fullHeight}>
-      </label>
-      <label>
-        Goto Measure
-        <div style="display: flex; gap: 0.5em;">
-          <input type="text" bind:value={gotoMeasure} />
-          <button
-            on:click={() => {
-              if (gotoMeasure >= 1 && gotoMeasure <= score.maxMeasure + 2) {
-                playhead = (gotoMeasure - 1) * measureHeight
-              }}}
-          >Goto</button>
-        </div>
-      </label>
-    </div>
-    <div class="panel">
-      <h2>統計</h2>
-      <ul>
-        <li>Taps: {singleNotes.filter((x) => !x.flick).length}</li>
-        <li>Flicks: {singleNotes.filter((x) => x.flick).length}</li>
-        <li>Slides: {slides.length}</li>
-        <li>Total: {singleNotes.length + slides.length}</li>
-        <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
-      </ul>
-      <audio controls
-        src={files && files[0] ? URL.createObjectURL(files[0]) : undefined }
-        bind:this={player}
-        bind:currentTime
-        bind:paused
-      ></audio>
-    </div>
-    <div class="panel">
-      <h2>基本情報</h2>
-      <label>
-        タイトル
-        <input type="text" bind:value={metadata.title}>
-      </label>
-      <label>
-        アーティスト
-        <input type="text">
-      </label>
-      <label>
-        譜面作者
-        <input type="text">
-      </label>
-    </div>
-    <div class="panel">
-      <h2>音楽情報</h2>
-      <label>
-        音楽ファイル（.mp3）{#if files && files[0]}{filesize(files[0].size)}{/if}
-        <input type="file" bind:files>
-      </label>
-      <label>
-        オフセット
-        <input type="text">
-      </label>
-      <label>
-        BPM
-        <input type="text">
-      </label>
-    </div>
-  </div>
-{/if}
 
-</div>
+          <!-- SLIDE NOTES -->
+          {#each slides as { start, steps, end, critical }}
+            <!-- SLIDE PATH -->
+            <Graphics
+              x={0}
+              y={0}
+              draw={(graphics) => {drawSlidePath(graphics, [start, ...steps, end], critical, zoom)}}
+            />
+            <!-- SLIDE START -->
+            <Sprite
+              texture={critical ? TEXTURES['noteC.png'] : TEXTURES['noteL.png']}
+              anchor={new PIXI.Point(...NOTE_PIVOT)}
+              x={calcX(start.lane)}
+              y={calcY(start.tick, zoom)}
+              width={start.width * NOTE_WIDTH}
+              height={NOTE_HEIGHT}
+            />
+
+            <!-- SLIDE STEPS -->
+            {#each steps as { lane, tick, width }}
+              <Sprite
+                texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
+                anchor={new PIXI.Point(...DIAMOND_PIVOT)}
+                x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
+                y={calcY(tick, zoom)}
+                width={DIAMOND_WIDTH}
+                height={DIAMOND_HEIGHT}
+                />
+
+              <!-- SLIDE END -->
+              {#if end.flick}
+                <Sprite
+                  texture={
+                    TEXTURES[
+                      `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(end.width / 2) }${(end.flick === 'left' || end.flick === 'right') ? '_diagonal': ''}.png`
+                    ]
+                  }
+                  anchor={new PIXI.Point(0, 0.5)}
+                  x={calcX(end.lane) + {
+                    'left': -NOTE_WIDTH,
+                    'right': 3 * NOTE_WIDTH,
+                    'middle': 0
+                  }[end.flick]}
+                  y={calcY(end.tick, zoom) - NOTE_HEIGHT + 10}
+                  width={end.width * NOTE_WIDTH * (end.flick === 'right' ? -1: 1) * 0.75}
+                  height={NOTE_HEIGHT}
+                />
+              {/if}
+              <Sprite
+                texture={
+                  critical
+                    ? TEXTURES['noteC.png']
+                    : end.flick
+                      ? TEXTURES['noteF.png']
+                      : TEXTURES['noteL.png']
+                }
+                anchor={new PIXI.Point(...NOTE_PIVOT)}
+                x={calcX(end.lane)}
+                y={calcY(end.tick, zoom)}
+                width={end.width * NOTE_WIDTH}
+                height={NOTE_HEIGHT}
+              />
+            {/each}
+          {/each}
+        </Loader>
+      </Pixi>
+      <div class="zoom-indicator-container">
+        <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
+      </div>
+    </div>
+    <div class="panel-container">
+      <div class="panel">
+        <h2>コントロール</h2>
+        <label>
+          Playhead {playhead.toFixed(3)}
+          <input type="range" bind:value={playhead} min={0} max={fullHeight}>
+        </label>
+        <label>
+          Goto Measure
+          <div style="display: flex; gap: 0.5em;">
+            <input type="text" bind:value={gotoMeasure} />
+            <button
+              on:click={() => {
+                if (gotoMeasure >= 1 && gotoMeasure <= score.maxMeasure + 2) {
+                  playhead = (gotoMeasure - 1) * measureHeight
+                }}}
+            >Goto</button>
+          </div>
+        </label>
+      </div>
+      <div class="panel">
+        <h2>統計</h2>
+        <ul>
+          <li>Taps: {singleNotes.filter((x) => !x.flick).length}</li>
+          <li>Flicks: {singleNotes.filter((x) => x.flick).length}</li>
+          <li>Slides: {slides.length}</li>
+          <li>Total: {singleNotes.length + slides.length}</li>
+          <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
+        </ul>
+        <audio controls
+          src={files && files[0] ? URL.createObjectURL(files[0]) : undefined }
+          bind:this={player}
+          bind:currentTime
+          bind:paused
+        ></audio>
+      </div>
+      <div class="panel">
+        <h2>基本情報</h2>
+        <label>
+          タイトル
+          <input type="text" bind:value={metadata.title}>
+        </label>
+        <label>
+          アーティスト
+          <input type="text">
+        </label>
+        <label>
+          譜面作者
+          <input type="text">
+        </label>
+      </div>
+      <div class="panel">
+        <h2>音楽情報</h2>
+        <label>
+          音楽ファイル（.mp3）{#if files && files[0]}{filesize(files[0].size)}{/if}
+          <input type="file" bind:files>
+        </label>
+        <label>
+          オフセット
+          <input type="text">
+        </label>
+        <label>
+          BPM
+          <input type="text">
+        </label>
+      </div>
+    </div>
+  {/if}
+</main>
 
 <ControlHandler
   bind:playhead
@@ -481,6 +480,7 @@
 />
 
 <style>
+  /* Global Styles */
   :global(body) {
     background: #2e3142;
     color: #eeeeee;
@@ -496,6 +496,12 @@
     box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.6);
     background: rgba(255, 255, 255, 0.1);
   }
+
+
+  /* Main */
+  main {
+    display: flex;
+  }  
 
   .canvas-container {
     height: 100vh;
@@ -517,12 +523,6 @@
 
   label {
     display: grid;
-  }
-
-  main {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 2em;
   }
 
   .panel-container {
