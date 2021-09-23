@@ -25,7 +25,10 @@
 </script>
 
 <script lang="ts">
+  // Parts
   import ToolBox from '$lib/ToolBox.svelte'
+  import PropertyBox from '$lib/PropertyBox.svelte'
+
   // Components
   import ZoomIndicator from '$lib/ZoomIndicator.svelte';
   import ControlHandler from '$lib/ControlHandler.svelte';
@@ -60,6 +63,8 @@
   let playhead = -MARGIN_BOTTOM
   $: if (playhead < 0) playhead = 0
   $: if (playhead >= fullHeight) playhead = fullHeight
+
+  $: currentMeasure = Math.floor(playhead / measureHeight  + 1)
 
   let gotoMeasure: number
 
@@ -403,74 +408,30 @@
       <div class="zoom-indicator-container">
         <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
       </div>
-    </div>
-    <div class="panel-container">
-      <div class="panel">
-        <h2>コントロール</h2>
-        <label>
-          Playhead {playhead.toFixed(3)}
-          <input type="range" bind:value={playhead} min={0} max={fullHeight}>
-        </label>
-        <label>
-          Goto Measure
-          <div style="display: flex; gap: 0.5em;">
-            <input type="text" bind:value={gotoMeasure} />
-            <button
-              on:click={() => {
-                if (gotoMeasure >= 1 && gotoMeasure <= score.maxMeasure + 2) {
-                  playhead = (gotoMeasure - 1) * measureHeight
-                }}}
-            >Goto</button>
-          </div>
-        </label>
-      </div>
-      <div class="panel">
-        <h2>統計</h2>
-        <ul>
-          <li>Taps: {singleNotes.filter((x) => !x.flick).length}</li>
-          <li>Flicks: {singleNotes.filter((x) => x.flick).length}</li>
-          <li>Slides: {slides.length}</li>
-          <li>Total: {singleNotes.length + slides.length}</li>
-          <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
-        </ul>
-        <audio controls
-          src={files && files[0] ? URL.createObjectURL(files[0]) : undefined }
-          bind:this={player}
-          bind:currentTime
-          bind:paused
-        ></audio>
-      </div>
-      <div class="panel">
-        <h2>基本情報</h2>
-        <label>
-          タイトル
-          <input type="text" bind:value={metadata.title}>
-        </label>
-        <label>
-          アーティスト
-          <input type="text">
-        </label>
-        <label>
-          譜面作者
-          <input type="text">
-        </label>
-      </div>
-      <div class="panel">
-        <h2>音楽情報</h2>
-        <label>
-          音楽ファイル（.mp3）{#if files && files[0]}{filesize(files[0].size)}{/if}
-          <input type="file" bind:files>
-        </label>
-        <label>
-          オフセット
-          <input type="text">
-        </label>
-        <label>
-          BPM
-          <input type="text">
-        </label>
-      </div>
-    </div>
+    <PropertyBox
+      bind:playhead
+      bind:currentMeasure
+      on:goto={() => {
+        console.log('GOTO')
+        if (currentMeasure >= 1 && currentMeasure <= score.maxMeasure + 2) {
+          playhead = (currentMeasure - 1) * measureHeight
+        } else {
+          // TODO: Popup
+        }
+      }}
+      statistics={{
+        'Taps': singleNotes.filter((x) => !x.flick).length,
+        'Flicks': singleNotes.filter((x) => x.flick).length,
+        'Slides': slides.length,
+        'Total': singleNotes.length + slides.length,
+      }}
+      bind:player
+      bind:paused
+      bind:currentTime
+      bind:metadata
+      bind:files
+    />
+    <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
   {/if}
 </main>
 
@@ -525,36 +486,6 @@
     position: absolute;
     bottom: 1em;
     right: 2em;
-  }
-
-  label {
-    display: grid;
-  }
-
-  .panel-container {
-    display: grid;
-    grid-template: 1fr 1fr / 1fr 1fr;
-    grid-auto-flow: column;
-  }
-
-  .panel {
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 1px 1px 5px #000;
-    border-radius: 1em;
-    margin: 1em;
-    display: grid;
-    flex-direction: column;
-    gap: 1em;
-    grid-template-rows: 32px;
-    padding: 1.5em;
-  }
-
-  h2 {
-    margin: 0;
-  }
-
-  audio {
-    width: 100%;
   }
 </style>
 
