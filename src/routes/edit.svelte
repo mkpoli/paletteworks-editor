@@ -5,6 +5,7 @@
 		// const url = `/NewScore2.sus`;
     // const url = `KING.sus`;
     const url = `/TellYourWorld_EX.sus`;
+    // const url = `MultipleBPM.sus`;
     // const url = `SlideTest.sus`;
     // const url = `ModNote.sus`;
 		const res = await fetch(url);
@@ -34,35 +35,35 @@
   import ControlHandler from '$lib/ControlHandler.svelte'
 
   // Types
-  import type { Mode } from '$lib/ToolBox.svelte'
-  import type { MetaData, SlideEnd, SlideStart, SlideStep } from '$lib/beatmap'
-  import type { NoteObject, Score } from '$lib/sus/analyze'
-  import type { Application, Graphics as GraphicsType, Texture } from 'pixi.js' 
+  import type { Mode } from '$lib/modes'
+  import type { MetaData } from '$lib/beatmap'
+  import type { Score } from '$lib/sus/analyze'
+  import type PIXI from 'pixi.js' 
 
   // Imports
   import COLORS from '$lib/colors'
   import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
-  import { onMount, tick } from 'svelte';
+  import { onMount } from 'svelte';
+  import {
+    MARGIN,
+    MARGIN_BOTTOM,
+    TEXT_MARGIN,
+    LANE_AREA_WIDTH,
+    BAR_LENGTH,
+    TEXTURE_NAMES
+  } from '$lib/consts'
+  import { calcX, calcY } from '$lib/timing';
+
+  // Data
   export let data;
   let metadata: MetaData
   let score: Score
 
+  // PIXI.js
   let PIXI
-  let app: Application
+  let app: PIXI.Application
 
-  const BEAT_UNIT = 4
-  const BEAT_IN_BAR = 4
-
-  const MARGIN = 80
-  const MARGIN_BOTTOM = 30
-  const TEXT_MARGIN = -15
-
-  const LANE_WIDTH = 30
-  const LANE_COUNT = 16
-  const LANE_AREA_WIDTH = LANE_WIDTH * LANE_COUNT
-
-  const BAR_LENGTH = 500
-
+  // Playhead & Measures
   $: measureHeight = BAR_LENGTH * zoom
   
   let playhead = -MARGIN_BOTTOM
@@ -70,22 +71,22 @@
   $: if (playhead >= fullHeight) playhead = fullHeight
 
   $: currentMeasure = Math.floor(playhead / measureHeight  + 1)
-
   let gotoMeasure: number
 
+  // Zooming
   let zoom = 1
   const ZOOM_MIN = 0.1
   const ZOOM_MAX = 10.0
   $: if (zoom <= ZOOM_MIN) zoom = ZOOM_MIN
   $: if (zoom >= ZOOM_MAX) zoom = ZOOM_MAX
-  $: zoom && playhead
+  // $: zoom && playhead
   
-  
+  // Follow playhead
   $: if (app) {
     app.stage.pivot.y = MARGIN_BOTTOM - playhead
   }
-  
-  
+
+  // Canvas Size
   const WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
   $: fullHeight = score ? (score.maxMeasure + 1) * measureHeight : 0
   let innerHeight: number
@@ -94,45 +95,11 @@
     app.renderer.resize(WIDTH, innerHeight)
   }
 
-  const TEXTURE_NAMES = [
-    'noteC.png',
-    'noteF.png',
-    'noteL.png',
-    'noteN.png',
-    'notes_flick_arrow_01.png',
-    'notes_flick_arrow_01_diagonal.png',
-    'notes_flick_arrow_02.png',
-    'notes_flick_arrow_02_diagonal.png',
-    'notes_flick_arrow_03.png',
-    'notes_flick_arrow_03_diagonal.png',
-    'notes_flick_arrow_04.png',
-    'notes_flick_arrow_04_diagonal.png',
-    'notes_flick_arrow_05.png',
-    'notes_flick_arrow_05_diagonal.png',
-    'notes_flick_arrow_06.png',
-    'notes_flick_arrow_06_diagonal.png',
-    'notes_flick_arrow_crtcl_01.png',
-    'notes_flick_arrow_crtcl_01_diagonal.png',
-    'notes_flick_arrow_crtcl_02.png',
-    'notes_flick_arrow_crtcl_02_diagonal.png',
-    'notes_flick_arrow_crtcl_03.png',
-    'notes_flick_arrow_crtcl_03_diagonal.png',
-    'notes_flick_arrow_crtcl_04.png',
-    'notes_flick_arrow_crtcl_04_diagonal.png',
-    'notes_flick_arrow_crtcl_05.png',
-    'notes_flick_arrow_crtcl_05_diagonal.png',
-    'notes_flick_arrow_crtcl_06.png',
-    'notes_flick_arrow_crtcl_06_diagonal.png',
-    'notes_long_among.png',
-    'notes_long_among_crtcl.png'
-  ]
-  const TEXTURES: Record<string, Texture> = {}
-
+  const TEXTURES: Record<string, PIXI.Texture> = {}
 
   let mouseX: number
   let mouseY: number
 
-  // import * as  PIXI from 'pixi.js'
   onMount(async () => {
     PIXI = await import('pixi.js')
 
@@ -159,44 +126,9 @@
   const { singleNotes, slides, bpms } = convertScoreData(score)
   console.log(score)
   console.log({ slides, bpms })
-  
+
   import { Pixi, Text, Loader, Sprite, Graphics } from 'svelte-pixi'
-  import { drawDashedLine } from '$lib/renderer';
-
-
-  function drawBackground(graphics: GraphicsType, zoom: number) {   
-    graphics.clear()
-    
-    // Draw lanes
-    for (let i = 0; i < LANE_COUNT + 1; i++) {
-      const x = i * LANE_WIDTH
-      if (i <= 1 || i >= LANE_COUNT + 1 - 2) {
-        continue
-      }
-      if (i % 2 == 0) {
-        graphics.lineStyle(2, COLORS.COLOR_LANE_PRIMARY, 1, 0.5)
-      } else {
-        graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
-      }
-      graphics.moveTo(x, innerHeight)
-      graphics.lineTo(x, -fullHeight)
-    }
-
-    // Draw bars
-    for (let i = 0; i < (score.maxMeasure + 2) * 3 + 2 ; i++) {
-      const y = innerHeight - (MARGIN_BOTTOM + i * measureHeight / BEAT_IN_BAR)
-
-      if (i % BEAT_IN_BAR == 0) {
-        graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
-        graphics.moveTo(LANE_WIDTH, y)
-        graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
-      } else {
-        graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
-        graphics.moveTo(LANE_WIDTH + LANE_WIDTH, y)
-        graphics.lineTo(LANE_AREA_WIDTH - 2 * LANE_WIDTH, y)
-      }
-    }
-  }
+  import { drawBackground, drawSlidePath, drawBPM } from '$lib/renderer';
 
   let canvasContainer: HTMLDivElement
   
@@ -208,74 +140,6 @@
   const DIAMOND_WIDTH = 30
   const DIAMOND_HEIGHT = 30 / 158 * 160
   
-  function calcX(lane: number) {
-    // return MARGIN + lane * 30 - 12
-    return MARGIN + lane * 30
-  }
-
-
-  function calcY(tick: number, zoom: number) {
-    return innerHeight - (MARGIN_BOTTOM + (tick / 480) * measureHeight / 4)
-  }
-
-  const EASE_RATIOS = {
-    curved: 0.5,
-    straight: 0
-  }
-
-  const SHRINK_WIDTH = LANE_WIDTH / 8
-  type SlideNode = SlideStart | SlideStep | SlideEnd
-  function drawSlidePath(graphics: GraphicsType, slideNotes: SlideNode[], critical: boolean, zoom: number) {
-    graphics.clear()
-    slideNotes
-    .reduce((acc: [SlideNode, SlideNode][], ele: SlideNode, ind: number, arr: SlideNode[]) => {
-        if (ind < arr.length - 1) {
-          acc.push([arr[ind], arr[ind + 1]])
-        }
-        return acc
-      }, [] as [SlideNode, SlideNode][])
-      .forEach(([origin, target]) => {
-        const easeInRatio = 'easeType' in origin && origin.easeType === 'easeIn' ? 0.5 : 0
-        const easeOutRatio = 'easeType' in origin && origin.easeType === 'easeOut' ? 0.5 : 0
-
-        const origin_x_left = calcX(origin.lane) + SHRINK_WIDTH
-        const origin_x_right = calcX(origin.lane) + origin.width * LANE_WIDTH - SHRINK_WIDTH
-        const origin_y = calcY(origin.tick, zoom) 
-        
-        const target_x_left = calcX(target.lane) + SHRINK_WIDTH
-        const target_x_right = calcX(target.lane) + target.width * LANE_WIDTH - SHRINK_WIDTH
-        const target_y = calcY(target.tick, zoom)
-
-        graphics.beginFill(critical ? COLORS.COLOR_SLIDE_PATH : COLORS.COLOR_SLIDE_PATH_CRITICAL, COLORS.ALPHA_SLIDE_PATH)
-        graphics.moveTo(origin_x_left, origin_y)
-        graphics.bezierCurveTo(origin_x_left, origin_y - (origin_y - target_y) * easeInRatio, target_x_left, target_y + (origin_y - target_y) * easeOutRatio, target_x_left, target_y)
-        // graphics.moveTo(target_x_left, target_y)
-        graphics.lineTo(target_x_right, target_y)
-        graphics.bezierCurveTo(target_x_right, target_y + (origin_y - target_y) * easeOutRatio, origin_x_right, origin_y - (origin_y - target_y) * easeInRatio, origin_x_right, origin_y)
-        graphics.closePath()
-        graphics.endFill()
-        // graphics.lineTo(origin_x_right, origin_y)
-        // graphics.moveTo(origin_x_right, origin_y)
-      })    
-  }
-
-  function drawBPM(graphics: GraphicsType, zoom: number, mouseX: number, mouseY: number) {
-    graphics.clear()
-
-    graphics.lineStyle(1, COLORS.COLOR_BPM, 1)
-    for (const bpm of bpms) {
-      const y = calcY(bpm.tick, zoom)
-      graphics.moveTo(LANE_WIDTH, y)
-      graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
-    }
-
-    if (currentMode === 'bpm') {
-      const y = mouseY + MARGIN_BOTTOM
-      graphics.moveTo(LANE_WIDTH, y);
-      // graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
-      drawDashedLine(graphics, LANE_AREA_WIDTH - LANE_WIDTH, y)
-    }
-  }
 
   let files: FileList
   let player: HTMLAudioElement
@@ -304,7 +168,7 @@
           <Graphics
             x={MARGIN}
             y={0}
-            draw={(graphics) => { drawBackground(graphics, zoom) }}
+            draw={(graphics) => { drawBackground(graphics, measureHeight, fullHeight, score.maxMeasure) }}
           />
 
           <!-- BPM -->
@@ -313,7 +177,7 @@
               text={`${bpm.bpm} BPM`}
               anchor={new PIXI.Point(0, 0.5)}
               x={WIDTH - MARGIN + TEXT_MARGIN}
-              y={calcY(bpm.tick, zoom)}
+              y={calcY(bpm.tick, measureHeight)}
               style={{
                 fill: COLORS.COLOR_BPM,
                 fontSize: 20
@@ -323,7 +187,7 @@
           <Graphics
             x={MARGIN}
             y={0}
-            draw={(graphics) => { drawBPM(graphics, zoom, mouseX, mouseY) }}
+            draw={(graphics) => { drawBPM(graphics, currentMode, bpms, measureHeight, mouseY) }}
           />
 
           <!-- MEASURE (BAR) NUMBER -->
@@ -355,7 +219,7 @@
                   'right': 3 * NOTE_WIDTH,
                   'middle': 0
                 }[flick]}
-                y={calcY(tick, zoom) - NOTE_HEIGHT + 10}
+                y={calcY(tick, measureHeight) - NOTE_HEIGHT + 10}
                 width={width * NOTE_WIDTH * (flick === 'right' ? -1: 1) * 0.75}
                 height={NOTE_HEIGHT}
               />
@@ -371,7 +235,7 @@
               }
               anchor={new PIXI.Point(...NOTE_PIVOT)}
               x={calcX(lane)}
-              y={calcY(tick, zoom)}
+              y={calcY(tick, measureHeight)}
               width={width * NOTE_WIDTH}
               height={NOTE_HEIGHT}
             />
@@ -383,14 +247,14 @@
             <Graphics
               x={0}
               y={0}
-              draw={(graphics) => {drawSlidePath(graphics, [start, ...steps, end], critical, zoom)}}
+              draw={(graphics) => {drawSlidePath(graphics, [start, ...steps, end], critical, measureHeight)}}
             />
             <!-- SLIDE START -->
             <Sprite
               texture={critical ? TEXTURES['noteC.png'] : TEXTURES['noteL.png']}
               anchor={new PIXI.Point(...NOTE_PIVOT)}
               x={calcX(start.lane)}
-              y={calcY(start.tick, zoom)}
+              y={calcY(start.tick, measureHeight)}
               width={start.width * NOTE_WIDTH}
               height={NOTE_HEIGHT}
             />
@@ -401,7 +265,7 @@
                 texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
                 anchor={new PIXI.Point(...DIAMOND_PIVOT)}
                 x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
-                y={calcY(tick, zoom)}
+                y={calcY(tick, measureHeight)}
                 width={DIAMOND_WIDTH}
                 height={DIAMOND_HEIGHT}
                 />
@@ -421,7 +285,7 @@
                   'right': 3 * NOTE_WIDTH,
                   'middle': 0
                 }[end.flick]}
-                y={calcY(end.tick, zoom) - NOTE_HEIGHT + 10}
+                y={calcY(end.tick, measureHeight) - NOTE_HEIGHT + 10}
                 width={end.width * NOTE_WIDTH * (end.flick === 'right' ? -1: 1) * 0.75}
                 height={NOTE_HEIGHT}
               />
@@ -436,7 +300,7 @@
               }
               anchor={new PIXI.Point(...NOTE_PIVOT)}
               x={calcX(end.lane)}
-              y={calcY(end.tick, zoom)}
+              y={calcY(end.tick, measureHeight)}
               width={end.width * NOTE_WIDTH}
               height={NOTE_HEIGHT}
             />
@@ -493,15 +357,6 @@
     font-family: 'FOT-RodinNTLG Pro';
   }
 
-  input[type='text'] {
-    appearance: none;
-    border: none;
-    border-radius: 5px;
-    color: inherit;
-    padding: 0.5em 1em;
-    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.6);
-    background: rgba(255, 255, 255, 0.1);
-  }
 
 
   /* Main */

@@ -1,11 +1,9 @@
-<script lang="ts" context="module">
-  export type Mode = 'select' | 'tap' | 'slide' | 'mid' | 'flick' | 'critical' | 'bpm' 
-</script>
-
 <script lang="ts">
   import Icon, { addIcon } from '@iconify/svelte'
   import bpmImage from '$assets/BPM.png'
   import selectImage from '$assets/select.png'
+  import type { Mode } from '$libs/modes'
+
 
   type ImageSource = string
   const MODES: Record<Mode, ImageSource> = {
