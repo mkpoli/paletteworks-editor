@@ -9,6 +9,7 @@
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
+    "@iconify/svelte": "^2.0.0",
     "@sveltejs/kit": "next",
     "filesize": "^8.0.3",
     "pixi.js": "^6.1.3",
