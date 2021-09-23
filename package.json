@@ -1,5 +1,5 @@
 {
-  "name": "beatmap-editor",
+  "name": "palette-works",
   "version": "0.0.1",
   "scripts": {
     "dev": "svelte-kit dev",

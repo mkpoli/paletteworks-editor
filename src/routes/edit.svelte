@@ -252,6 +252,9 @@
   let paused: boolean
 </script>
 
+<svelte:head>
+  <title>PaletteWorks Editor</title>
+</svelte:head>
 
 <main>
   {#if app}
