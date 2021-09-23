@@ -10,7 +10,6 @@
 		const res = await fetch(url);
 
 		if (res.ok) {
-      // console.log(await res.text())
 			return {
 				props: {
 					data: await res.text()
@@ -26,11 +25,13 @@
 </script>
 
 <script lang="ts">
-  import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
-  import filesize from 'filesize'
   // Components
   import ZoomIndicator from '$lib/ZoomIndicator.svelte';
   import ControlHandler from '$lib/ControlHandler.svelte';
+
+  // Imports
+  import filesize from 'filesize'
+  import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
   import type { MetaData, SlideEnd, SlideStart, SlideStep } from '$lib/beatmap'
   import type { NoteObject, Score } from '$lib/sus/analyze'
   import { onMount, tick } from 'svelte';
@@ -133,11 +134,6 @@
       antialias: true
     })
 
-    // const camera = new PIXI.projection.Camera3d();
-    // camera.setPlanes(350, 30, 10000);
-    // camera.euler.x = Math.PI / 5.5;
-    // app.stage.addChild(camera);
-
     for (const name of TEXTURE_NAMES) {
       TEXTURES[name] = PIXI.Texture.from(name)
     }
@@ -149,7 +145,7 @@
 
   metadata = getMetaData(data)
   score = getScoreData(data)
-  const { singleNotes, slides } = convertScoreData(score) // TODO:
+  const { singleNotes, slides } = convertScoreData(score)
   console.log(score)
   console.log({ slides })
   
@@ -189,14 +185,6 @@
     }
   }
 
-  // async function loadData(url: string) {
-  //   const response = await fetch(url)
-  //   const text = await response.text()
-  //   metadata = getMetaData(text)
-  //   data = getScoreData(text)
-  //   return text
-  // }
-
   let canvasContainer: HTMLDivElement
   
   const NOTE_PIVOT = [0.14971751412, 0.5]
@@ -216,36 +204,6 @@
   function calcY(tick: number, zoom: number) {
     return innerHeight - (MARGIN_BOTTOM + (tick / 480) * measureHeight / 4)
   }
-
-  // const TAPNODE_TYPE_TO_IMAGE = {
-  //   1: 'noteN.png',
-  //   2: 'noteC.png'
-  // }
-
-
-  // group = pathGroup, 
-  // fromMeasure = path.start.measure
-  // fromTick = path.start.tick
-  // fromLane = path.start.lane - 2
-  // fromWidth = path.start.width
-  // toMeasure = path.end.measure
-  // toTick = path.end.tick
-  // toLane = path.end.lane - 2
-  // toWidth = path.end.width
-  // easeIn = path.easeIn
-  // easeOut = path.easeOut
-  // critical = startKey in criticals
-
-  // const shrinkWidth = laneWidth / 16;
-  // const fromLeftX = Math.ceil(laneLefts[fromLane] + shrinkWidth);
-  // const fromRightX = Math.floor(laneLefts[fromLane] + laneWidth * fromWidth - shrinkWidth);
-  // const fromY = Math.floor(measureBottoms[fromMeasure] - fromTick / ticksPerBeat * pixelsPerBeat);
-  // const toLeftX = Math.ceil(laneLefts[toLane] + shrinkWidth);
-  // const toRightX = Math.floor(laneLefts[toLane] + laneWidth * toWidth - shrinkWidth);
-  // const toY = Math.floor(measureBottoms[toMeasure] - toTick / ticksPerBeat * pixelsPerBeat);
-  // const easeInRatio = easeIn ? curveEaseInRatio : (easeIn ? 0 : straightEaseInRatio);
-  // const easeOutRatio = easeOut ? curveEaseOutRatio : (easeIn ? 0 : straightEaseOutRatio);
-
 
   const EASE_RATIOS = {
     curved: 0.5,
@@ -292,16 +250,8 @@
   let player: HTMLAudioElement
   let currentTime: number
   let paused: boolean
-  let canvas: HTMLCanvasElement
 </script>
-<!-- 
-{#await loadData()}
-  Loading
-{:then sus} 
-  <Editor bind:metadata={metadata} bind:score={data}></Editor>
-{/await} -->
 
-<!-- <Editor bind:metadata={metadata} bind:score={score}></Editor> -->
 
 <div class="container">
 {#if app}
@@ -401,47 +351,48 @@
           <!-- SLIDE STEPS -->
           {#each steps as { lane, tick, width }}
             <Sprite
-            texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
-            anchor={new PIXI.Point(...DIAMOND_PIVOT)}
-            x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
-            y={calcY(tick, zoom)}
-            width={DIAMOND_WIDTH}
-            height={DIAMOND_HEIGHT}
-            />
+              texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
+              anchor={new PIXI.Point(...DIAMOND_PIVOT)}
+              x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
+              y={calcY(tick, zoom)}
+              width={DIAMOND_WIDTH}
+              height={DIAMOND_HEIGHT}
+              />
 
-          <!-- SLIDE END -->
-          {#if end.flick}
+            <!-- SLIDE END -->
+            {#if end.flick}
+              <Sprite
+                texture={
+                  TEXTURES[
+                    `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(end.width / 2) }${(end.flick === 'left' || end.flick === 'right') ? '_diagonal': ''}.png`
+                  ]
+                }
+                anchor={new PIXI.Point(0, 0.5)}
+                x={calcX(end.lane) + {
+                  'left': -NOTE_WIDTH,
+                  'right': 3 * NOTE_WIDTH,
+                  'middle': 0
+                }[end.flick]}
+                y={calcY(end.tick, zoom) - NOTE_HEIGHT + 10}
+                width={end.width * NOTE_WIDTH * (end.flick === 'right' ? -1: 1) * 0.75}
+                height={NOTE_HEIGHT}
+              />
+            {/if}
             <Sprite
               texture={
-                TEXTURES[
-                  `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(end.width / 2) }${(end.flick === 'left' || end.flick === 'right') ? '_diagonal': ''}.png`
-                ]
+                critical
+                  ? TEXTURES['noteC.png']
+                  : end.flick
+                    ? TEXTURES['noteF.png']
+                    : TEXTURES['noteL.png']
               }
-              anchor={new PIXI.Point(0, 0.5)}
-              x={calcX(end.lane) + {
-                'left': -NOTE_WIDTH,
-                'right': 3 * NOTE_WIDTH,
-                'middle': 0
-              }[end.flick]}
-              y={calcY(end.tick, zoom) - NOTE_HEIGHT + 10}
-              width={end.width * NOTE_WIDTH * (end.flick === 'right' ? -1: 1) * 0.75}
+              anchor={new PIXI.Point(...NOTE_PIVOT)}
+              x={calcX(end.lane)}
+              y={calcY(end.tick, zoom)}
+              width={end.width * NOTE_WIDTH}
               height={NOTE_HEIGHT}
             />
-          {/if}
-          <Sprite
-            texture={
-              critical
-                ? TEXTURES['noteC.png']
-                : end.flick
-                  ? TEXTURES['noteF.png']
-                  : TEXTURES['noteL.png']
-            }
-            anchor={new PIXI.Point(...NOTE_PIVOT)}
-            x={calcX(end.lane)}
-            y={calcY(end.tick, zoom)}
-            width={end.width * NOTE_WIDTH}
-            height={NOTE_HEIGHT}
-          />
+          {/each}
         {/each}
       </Loader>
     </Pixi>
@@ -460,7 +411,12 @@
         Goto Measure
         <div style="display: flex; gap: 0.5em;">
           <input type="text" bind:value={gotoMeasure} />
-          <button on:click={() => { if (gotoMeasure >= 1 && gotoMeasure <= score.maxMeasure + 2) playhead = (gotoMeasure - 1) * measureHeight }}>Goto</button>
+          <button
+            on:click={() => {
+              if (gotoMeasure >= 1 && gotoMeasure <= score.maxMeasure + 2) {
+                playhead = (gotoMeasure - 1) * measureHeight
+              }}}
+          >Goto</button>
         </div>
       </label>
     </div>
@@ -480,7 +436,6 @@
         bind:paused
       ></audio>
     </div>
-
     <div class="panel">
       <h2>基本情報</h2>
       <label>
@@ -554,20 +509,10 @@
     display: block;
   }
 
-  .control-panel {
-    display: flex;
-    padding: 1em;
-    flex-direction: column;
-  }
-
   .zoom-indicator-container {
     position: absolute;
     bottom: 1em;
     right: 2em;
-  }
-
-  .control-panel > *:not(:last-child) {
-    margin-bottom: 1em;
   }
 
   label {
@@ -589,7 +534,6 @@
   .panel {
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 1px 1px 5px #000;
-    /* border: 1px solid #000; */
     border-radius: 1em;
     margin: 1em;
     display: grid;
