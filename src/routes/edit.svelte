@@ -361,41 +361,41 @@
                 width={DIAMOND_WIDTH}
                 height={DIAMOND_HEIGHT}
                 />
+            {/each}
 
-              <!-- SLIDE END -->
-              {#if end.flick}
-                <Sprite
-                  texture={
-                    TEXTURES[
-                      `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(end.width / 2) }${(end.flick === 'left' || end.flick === 'right') ? '_diagonal': ''}.png`
-                    ]
-                  }
-                  anchor={new PIXI.Point(0, 0.5)}
-                  x={calcX(end.lane) + {
-                    'left': -NOTE_WIDTH,
-                    'right': 3 * NOTE_WIDTH,
-                    'middle': 0
-                  }[end.flick]}
-                  y={calcY(end.tick, zoom) - NOTE_HEIGHT + 10}
-                  width={end.width * NOTE_WIDTH * (end.flick === 'right' ? -1: 1) * 0.75}
-                  height={NOTE_HEIGHT}
-                />
-              {/if}
+            <!-- SLIDE END -->
+            {#if end.flick}
               <Sprite
                 texture={
-                  critical
-                    ? TEXTURES['noteC.png']
-                    : end.flick
-                      ? TEXTURES['noteF.png']
-                      : TEXTURES['noteL.png']
+                  TEXTURES[
+                    `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(end.width / 2) }${(end.flick === 'left' || end.flick === 'right') ? '_diagonal': ''}.png`
+                  ]
                 }
-                anchor={new PIXI.Point(...NOTE_PIVOT)}
-                x={calcX(end.lane)}
-                y={calcY(end.tick, zoom)}
-                width={end.width * NOTE_WIDTH}
+                anchor={new PIXI.Point(0, 0.5)}
+                x={calcX(end.lane) + {
+                  'left': -NOTE_WIDTH,
+                  'right': 3 * NOTE_WIDTH,
+                  'middle': 0
+                }[end.flick]}
+                y={calcY(end.tick, zoom) - NOTE_HEIGHT + 10}
+                width={end.width * NOTE_WIDTH * (end.flick === 'right' ? -1: 1) * 0.75}
                 height={NOTE_HEIGHT}
               />
-            {/each}
+            {/if}
+            <Sprite
+              texture={
+                critical
+                  ? TEXTURES['noteC.png']
+                  : end.flick
+                    ? TEXTURES['noteF.png']
+                    : TEXTURES['noteL.png']
+              }
+              anchor={new PIXI.Point(...NOTE_PIVOT)}
+              x={calcX(end.lane)}
+              y={calcY(end.tick, zoom)}
+              width={end.width * NOTE_WIDTH}
+              height={NOTE_HEIGHT}
+            />
           {/each}
         </Loader>
       </Pixi>
