@@ -1,0 +1,4 @@
+export default {
+  COLOR_BPM: 0x03C04A,
+  COLOR_BACKGROUND: 0x000000
+}

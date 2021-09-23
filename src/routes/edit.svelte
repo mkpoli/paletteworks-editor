@@ -25,13 +25,12 @@
 </script>
 
 <script lang="ts">
+  import ToolBox from '$lib/ToolBox.svelte'
   // Components
   import ZoomIndicator from '$lib/ZoomIndicator.svelte';
   import ControlHandler from '$lib/ControlHandler.svelte';
 
-  // Imports
-  import filesize from 'filesize'
-  import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
+  import type { Mode } from '$lib/ToolBox.svelte'
   import type { MetaData, SlideEnd, SlideStart, SlideStep } from '$lib/beatmap'
   import type { NoteObject, Score } from '$lib/sus/analyze'
   import { onMount, tick } from 'svelte';
@@ -250,6 +249,8 @@
   let player: HTMLAudioElement
   let currentTime: number
   let paused: boolean
+
+  let currentMode: Mode = 'select'
 </script>
 
 <svelte:head>
@@ -258,7 +259,7 @@
 
 <main>
   {#if app}
-    <div class="canvas-container" bind:this={canvasContainer} style={`width: ${width}px;`}>
+    <ToolBox bind:currentMode />
       <Pixi {app}>
         <Loader resources={TEXTURE_NAMES}>
           <!-- <Sprite
@@ -504,7 +505,8 @@
 
   /* Main */
   main {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
   }  
 
   .canvas-container {
