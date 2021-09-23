@@ -38,7 +38,7 @@
 
   .zoom-number {
     display: flex;
-    font-size: 1.25em;
+    font-size: 1em;
     width: 2em;
     align-items: center;
     justify-content: center;

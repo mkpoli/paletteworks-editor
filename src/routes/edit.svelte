@@ -174,9 +174,9 @@
         continue
       }
       if (i % 2 == 0) {
-        graphics.lineStyle(2, 0xFFFFFF, 1, 0.5)
+        graphics.lineStyle(2, COLORS.COLOR_LANE_PRIMARY, 1, 0.5)
       } else {
-        graphics.lineStyle(1, 0xCCCC0C, 1, 0.5)
+        graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
       }
       graphics.moveTo(x, innerHeight)
       graphics.lineTo(x, -fullHeight)
@@ -187,11 +187,11 @@
       const y = innerHeight - (MARGIN_BOTTOM + i * measureHeight / BEAT_IN_BAR)
 
       if (i % BEAT_IN_BAR == 0) {
-        graphics.lineStyle(2, 0xFFFFFF, 1, 0.5)
+        graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
         graphics.moveTo(LANE_WIDTH, y)
         graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
       } else {
-        graphics.lineStyle(1, 0xCCCCCC, 1, 0.5)
+        graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
         graphics.moveTo(LANE_WIDTH + LANE_WIDTH, y)
         graphics.lineTo(LANE_AREA_WIDTH - 2 * LANE_WIDTH, y)
       }
@@ -246,7 +246,7 @@
         const target_x_right = calcX(target.lane) + target.width * LANE_WIDTH - SHRINK_WIDTH
         const target_y = calcY(target.tick, zoom)
 
-        graphics.beginFill(critical ? 0xFFFCCC : 0xDAFDF0, 0.95)
+        graphics.beginFill(critical ? COLORS.COLOR_SLIDE_PATH : COLORS.COLOR_SLIDE_PATH_CRITICAL, COLORS.ALPHA_SLIDE_PATH)
         graphics.moveTo(origin_x_left, origin_y)
         graphics.bezierCurveTo(origin_x_left, origin_y - (origin_y - target_y) * easeInRatio, target_x_left, target_y + (origin_y - target_y) * easeOutRatio, target_x_left, target_y)
         // graphics.moveTo(target_x_left, target_y)
