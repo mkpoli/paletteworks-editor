@@ -30,17 +30,21 @@
   import PropertyBox from '$lib/PropertyBox.svelte'
 
   // Components
-  import ZoomIndicator from '$lib/ZoomIndicator.svelte';
-  import ControlHandler from '$lib/ControlHandler.svelte';
+  import ZoomIndicator from '$lib/ZoomIndicator.svelte'
+  import ControlHandler from '$lib/ControlHandler.svelte'
 
+  // Types
   import type { Mode } from '$lib/ToolBox.svelte'
   import type { MetaData, SlideEnd, SlideStart, SlideStep } from '$lib/beatmap'
   import type { NoteObject, Score } from '$lib/sus/analyze'
+  import type { Application, Graphics as GraphicsType, Texture } from 'pixi.js' 
+
+  // Imports
+  import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
   import { onMount, tick } from 'svelte';
   export let data;
   let metadata: MetaData
   let score: Score
-  import type { Application, Graphics as GraphicsType, Texture } from 'pixi.js' 
 
   let PIXI
   let app: Application
@@ -81,12 +85,12 @@
   }
   
   
-  const width = MARGIN * 2 + LANE_AREA_WIDTH
+  const WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
   $: fullHeight = score ? (score.maxMeasure + 1) * measureHeight : 0
   let innerHeight: number
   // Resize when width / viewHeight changed
   $: if (app) {
-    app.renderer.resize(width, innerHeight)
+    app.renderer.resize(WIDTH, innerHeight)
   }
 
   const TEXTURE_NAMES = [
@@ -133,7 +137,7 @@
     PIXI = await import('pixi.js')
 
     app = new PIXI.Application({
-      width,
+      width: WIDTH,
       height: innerHeight,
       antialias: true
     })
@@ -265,6 +269,7 @@
 <main>
   {#if app}
     <ToolBox bind:currentMode />
+    <div class="canvas-container" bind:this={canvasContainer} style={`width: ${WIDTH}px;`}>
       <Pixi {app}>
         <Loader resources={TEXTURE_NAMES}>
           <!-- <Sprite
