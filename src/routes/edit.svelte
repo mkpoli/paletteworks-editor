@@ -523,12 +523,6 @@
   }
 
   .zoom-indicator-container {
-    position: absolute;
-    bottom: 1em;
-    right: 2em;
-  }
-
-  .zoom-indicator-container {
     height: 100%;
     padding: 1em;
     display: flex;    
