@@ -13,12 +13,19 @@ export type NoteObject = {
   type: number
 }
 
+type Timing = {
+  tick: number;
+  bpm: number;
+  time: number;
+}
+
 export type Score = {
   tapNotes: NoteObject[]
   directionalNotes: NoteObject[]
   slides: NoteObject[][]
   toTime: (tick: number) => number,
-  maxMeasure: number
+  maxMeasure: number,
+  timings: Timing[]
 }
 
 const beatsPerMeasure = 4
@@ -128,7 +135,8 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
     directionalNotes,
     slides,
     toTime,
-    maxMeasure
+    maxMeasure,
+    timings
   }
 }
 

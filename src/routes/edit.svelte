@@ -40,6 +40,7 @@
   import type { Application, Graphics as GraphicsType, Texture } from 'pixi.js' 
 
   // Imports
+  import COLORS from '$lib/colors'
   import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
   import { onMount, tick } from 'svelte';
   export let data;
@@ -127,10 +128,9 @@
   ]
   const TEXTURES: Record<string, Texture> = {}
 
-  let TEXTURE_NOTE_N
-  let TEXTURE_NOTE_C
-  let TEXTURE_NOTE_F
-  let TEXTURE_FLICK_ARROW
+
+  let mouseX: number
+  let mouseY: number
 
   // import * as  PIXI from 'pixi.js'
   onMount(async () => {
@@ -146,18 +146,23 @@
       TEXTURES[name] = PIXI.Texture.from(name)
     }
 
-    await tick()
-    canvasContainer.scrollTop = canvasContainer.scrollHeight
-    app.stage.pivot.y = 500
+    app.stage.interactive = true
+    app.stage.addListener('mousemove', (event) => {
+      const { x, y } = event.data.global
+      mouseX = x
+      mouseY = y
+    })
   })
 
   metadata = getMetaData(data)
   score = getScoreData(data)
-  const { singleNotes, slides } = convertScoreData(score)
+  const { singleNotes, slides, bpms } = convertScoreData(score)
   console.log(score)
-  console.log({ slides })
+  console.log({ slides, bpms })
   
   import { Pixi, Text, Loader, Sprite, Graphics } from 'svelte-pixi'
+  import { drawDashedLine } from '$lib/renderer';
+
 
   function drawBackground(graphics: GraphicsType, zoom: number) {   
     graphics.clear()
@@ -254,6 +259,24 @@
       })    
   }
 
+  function drawBPM(graphics: GraphicsType, zoom: number, mouseX: number, mouseY: number) {
+    graphics.clear()
+
+    graphics.lineStyle(1, COLORS.COLOR_BPM, 1)
+    for (const bpm of bpms) {
+      const y = calcY(bpm.tick, zoom)
+      graphics.moveTo(LANE_WIDTH, y)
+      graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
+    }
+
+    if (currentMode === 'bpm') {
+      const y = mouseY + MARGIN_BOTTOM
+      graphics.moveTo(LANE_WIDTH, y);
+      // graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
+      drawDashedLine(graphics, LANE_AREA_WIDTH - LANE_WIDTH, y)
+    }
+  }
+
   let files: FileList
   let player: HTMLAudioElement
   let currentTime: number
@@ -283,14 +306,24 @@
             y={0}
             draw={(graphics) => { drawBackground(graphics, zoom) }}
           />
-          <Text
-            text="BPM"
-            anchor={new PIXI.Point(0, 0.5)}
-            x={width - MARGIN + TEXT_MARGIN}
-            y={innerHeight - MARGIN_BOTTOM}
-            style={{
-              fill: 'white'
-            }}
+
+          <!-- BPM -->
+          {#each bpms as bpm}
+            <Text
+              text={`${bpm.bpm} BPM`}
+              anchor={new PIXI.Point(0, 0.5)}
+              x={WIDTH - MARGIN + TEXT_MARGIN}
+              y={calcY(bpm.tick, zoom)}
+              style={{
+                fill: COLORS.COLOR_BPM,
+                fontSize: 20
+              }}
+            />
+          {/each}
+          <Graphics
+            x={MARGIN}
+            y={0}
+            draw={(graphics) => { drawBPM(graphics, zoom, mouseX, mouseY) }}
           />
 
           <!-- MEASURE (BAR) NUMBER -->
@@ -439,6 +472,7 @@
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
   {/if}
+  <div class="debug-display">mouse: ({mouseX}, {mouseY})</div>
 </main>
 
 <ControlHandler
@@ -501,6 +535,17 @@
     flex-direction: column;
     justify-content: end;
     background: black;
+  }
+
+  .debug-display {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 1em;
+    color: black;
+    font-size: 0.5em;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
   }
 </style>
 

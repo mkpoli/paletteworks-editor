@@ -207,5 +207,5 @@ export function convertScoreData(score: Score) {
     })
   })
 
-  return { singleNotes, slides }
+  return { singleNotes, slides, bpms: score.timings }
 }
