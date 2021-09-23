@@ -6,7 +6,7 @@
 <script lang="ts">
   export let playhead: number
   export let zoom: number
-
+  export let paused: boolean
   function mousewheel(event: WheelEvent) {
     if (event.ctrlKey) { 
       zoom -= (event.deltaY > 0 ? 0.1 : -0.1) * (event.shiftKey ? 10 : 1)
@@ -15,14 +15,9 @@
     }
   }
 
-
   function keyboard(e: KeyboardEvent) {
     if (e.key === ' ') {
-      if (player.paused) {
-        player.play()
-      } else {
-        player.pause()
-      }
+      paused = !paused
     }
   }  
 </script>

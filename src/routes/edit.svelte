@@ -473,6 +473,7 @@
 <ControlHandler
   bind:playhead
   bind:zoom
+  bind:paused
 />
 
 <svelte:window
