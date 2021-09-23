@@ -48,9 +48,9 @@
   const BEAT_UNIT = 4
   const BEAT_IN_BAR = 4
 
-  const MARGIN = 200
+  const MARGIN = 80
   const MARGIN_BOTTOM = 30
-  const TEXT_MARGIN = 6
+  const TEXT_MARGIN = -15
 
   const LANE_WIDTH = 30
   const LANE_COUNT = 16
@@ -405,9 +405,10 @@
           {/each}
         </Loader>
       </Pixi>
-      <div class="zoom-indicator-container">
-        <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
-      </div>
+    </div>
+    <div class="zoom-indicator-container">
+      <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
+    </div>
     <PropertyBox
       bind:playhead
       bind:currentMeasure
@@ -467,7 +468,7 @@
   /* Main */
   main {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto auto;
   }  
 
   .canvas-container {
@@ -486,6 +487,15 @@
     position: absolute;
     bottom: 1em;
     right: 2em;
+  }
+
+  .zoom-indicator-container {
+    height: 100%;
+    padding: 1em;
+    display: flex;    
+    flex-direction: column;
+    justify-content: end;
+    background: black;
   }
 </style>
 
