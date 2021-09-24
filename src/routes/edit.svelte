@@ -120,7 +120,8 @@
       width: CANVAS_WIDTH,
       height: innerHeight,
       antialias: true,
-      resolution: 2
+      resolution: 2,
+      backgroundAlpha: 0
     })
 
     // for (const name of TEXTURE_NAMES) {
@@ -359,9 +360,9 @@
           />  
         </Loader>
       </Pixi>
-    </div>
-    <div class="zoom-indicator-container">
-      <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
+      <div class="zoom-indicator-container">
+        <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
+      </div>
     </div>
     <PropertyBox
       bind:playhead
@@ -419,8 +420,10 @@
     height: 100vh;
     overflow-x: hidden;
     overflow-y: hidden;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto;
     position: relative;
+    background: linear-gradient(180deg, rgb(11.24% 0% 29.08%) 0%, rgb(6.27% 0% 14.83%) 100%);
   }
 
   :global(canvas) {
@@ -435,7 +438,6 @@
     display: flex;    
     flex-direction: column;
     justify-content: end;
-    background: black;
   }
 
   .cursor-select {
