@@ -1,6 +1,6 @@
 // Types
-import type { Graphics } from 'pixi.js' 
-import type { BPM, SlideEnd, SlideStart, SlideStep } from '$lib/beatmap'
+import type PIXI from 'pixi.js' 
+import type { SlideEnd, SlideStart, SlideStep } from '$lib/beatmap'
 
 // Consts
 import COLORS from '$lib/colors'
@@ -12,46 +12,41 @@ import {
   LANE_AREA_WIDTH,
   TEXT_MARGIN,
   MARGIN,
+  FONT_FAMILY,
 } from '$lib/consts'
 import { calcX, calcY } from '$lib/timing'
-import type { Mode } from '$lib/modes'
+import type { Mode } from '$lib/editing'
 
 // Drawing Functions
-export function drawDashedLine(graphics: Graphics, toX: number, toY: number, dash: number = 10, gap: number = 8) {
-  const lastPosition = graphics.currentPath.points;
-
+export function drawDashedLine(graphics: PIXI.Graphics, fromX: number, fromY: number, toX: number, toY: number, dash: number = 10, gap: number = 8) {
+  graphics.moveTo(fromX, fromY);
   const currentPosition = {
-    x: lastPosition[lastPosition.length - 2] || 0,
-    y: lastPosition[lastPosition.length - 1] || 0
-  };
-
-  const absValues = {
-    toX: Math.abs(toX),
-    toY: Math.abs(toY)
-  };
+    x: fromX,
+    y: fromY
+  }
 
   for (
     ;
-    Math.abs(currentPosition.x) < absValues.toX ||
-    Math.abs(currentPosition.y) < absValues.toY;
+    Math.abs(currentPosition.x) < toX ||
+    Math.abs(currentPosition.y) < toY;
   ) {
     currentPosition.x =
-      Math.abs(currentPosition.x + dash) < absValues.toX
+      Math.abs(currentPosition.x + dash) < toX
         ? currentPosition.x + dash
         : toX;
     currentPosition.y =
-      Math.abs(currentPosition.y + dash) < absValues.toY
+      Math.abs(currentPosition.y + dash) < toY
         ? currentPosition.y + dash
         : toY;
 
     graphics.lineTo(currentPosition.x, currentPosition.y);
 
     currentPosition.x =
-      Math.abs(currentPosition.x + gap) < absValues.toX
+      Math.abs(currentPosition.x + gap) < toX
         ? currentPosition.x + gap
         : toX;
     currentPosition.y =
-      Math.abs(currentPosition.y + gap) < absValues.toY
+      Math.abs(currentPosition.y + gap) < toY
         ? currentPosition.y + gap
         : toY;
 
@@ -59,7 +54,7 @@ export function drawDashedLine(graphics: Graphics, toX: number, toY: number, das
   }
 }
 
-export function drawBackground(graphics: Graphics, measureHeight: number, fullHeight: number, maxMeasure: number) {   
+export function drawBackground(graphics: PIXI.Graphics, measureHeight: number, fullHeight: number, maxMeasure: number) {   
   graphics.clear()
   
   // Draw lanes
@@ -100,7 +95,7 @@ const EASE_RATIOS = {
 }
 const SHRINK_WIDTH = LANE_WIDTH / 8
 type SlideNode = SlideStart | SlideStep | SlideEnd
-export function drawSlidePath(graphics: Graphics, slideNotes: SlideNode[], critical: boolean, measureHeight: number) {
+export function drawSlidePath(graphics: PIXI.Graphics, slideNotes: SlideNode[], critical: boolean, measureHeight: number) {
   graphics.clear()
   slideNotes
   .reduce((acc: [SlideNode, SlideNode][], ele: SlideNode, ind: number, arr: SlideNode[]) => {
@@ -110,8 +105,8 @@ export function drawSlidePath(graphics: Graphics, slideNotes: SlideNode[], criti
       return acc
     }, [] as [SlideNode, SlideNode][])
     .forEach(([origin, target]) => {
-      const easeInRatio = 'easeType' in origin && origin.easeType === 'easeIn' ? 0.5 : 0
-      const easeOutRatio = 'easeType' in origin && origin.easeType === 'easeOut' ? 0.5 : 0
+      const easeInRatio = 'easeType' in origin && origin.easeType === 'easeIn' ? EASE_RATIOS.curved : EASE_RATIOS.straight
+      const easeOutRatio = 'easeType' in origin && origin.easeType === 'easeOut' ? EASE_RATIOS.curved : EASE_RATIOS.straight
 
       const origin_x_left = calcX(origin.lane) + SHRINK_WIDTH
       const origin_x_right = calcX(origin.lane) + origin.width * LANE_WIDTH - SHRINK_WIDTH
@@ -157,7 +152,8 @@ export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number
     // Draw BPM Texts
     const text: PIXI.Text = BPMTexts.has(tick) ? BPMTexts.get(tick) : graphics.addChild(new pixi.Text(`${bpm} BPM`, {
       fill: COLORS.COLOR_BPM,
-      fontSize: 20
+      fontSize: 20,
+      fontFamily: FONT_FAMILY
     }))
     text.anchor.set(0.5, 0.5)
 
@@ -166,10 +162,22 @@ export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number
   })
 }
 
-  // (Deleted) Destroy child if child are in BPMTexts but not in bpms
-  BPMTexts.forEach((text, tick) => {
-    if (!bpms.has(tick)) {
-      graphics.removeChild(text)
+let lastText: PIXI.Text
+export function drawSnappingElements(graphics: PIXI.Graphics, pixi, currentMode: Mode, measureHeight: number, y: number) {
+  graphics.clear()
+  if (currentMode === 'bpm') {
+    if (lastText) {
+      lastText.destroy()
     }
-  })
+    const text = new pixi.Text(`? BPM`, {
+      fill: COLORS.COLOR_BPM,
+      fontSize: 20
+    })
+    text.anchor.set(0.5, 0.5)
+    text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, y)
+    lastText = graphics.addChild(text)
+    
+    graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
+    drawDashedLine(graphics, 0, y, LANE_AREA_WIDTH, y)
+  }
 }

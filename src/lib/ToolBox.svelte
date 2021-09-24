@@ -2,8 +2,9 @@
   import Icon, { addIcon } from '@iconify/svelte'
   import bpmImage from '$assets/BPM.png'
   import selectImage from '$assets/select.png'
-  import type { Mode } from '$libs/modes'
-
+  import { ALLOWED_SNAPPINGS } from '$lib/editing'
+  
+  import type { Mode, SnapTo } from '$lib/editing'
 
   type ImageSource = string
   const MODES: Record<Mode, ImageSource> = {
@@ -15,20 +16,20 @@
     critical: 'noteC.png',
     bpm: bpmImage,
   }
-
-  export let currentMode: Mode
-
   addIcon('custom:logo', {
     body: `<path d="M258 29L472.609 243.609L256 337.821L256 335.486V74L72.2283 257.891L256 337.821V358L103.869 291.478L256 443.708L256 358L481.684 259.316L258 483L37.4242 262.424L31 256L42.1788 244.821L258 29Z" fill="currentColor"></path>`,
     width: 512,
     height: 512
   })
 
+  export let currentMode: Mode
+  export let snapTo: SnapTo
+
+
   function setMode(mode: string) {
     currentMode = mode as Mode
   }
 
-  const ALLOWED_SNAPPING = [4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192]
 </script>
 
 <div class="toolbox-container">
@@ -47,8 +48,8 @@
       <input type="checkbox" />
       SNAP?
     </label> -->
-    <select>
-      {#each ALLOWED_SNAPPING as snap}
+    <select bind:value={snapTo}>
+      {#each ALLOWED_SNAPPINGS as snap}
         <option value={snap}>{snap}分音符</option>
       {/each}
     </select>

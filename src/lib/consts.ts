@@ -41,3 +41,5 @@ export const TEXTURE_NAMES = [
   'notes_long_among.png',
   'notes_long_among_crtcl.png'
 ]
+
+export const FONT_FAMILY = 'Montserrat'

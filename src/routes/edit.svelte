@@ -4,8 +4,8 @@
 		// const url = `/RelayPoint.sus`;
 		// const url = `/NewScore2.sus`;
     // const url = `KING.sus`;
-    const url = `/TellYourWorld_EX.sus`;
-    // const url = `MultipleBPM.sus`;
+    // const url = `/TellYourWorld_EX.sus`;
+    const url = `MultipleBPM.sus`;
     // const url = `SlideTest.sus`;
     // const url = `ModNote.sus`;
 		const res = await fetch(url);
@@ -29,13 +29,14 @@
   // Parts
   import ToolBox from '$lib/ToolBox.svelte'
   import PropertyBox from '$lib/PropertyBox.svelte'
-
+  
   // Components
   import ZoomIndicator from '$lib/ZoomIndicator.svelte'
   import ControlHandler from '$lib/ControlHandler.svelte'
+  import DebugInfo from '$lib/basic/DebugInfo.svelte'
 
   // Types
-  import type { Mode } from '$lib/modes'
+  import type { Mode, SnapTo } from '$lib/editing'
   import type { MetaData } from '$lib/beatmap'
   import type { Score } from '$lib/sus/analyze'
   import type PIXI from 'pixi.js' 
@@ -53,8 +54,10 @@
     TEXTURE_NAMES,
     CANVAS_WIDTH
   } from '$lib/consts'
-  import { calcX, calcY } from '$lib/timing';
 
+  // Calculations
+  import { calcX, calcY } from '$lib/timing'
+  import { snap } from '$lib/editing'
   // Data
   export let data;
   let metadata: MetaData
@@ -67,12 +70,11 @@
   // Playhead & Measures
   $: measureHeight = BAR_LENGTH * zoom
   
-  let playhead = -MARGIN_BOTTOM
+  let playhead: number = 0
   $: if (playhead < 0) playhead = 0
   $: if (playhead >= fullHeight) playhead = fullHeight
 
   $: currentMeasure = Math.floor(playhead / measureHeight  + 1)
-  let gotoMeasure: number
 
   // Zooming
   let zoom = 1
@@ -115,7 +117,7 @@
     }
 
     app.stage.interactive = true
-    app.stage.addListener('mousemove', (event) => {
+    app.stage.addListener('mousemove', (event: PIXI.InteractionEvent) => {
       const { x, y } = event.data.global
       mouseX = x
       mouseY = y
@@ -129,7 +131,7 @@
   console.log({ slides, bpms })
 
   import { Pixi, Text, Loader, Sprite, Graphics } from 'svelte-pixi'
-  import { drawBackground, drawSlidePath, drawBPMs } from '$lib/renderer';
+  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements } from '$lib/renderer';
 
   let canvasContainer: HTMLDivElement
   
@@ -147,7 +149,27 @@
   let currentTime: number
   let paused: boolean
 
-  let currentMode: Mode = 'select'
+  // let currentMode: Mode = 'select' // TODO:
+  let currentMode: Mode = 'bpm'
+  let snapTo: SnapTo
+
+  type DebugInfo = {
+    title: string
+    value: string
+  }
+  let debugInfo = new Map<string, string | number>()
+  function formatPoint(x: number, y: number) {
+    return `(${x?.toFixed(3)}, ${y?.toFixed(3)})`
+  }
+  
+  function dbg(title: string, value: string | number) {
+    debugInfo.set(title, value)
+    debugInfo = debugInfo
+  }
+
+  $: dbg('mouse', formatPoint(mouseX, mouseY))
+  $: dbg('stage.pivot', formatPoint(app?.stage.pivot.x, app?.stage.pivot.y))
+  $: dbg('playhead', playhead)
 </script>
 
 <svelte:head>
@@ -156,6 +178,10 @@
 
 <main>
   {#if app}
+    <ToolBox
+      bind:currentMode
+      bind:snapTo
+    />
     <div class="canvas-container" bind:this={canvasContainer} style={`width: ${CANVAS_WIDTH}px;`}>
       <Pixi {app}>
         <Loader resources={TEXTURE_NAMES}>
@@ -293,6 +319,30 @@
               height={NOTE_HEIGHT}
             />
           {/each}
+  
+          <!-- FLOATING ITEMS -->
+          <Graphics
+            x={MARGIN}
+            y={0}
+            draw={(graphics) => {
+              const transformedY = mouseY - playhead + MARGIN_BOTTOM
+              const step = measureHeight / snapTo
+              drawSnappingElements(
+                graphics, PIXI, currentMode, measureHeight,
+                innerHeight - snap(innerHeight - transformedY, step) - MARGIN_BOTTOM
+              )
+              // graphics.moveTo(0, transformedY)
+              // graphics.lineTo(LANE_AREA_WIDTH, transformedY)
+              dbg('currentMode', currentMode)
+              dbg(`snapTo`, snapTo)
+              dbg('step', step)
+              dbg(`snapV1`, innerHeight - snap(innerHeight - mouseY - playhead + MARGIN_BOTTOM, measureHeight / snapTo) - MARGIN_BOTTOM)
+              dbg(`snapV2`, innerHeight - snap(innerHeight - mouseY - playhead, measureHeight / snapTo) + MARGIN_BOTTOM - MARGIN_BOTTOM)
+              dbg(`snapV3`, snap(mouseY + playhead, measureHeight / snapTo) + MARGIN_BOTTOM - MARGIN_BOTTOM)
+              dbg(`nosnap`, innerHeight - (innerHeight - mouseY - playhead + MARGIN_BOTTOM) - MARGIN_BOTTOM)
+              dbg(`nosnap2`, innerHeight - innerHeight + mouseY + playhead - MARGIN_BOTTOM - MARGIN_BOTTOM)
+            }}
+          />  
         </Loader>
       </Pixi>
     </div>
@@ -323,8 +373,8 @@
       bind:files
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
+    <DebugInfo bind:debugInfo />
   {/if}
-  <div class="debug-display">mouse: ({mouseX}, {mouseY})</div>
 </main>
 
 <ControlHandler
@@ -344,8 +394,6 @@
     color: #eeeeee;
     font-family: 'FOT-RodinNTLG Pro';
   }
-
-
 
   /* Main */
   main {
@@ -374,17 +422,6 @@
     flex-direction: column;
     justify-content: end;
     background: black;
-  }
-
-  .debug-display {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 1em;
-    color: black;
-    font-size: 0.5em;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(10px);
   }
 </style>
 
