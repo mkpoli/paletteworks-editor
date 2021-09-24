@@ -182,7 +182,11 @@
       bind:currentMode
       bind:snapTo
     />
-    <div class="canvas-container" bind:this={canvasContainer} style={`width: ${CANVAS_WIDTH}px;`}>
+    <div
+      class="canvas-container"
+      bind:this={canvasContainer}
+      style={`width: ${CANVAS_WIDTH}px;`}
+    >
       <Pixi {app}>
         <Loader resources={TEXTURE_NAMES}>
           <!-- <Sprite
@@ -422,6 +426,10 @@
     flex-direction: column;
     justify-content: end;
     background: black;
+  }
+
+  .cursor-select {
+    cursor: url('$assets/select-cursor.png') 13 13, auto
   }
 </style>
 

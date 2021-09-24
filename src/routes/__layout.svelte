@@ -9,4 +9,8 @@
   * {
     box-sizing: border-box;
   }
+
+  button, label, audio, select, input[type="file"] {
+    cursor: inherit;
+  }
 </style>
