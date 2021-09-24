@@ -33,7 +33,11 @@ function getKey(note: NoteObject) {
 import type { Flick, Single, Slide, SlideEnd, SlideStep, SlideStart } from '../beatmap'
 
 
-export function convertScoreData(score: Score) {
+export function convertScoreData(score: Score): {
+  singleNotes: Single[],
+  slides: Slide[],
+  bpms: Map<number, number>
+} {
   const offset = 0
   function toTime(tick: number) {
     return score.toTime(tick) + offset
