@@ -49,10 +49,17 @@
     MARGIN,
     MARGIN_BOTTOM,
     TEXT_MARGIN,
-    LANE_AREA_WIDTH,
     BAR_LENGTH,
-    TEXTURE_NAMES,
-    CANVAS_WIDTH
+    CANVAS_WIDTH,
+    LANE_WIDTH,
+    NOTE_HEIGHT,
+    NOTE_PIVOT,
+    NOTE_WIDTH,
+    DIAMOND_HEIGHT,
+    DIAMOND_WIDTH,
+    DIAMOND_PIVOT,
+    LANE_AREA_WIDTH,
+    TICK_PER_MEASURE,
   } from '$lib/consts'
 
   // Calculations
@@ -146,15 +153,6 @@
   import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements } from '$lib/renderer';
 
   let canvasContainer: HTMLDivElement
-  
-  const NOTE_PIVOT = [0.14971751412, 0.5]
-  const NOTE_WIDTH = 43
-  const NOTE_HEIGHT = 60
-
-  const DIAMOND_PIVOT = [0.15189873417, 0.5]
-  const DIAMOND_WIDTH = 30
-  const DIAMOND_HEIGHT = 30 / 158 * 160
-  
 
   let files: FileList
   let player: HTMLAudioElement
