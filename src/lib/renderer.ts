@@ -1,11 +1,12 @@
 // Types
 import type PIXI from 'pixi.js' 
 import type { SlideEnd, SlideStart, SlideStep } from '$lib/beatmap'
+import type { Mode } from '$lib/editing'
 
 // Consts
 import COLORS from '$lib/colors'
 import {
-  BEAT_IN_BAR,
+  BEAT_IN_MEASURE,
   MARGIN_BOTTOM,
   LANE_WIDTH,
   LANE_COUNT,
@@ -13,6 +14,12 @@ import {
   TEXT_MARGIN,
   MARGIN,
   FONT_FAMILY,
+  NOTE_HEIGHT,
+  NOTE_WIDTH,
+  NOTE_PIVOT,
+  DIAMOND_PIVOT,
+  DIAMOND_HEIGHT,
+  DIAMOND_WIDTH,
 } from '$lib/consts'
 import { calcX, calcY } from '$lib/timing'
 import { MODE_TEXTURES } from '$lib/editing'
@@ -74,9 +81,9 @@ export function drawBackground(graphics: PIXI.Graphics, measureHeight: number, f
 
   // Draw bars
   for (let i = 0; i < (maxMeasure + 2) * 3 + 2 ; i++) {
-    const y = innerHeight - (MARGIN_BOTTOM + i * measureHeight / BEAT_IN_BAR)
+    const y = innerHeight - (MARGIN_BOTTOM + i * measureHeight / BEAT_IN_MEASURE)
 
-    if (i % BEAT_IN_BAR == 0) {
+    if (i % BEAT_IN_MEASURE == 0) {
       graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
       graphics.moveTo(LANE_WIDTH, y)
       graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
@@ -163,12 +170,22 @@ export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number
 }
 
 let lastText: PIXI.Text
-export function drawSnappingElements(graphics: PIXI.Graphics, pixi, currentMode: Mode, measureHeight: number, y: number) {
+
+export function drawSnappingElements(
+  graphics: PIXI.Graphics, pixi, TEXTURES: Record<string, PIXI.Texture>,
+  currentMode: Mode, x:number, y: number
+) {
   graphics.clear()
-  if (currentMode === 'bpm') {
-    if (lastText) {
-      lastText.destroy()
-    }
+  if (lastText && !lastText.destroyed) {
+    lastText.destroy()
+  }
+  graphics.removeChildren()
+
+  if (currentMode == 'select') {
+    return
+  }
+
+  if (currentMode == 'bpm') {
     const text = new pixi.Text(`? BPM`, {
       fill: COLORS.COLOR_BPM,
       fontSize: 20
@@ -179,5 +196,63 @@ export function drawSnappingElements(graphics: PIXI.Graphics, pixi, currentMode:
     
     graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
     drawDashedLine(graphics, 0, y, LANE_AREA_WIDTH, y)
+    return
   }
+
+  if (currentMode === 'flick') {
+    const flickArrow: PIXI.Sprite = new pixi.Sprite(
+      TEXTURES['notes_flick_arrow_02.png']
+    )
+    flickArrow.anchor.set(0.5, 0.5)
+    flickArrow.setTransform(x, y - 45)
+    flickArrow.alpha = 0.5
+    flickArrow.height = 0.75 * NOTE_HEIGHT
+    flickArrow.width = NOTE_WIDTH
+    graphics.addChild(flickArrow)
+  }
+
+  const floating: PIXI.Sprite = new pixi.Sprite(
+    TEXTURES[currentMode === 'flick' ? 'noteF.png' : MODE_TEXTURES[currentMode]]
+  )
+  floating.anchor.set(0.5, 0.5)
+  floating.setTransform(x, y)
+  
+  switch (currentMode) {
+    case 'tap':
+    case 'flick':
+    case 'slide':
+    case 'critical':
+      const [NOTE_PIVOT_X, NOTE_PIVOT_Y] = NOTE_PIVOT
+      floating.pivot.set(NOTE_PIVOT_X, NOTE_PIVOT_Y)
+      floating.height = NOTE_HEIGHT
+      floating.width = NOTE_WIDTH * 2
+      break
+    case 'mid':
+      const [DIAMOND_PIVOT_X, DIAMOND_PIVOT_Y] = DIAMOND_PIVOT
+      floating.pivot.set(DIAMOND_PIVOT_X, DIAMOND_PIVOT_Y)
+      floating.height = DIAMOND_HEIGHT
+      floating.width = DIAMOND_WIDTH
+  }
+
+  floating.alpha = 0.5
+  graphics.addChild(floating)
+  // floating.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, y)
+}
+
+export function createGradientCanvas(width: number, height: number, colors: string[]) {
+  const canvas = document.createElement('canvas')  
+  const ctx = canvas.getContext('2d')
+  const gradient = ctx.createLinearGradient(0, 0, 0, height)
+
+  canvas.setAttribute('width', `${width}px`)
+  canvas.setAttribute('height', `${height}px`)
+
+  colors.forEach((color, index) => {
+    gradient.addColorStop(index / (color.length - 1), color)
+  })
+
+  ctx.fillStyle = gradient
+  ctx.fillRect(0, 0, width, height)
+
+  return canvas
 }

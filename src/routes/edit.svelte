@@ -4,8 +4,8 @@
 		// const url = `/RelayPoint.sus`;
 		// const url = `/NewScore2.sus`;
     // const url = `KING.sus`;
-    // const url = `/TellYourWorld_EX.sus`;
-    const url = `MultipleBPM.sus`;
+    const url = `/TellYourWorld_EX.sus`;
+    // const url = `MultipleBPM.sus`;
     // const url = `SlideTest.sus`;
     // const url = `ModNote.sus`;
 		const res = await fetch(url);
@@ -37,7 +37,7 @@
 
   // Types
   import type { Mode, SnapTo } from '$lib/editing'
-  import type { MetaData } from '$lib/beatmap'
+  import type { Flick, MetaData, Single, Slide } from '$lib/beatmap'
   import type { Score } from '$lib/sus/analyze'
   import type PIXI from 'pixi.js' 
 
@@ -61,9 +61,10 @@
     LANE_AREA_WIDTH,
     TICK_PER_MEASURE,
   } from '$lib/consts'
+  import { FLICK_TYPES } from '$lib/beatmap';
 
   // Calculations
-  import { calcX, calcY } from '$lib/timing'
+  import { calcX, calcY, calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
   // Data
   export let data;
@@ -129,12 +130,95 @@
     // }
 
     app.stage.interactive = true
-    app.stage.addListener('mousemove', (event: PIXI.InteractionEvent) => {
+    app.stage.on('mousemove', (event: PIXI.InteractionEvent) => {
       const { x, y } = event.data.global
       mouseX = x
       mouseY = y
     })
 
+    app.renderer.view.addEventListener('click', () => {
+      if (currentMode === 'bpm') {
+        bpms.set(pointerTick, 120)
+        bpms = bpms
+        return
+      }
+
+      if (currentMode === 'tap') {
+        singleNotes.push({
+          lane: pointerLane,
+          tick: pointerTick,
+          width: 2,
+          critical: false,
+          flick: false
+        })
+        singleNotes = singleNotes
+        return
+      }
+
+      const singleHere = singleNotes.find((single) => (
+            single.tick === pointerTick &&
+            single.lane <= pointerLane && pointerLane <= single.lane + single.width
+        )
+      )
+
+      if (currentMode === 'flick') {
+        if (singleHere) {
+          singleHere.flick = rotateNext<Flick>(singleHere.flick, FLICK_TYPES)
+          singleNotes = singleNotes
+          return
+        }
+
+        const slideEndHere = slides.find((slide) => (
+          slide.end.tick === pointerTick &&
+          slide.end.lane <= pointerLane && pointerLane <= slide.end.lane + slide.end.width
+        ))
+        if (slideEndHere) {
+          slideEndHere.end.flick = rotateNext<Flick>(slideEndHere.end.flick, FLICK_TYPES)
+        }
+        slides = slides
+        return
+      }
+
+      if (currentMode === 'critical') {
+        if (singleHere) {
+          singleHere.critical = !singleHere.critical
+          singleNotes = singleNotes
+          return
+        }
+
+        const slideStartHere = slides.find((slide) => {
+          return (
+            slide.start.tick === pointerTick &&
+            slide.start.lane <= pointerLane && pointerLane <= slide.start.lane + slide.start.width
+          )
+        })
+        if (slideStartHere) {
+          slideStartHere.critical = !slideStartHere.critical
+        }
+      }
+    })
+
+    app.renderer.view.addEventListener('dblclick', () => {
+      if (currentMode === 'bpm') {
+        bpms.delete(pointerTick)
+        bpms = bpms
+        return
+      }
+
+      if (currentMode === 'select') {
+        const singleHere = singleNotes.find((single) => (
+              single.tick === pointerTick &&
+              single.lane <= pointerLane && pointerLane <= single.lane + single.width
+          )
+        )
+        if (singleHere) {
+          singleNotes.splice(singleNotes.indexOf(singleHere), 1)
+          singleNotes = singleNotes
+          return
+        }
+      }
+    })
+  
     // app.stage.addChild(new PIXI.Sprite.from(createGradientCanvas(CANVAS_WIDTH, innerHeight, ['#503c9f', '#48375b'])))
     const baseTexture = new PIXI.BaseTexture(spritesheetImage, null, 1);
     const spritesheetObj = new PIXI.Spritesheet(baseTexture, spritesheet)
@@ -146,12 +230,19 @@
 
   metadata = getMetaData(data)
   score = getScoreData(data)
-  const { singleNotes, slides, bpms } = convertScoreData(score)
+  
+  let bpms: Map<number, number>
+  let singleNotes: Single[]
+  let slides: Slide[]
+  ({ singleNotes, slides, bpms } = convertScoreData(score))
+
   console.log(score)
   console.log({ slides, bpms })
 
-  import { Pixi, Text, Loader, Sprite, Graphics } from 'svelte-pixi'
-  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements } from '$lib/renderer';
+  import { Pixi, Text, Sprite, Graphics } from 'svelte-pixi'
+  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, createGradientCanvas } from '$lib/renderer';
+  import { clamp } from '$lib/basic/math'
+  import { rotateNext } from '$lib/basic/collections';
 
   let canvasContainer: HTMLDivElement
 
@@ -161,7 +252,7 @@
   let paused: boolean
 
   // let currentMode: Mode = 'select' // TODO:
-  let currentMode: Mode = 'bpm'
+  let currentMode: Mode = 'tap'
   let snapTo: SnapTo
 
   type DebugInfo = {
@@ -178,16 +269,23 @@
     debugInfo = debugInfo
   }
 
+  $: MAX_MEASURE = score.maxMeasure + 2
+
+  $: pointerLane = clamp(2, snap(calcLane(mouseX), 1, 0), 12)
+  $: pointerTick = clamp(0, snap(calcTick(mouseY, measureHeight), TICK_PER_MEASURE / snapTo, 0), MAX_MEASURE * TICK_PER_MEASURE)
+
   $: dbg('mouse', formatPoint(mouseX, mouseY))
   $: dbg('stage.pivot', formatPoint(app?.stage.pivot.x, app?.stage.pivot.y))
   $: dbg('playhead', playhead)
+  $: dbg('pointerLane', pointerLane)
+  $: dbg('pointerTick', pointerTick)
 </script>
 
 <svelte:head>
   <title>PaletteWorks Editor</title>
 </svelte:head>
 
-<main>
+<main class="cursor-select">
   {#if app}
     <ToolBox
       bind:currentMode
@@ -199,7 +297,6 @@
       style={`width: ${CANVAS_WIDTH}px;`}
     >
       <Pixi {app}>
-        <Loader resources={TEXTURE_NAMES}>
           <!-- <Sprite
             texture={PIXI.Texture.from('bg.png')}
             anchor={new PIXI.Point(0, 0)}
@@ -337,28 +434,14 @@
   
           <!-- FLOATING ITEMS -->
           <Graphics
-            x={MARGIN}
-            y={0}
             draw={(graphics) => {
-              const transformedY = mouseY - playhead + MARGIN_BOTTOM
-              const step = measureHeight / snapTo
               drawSnappingElements(
-                graphics, PIXI, currentMode, measureHeight,
-                innerHeight - snap(innerHeight - transformedY, step) - MARGIN_BOTTOM
+                graphics, PIXI, TEXTURES, currentMode,
+                calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight) - playhead
               )
-              // graphics.moveTo(0, transformedY)
-              // graphics.lineTo(LANE_AREA_WIDTH, transformedY)
-              dbg('currentMode', currentMode)
-              dbg(`snapTo`, snapTo)
-              dbg('step', step)
-              dbg(`snapV1`, innerHeight - snap(innerHeight - mouseY - playhead + MARGIN_BOTTOM, measureHeight / snapTo) - MARGIN_BOTTOM)
-              dbg(`snapV2`, innerHeight - snap(innerHeight - mouseY - playhead, measureHeight / snapTo) + MARGIN_BOTTOM - MARGIN_BOTTOM)
-              dbg(`snapV3`, snap(mouseY + playhead, measureHeight / snapTo) + MARGIN_BOTTOM - MARGIN_BOTTOM)
-              dbg(`nosnap`, innerHeight - (innerHeight - mouseY - playhead + MARGIN_BOTTOM) - MARGIN_BOTTOM)
-              dbg(`nosnap2`, innerHeight - innerHeight + mouseY + playhead - MARGIN_BOTTOM - MARGIN_BOTTOM)
             }}
           />  
-        </Loader>
+        <!-- </Loader> -->
       </Pixi>
       <div class="zoom-indicator-container">
         <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
