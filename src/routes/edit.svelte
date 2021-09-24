@@ -97,7 +97,11 @@
     app.renderer.resize(CANVAS_WIDTH, innerHeight)
   }
 
-  const TEXTURES: Record<string, PIXI.Texture> = {}
+  // Textures
+  import spritesheet from '$assets/spritesheet.json'
+  import spritesheetImage from '$assets/spritesheet.png'
+
+  let TEXTURES: Record<string, PIXI.Texture> = {}
 
   let mouseX: number
   let mouseY: number
@@ -112,9 +116,9 @@
       resolution: 2
     })
 
-    for (const name of TEXTURE_NAMES) {
-      TEXTURES[name] = PIXI.Texture.from(name)
-    }
+    // for (const name of TEXTURE_NAMES) {
+    //   TEXTURES[name] = PIXI.Texture.from(name)
+    // }
 
     app.stage.interactive = true
     app.stage.addListener('mousemove', (event: PIXI.InteractionEvent) => {
@@ -122,6 +126,14 @@
       mouseX = x
       mouseY = y
     })
+
+    // app.stage.addChild(new PIXI.Sprite.from(createGradientCanvas(CANVAS_WIDTH, innerHeight, ['#503c9f', '#48375b'])))
+    const baseTexture = new PIXI.BaseTexture(spritesheetImage, null, 1);
+    const spritesheetObj = new PIXI.Spritesheet(baseTexture, spritesheet)
+
+    spritesheetObj.parse((textures) => {
+      TEXTURES = textures
+    });
   })
 
   metadata = getMetaData(data)
