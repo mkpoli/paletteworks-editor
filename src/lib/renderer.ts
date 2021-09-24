@@ -15,7 +15,7 @@ import {
   FONT_FAMILY,
 } from '$lib/consts'
 import { calcX, calcY } from '$lib/timing'
-import type { Mode } from '$lib/editing'
+import { MODE_TEXTURES } from '$lib/editing'
 
 // Drawing Functions
 export function drawDashedLine(graphics: PIXI.Graphics, fromX: number, fromY: number, toX: number, toY: number, dash: number = 10, gap: number = 8) {

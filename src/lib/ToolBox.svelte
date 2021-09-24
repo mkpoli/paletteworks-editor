@@ -1,21 +1,12 @@
 <script lang="ts">
   import Icon, { addIcon } from '@iconify/svelte'
-  import bpmImage from '$assets/BPM.png'
-  import selectImage from '$assets/select.png'
-  import { ALLOWED_SNAPPINGS } from '$lib/editing'
+
+  import { ALLOWED_SNAPPINGS, MODE_TEXTURES } from '$lib/editing'
   
   import type { Mode, SnapTo } from '$lib/editing'
 
-  type ImageSource = string
-  const MODES: Record<Mode, ImageSource> = {
-    select: selectImage,
-    tap: 'noteN.png',
-    slide: 'noteL.png',
-    mid: 'notes_long_among.png',
-    flick: 'noteF.png',
-    critical: 'noteC.png',
-    bpm: bpmImage,
-  }
+
+
   addIcon('custom:logo', {
     body: `<path d="M258 29L472.609 243.609L256 337.821L256 335.486V74L72.2283 257.891L256 337.821V358L103.869 291.478L256 443.708L256 358L481.684 259.316L258 483L37.4242 262.424L31 256L42.1788 244.821L258 29Z" fill="currentColor"></path>`,
     width: 512,
@@ -39,7 +30,7 @@
     <Icon icon="ph:caret-down-fill" width=15 />
   </div>
   <div class="tool-container">
-    {#each Object.entries(MODES) as [ mode, src ]}
+    {#each Object.entries(MODE_TEXTURES) as [ mode, src ]}
       <button on:click={() => { setMode(mode) }} class:current={ currentMode === mode }>
         <img src={src} alt={`${mode} Mode`} />
       </button>
