@@ -93,10 +93,19 @@
     /* border: 1px solid #fffa; */
   }
 
+  button > img {
+    transition: transform .2s;
+  }
+
   button:focus,
   button.current {
     outline: none;
     filter: brightness(1.5);
+  }
+
+  button:focus > img,
+  button.current > img {
+    transform: scale(1.25);
   }
 
   select {
