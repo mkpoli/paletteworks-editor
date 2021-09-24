@@ -10,6 +10,8 @@ import {
   LANE_WIDTH,
   LANE_COUNT,
   LANE_AREA_WIDTH,
+  TEXT_MARGIN,
+  MARGIN,
 } from '$lib/consts'
 import { calcX, calcY } from '$lib/timing'
 import type { Mode } from '$lib/modes'
@@ -132,20 +134,42 @@ export function drawSlidePath(graphics: Graphics, slideNotes: SlideNode[], criti
     })    
 }
 
-export function drawBPM(graphics: Graphics, currentMode: Mode, bpms: BPM[], measureHeight: number, mouseY: number) {
+const BPMTexts = new Map<number, PIXI.Text>()
+export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number>, measureHeight: number) {
   graphics.clear()
-
   graphics.lineStyle(1, COLORS.COLOR_BPM, 1)
-  for (const bpm of bpms) {
-    const y = calcY(bpm.tick, measureHeight)
-    graphics.moveTo(LANE_WIDTH, y)
-    graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
-  }
 
-  if (currentMode === 'bpm') {
-    const y = mouseY + MARGIN_BOTTOM
-    graphics.moveTo(LANE_WIDTH, y);
-    // graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
-    drawDashedLine(graphics, LANE_AREA_WIDTH - LANE_WIDTH, y)
-  }
+  // (Deleted) Destroy child if child are in BPMTexts but not in bpms
+  BPMTexts.forEach((text, tick) => {
+    if (!bpms.has(tick)) {
+      graphics.removeChild(text)
+    }
+  })
+
+  // Draw BPMs
+  bpms.forEach((bpm, tick) => {
+    const newY = calcY(tick, measureHeight)
+
+    // Draw BPM LINES
+    graphics.moveTo(LANE_WIDTH, newY)
+    graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, newY)
+
+    // Draw BPM Texts
+    const text: PIXI.Text = BPMTexts.has(tick) ? BPMTexts.get(tick) : graphics.addChild(new pixi.Text(`${bpm} BPM`, {
+      fill: COLORS.COLOR_BPM,
+      fontSize: 20
+    }))
+    text.anchor.set(0.5, 0.5)
+
+    text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, newY)
+    BPMTexts.set(tick, text)
+  })
+}
+
+  // (Deleted) Destroy child if child are in BPMTexts but not in bpms
+  BPMTexts.forEach((text, tick) => {
+    if (!bpms.has(tick)) {
+      graphics.removeChild(text)
+    }
+  })
 }

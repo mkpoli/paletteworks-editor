@@ -128,7 +128,7 @@
   console.log({ slides, bpms })
 
   import { Pixi, Text, Loader, Sprite, Graphics } from 'svelte-pixi'
-  import { drawBackground, drawSlidePath, drawBPM } from '$lib/renderer';
+  import { drawBackground, drawSlidePath, drawBPMs } from '$lib/renderer';
 
   let canvasContainer: HTMLDivElement
   
@@ -171,22 +171,10 @@
           />
 
           <!-- BPM -->
-          {#each bpms as bpm}
-            <Text
-              text={`${bpm.bpm} BPM`}
-              anchor={new PIXI.Point(0, 0.5)}
-              x={WIDTH - MARGIN + TEXT_MARGIN}
-              y={calcY(bpm.tick, measureHeight)}
-              style={{
-                fill: COLORS.COLOR_BPM,
-                fontSize: 20
-              }}
-            />
-          {/each}
           <Graphics
             x={MARGIN}
             y={0}
-            draw={(graphics) => { drawBPM(graphics, currentMode, bpms, measureHeight, mouseY) }}
+            draw={(graphics) => { drawBPMs(graphics, PIXI, bpms, measureHeight) }}
           />
 
           <!-- MEASURE (BAR) NUMBER -->
