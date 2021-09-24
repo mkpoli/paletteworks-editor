@@ -50,7 +50,8 @@
     TEXT_MARGIN,
     LANE_AREA_WIDTH,
     BAR_LENGTH,
-    TEXTURE_NAMES
+    TEXTURE_NAMES,
+    CANVAS_WIDTH
   } from '$lib/consts'
   import { calcX, calcY } from '$lib/timing';
 
@@ -87,12 +88,11 @@
   }
 
   // Canvas Size
-  const WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
   $: fullHeight = score ? (score.maxMeasure + 1) * measureHeight : 0
   let innerHeight: number
   // Resize when width / viewHeight changed
   $: if (app) {
-    app.renderer.resize(WIDTH, innerHeight)
+    app.renderer.resize(CANVAS_WIDTH, innerHeight)
   }
 
   const TEXTURES: Record<string, PIXI.Texture> = {}
@@ -104,7 +104,7 @@
     PIXI = await import('pixi.js')
 
     app = new PIXI.Application({
-      width: WIDTH,
+      width: CANVAS_WIDTH,
       height: innerHeight,
       antialias: true
     })
@@ -155,8 +155,7 @@
 
 <main>
   {#if app}
-    <ToolBox bind:currentMode />
-    <div class="canvas-container" bind:this={canvasContainer} style={`width: ${WIDTH}px;`}>
+    <div class="canvas-container" bind:this={canvasContainer} style={`width: ${CANVAS_WIDTH}px;`}>
       <Pixi {app}>
         <Loader resources={TEXTURE_NAMES}>
           <!-- <Sprite

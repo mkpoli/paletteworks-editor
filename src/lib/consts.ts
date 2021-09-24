@@ -7,7 +7,7 @@ export const LANE_WIDTH = 30
 export const LANE_COUNT = 16
 export const LANE_AREA_WIDTH = LANE_WIDTH * LANE_COUNT
 export const BAR_LENGTH = 500
-
+export const CANVAS_WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
 
 export const TEXTURE_NAMES = [
   'noteC.png',
