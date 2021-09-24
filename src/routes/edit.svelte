@@ -106,7 +106,8 @@
     app = new PIXI.Application({
       width: CANVAS_WIDTH,
       height: innerHeight,
-      antialias: true
+      antialias: true,
+      resolution: 2
     })
 
     for (const name of TEXTURE_NAMES) {
@@ -362,6 +363,8 @@
 
   :global(canvas) {
     display: block;
+    width: 100%;
+    height: 100%;
   }
 
   .zoom-indicator-container {
