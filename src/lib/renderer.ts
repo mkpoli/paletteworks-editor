@@ -133,17 +133,10 @@ export function drawSlidePath(graphics: PIXI.Graphics, slideNotes: SlideNode[], 
     })    
 }
 
-const BPMTexts = new Map<number, PIXI.Text>()
 export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number>, measureHeight: number) {
   graphics.clear()
   graphics.lineStyle(1, COLORS.COLOR_BPM, 1)
-
-  // (Deleted) Destroy child if child are in BPMTexts but not in bpms
-  BPMTexts.forEach((text, tick) => {
-    if (!bpms.has(tick)) {
-      graphics.removeChild(text)
-    }
-  })
+  graphics.removeChildren()
 
   // Draw BPMs
   bpms.forEach((bpm, tick) => {
@@ -154,9 +147,7 @@ export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number
     graphics.lineTo(MARGIN + LANE_AREA_WIDTH, newY)
 
     // Draw BPM Texts
-    const text: PIXI.Text = BPMTexts.has(tick)
-      ? BPMTexts.get(tick)
-      : graphics.addChild(new pixi.Text(`𝅘𝅥=${bpm}`, {
+    const text: PIXI.Text = graphics.addChild(new pixi.Text(`𝅘𝅥=${bpm}`, {
         fill: COLORS.COLOR_BPM,
         fontSize: 20,
         fontFamily: FONT_FAMILY
@@ -164,7 +155,6 @@ export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number
     text.anchor.set(0.5, 0.5)
 
     text.setTransform(MARGIN + LANE_AREA_WIDTH + LANE_WIDTH + TEXT_MARGIN, newY)
-    BPMTexts.set(tick, text)
   })
 }
 

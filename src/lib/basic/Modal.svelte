@@ -1,5 +1,11 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher()
+
   export let opened: boolean
+  $: if (opened === true) {
+    dispatch('open')
+  }
 </script>
 
 <div class="modal-container" class:hidden={!opened}>
