@@ -255,3 +255,16 @@ export function createGradientCanvas(width: number, height: number, colors: stri
 
   return canvas
 }
+
+import playheadImage from '$assets/playhead.png'
+export function drawPlayhead(graphics: PIXI.Graphics, pixi, y: number) {
+  graphics.clear()
+  graphics.removeChildren()
+  graphics.lineStyle(2, COLORS.COLOR_PLAYHEAD, 1)
+  const playhead = pixi.Sprite.from(playheadImage)
+  playhead.anchor.set(1, 0.5)
+  playhead.setTransform(MARGIN, y)
+  graphics.addChild(playhead)
+  drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y, 2, 2)
+  return 
+}

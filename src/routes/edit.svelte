@@ -236,7 +236,7 @@
   console.log({ slides, bpms })
 
   import { Pixi, Text, Sprite, Graphics } from 'svelte-pixi'
-  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements } from '$lib/renderer';
+  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/renderer';
   import { clamp } from '$lib/basic/math'
   import { closest, rotateNext } from '$lib/basic/collections';
 
@@ -248,8 +248,11 @@
   let currentTime: number
   let paused: boolean
 
-  // let currentMode: Mode = 'select' // TODO:
-  let currentMode: Mode = 'tap'
+  $: currentTick = Math.floor(currentTime / 60 * TICK_PER_BEAT * currentBPM)
+  $: dbg('currentTime', currentTime)
+  $: dbg('currentTick', currentTick)
+
+  let currentMode: Mode = 'select'
   let snapTo: SnapTo
 
   type DebugInfo = {
@@ -304,12 +307,14 @@
       style={`width: ${CANVAS_WIDTH}px;`}
     >
       <Pixi {app}>
-          <!-- <Sprite
-            texture={PIXI.Texture.from('bg.png')}
-            anchor={new PIXI.Point(0, 0)}
-            x={0}
-            y={0}
-          /> -->
+          <!-- PLAYHEAD -->
+          <Graphics
+            draw={(graphics) => {
+              drawPlayhead(graphics, PIXI, calcY(currentTick, measureHeight))
+            }}
+          />
+
+          <!-- BACKGROUND -->
           <Graphics
             x={MARGIN}
             y={0}
@@ -445,7 +450,7 @@
                 calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight) - playhead
               )
             }}
-          />  
+          />
         <!-- </Loader> -->
       </Pixi>
       <div class="zoom-indicator-container">
@@ -456,7 +461,6 @@
       bind:playhead
       bind:currentMeasure
       on:goto={() => {
-        console.log('GOTO')
         if (currentMeasure >= 1 && currentMeasure <= score.maxMeasure + 2) {
           playhead = (currentMeasure - 1) * measureHeight
         } else {
@@ -486,7 +490,6 @@
   on:ok={() => {
     if (bpmDialogValue) {
       bpms.set(lastPointerTick, bpmDialogValue)
-      console.log(bpms)
       bpms = bpms
     }
   }}
