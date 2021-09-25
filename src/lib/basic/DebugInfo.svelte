@@ -25,7 +25,7 @@
     grid-template-columns: auto 1fr;
     width: 30em;
     gap: 0 1em;
-    
+    white-space: pre;
   }
 
   .debug-display > .title {

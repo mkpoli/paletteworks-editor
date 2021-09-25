@@ -154,11 +154,13 @@ export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number
     graphics.lineTo(MARGIN + LANE_AREA_WIDTH, newY)
 
     // Draw BPM Texts
-    const text: PIXI.Text = BPMTexts.has(tick) ? BPMTexts.get(tick) : graphics.addChild(new pixi.Text(`${bpm} BPM`, {
-      fill: COLORS.COLOR_BPM,
-      fontSize: 20,
-      fontFamily: FONT_FAMILY
-    }))
+    const text: PIXI.Text = BPMTexts.has(tick)
+      ? BPMTexts.get(tick)
+      : graphics.addChild(new pixi.Text(`𝅘𝅥=${bpm}`, {
+        fill: COLORS.COLOR_BPM,
+        fontSize: 20,
+        fontFamily: FONT_FAMILY
+      }))
     text.anchor.set(0.5, 0.5)
 
     text.setTransform(MARGIN + LANE_AREA_WIDTH + LANE_WIDTH + TEXT_MARGIN, newY)

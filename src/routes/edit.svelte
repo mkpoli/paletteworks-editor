@@ -34,6 +34,7 @@
   import ZoomIndicator from '$lib/ZoomIndicator.svelte'
   import ControlHandler from '$lib/ControlHandler.svelte'
   import DebugInfo from '$lib/basic/DebugInfo.svelte'
+  import BpmDialog from '$lib/dialogs/BPMDialog.svelte';
 
   // Types
   import type { Mode, SnapTo } from '$lib/editing'
@@ -133,8 +134,8 @@
 
     app.renderer.view.addEventListener('click', () => {
       if (currentMode === 'bpm') {
-        bpms.set(pointerTick, 120)
-        bpms = bpms
+        lastPointerTick = pointerTick
+        bpmDialogOpened = true
         return
       }
 
@@ -235,9 +236,10 @@
   console.log({ slides, bpms })
 
   import { Pixi, Text, Sprite, Graphics } from 'svelte-pixi'
-  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, createGradientCanvas } from '$lib/renderer';
+  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements } from '$lib/renderer';
   import { clamp } from '$lib/basic/math'
-  import { rotateNext } from '$lib/basic/collections';
+  import { closest, rotateNext } from '$lib/basic/collections';
+
 
   let canvasContainer: HTMLDivElement
 
@@ -274,6 +276,16 @@
   $: dbg('playhead', playhead)
   $: dbg('pointerLane', pointerLane)
   $: dbg('pointerTick', pointerTick)
+  
+  $: currentBPM = bpms.get(closest([...bpms.keys()], pointerTick, true))
+  $: dbg('closestTick', currentBPM)
+  $: dbg('currentBPM', currentBPM)
+
+  $: dbg('bpms', [...bpms.entries()].map((e) => `[${e[0]}]=${e[1]}bpm`).join('\n'))
+
+  let bpmDialogOpened: boolean = false
+  let bpmDialogValue: number = 120
+  let lastPointerTick: number = 0
 </script>
 
 <svelte:head>
@@ -467,6 +479,22 @@
     <DebugInfo bind:debugInfo />
   {/if}
 </main>
+
+<BpmDialog
+  bind:opened={bpmDialogOpened}
+  bind:value={bpmDialogValue}
+  on:ok={() => {
+    if (bpmDialogValue) {
+      bpms.set(lastPointerTick, bpmDialogValue)
+      console.log(bpms)
+      bpms = bpms
+    }
+  }}
+  on:delete={() => {
+    bpms.delete(lastPointerTick)
+    bpms = bpms
+  }}
+/>
 
 <ControlHandler
   bind:playhead

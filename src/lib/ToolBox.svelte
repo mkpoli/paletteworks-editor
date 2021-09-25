@@ -5,8 +5,6 @@
   
   import type { Mode, SnapTo } from '$lib/editing'
 
-
-
   addIcon('custom:logo', {
     body: `<path d="M258 29L472.609 243.609L256 337.821L256 335.486V74L72.2283 257.891L256 337.821V358L103.869 291.478L256 443.708L256 358L481.684 259.316L258 483L37.4242 262.424L31 256L42.1788 244.821L258 29Z" fill="currentColor"></path>`,
     width: 512,
@@ -16,11 +14,9 @@
   export let currentMode: Mode
   export let snapTo: SnapTo
 
-
   function setMode(mode: string) {
     currentMode = mode as Mode
   }
-
 </script>
 
 <div class="toolbox-container">
@@ -82,6 +78,7 @@
 
   
   button {
+    box-shadow: none;    
     background: transparent;
     width: 100%;
     height: 6em;
