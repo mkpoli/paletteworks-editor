@@ -12,7 +12,7 @@ export const LANE_WIDTH = 30
 export const LANE_COUNT_REAL = 12
 export const LANE_COUNT = LANE_COUNT_REAL + 2
 export const LANE_AREA_WIDTH = LANE_WIDTH * LANE_COUNT
-export const BAR_LENGTH = 500
+export const MEASURE_HEIGHT = 300
 export const CANVAS_WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
 
 export const NOTE_PIVOT = [0.14971751412, 0.5]
