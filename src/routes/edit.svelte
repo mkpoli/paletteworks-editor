@@ -488,8 +488,8 @@
 <style>
   /* Global Styles */
   :global(body) {
-    background: #2e3142;
-    color: #eeeeee;
+    background: var(--color-background-main);
+    color: var(--color-text-main);
     font-family: 'FOT-RodinNTLG Pro';
   }
 
