@@ -29,20 +29,6 @@
           on:click={() => {dispatch('goto')}}
         >Goto</button>
       </div>    
-      <audio controls
-        src={files && files[0] ? URL.createObjectURL(files[0]) : undefined }
-        bind:this={player}
-        bind:currentTime
-        bind:paused
-      ></audio>
-  </div>
-  <div class="panel">
-    <h2>統計</h2>
-    <ul>
-      {#each Object.entries(statistics) as [ name, value ]}
-        <li>{`${name}: ${value}`}</li>
-      {/each}
-    </ul>
   </div>
   <div class="panel">
     <h2>基本情報</h2>
@@ -60,6 +46,14 @@
     </label>
   </div>
   <div class="panel">
+    <h2>統計</h2>
+    <ul>
+      {#each Object.entries(statistics) as [ name, value ]}
+        <li>{`${name}: ${value}`}</li>
+      {/each}
+    </ul>
+  </div>  
+  <div class="panel">
     <h2>音楽情報</h2>
     <label>
       音楽ファイル（.mp3）{#if files && files[0]}{filesize(files[0].size)}{/if}
@@ -74,22 +68,28 @@
       <input type="text">
     </label>
   </div>
+  <audio controls
+    src={files && files[0] ? URL.createObjectURL(files[0]) : undefined }
+    bind:this={player}
+    bind:currentTime
+    bind:paused
+    volume={0.5}
+  ></audio>
 </div>
 
 <style>
 .panel-container {
   display: grid;
-  grid-template: 1fr 1fr / 1fr 1fr;
-  grid-auto-flow: column;
+  grid-template: repeat(3, auto) / repeat(2, auto);
+  padding: 1em;
+  gap: 1em;
 }
 
 .panel {
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 1px 1px 5px #000;
   border-radius: 1em;
-  margin: 1em;
   display: grid;
-  flex-direction: column;
   gap: 0.5em;
   grid-template-rows: 32px;
   padding: 1.5em;
@@ -100,7 +100,10 @@ h2 {
 }
 
 audio {
+  display: block;
   width: 100%;
+  height: 2em;
+  grid-column: 1 / 3;
 }
 
 label {
