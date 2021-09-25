@@ -81,7 +81,7 @@
     box-shadow: none;    
     background: transparent;
     width: 100%;
-    height: 6em;
+    height: 5em;
     border-radius: 0;
     border: none;
     /* margin: 0; */
