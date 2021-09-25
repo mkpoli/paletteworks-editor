@@ -5,16 +5,17 @@
   import { createEventDispatcher, tick } from "svelte";
   export let opened: boolean
   export let value: number
-  $: value = Number.parseFloat(valueString)
   let valueString: string
+  $: if (valueString) value = Number.parseFloat(valueString)
   const dispatch = createEventDispatcher()
   let inputElement: HTMLInputElement
 </script>
 
 <Modal bind:opened on:open={async () => {
-  console.log('focus')
+  valueString = `${value}`
   await tick()
   inputElement.focus()
+  inputElement.select()
 }}>
   <template slot="activator">
     

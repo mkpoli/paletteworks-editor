@@ -132,9 +132,15 @@
       mouseY = y
     })
 
-    app.renderer.view.addEventListener('click', () => {
+    app.renderer.view.addEventListener('click', async () => {
       if (currentMode === 'bpm') {
         lastPointerTick = pointerTick
+        if (bpms.has(pointerTick)) {
+          bpmDialogValue = bpms.get(pointerTick)
+          console.log(bpmDialogValue)
+        }
+        await tick()
+        console.log(bpmDialogValue)
         bpmDialogOpened = true
         return
       }
@@ -447,7 +453,8 @@
             draw={(graphics) => {
               drawSnappingElements(
                 graphics, PIXI, TEXTURES, currentMode,
-                calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight) - playhead
+                calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight) - playhead,
+                bpms.has(pointerTick)
               )
             }}
           />

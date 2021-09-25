@@ -162,7 +162,7 @@ let lastText: PIXI.Text
 
 export function drawSnappingElements(
   graphics: PIXI.Graphics, pixi, TEXTURES: Record<string, PIXI.Texture>,
-  currentMode: Mode, x:number, y: number
+  currentMode: Mode, x:number, y: number, hasBPM: boolean
 ) {
   graphics.clear()
   if (lastText && !lastText.destroyed) {
@@ -175,16 +175,18 @@ export function drawSnappingElements(
   }
 
   if (currentMode == 'bpm') {
-    const text = new pixi.Text(`? BPM`, {
+    const text = new pixi.Text(hasBPM ? `↑ BPM` : `+ BPM`, {
       fill: COLORS.COLOR_BPM,
       fontSize: 20
     })
     text.anchor.set(0.5, 0.5)
-    text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, y)
+    text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
     lastText = graphics.addChild(text)
     
-    graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
-    drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y)
+    if (!hasBPM) {
+      graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
+      drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y)
+    }
     return
   }
 
