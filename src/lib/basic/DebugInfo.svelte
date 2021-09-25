@@ -1,8 +1,9 @@
 <script lang="ts">
   export let debugInfo = new Map<string, string | number>()
+  let hidden: boolean = false
 </script>
 
-<div class="debug-display">
+<div class="debug-display" class:hidden on:dblclick={() => { hidden = true }}>
   {#each [...debugInfo.entries()] as [title, value] }
     <span class="title">{title}</span>
     <span class="value">{value}</span>
@@ -31,5 +32,9 @@
   .debug-display > .title {
     color: #222;
     font-weight: 800;
+  }
+
+  .hidden {
+    display: none;
   }
 </style>
