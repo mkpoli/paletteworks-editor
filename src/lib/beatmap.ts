@@ -9,9 +9,8 @@ export interface INote {
   width: number
 }
 
-export const FLICK_TYPES = ['left', 'middle', 'right', undefined]
-// export type Flick = typeof FLICK_TYPES[number]
-export type Flick = 'left' | 'middle' | 'right' | undefined
+export const FLICK_TYPES = ['no', 'left', 'middle', 'right'] as const
+export type Flick = typeof FLICK_TYPES[number]
 
 interface IDirectional {
   flick: Flick

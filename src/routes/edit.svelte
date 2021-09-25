@@ -145,7 +145,7 @@
           tick: pointerTick,
           width: 2,
           critical: false,
-          flick: false
+          flick: 'no'
         })
         singleNotes = singleNotes
         return
@@ -336,7 +336,7 @@
 
           <!-- SINGLE NOTES -->
           {#each singleNotes as { lane, tick, width, critical, flick }}
-            {#if flick}
+            {#if flick !== 'no'}
               <!-- FLICK ARROW -->
               <Sprite
                 texture={
@@ -360,7 +360,7 @@
               texture={
                 critical
                   ? TEXTURES['noteC.png']
-                  : flick
+                  : flick !== 'no'
                     ? TEXTURES['noteF.png']
                     : TEXTURES['noteN.png']
               }
@@ -403,7 +403,7 @@
             {/each}
 
             <!-- SLIDE END -->
-            {#if end.flick}
+            {#if end.flick !== 'no'}
               <Sprite
                 texture={
                   TEXTURES[
@@ -425,7 +425,7 @@
               texture={
                 critical
                   ? TEXTURES['noteC.png']
-                  : end.flick
+                  : end.flick !== 'no'
                     ? TEXTURES['noteF.png']
                     : TEXTURES['noteL.png']
               }
@@ -464,8 +464,8 @@
         }
       }}
       statistics={{
-        'Taps': singleNotes.filter((x) => !x.flick).length,
-        'Flicks': singleNotes.filter((x) => x.flick).length,
+        'Taps': singleNotes.filter((x) => x.flick === 'no').length,
+        'Flicks': singleNotes.filter((x) => x.flick !== 'no').length,
         'Slides': slides.length,
         'Total': singleNotes.length + slides.length,
       }}

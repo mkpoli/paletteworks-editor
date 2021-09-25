@@ -118,7 +118,7 @@ export function convertScoreData(score: Score): {
       
       // const flickMod = flickMods.get(key) 
       const { lane, tick, width } = note
-      const flick = flickMods.get(key) || false
+      const flick = flickMods.get(key) || 'no'
       const critical = note.type === 2
       singleNotes.push({
         lane,
@@ -150,7 +150,6 @@ export function convertScoreData(score: Score): {
     slide.forEach((note) => {
       const key = getKey(note)
       const time = toTime(note.tick)
-      const isCritical = isStartCritical || criticalMods.has(key)
       const { tick, lane, width } = note
 
       const easeType =
@@ -176,7 +175,7 @@ export function convertScoreData(score: Score): {
         }
         case 2: {
           // End Note
-          const flick = flickMods.get(key) || false
+          const flick = flickMods.get(key) || 'no'
           end = {
             tick,
             lane,
