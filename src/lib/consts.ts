@@ -3,13 +3,14 @@ export const BEAT_IN_MEASURE = 4
 export const TICK_PER_BEAT = 480
 export const TICK_PER_MEASURE = TICK_PER_BEAT * BEAT_IN_MEASURE
 
-export const MARGIN = 80
+export const MARGIN = 100
 export const MARGIN_BOTTOM = 30
 
-export const TEXT_MARGIN = -15
+export const TEXT_MARGIN = 15
 
 export const LANE_WIDTH = 30
-export const LANE_COUNT = 16
+export const LANE_COUNT_REAL = 12
+export const LANE_COUNT = LANE_COUNT_REAL + 2
 export const LANE_AREA_WIDTH = LANE_WIDTH * LANE_COUNT
 export const BAR_LENGTH = 500
 export const CANVAS_WIDTH = MARGIN * 2 + LANE_AREA_WIDTH

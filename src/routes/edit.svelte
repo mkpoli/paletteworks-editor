@@ -42,7 +42,6 @@
   import type PIXI from 'pixi.js' 
 
   // Imports
-  import COLORS from '$lib/colors'
   import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
   import { onMount } from 'svelte';
   import {
@@ -124,10 +123,6 @@
       resolution: 2,
       backgroundAlpha: 0
     })
-
-    // for (const name of TEXTURE_NAMES) {
-    //   TEXTURES[name] = PIXI.Texture.from(name)
-    // }
 
     app.stage.interactive = true
     app.stage.on('mousemove', (event: PIXI.InteractionEvent) => {
@@ -311,8 +306,6 @@
 
           <!-- BPM -->
           <Graphics
-            x={MARGIN}
-            y={0}
             draw={(graphics) => { drawBPMs(graphics, PIXI, bpms, measureHeight) }}
           />
 

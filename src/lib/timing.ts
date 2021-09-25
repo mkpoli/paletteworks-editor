@@ -2,7 +2,7 @@ import { BEAT_IN_MEASURE, LANE_WIDTH, MARGIN, MARGIN_BOTTOM, TICK_PER_MEASURE } 
 
 export function calcX(lane: number) {
   // return MARGIN + lane * 30 - 12
-  return MARGIN + lane * LANE_WIDTH
+  return MARGIN + (lane - 1) * LANE_WIDTH
 }
 
 export function calcY(tick: number, measureHeight: number): number {

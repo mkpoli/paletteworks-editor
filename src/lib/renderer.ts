@@ -65,12 +65,9 @@ export function drawBackground(graphics: PIXI.Graphics, measureHeight: number, f
   graphics.clear()
   
   // Draw lanes
-  for (let i = 0; i < LANE_COUNT + 1; i++) {
+  for (let i = 1; i < 14; i++) {
     const x = i * LANE_WIDTH
-    if (i <= 1 || i >= LANE_COUNT + 1 - 2) {
-      continue
-    }
-    if (i % 2 == 0) {
+    if (i % 2 != 0) {
       graphics.lineStyle(2, COLORS.COLOR_LANE_PRIMARY, 1, 0.5)
     } else {
       graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
@@ -85,12 +82,12 @@ export function drawBackground(graphics: PIXI.Graphics, measureHeight: number, f
 
     if (i % BEAT_IN_MEASURE == 0) {
       graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
-      graphics.moveTo(LANE_WIDTH, y)
-      graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
+      graphics.moveTo(0, y)
+      graphics.lineTo(LANE_AREA_WIDTH, y)
     } else {
       graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
-      graphics.moveTo(LANE_WIDTH + LANE_WIDTH, y)
-      graphics.lineTo(LANE_AREA_WIDTH - 2 * LANE_WIDTH, y)
+      graphics.moveTo(LANE_WIDTH, y)
+      graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
     }
   }
 }
@@ -153,8 +150,8 @@ export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number
     const newY = calcY(tick, measureHeight)
 
     // Draw BPM LINES
-    graphics.moveTo(LANE_WIDTH, newY)
-    graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, newY)
+    graphics.moveTo(MARGIN, newY)
+    graphics.lineTo(MARGIN + LANE_AREA_WIDTH, newY)
 
     // Draw BPM Texts
     const text: PIXI.Text = BPMTexts.has(tick) ? BPMTexts.get(tick) : graphics.addChild(new pixi.Text(`${bpm} BPM`, {
@@ -164,7 +161,7 @@ export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number
     }))
     text.anchor.set(0.5, 0.5)
 
-    text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, newY)
+    text.setTransform(MARGIN + LANE_AREA_WIDTH + LANE_WIDTH + TEXT_MARGIN, newY)
     BPMTexts.set(tick, text)
   })
 }
@@ -195,7 +192,7 @@ export function drawSnappingElements(
     lastText = graphics.addChild(text)
     
     graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
-    drawDashedLine(graphics, 0, y, LANE_AREA_WIDTH, y)
+    drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y)
     return
   }
 
