@@ -18,10 +18,6 @@
 <div class="panel-container">
   <div class="panel">
     <h2>コントロール</h2>
-    <!-- <label> -->
-      Playhead {playhead.toFixed(3)}
-      <!-- <input type="range" bind:value={playhead} min={0} max={fullHeight}>
-    </label> -->
     <label for="goto">Goto Measure</label>
       <div style="display: flex; gap: 0.5em;">
         <input type="text" bind:value={currentMeasure} name="goto" />
@@ -63,10 +59,6 @@
       オフセット
       <input type="text">
     </label>
-    <label>
-      BPM
-      <input type="text">
-    </label>
   </div>
   <audio controls
     src={files && files[0] ? URL.createObjectURL(files[0]) : undefined }
@@ -89,7 +81,8 @@
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 1px 1px 5px #000;
   border-radius: 1em;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.5em;
   grid-template-rows: 32px;
   padding: 1.5em;
