@@ -13,7 +13,7 @@
 		if (res.ok) {
 			return {
 				props: {
-					data: await res.text()
+					susText: await res.text()
 				}
 			};
 		}
@@ -49,7 +49,7 @@
     MARGIN,
     MARGIN_BOTTOM,
     TEXT_MARGIN,
-    BAR_LENGTH,
+    MEASURE_HEIGHT,
     CANVAS_WIDTH,
     LANE_WIDTH,
     NOTE_HEIGHT,
@@ -60,24 +60,26 @@
     DIAMOND_PIVOT,
     LANE_AREA_WIDTH,
     TICK_PER_MEASURE,
+    TICK_PER_BEAT,
   } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/beatmap';
 
   // Calculations
   import { calcX, calcY, calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
+
   // Data
-  export let data;
+  export let susText: string;
   let metadata: MetaData
   let score: Score
 
   // PIXI.js
-  let PIXI
+  let PIXI: typeof import('pixi.js')
   let app: PIXI.Application
 
   // Playhead & Measures
-  $: measureHeight = BAR_LENGTH * zoom
-  
+  $: measureHeight = MEASURE_HEIGHT * zoom
+
   let playhead: number = 0
   $: if (playhead < 0) playhead = 0
   $: if (playhead >= fullHeight) playhead = fullHeight
@@ -137,10 +139,8 @@
         lastPointerTick = pointerTick
         if (bpms.has(pointerTick)) {
           bpmDialogValue = bpms.get(pointerTick)
-          console.log(bpmDialogValue)
         }
         await tick()
-        console.log(bpmDialogValue)
         bpmDialogOpened = true
         return
       }
@@ -200,26 +200,27 @@
       }
     })
 
-    app.renderer.view.addEventListener('dblclick', () => {
-      if (currentMode === 'bpm') {
-        bpms.delete(pointerTick)
-        bpms = bpms
-        return
-      }
 
-      if (currentMode === 'select') {
-        const singleHere = singleNotes.find((single) => (
-              single.tick === pointerTick &&
-              single.lane <= pointerLane && pointerLane <= single.lane + single.width
-          )
-        )
-        if (singleHere) {
-          singleNotes.splice(singleNotes.indexOf(singleHere), 1)
-          singleNotes = singleNotes
-          return
-        }
-      }
-    })
+    // app.renderer.view.addEventListener('dblclick', () => {
+    //   if (currentMode === 'bpm') {
+    //     bpms.delete(pointerTick)
+    //     bpms = bpms
+    //     return
+    //   }
+
+    //   if (currentMode === 'select') {
+    //     const singleHere = singleNotes.find((single) => (
+    //           single.tick === pointerTick &&
+    //           single.lane <= pointerLane && pointerLane <= single.lane + single.width
+    //       )
+    //     )
+    //     if (singleHere) {
+    //       singleNotes.splice(singleNotes.indexOf(singleHere), 1)
+    //       singleNotes = singleNotes
+    //       return
+    //     }
+    //   }
+    // })
   
     // app.stage.addChild(new PIXI.Sprite.from(createGradientCanvas(CANVAS_WIDTH, innerHeight, ['#503c9f', '#48375b'])))
     const baseTexture = new PIXI.BaseTexture(spritesheetImage, null, 1);
@@ -259,7 +260,7 @@
   $: dbg('currentTick', currentTick)
 
   let currentMode: Mode = 'select'
-  let snapTo: SnapTo
+  let snapTo: SnapTo = 8
 
   type DebugInfo = {
     title: string
