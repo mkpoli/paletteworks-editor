@@ -23,10 +23,11 @@
   <div slot="presentation">
     <h2>BPM設定</h2>
     <div class="close">
-      <IconButton attrs={{
-        icon: "gridicons:cross",
-        height: '1.5em'
-      }} on:click={() => { dispatch('cancel'); opened = false }} />
+      <IconButton
+        icon="gridicons:cross"
+        height="1.5em"
+        on:click={() => { dispatch('cancel'); opened = false }}
+      />
     </div>
     <div class="input-container">
       <Icon icon="jam:music-f" height="1.5em" />
@@ -76,10 +77,6 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
-  }
-
-  IconButton {
-    grid-area: x;
   }
 
   .input-container {

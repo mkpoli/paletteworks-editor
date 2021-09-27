@@ -11,14 +11,16 @@
 
 <div class="zoom-indicator" title="Zoom">
   <IconButton
-    attrs={{ icon: 'system-uicons:zoom-in', height: ICON_HEIGHT }}
+    icon="system-uicons:zoom-in"
+    height={ICON_HEIGHT}
     on:click={() => { if (zoom <= max + step)  zoom += step }}
   />
   <div class="zoom-range-container">
     <input type="range" bind:value={zoom} min={min} max={max} step={step}>
   </div>
   <IconButton
-    attrs={{ icon: 'system-uicons:zoom-out', height: ICON_HEIGHT }}
+    icon="system-uicons:zoom-out"
+    height={ICON_HEIGHT}
     on:click={() => { if (zoom >= min + step)  zoom -= step }}
   />
   <div class="zoom-number">

@@ -4,15 +4,19 @@
   import { createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher()
 
-  export let attrs: {
-    icon: string
-    height?: string
-    width?: string
+  export let icon: string
+  export let height: string = undefined
+  export let width: string = undefined
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === ' ') {
+      event.preventDefault()
+    }
   }
 </script>
 
-<button on:click={() => {dispatch('click')}}>
-  <Icon {...attrs} />
+<button on:click={() => {dispatch('click')}} on:keydown={handleKeydown}>
+  <Icon icon={icon} height={height} width={width} />
 </button>
 
 <style>
