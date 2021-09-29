@@ -5,7 +5,7 @@
 
 <div class="debug-display" class:hidden on:dblclick={() => { hidden = true }}>
   {#each [...debugInfo.entries()] as [title, value] }
-    <span class="title">{title}</span>
+    <span class="title" title={title}>{title}</span>
     <span class="value">{value}</span>
   {/each}
 </div>
@@ -32,6 +32,8 @@
   .debug-display > .title {
     color: #222;
     font-weight: 800;
+    max-width: 10em;
+    overflow: hidden;
   }
 
   .hidden {

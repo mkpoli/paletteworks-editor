@@ -42,9 +42,7 @@
   import type { Flick, MetaData, Single, Slide } from '$lib/beatmap'
   import type { Score } from '$lib/sus/analyze'
 
-  // Imports
-  import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
-  import { onMount, tick } from 'svelte';
+  // Constants
   import {
     MARGIN,
     MARGIN_BOTTOM,
@@ -64,11 +62,13 @@
   } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/beatmap';
 
-  // Calculations
+  // Functions
+  import { onMount, tick } from 'svelte';
+  import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
   import { calcX, calcY, calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
 
-  // Data
+  // Score Data
   export let susText: string;
   let metadata: MetaData
   let score: Score
@@ -95,49 +95,56 @@
   // PIXI.js
   let PIXI: typeof import('pixi.js')
   let app: PIXI.Application
-
-  // Playhead & Measures
-  $: measureHeight = MEASURE_HEIGHT * zoom
-
-  let scrollY: number = 0
-  $: if (scrollY < 0) scrollY = 0
-  $: if (scrollY >= fullHeight) scrollY = fullHeight
-
-  $: currentMeasure = Math.floor(scrollY / measureHeight + 1)
-
+  
   // Zooming
   let zoom = 1
   const ZOOM_MIN = 0.1
   const ZOOM_MAX = 10.0
   $: if (zoom <= ZOOM_MIN) zoom = ZOOM_MIN
   $: if (zoom >= ZOOM_MAX) zoom = ZOOM_MAX
-  
-  // Follow playhead
-  $: if (app) {
-    app.stage.pivot.y = MARGIN_BOTTOM - scrollY
-  }
 
-  // Canvas Size
-  $: fullHeight = score ? (score.maxMeasure + 1) * measureHeight : 0
+  // Sizing
+  $: fullHeight = score ? (score.maxMeasure + 1) * TICK_PER_MEASURE : 0
   let innerHeight: number
-  // Resize when width / viewHeight changed
+
+  // Resize on window resize
+  $: app?.renderer.resize(CANVAS_WIDTH, innerHeight)
+  
+  // Camera follow scroll position
   $: if (app) {
-    app.renderer.resize(CANVAS_WIDTH, innerHeight)
+    app.stage.pivot.y = MARGIN_BOTTOM - scrollTick / TICK_PER_MEASURE * measureHeight
   }
 
-  function tick2secs(tick: number) {
-    return tick / (TICK_PER_BEAT * currentBPM / 60)
-  }
+  // Measure (Bar)
+  $: measureHeight = MEASURE_HEIGHT * zoom
+  $: currentMeasure = Math.floor(scrollTick / 4) + 1
+  $: maxMeasure = score.maxMeasure + 2
+
+  // Pointer (mouse) position -> lane / tick
+  let mouseX: number
+  let mouseY: number
+
+  $: pointerLane = clamp(2, snap(calcLane(mouseX), 1), 12)
+  $: pointerTick = clamp(
+    0,
+    snap(
+      calcTick(mouseY, measureHeight) + scrollTick,
+      TICK_PER_MEASURE / snapTo,
+    ),
+    maxMeasure * TICK_PER_MEASURE
+  )
+
+  // Scroll position
+  let scrollTick = 0
+  $: if (scrollTick < 0) scrollTick = 0
+  $: if (scrollTick >= fullHeight) scrollTick = fullHeight
+
 
   // Textures
   import spritesheet from '$assets/spritesheet.json'
   import spritesheetImage from '$assets/spritesheet.png'
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
-
-  // PointerX, Y
-  let mouseX: number
-  let mouseY: number
 
   onMount(async () => {
     // Initialise Audio
@@ -298,13 +305,8 @@
     debugInfo = debugInfo
   }
 
-  $: MAX_MEASURE = score.maxMeasure + 2
-
-  $: pointerLane = clamp(2, snap(calcLane(mouseX), 1, 0), 12)
-  $: pointerTick = clamp(0, snap(calcTick(mouseY, measureHeight), TICK_PER_MEASURE / snapTo, 0), MAX_MEASURE * TICK_PER_MEASURE)
-
   $: dbg('mouse', formatPoint(mouseX, mouseY))
-  $: dbg('scrollY', scrollY)
+  $: dbg('scrollTick', scrollTick)
   $: dbg('pointerLane', pointerLane)
   $: dbg('pointerTick', pointerTick)
   
@@ -317,6 +319,10 @@
   let bpmDialogOpened: boolean = false
   let bpmDialogValue: number = 120
   let lastPointerTick: number = 0
+
+  function tick2secs(tick: number) {
+    return tick / (TICK_PER_BEAT * currentBPM / 60)
+  }
 
   function newSchedular(): AudioScheduler {
     const bgmEvent: AudioEvent = {
@@ -562,7 +568,7 @@
             draw={(graphics) => {
               drawSnappingElements(
                 graphics, PIXI, TEXTURES, currentMode,
-                calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight) - scrollY,
+                calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight),
                 bpms.has(pointerTick)
               )
             }}
@@ -577,9 +583,7 @@
       bind:currentMeasure
       on:goto={() => {
         if (currentMeasure >= 1 && currentMeasure <= score.maxMeasure + 2) {
-          scrollY = (currentMeasure - 1) * measureHeight
-        } else {
-          // TODO: Popup
+          scrollTick = (currentMeasure - 1) * TICK_PER_MEASURE
         }
       }}
       statistics={{
@@ -613,9 +617,9 @@
 />
 
 <ControlHandler
-  bind:scrollY
   bind:zoom
   bind:paused
+  bind:scrollTick
 />
 
 <svelte:window
