@@ -97,10 +97,9 @@
   button:focus,
   button.current {
     outline: none;
-    filter: brightness(1.5);
+    filter: brightness(1.65);
   }
 
-  button:focus > img,
   button.current > img {
     transform: scale(1.25);
   }
