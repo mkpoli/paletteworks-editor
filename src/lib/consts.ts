@@ -66,6 +66,7 @@ import tick from '$assets/sound/tick.mp3'
 import tickCritical from '$assets/sound/critical_tick.mp3'
 import connect from '$assets/sound/connect.mp3'
 import connectCritical from '$assets/sound/connect_critical.mp3'
+import stage from '$assets/sound/stage.mp3'
 
 export const EFFECT_SOUNDS = {
   tapPerfect,
@@ -76,5 +77,6 @@ export const EFFECT_SOUNDS = {
   tickCritical,
   connect,
   connectCritical,
+  stage,
   'bgm': '/tellyourworld.mp3'
 }

@@ -94,3 +94,10 @@ export class AudioScheduler {
   //   }
   // }
 }
+
+export function playOnce(audioContext: AudioContext, target: GainNode | AudioDestinationNode, buffer: AudioBuffer) {
+  const soundSource = audioContext.createBufferSource()
+  soundSource.buffer = buffer
+  soundSource.connect(target)
+  soundSource.start()
+}

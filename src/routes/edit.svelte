@@ -85,7 +85,7 @@
   console.log({ singleNotes, slides, bpms })
 
   // Sound
-  import { AudioEvent, AudioScheduler } from '$lib/audio';
+  import { AudioEvent, AudioScheduler, playOnce } from '$lib/audio';
   let audioContext: AudioContext
   let effectBuffers: Record<string, AudioBuffer>
   const audioNodes: Array<AudioBufferSourceNode> = []
@@ -197,6 +197,7 @@
           flick: 'no'
         })
         singleNotes = singleNotes
+        playOnce(audioContext, master, effectBuffers['stage'])
         return
       }
 
@@ -210,6 +211,7 @@
         if (singleHere) {
           singleHere.flick = rotateNext<Flick>(singleHere.flick, FLICK_TYPES)
           singleNotes = singleNotes
+          playOnce(audioContext, master, effectBuffers['stage'])
           return
         }
 
@@ -221,6 +223,7 @@
           slideEndHere.end.flick = rotateNext<Flick>(slideEndHere.end.flick, FLICK_TYPES)
         }
         slides = slides
+        playOnce(audioContext, master, effectBuffers['stage'])
         return
       }
 
@@ -228,6 +231,7 @@
         if (singleHere) {
           singleHere.critical = !singleHere.critical
           singleNotes = singleNotes
+          playOnce(audioContext, master, effectBuffers['stage'])
           return
         }
 
@@ -239,6 +243,7 @@
         })
         if (slideStartHere) {
           slideStartHere.critical = !slideStartHere.critical
+          playOnce(audioContext, master, effectBuffers['stage'])
         }
       }
     })
