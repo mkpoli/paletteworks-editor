@@ -4,14 +4,14 @@
 />
 
 <script lang="ts">
-  export let playhead: number
+  export let scrollY: number
   export let zoom: number
   export let paused: boolean
   function mousewheel(event: WheelEvent) {
     if (event.ctrlKey) { 
       zoom -= (event.deltaY > 0 ? 0.1 : -0.1) * (event.shiftKey ? 10 : 1)
     } else {
-      playhead -= event.deltaY * 1 * (event.shiftKey ? 5 : 1)
+      scrollY -= event.deltaY * 1 * (event.shiftKey ? 5 : 1)
     }
   }
 

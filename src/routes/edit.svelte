@@ -99,11 +99,11 @@
   // Playhead & Measures
   $: measureHeight = MEASURE_HEIGHT * zoom
 
-  let playhead: number = 0
-  $: if (playhead < 0) playhead = 0
-  $: if (playhead >= fullHeight) playhead = fullHeight
+  let scrollY: number = 0
+  $: if (scrollY < 0) scrollY = 0
+  $: if (scrollY >= fullHeight) scrollY = fullHeight
 
-  $: currentMeasure = Math.floor(playhead / measureHeight  + 1)
+  $: currentMeasure = Math.floor(scrollY / measureHeight + 1)
 
   // Zooming
   let zoom = 1
@@ -111,11 +111,10 @@
   const ZOOM_MAX = 10.0
   $: if (zoom <= ZOOM_MIN) zoom = ZOOM_MIN
   $: if (zoom >= ZOOM_MAX) zoom = ZOOM_MAX
-  // $: zoom && playhead
   
   // Follow playhead
   $: if (app) {
-    app.stage.pivot.y = MARGIN_BOTTOM - playhead
+    app.stage.pivot.y = MARGIN_BOTTOM - scrollY
   }
 
   // Canvas Size
@@ -305,7 +304,7 @@
   $: pointerTick = clamp(0, snap(calcTick(mouseY, measureHeight), TICK_PER_MEASURE / snapTo, 0), MAX_MEASURE * TICK_PER_MEASURE)
 
   $: dbg('mouse', formatPoint(mouseX, mouseY))
-  $: dbg('playhead', playhead)
+  $: dbg('scrollY', scrollY)
   $: dbg('pointerLane', pointerLane)
   $: dbg('pointerTick', pointerTick)
   
@@ -563,7 +562,7 @@
             draw={(graphics) => {
               drawSnappingElements(
                 graphics, PIXI, TEXTURES, currentMode,
-                calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight) - playhead,
+                calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight) - scrollY,
                 bpms.has(pointerTick)
               )
             }}
@@ -578,7 +577,7 @@
       bind:currentMeasure
       on:goto={() => {
         if (currentMeasure >= 1 && currentMeasure <= score.maxMeasure + 2) {
-          playhead = (currentMeasure - 1) * measureHeight
+          scrollY = (currentMeasure - 1) * measureHeight
         } else {
           // TODO: Popup
         }
@@ -614,7 +613,7 @@
 />
 
 <ControlHandler
-  bind:playhead
+  bind:scrollY
   bind:zoom
   bind:paused
 />
