@@ -260,7 +260,7 @@
     // })
   
     // app.stage.addChild(new PIXI.Sprite.from(createGradientCanvas(CANVAS_WIDTH, innerHeight, ['#503c9f', '#48375b'])))
-    const baseTexture = new PIXI.BaseTexture(spritesheetImage, null, 1);
+    const baseTexture = new PIXI.BaseTexture(spritesheetImage, null);
     const spritesheetObj = new PIXI.Spritesheet(baseTexture, spritesheet)
 
     spritesheetObj.parse((textures) => {
@@ -289,10 +289,6 @@
   let currentMode: Mode = 'select'
   let snapTo: SnapTo = 8
 
-  type DebugInfo = {
-    title: string
-    value: string
-  }
   let debugInfo = new Map<string, string | number>()
   function formatPoint(x: number, y: number) {
     return `(${x?.toFixed(3)}, ${y?.toFixed(3)})`
@@ -309,7 +305,6 @@
   $: pointerTick = clamp(0, snap(calcTick(mouseY, measureHeight), TICK_PER_MEASURE / snapTo, 0), MAX_MEASURE * TICK_PER_MEASURE)
 
   $: dbg('mouse', formatPoint(mouseX, mouseY))
-  $: dbg('stage.pivot', formatPoint(app?.stage.pivot.x, app?.stage.pivot.y))
   $: dbg('playhead', playhead)
   $: dbg('pointerLane', pointerLane)
   $: dbg('pointerTick', pointerTick)
@@ -580,7 +575,6 @@
       </div>
     </div>
     <PropertyBox
-      bind:playhead
       bind:currentMeasure
       on:goto={() => {
         if (currentMeasure >= 1 && currentMeasure <= score.maxMeasure + 2) {
@@ -595,9 +589,7 @@
         'Slides': slides.length,
         'Total': singleNotes.length + slides.length,
       }}
-      bind:player
       bind:paused
-      bind:currentTime
       bind:metadata
       bind:files
     />

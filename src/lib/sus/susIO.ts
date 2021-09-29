@@ -9,7 +9,7 @@ export interface MetaData {
   artist: string
 }
 
-export function getMetaData(sus): MetaData {
+export function getMetaData(sus: string): MetaData {
   const { TITLE, ARTIST } = analyzer.getMeta(sus)
   return { 
     title: TITLE,
@@ -17,7 +17,7 @@ export function getMetaData(sus): MetaData {
    }
 }
 
-export function getScoreData(sus) {
+export function getScoreData(sus: string) {
   const TICKS_PER_BIT = 480
   console.log('SusAnalyzer', analyzer.getScore(sus, 480))
   return analyze(sus, TICKS_PER_BIT)
@@ -96,11 +96,6 @@ export function convertScoreData(score: Score): {
         break
     }
   })
-  console.log({ flickMods })
-  console.log({ criticalMods })
-  console.log({ tickRemoveMods: stepRemoveMods })
-  console.log({ easeInMods })
-  console.log({ easeOutMods })
 
   const tapKeys = new Set<string>()
   const singleNotes: Single[] = []
@@ -128,7 +123,6 @@ export function convertScoreData(score: Score): {
         flick
       })
     })
-  console.log({ singleNotes })
 
   const slides: Slide[] = [];
   score.slides.forEach((slide) => {
