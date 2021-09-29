@@ -227,9 +227,9 @@
         ))
         if (slideEndHere) {
           slideEndHere.end.flick = rotateNext<Flick>(slideEndHere.end.flick, FLICK_TYPES)
+          slides = slides
+          playOnce(audioContext, master, effectBuffers['stage'])
         }
-        slides = slides
-        playOnce(audioContext, master, effectBuffers['stage'])
         return
       }
 
@@ -247,9 +247,12 @@
             slide.start.lane <= pointerLane && pointerLane <= slide.start.lane + slide.start.width
           )
         })
+
         if (slideStartHere) {
           slideStartHere.critical = !slideStartHere.critical
+          slides = slides
           playOnce(audioContext, master, effectBuffers['stage'])
+          return
         }
       }
     })
