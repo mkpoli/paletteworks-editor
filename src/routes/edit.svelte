@@ -67,6 +67,8 @@
   import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
   import { calcX, calcY, calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
+  import { clamp } from '$lib/basic/math'
+  import { closest, rotateNext } from '$lib/basic/collections';
 
   // Score Data
   export let susText: string;
@@ -93,9 +95,13 @@
   let master: GainNode
 
   // PIXI.js
+  import { Pixi, Text, Sprite, Graphics } from 'svelte-pixi'
+  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/renderer';
+
   let PIXI: typeof import('pixi.js')
   let app: PIXI.Application
-  
+
+
   // Zooming
   let zoom = 1
   const ZOOM_MIN = 0.1
@@ -284,11 +290,6 @@
       }
     })
   })
-
-  import { Pixi, Text, Sprite, Graphics } from 'svelte-pixi'
-  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/renderer';
-  import { clamp } from '$lib/basic/math'
-  import { closest, rotateNext } from '$lib/basic/collections';
 
   let canvasContainer: HTMLDivElement
   // audioFileURL = files && files[0] ? URL.createObjectURL(files[0]) : undefined 
