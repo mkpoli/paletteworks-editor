@@ -57,3 +57,24 @@ export const TEXTURE_NAMES = [
 ]
 
 export const FONT_FAMILY = 'Montserrat'
+
+import tapPerfect from '$assets/sound/perfect.mp3'
+import tapCritical from '$assets/sound/critical_tap.mp3'
+import flickCritical from '$assets/sound/critical_flick.mp3'
+import flick from '$assets/sound/flick.mp3'
+import tick from '$assets/sound/tick.mp3'
+import tickCritical from '$assets/sound/critical_tick.mp3'
+import connect from '$assets/sound/connect.mp3'
+import connectCritical from '$assets/sound/connect_critical.mp3'
+
+export const EFFECT_SOUNDS = {
+  tapPerfect,
+  tapCritical,
+  flick,
+  flickCritical,
+  tick,
+  tickCritical,
+  connect,
+  connectCritical,
+  'bgm': '/tellyourworld.mp3'
+}

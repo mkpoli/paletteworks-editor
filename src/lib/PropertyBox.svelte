@@ -1,16 +1,15 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import type { MetaData } from "./beatmap";
+  import { createEventDispatcher } from "svelte"
+  import type { MetaData } from "./beatmap"
   const dispatch = createEventDispatcher()
+
+  import IconButton from "./basic/IconButton.svelte"
 
   import filesize from 'filesize'
 
-  export let playhead: number
   export let currentMeasure: number
   export let statistics: Record<string, number>
-  export let player: HTMLAudioElement
   export let paused: boolean
-  export let currentTime: number
   export let metadata: MetaData
   export let files: FileList
 </script>
@@ -24,7 +23,12 @@
         <button
           on:click={() => {dispatch('goto')}}
         >Goto</button>
-      </div>    
+      </div>
+      <IconButton
+        icon={paused ? 'ph:play-fill' : 'ph:pause-bold'}
+        width="4.5em"
+        on:click={() => { paused = !paused }}
+      />
   </div>
   <div class="panel">
     <h2>基本情報</h2>
@@ -60,19 +64,12 @@
       <input type="text">
     </label>
   </div>
-  <audio controls
-    src={files && files[0] ? URL.createObjectURL(files[0]) : undefined }
-    bind:this={player}
-    bind:currentTime
-    bind:paused
-    volume={0.5}
-  ></audio>
 </div>
 
 <style>
 .panel-container {
   display: grid;
-  grid-template: repeat(3, auto) / repeat(2, auto);
+  grid-template: repeat(2, auto) / repeat(2, auto);
   padding: 1em;
   gap: 1em;
 }
@@ -90,13 +87,6 @@
 
 h2 {
   margin: 0;
-}
-
-audio {
-  display: block;
-  width: 100%;
-  height: 2em;
-  grid-column: 1 / 3;
 }
 
 label {

@@ -37,14 +37,14 @@
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte';
 
   // Types
+  import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing'
   import type { Flick, MetaData, Single, Slide } from '$lib/beatmap'
   import type { Score } from '$lib/sus/analyze'
-  import type PIXI from 'pixi.js' 
 
   // Imports
   import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import {
     MARGIN,
     MARGIN_BOTTOM,
@@ -58,9 +58,9 @@
     DIAMOND_HEIGHT,
     DIAMOND_WIDTH,
     DIAMOND_PIVOT,
-    LANE_AREA_WIDTH,
     TICK_PER_MEASURE,
     TICK_PER_BEAT,
+    EFFECT_SOUNDS,
   } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/beatmap';
 
@@ -72,6 +72,25 @@
   export let susText: string;
   let metadata: MetaData
   let score: Score
+
+  // Load Score Data
+  metadata = getMetaData(susText)
+  score = getScoreData(susText)
+  let singleNotes: Single[]
+  let slides: Slide[]
+  let bpms: Map<number, number>
+  ({ singleNotes, slides, bpms } = convertScoreData(score))
+
+  console.log(score)
+  console.log({ singleNotes, slides, bpms })
+
+  // Sound
+  import { AudioEvent, AudioScheduler } from '$lib/audio';
+  let audioContext: AudioContext
+  let effectBuffers: Record<string, AudioBuffer>
+  const audioNodes: Array<AudioBufferSourceNode> = []
+  let scheduler: AudioScheduler
+  let master: GainNode
 
   // PIXI.js
   let PIXI: typeof import('pixi.js')
@@ -107,18 +126,36 @@
     app.renderer.resize(CANVAS_WIDTH, innerHeight)
   }
 
+  function tick2secs(tick: number) {
+    return tick / (TICK_PER_BEAT * currentBPM / 60)
+  }
+
   // Textures
   import spritesheet from '$assets/spritesheet.json'
   import spritesheetImage from '$assets/spritesheet.png'
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
 
+  // PointerX, Y
   let mouseX: number
   let mouseY: number
 
   onMount(async () => {
+    // Initialise Audio
+    audioContext = new AudioContext()
+    master = audioContext.createGain();
+    master.gain.value = 0.15
+    master.connect(audioContext.destination)
+    
+    effectBuffers = Object.fromEntries(await Promise.all(Object.entries(EFFECT_SOUNDS).map(async ([name, path]) => {
+      const response = await fetch(path)
+      const arrayBuffer = await response.arrayBuffer()
+      return [name, await audioContext.decodeAudioData(arrayBuffer)]
+    })))
+    console.log({effectBuffers})
+    
+    // Initialise PIXI.js
     PIXI = await import('pixi.js')
-
     app = new PIXI.Application({
       width: CANVAS_WIDTH,
       height: innerHeight,
@@ -229,34 +266,24 @@
     spritesheetObj.parse((textures) => {
       TEXTURES = textures
     });
+
+    app.ticker.add(() => {
+      if (!paused) {
+        currentTick += app.ticker.deltaMS * TICK_PER_BEAT * currentBPM / 1000 / 60
+      }
+    })
   })
-
-  metadata = getMetaData(data)
-  score = getScoreData(data)
-  
-  let bpms: Map<number, number>
-  let singleNotes: Single[]
-  let slides: Slide[]
-  ({ singleNotes, slides, bpms } = convertScoreData(score))
-
-  console.log(score)
-  console.log({ slides, bpms })
 
   import { Pixi, Text, Sprite, Graphics } from 'svelte-pixi'
   import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/renderer';
   import { clamp } from '$lib/basic/math'
   import { closest, rotateNext } from '$lib/basic/collections';
 
-
   let canvasContainer: HTMLDivElement
-
+  // audioFileURL = files && files[0] ? URL.createObjectURL(files[0]) : undefined 
   let files: FileList
-  let player: HTMLAudioElement
-  let currentTime: number
-  let paused: boolean
-
-  $: currentTick = Math.floor(currentTime / 60 * TICK_PER_BEAT * currentBPM)
-  $: dbg('currentTime', currentTime)
+  let paused: boolean = true
+  let currentTick: number = 0
   $: dbg('currentTick', currentTick)
 
   let currentMode: Mode = 'select'
@@ -287,7 +314,7 @@
   $: dbg('pointerLane', pointerLane)
   $: dbg('pointerTick', pointerTick)
   
-  $: currentBPM = bpms.get(closest([...bpms.keys()], pointerTick, true))
+  $: currentBPM = bpms.get(closest([...bpms.keys()], currentTick, true))
   $: dbg('closestTick', currentBPM)
   $: dbg('currentBPM', currentBPM)
 
@@ -296,6 +323,93 @@
   let bpmDialogOpened: boolean = false
   let bpmDialogValue: number = 120
   let lastPointerTick: number = 0
+
+  function newSchedular(): AudioScheduler {
+    const bgmEvent: AudioEvent = {
+      time: 0,
+      sound: 'bgm',
+      startFrom: tick2secs(currentTick)
+    }
+
+    const singleEvents: AudioEvent[] = singleNotes
+      .filter(({ tick }) => tick >= currentTick)
+      .map(({ tick, critical, flick }) => ({
+        time: tick2secs(tick - currentTick),
+        sound: flick !== 'no'
+                ? (critical ? 'flickCritical' : 'flick')
+                : (critical ? 'tapCritical' : 'tapPerfect' ) 
+      }))
+
+    const slideEvents = slides
+      .reduce((acc, { critical, start, end, steps }) => {
+        const connectEvent: AudioEvent = 
+          end.tick <= currentTick
+            ? {
+                time: tick2secs(Math.max(start.tick, currentTick) - currentTick),
+                sound: !critical ? 'connect' : 'connectCritical',
+                loopTo: tick2secs(end.tick - currentTick)
+              }
+            : null
+        const startEvent: AudioEvent = start.tick >= currentTick
+          ? {
+              time: tick2secs(start.tick - currentTick),
+              sound: !critical ? 'tick' : 'tickCritical'
+            }
+          : null
+        const endEvent: AudioEvent = end.tick >= currentTick
+          ? {
+            time: tick2secs(end.tick - currentTick),
+            sound: end.flick !== 'no'
+                ? (critical ? 'flickCritical' : 'flick')
+                : (critical ? 'tapCritical' : 'tapPerfect' ) 
+          }
+          : null
+        const stepEvents = steps
+          .filter(({ tick }) => tick >= currentTick)
+          .reduce((a, { tick, diamond }) => {
+            if (diamond) {
+              a.push({
+                time: tick2secs(tick - currentTick),
+                sound: !critical ? 'tick' : 'tickCritical'
+              })
+            }
+            return a
+          }, [] as AudioEvent[])
+        console.log({filtered: steps.filter(({ tick }) => tick >= currentTick)})
+        return [...acc, connectEvent, startEvent, endEvent, ...stepEvents]
+      }, [] as AudioEvent[])
+
+    const events: Array<AudioEvent> = [bgmEvent, ...singleEvents, ...slideEvents]
+      .filter((event) => event)
+      .sort(({ time: a }, { time: b }) => a - b)
+
+    console.log(events)
+
+    return new AudioScheduler(audioContext, audioNodes, {
+      events,
+      callback(event: AudioEvent, offset: number) {
+        const soundSource = audioContext.createBufferSource()
+        soundSource.buffer = effectBuffers[event.sound]
+        audioNodes.push(soundSource)
+        soundSource.connect(master)
+        const startTime = event.time + offset
+        soundSource.start(startTime, event.startFrom ? tick2secs(currentTick) : null)
+        if (event.loopTo) {
+          soundSource.loop = true
+          soundSource.stop(event.loopTo)
+        }
+      }
+    })
+  }
+
+  $: if (!paused) {
+    // Pause -> Start
+    scheduler = newSchedular()
+    scheduler.start()
+  } else {
+    // Start -> Pause
+    scheduler?.stop()
+  }
 </script>
 
 <svelte:head>
