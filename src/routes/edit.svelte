@@ -241,15 +241,18 @@
           return
         }
 
-        const slideStartHere = slides.find((slide) => {
+        const slideHere = slides.find((slide) => {
           return (
             slide.start.tick === pointerTick &&
             slide.start.lane <= pointerLane && pointerLane <= slide.start.lane + slide.start.width
+          ) || (
+            slide.end.tick === pointerTick &&
+            slide.end.lane <= pointerLane && pointerLane <= slide.end.lane + slide.end.width
           )
         })
 
-        if (slideStartHere) {
-          slideStartHere.critical = !slideStartHere.critical
+        if (slideHere) {
+          slideHere.critical = !slideHere.critical
           slides = slides
           playOnce(audioContext, master, effectBuffers['stage'])
           return
