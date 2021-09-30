@@ -12,6 +12,7 @@
   export let paused: boolean
   export let metadata: MetaData
   export let files: FileList
+  export let scrollMode: 'page' | 'smooth'
 </script>
 
 <div class="panel-container">
@@ -29,6 +30,13 @@
         width="4.5em"
         on:click={() => { paused = !paused }}
       />
+      <label>
+        スクロール方式
+        <select bind:value={scrollMode}>
+          <option value={'page'}>ページ・スクロール</option>
+          <option value={'smooth'}>スムーズ（再生ヘッド固定）</option>
+        </select>
+      </label>
   </div>
   <div class="panel">
     <h2>基本情報</h2>

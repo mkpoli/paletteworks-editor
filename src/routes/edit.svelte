@@ -146,6 +146,16 @@
   $: if (scrollTick < 0) scrollTick = 0
   $: if (scrollTick >= fullHeight) scrollTick = fullHeight
 
+  type ScrollMode = 'page' | 'smooth'
+  let scrollMode: ScrollMode = 'page'
+
+  $: if (!paused) {
+    if (scrollMode == 'page') {
+      scrollTick = snap(currentTick + MARGIN_BOTTOM / MEASURE_HEIGHT * TICK_PER_MEASURE, innerHeight / measureHeight * TICK_PER_MEASURE * 0.76)
+    } else if (scrollMode == 'smooth') {
+      scrollTick = currentTick - innerHeight / measureHeight * TICK_PER_MEASURE * 0.5 + MARGIN_BOTTOM / MEASURE_HEIGHT * TICK_PER_MEASURE
+    }
+  }
 
   // Textures
   import spritesheet from '$assets/spritesheet.json'
@@ -608,6 +618,7 @@
       bind:paused
       bind:metadata
       bind:files
+      bind:scrollMode
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
     <DebugInfo bind:debugInfo />
