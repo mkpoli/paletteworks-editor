@@ -163,6 +163,9 @@
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
 
+  let dragging: boolean = false
+  let draggingSlide: Slide = null
+
   onMount(async () => {
     // Initialise Audio
     audioContext = new AudioContext()
@@ -271,6 +274,56 @@
       }
     })
 
+    app.renderer.view.addEventListener('pointerdown', async () => {
+      if (currentMode === 'slide') {
+        dragging = true
+        draggingSlide = {
+          start: {
+            tick: pointerTick,
+            lane: pointerLane,
+            width: 2,
+            easeType: false
+          },
+          end: {
+            tick: pointerTick,
+            lane: pointerLane,
+            flick: 'no',
+            width: 2
+          },
+          critical: false,
+          steps: []
+        }
+        slides.push(draggingSlide)
+        slides = slides
+        playOnce(audioContext, master, effectBuffers['stage'])
+      }
+    })
+
+    app.renderer.view.addEventListener('pointermove', async () => {
+      if (currentMode === 'slide' && dragging && draggingSlide) {
+        draggingSlide.end.lane = pointerLane
+        draggingSlide.end.tick = pointerTick
+        slides = slides
+      }
+    })
+
+    app.renderer.view.addEventListener('pointerup', async () => {
+      if (currentMode === 'slide' && dragging && draggingSlide) {
+        if (draggingSlide.end.tick < draggingSlide.start.tick) {
+          // Swap
+          const tick = draggingSlide.start.tick
+          const lane = draggingSlide.start.lane
+          // TODO: width
+          draggingSlide.start.tick = draggingSlide.end.tick
+          draggingSlide.start.lane = draggingSlide.end.lane
+          draggingSlide.end.tick = tick
+          draggingSlide.end.lane = lane
+        }
+        slides = slides
+        dragging = false
+        draggingSlide = null
+      } 
+    })
 
     // app.renderer.view.addEventListener('dblclick', () => {
     //   if (currentMode === 'bpm') {
