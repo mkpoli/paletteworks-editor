@@ -123,7 +123,7 @@
 
   // Measure (Bar)
   $: measureHeight = MEASURE_HEIGHT * zoom
-  $: currentMeasure = Math.floor(scrollTick / 4) + 1
+  $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
   $: maxMeasure = score.maxMeasure + 2
 
   // Pointer (mouse) position -> lane / tick
