@@ -17,7 +17,7 @@ export const CANVAS_WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
 
 export const NOTE_PIVOT = [0.14971751412, 0.5]
 export const NOTE_WIDTH = 43
-export const NOTE_HEIGHT = 60
+export const NOTE_HEIGHT = 55
 
 export const DIAMOND_PIVOT = [0.15189873417, 0.5]
 export const DIAMOND_WIDTH = 30
@@ -78,5 +78,6 @@ export const EFFECT_SOUNDS = {
   connect,
   connectCritical,
   stage,
-  'bgm': '/tellyourworld.mp3'
+  // 'bgm': '/tellyourworld.mp3'
+  bgm: '/docterfunkbeat.mp3'
 }
