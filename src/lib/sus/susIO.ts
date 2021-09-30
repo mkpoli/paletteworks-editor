@@ -157,13 +157,11 @@ export function convertScoreData(score: Score): {
       switch (note.type) {
         case 1: {
           // Start Note
-          const critical = criticalMods.has(key)
           start = {
             tick,
             lane,
             width,
-            easeType,
-            critical
+            easeType
           }
           break
         }

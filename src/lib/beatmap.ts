@@ -25,7 +25,7 @@ interface IEase {
 }
 
 export type Single = INote & IDirectional & ICritical
-export type SlideStart = INote & ICritical & IEase
+export type SlideStart = INote & IEase
 export type SlideStep = INote & {
   diamond: boolean,
   ignored: boolean,
