@@ -593,15 +593,17 @@
             />
 
             <!-- SLIDE STEPS -->
-            {#each steps as { lane, tick, width }}
-              <Sprite
-                texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
-                anchor={new PIXI.Point(...DIAMOND_PIVOT)}
-                x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
-                y={calcY(tick, measureHeight)}
-                width={DIAMOND_WIDTH}
-                height={DIAMOND_HEIGHT}
+            {#each steps as { lane, tick, width, diamond }}
+              {#if diamond}
+                <Sprite
+                  texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
+                  anchor={new PIXI.Point(...DIAMOND_PIVOT)}
+                  x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
+                  y={calcY(tick, measureHeight)}
+                  width={DIAMOND_WIDTH}
+                  height={DIAMOND_HEIGHT}
                 />
+              {/if}
             {/each}
 
             <!-- SLIDE END -->

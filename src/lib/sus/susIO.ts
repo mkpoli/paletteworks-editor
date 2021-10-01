@@ -176,20 +176,18 @@ export function convertScoreData(score: Score): {
           }
           break
         }
-        case 3: {
-          // Step Note
+        case 3:
+        case 5: {
+            // Step Note
           steps.push({
             tick,
             lane,
             width,
-            diamond: true,
+            diamond: note.type === 3,
             ignored: stepRemoveMods.has(key) ? true : false,
             easeType
           })
           break
-        }
-        case 5: {
-          if (stepRemoveMods.has(key)) break
         }
       }
     })
