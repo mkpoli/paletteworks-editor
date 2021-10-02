@@ -25,23 +25,19 @@
   this={Sprite}
   texture={
     TEXTURES[
-      `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(width / 2) }${(flick === 'left' || flick === 'right') ? '_diagonal': ''}.png`
+      `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.min(width, 6) }${(flick === 'left' || flick === 'right') ? '_diagonal': ''}.png`
     ]
   }
   anchor={{
-    x: 0.5 + {
-      'left': 0.3,
-      'right': 0.3,
-      'middle': 0
-    }[flick],
+    x: 0.5,
     y: 0.5 
   }}
   x={
     MARGIN + (lane - 1 + width / 2) * LANE_WIDTH
   }
   y={calcY(tick, measureHeight) - NOTE_HEIGHT + 15}
-  width={
-    width * 30 * (flick === 'right' ? -1 : 1)
-  }
-  height={NOTE_HEIGHT}
+  scale={{
+    x: 0.25,
+    y: 0.25
+  }}
 />
