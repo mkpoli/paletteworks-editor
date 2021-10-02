@@ -1,3 +1,5 @@
+export const RESOLUTION = 2
+
 export const BEAT_UNIT = 4
 export const BEAT_IN_MEASURE = 4
 export const TICK_PER_BEAT = 480
@@ -78,6 +80,6 @@ export const EFFECT_SOUNDS = {
   connect,
   connectCritical,
   stage,
-  // 'bgm': '/tellyourworld.mp3'
+  // bgm: '/tellyourworld.mp3'
   bgm: '/docterfunkbeat.mp3'
 }

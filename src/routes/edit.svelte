@@ -39,6 +39,7 @@
 
   // Drawing
   import Note from '$lib/render/Note.svelte'
+  import Arrow from '$lib/render/Arrow.svelte';
 
   // Types
   import type PIXI from 'pixi.js'
@@ -600,44 +601,18 @@
           <!-- FLICK ARROW -->
           {#each singleNotes as { lane, tick, width, critical, flick }}
             {#if flick !== 'no'}
-              <Sprite
-                texture={
-                  TEXTURES[
-                    `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(width / 2) }${(flick === 'left' || flick === 'right') ? '_diagonal': ''}.png`
-                  ]
-                }
-                anchor={new PIXI.Point(0, 0.5)}
-                x={calcX(lane) + {
-                  'left': -NOTE_WIDTH,
-                  'right': 3 * NOTE_WIDTH,
-                  'middle': 0
-                }[flick]}
-                y={calcY(tick, measureHeight) - NOTE_HEIGHT + 10}
-                width={width * NOTE_WIDTH * (flick === 'right' ? -1: 1) * 0.75}
-                height={NOTE_HEIGHT}
+              <Arrow
+                {...{ lane, tick, width, critical, flick, measureHeight }}
               />
             {/if}
           {/each}
-          {#each slides as { end, critical }}
-            {#if end.flick !== 'no'}
-              <Sprite
-                texture={
-                  TEXTURES[
-                    `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.floor(end.width / 2) }${(end.flick === 'left' || end.flick === 'right') ? '_diagonal': ''}.png`
-                  ]
-                }
-                anchor={new PIXI.Point(0, 0.5)}
-                x={calcX(end.lane) + {
-                  'left': -NOTE_WIDTH,
-                  'right': 3 * NOTE_WIDTH,
-                  'middle': 0
-                }[end.flick]}
-                y={calcY(end.tick, measureHeight) - NOTE_HEIGHT + 10}
-                width={end.width * NOTE_WIDTH * (end.flick === 'right' ? -1: 1) * 0.75}
-                height={NOTE_HEIGHT}
+          {#each slides as { end: { lane, tick, width, flick }, critical }}
+            {#if flick !== 'no'}
+              <Arrow
+                {...{ lane, tick, width, critical, flick, measureHeight }}
               />
             {/if}
-          {/each}          
+          {/each}
 
           <!-- FLOATING ITEMS -->
           <Graphics
