@@ -37,6 +37,9 @@
   import DebugInfo from '$lib/basic/DebugInfo.svelte'
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte';
 
+  // Drawing
+  import Note from '$lib/render/Note.svelte'
+
   // Types
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing'
@@ -60,11 +63,12 @@
     TICK_PER_MEASURE,
     TICK_PER_BEAT,
     EFFECT_SOUNDS,
+    RESOLUTION,
   } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/beatmap';
 
   // Functions
-  import { onMount, tick } from 'svelte';
+  import { onMount, setContext, tick } from 'svelte';
   import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
   import { calcX, calcY, calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
@@ -162,6 +166,7 @@
   import spritesheetImage from '$assets/spritesheet.png'
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
+  setContext('TEXTURES', TEXTURES)
 
   let dragging: boolean = false
   let draggingSlide: Slide = null
@@ -186,7 +191,7 @@
       width: CANVAS_WIDTH,
       height: innerHeight,
       antialias: true,
-      resolution: 2,
+      resolution: RESOLUTION,
       backgroundAlpha: 0
     })
 
@@ -350,8 +355,10 @@
     const baseTexture = new PIXI.BaseTexture(spritesheetImage, null);
     const spritesheetObj = new PIXI.Spritesheet(baseTexture, spritesheet)
 
-    spritesheetObj.parse((textures) => {
-      TEXTURES = textures
+    spritesheetObj.parse((textures: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>) => {
+      Object.entries(textures).forEach(([name, texture]) => {
+        TEXTURES[name] = texture
+      })
     });
 
     app.ticker.add(() => {
@@ -451,7 +458,6 @@
             }
             return a
           }, [] as AudioEvent[])
-        console.log({filtered: steps.filter(({ tick }) => tick >= currentTick)})
         return [...acc, connectEvent, startEvent, endEvent, ...stepEvents]
       }, [] as AudioEvent[])
 
@@ -538,8 +544,62 @@
 
           <!-- SINGLE NOTES -->
           {#each singleNotes as { lane, tick, width, critical, flick }}
+            <Note
+              type={
+                critical
+                  ? 'critical'
+                  : flick !== 'no'
+                    ? 'flick'
+                    : 'tap'
+                  }
+              {...{ lane, tick, width, measureHeight }}
+            />
+          {/each}
+    
+          <!-- SLIDE NOTES -->
+          {#each slides as { start, steps, end, critical }}
+            <!-- SLIDE PATH -->
+            <Graphics
+              x={0}
+              y={0}
+              draw={(graphics) => {drawSlidePath(graphics, [start, ...steps, end], critical, measureHeight)}}
+            />
+            <!-- SLIDE START -->
+            <Note
+              type={
+                critical ? 'critical' : 'slide'
+              }
+              {...{ lane: start.lane, tick: start.tick, width: start.width, measureHeight }}
+            />
+            <!-- SLIDE STEPS -->
+            {#each steps as { lane, tick, width, diamond }}
+              {#if diamond}
+                <Sprite
+                  texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
+                  anchor={new PIXI.Point(...DIAMOND_PIVOT)}
+                  x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
+                  y={calcY(tick, measureHeight)}
+                  width={DIAMOND_WIDTH}
+                  height={DIAMOND_HEIGHT}
+                />
+              {/if}
+            {/each}
+            <!-- SLIDE END -->
+            <Note
+              type={
+                critical
+                  ? 'critical'
+                  : end.flick !== 'no'
+                    ? 'flick'
+                    : 'slide'
+              }
+              {...{ lane: end.lane, tick: end.tick, width: end.width, measureHeight }}
+            />
+          {/each}
+
+          <!-- FLICK ARROW -->
+          {#each singleNotes as { lane, tick, width, critical, flick }}
             {#if flick !== 'no'}
-              <!-- FLICK ARROW -->
               <Sprite
                 texture={
                   TEXTURES[
@@ -557,56 +617,8 @@
                 height={NOTE_HEIGHT}
               />
             {/if}
-
-            <Sprite
-              texture={
-                critical
-                  ? TEXTURES['noteC.png']
-                  : flick !== 'no'
-                    ? TEXTURES['noteF.png']
-                    : TEXTURES['noteN.png']
-              }
-              anchor={new PIXI.Point(...NOTE_PIVOT)}
-              x={calcX(lane)}
-              y={calcY(tick, measureHeight)}
-              width={width * NOTE_WIDTH}
-              height={NOTE_HEIGHT}
-            />
           {/each}
-
-          <!-- SLIDE NOTES -->
-          {#each slides as { start, steps, end, critical }}
-            <!-- SLIDE PATH -->
-            <Graphics
-              x={0}
-              y={0}
-              draw={(graphics) => {drawSlidePath(graphics, [start, ...steps, end], critical, measureHeight)}}
-            />
-            <!-- SLIDE START -->
-            <Sprite
-              texture={critical ? TEXTURES['noteC.png'] : TEXTURES['noteL.png']}
-              anchor={new PIXI.Point(...NOTE_PIVOT)}
-              x={calcX(start.lane)}
-              y={calcY(start.tick, measureHeight)}
-              width={start.width * NOTE_WIDTH}
-              height={NOTE_HEIGHT}
-            />
-
-            <!-- SLIDE STEPS -->
-            {#each steps as { lane, tick, width, diamond }}
-              {#if diamond}
-                <Sprite
-                  texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
-                  anchor={new PIXI.Point(...DIAMOND_PIVOT)}
-                  x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
-                  y={calcY(tick, measureHeight)}
-                  width={DIAMOND_WIDTH}
-                  height={DIAMOND_HEIGHT}
-                />
-              {/if}
-            {/each}
-
-            <!-- SLIDE END -->
+          {#each slides as { end, critical }}
             {#if end.flick !== 'no'}
               <Sprite
                 texture={
@@ -625,22 +637,8 @@
                 height={NOTE_HEIGHT}
               />
             {/if}
-            <Sprite
-              texture={
-                critical
-                  ? TEXTURES['noteC.png']
-                  : end.flick !== 'no'
-                    ? TEXTURES['noteF.png']
-                    : TEXTURES['noteL.png']
-              }
-              anchor={new PIXI.Point(...NOTE_PIVOT)}
-              x={calcX(end.lane)}
-              y={calcY(end.tick, measureHeight)}
-              width={end.width * NOTE_WIDTH}
-              height={NOTE_HEIGHT}
-            />
-          {/each}
-  
+          {/each}          
+
           <!-- FLOATING ITEMS -->
           <Graphics
             draw={(graphics) => {
@@ -651,7 +649,6 @@
               )
             }}
           />
-        <!-- </Loader> -->
       </Pixi>
       <div class="zoom-indicator-container">
         <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
