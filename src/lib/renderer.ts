@@ -1,6 +1,6 @@
 // Types
 import type PIXI from 'pixi.js' 
-import type { SlideEnd, SlideStart, SlideStep } from '$lib/beatmap'
+import type { SlideEnd, SlideNote, SlideStart, SlideStep } from '$lib/beatmap'
 import type { Mode } from '$lib/editing'
 
 // Consts
@@ -98,16 +98,16 @@ const EASE_RATIOS = {
   straight: 0
 }
 const SHRINK_WIDTH = LANE_WIDTH / 8
-type SlideNode = SlideStart | SlideStep | SlideEnd
-export function drawSlidePath(graphics: PIXI.Graphics, slideNotes: SlideNode[], critical: boolean, measureHeight: number) {
+
+export function drawSlidePath(graphics: PIXI.Graphics, slideNotes: SlideNote[], critical: boolean, measureHeight: number) {
   graphics.clear()
   slideNotes
-  .reduce((acc: [SlideNode, SlideNode][], ele: SlideNode, ind: number, arr: SlideNode[]) => {
+  .reduce((acc: [SlideNote, SlideNote][], ele: SlideNote, ind: number, arr: SlideNote[]) => {
       if (ind < arr.length - 1) {
         acc.push([arr[ind], arr[ind + 1]])
       }
       return acc
-    }, [] as [SlideNode, SlideNode][])
+    }, [] as [SlideNote, SlideNote][])
     .forEach(([origin, target]) => {
       const easeInRatio = 'easeType' in origin && origin.easeType === 'easeIn' ? EASE_RATIOS.curved : EASE_RATIOS.straight
       const easeOutRatio = 'easeType' in origin && origin.easeType === 'easeOut' ? EASE_RATIOS.curved : EASE_RATIOS.straight

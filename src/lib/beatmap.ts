@@ -31,6 +31,7 @@ export type SlideStep = INote & {
   ignored: boolean,
 } & IEase
 export type SlideEnd = INote & IDirectional
+export type SlideNote = SlideStart | SlideStep | SlideEnd
 export type Slide = {
   start: SlideStart
   end: SlideEnd
