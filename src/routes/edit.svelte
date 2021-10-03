@@ -39,12 +39,13 @@
 
   // Drawing
   import Note from '$lib/render/Note.svelte'
-  import Arrow from '$lib/render/Arrow.svelte';
+  import Arrow from '$lib/render/Arrow.svelte'
+  import Slide from '$lib/render/Slide.svelte'
 
   // Types
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing'
-  import type { Flick, MetaData, Single, Slide } from '$lib/beatmap'
+  import type { Flick, MetaData, Single, Slide as SlideType } from '$lib/beatmap'
   import type { Score } from '$lib/sus/analyze'
 
   // Constants
@@ -85,7 +86,7 @@
   metadata = getMetaData(susText)
   score = getScoreData(susText)
   let singleNotes: Single[]
-  let slides: Slide[]
+  let slides: SlideType[]
   let bpms: Map<number, number>
   ({ singleNotes, slides, bpms } = convertScoreData(score))
 
@@ -170,7 +171,7 @@
   setContext('TEXTURES', TEXTURES)
 
   let dragging: boolean = false
-  let draggingSlide: Slide = null
+  let draggingSlide: SlideType = null
 
   onMount(async () => {
     // Initialise Audio
@@ -558,44 +559,8 @@
           {/each}
     
           <!-- SLIDE NOTES -->
-          {#each slides as { start, steps, end, critical }}
-            <!-- SLIDE PATH -->
-            <Graphics
-              x={0}
-              y={0}
-              draw={(graphics) => {drawSlidePath(graphics, [start, ...steps, end], critical, measureHeight)}}
-            />
-            <!-- SLIDE START -->
-            <Note
-              type={
-                critical ? 'critical' : 'slide'
-              }
-              {...{ lane: start.lane, tick: start.tick, width: start.width, measureHeight }}
-            />
-            <!-- SLIDE STEPS -->
-            {#each steps as { lane, tick, width, diamond }}
-              {#if diamond}
-                <Sprite
-                  texture={TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`]}
-                  anchor={new PIXI.Point(...DIAMOND_PIVOT)}
-                  x={calcX(lane) + (width * NOTE_WIDTH) / 2 - DIAMOND_WIDTH}
-                  y={calcY(tick, measureHeight)}
-                  width={DIAMOND_WIDTH}
-                  height={DIAMOND_HEIGHT}
-                />
-              {/if}
-            {/each}
-            <!-- SLIDE END -->
-            <Note
-              type={
-                critical
-                  ? 'critical'
-                  : end.flick !== 'no'
-                    ? 'flick'
-                    : 'slide'
-              }
-              {...{ lane: end.lane, tick: end.tick, width: end.width, measureHeight }}
-            />
+          {#each slides as slide}
+            <Slide {slide} {measureHeight} />
           {/each}
 
           <!-- FLICK ARROW -->
