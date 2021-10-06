@@ -37,7 +37,7 @@
   }
   y={calcY(tick, measureHeight) - NOTE_HEIGHT + 15}
   scale={{
-    x: 0.25,
+    x: 0.25 * (flick === 'left' ? 1 : -1),
     y: 0.25
   }}
 />
