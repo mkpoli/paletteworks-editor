@@ -607,8 +607,8 @@
         }
       }}
       on:export={() => {
-        const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION) + MARGIN_BOTTOM * 4
-        const columns = Math.floor(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
+        const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION)
+        const columns = Math.ceil(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
         const COLUMN_WIDTH = app.renderer.width * 0.9
         const renderTexture = PIXI.RenderTexture.create({
           width: COLUMN_WIDTH * columns, height: COLUMN_HEIGHT,
@@ -622,7 +622,7 @@
             transform: new PIXI.Matrix(
               RESOLUTION, 0, 0, RESOLUTION,
               i * COLUMN_WIDTH,
-              snap((i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION), measureHeight * RESOLUTION) + measureHeight * RESOLUTION - MARGIN_BOTTOM - innerHeight * 2) //fullHeight - 2 * innerHeight
+              snap((i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION) + app.stage.pivot.y * RESOLUTION, measureHeight * RESOLUTION) + measureHeight * RESOLUTION - innerHeight * RESOLUTION) //fullHeight - 2 * innerHeight
           })
         }
 
