@@ -37,6 +37,9 @@
           <option value={'smooth'}>スムーズ（再生ヘッド固定）</option>
         </select>
       </label>
+      <button on:click={() => { dispatch('export') }}>
+        Export to PNG
+      </button>
   </div>
   <div class="panel">
     <h2>基本情報</h2>

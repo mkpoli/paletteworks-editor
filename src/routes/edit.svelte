@@ -5,9 +5,13 @@
 		// const url = `/NewScore2.sus`;
     // const url = `KING.sus`;
     // const url = `/TellYourWorld_EX.sus`;
+    // const url = `/Shoushitsu_MASTER.sus`;
     const url = `/DoctorFunkBeat_MASTER.sus`;
+    // const url = `/DoctorDiamond.sus`
+    // const url = `/SlideEase.sus`;
     // const url = `MultipleBPM.sus`;
     // const url = `SlideTest.sus`;
+    // const url = '/InvisibleRelayPoint.sus'
     // const url = `ModNote.sus`;
 		const res = await fetch(url);
 
@@ -118,7 +122,8 @@
 
   // Sizing
   let innerHeight: number
-  
+  $: fullHeight = MARGIN_BOTTOM + maxMeasure * measureHeight + measureHeight 
+
   // Resize on window resize
   $: app?.renderer.resize(CANVAS_WIDTH, innerHeight)
   
@@ -600,6 +605,37 @@
         if (currentMeasure >= 1 && currentMeasure <= score.maxMeasure + 2) {
           scrollTick = (currentMeasure - 1) * TICK_PER_MEASURE
         }
+      }}
+      on:export={() => {
+        const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION) + MARGIN_BOTTOM * 4
+        const columns = Math.floor(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
+        const COLUMN_WIDTH = app.renderer.width * 0.9
+        const renderTexture = PIXI.RenderTexture.create({
+          width: COLUMN_WIDTH * columns, height: COLUMN_HEIGHT,
+          resolution: 0.35
+        })
+        
+        console.log({ columns })
+        for (let i = 0; i < columns; i++) {
+          app.renderer.render(app.stage, {
+            renderTexture, clear: false,
+            transform: new PIXI.Matrix(
+              RESOLUTION, 0, 0, RESOLUTION,
+              i * COLUMN_WIDTH,
+              snap((i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION), measureHeight * RESOLUTION) + measureHeight * RESOLUTION - MARGIN_BOTTOM - innerHeight * 2) //fullHeight - 2 * innerHeight
+          })
+        }
+
+        // const canvas = app.renderer.plugins.extract.canvas(app.stage)
+        const canvas = app.renderer.plugins.extract.canvas(renderTexture);
+        canvas.toBlob((b) => {
+          var a = document.createElement('a');
+          document.body.append(a);
+          a.download = 'score.png';
+          a.href = URL.createObjectURL(b);
+          a.click();
+		      a.remove();
+        })
       }}
       statistics={{
         'Taps': singleNotes.filter((x) => x.flick === 'no').length,
