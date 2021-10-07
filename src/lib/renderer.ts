@@ -20,6 +20,7 @@ import {
   DIAMOND_PIVOT,
   DIAMOND_HEIGHT,
   DIAMOND_WIDTH,
+  MEASURE_HEIGHT,
 } from '$lib/consts'
 import { calcX, calcY } from '$lib/timing'
 import { MODE_TEXTURES } from '$lib/editing'
@@ -61,7 +62,7 @@ export function drawDashedLine(graphics: PIXI.Graphics, fromX: number, fromY: nu
   }
 }
 
-export function drawBackground(graphics: PIXI.Graphics, measureHeight: number, fullHeight: number, maxMeasure: number) {   
+export function drawBackground(graphics: PIXI.Graphics, measureHeight: number, topY: number, maxMeasure: number) {   
   graphics.clear()
   
   // Draw lanes
@@ -73,11 +74,11 @@ export function drawBackground(graphics: PIXI.Graphics, measureHeight: number, f
       graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
     }
     graphics.moveTo(x, innerHeight)
-    graphics.lineTo(x, -fullHeight)
+    graphics.lineTo(x, topY - MEASURE_HEIGHT / BEAT_IN_MEASURE)
   }
 
   // Draw bars
-  for (let i = 0; i < (maxMeasure + 2) * 3 + 2 ; i++) {
+  for (let i = 0; i < (maxMeasure + 2) * BEAT_IN_MEASURE + 1 ; i++) {
     const y = innerHeight - (MARGIN_BOTTOM + i * measureHeight / BEAT_IN_MEASURE)
 
     if (i % BEAT_IN_MEASURE == 0) {

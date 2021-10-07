@@ -117,9 +117,8 @@
   $: if (zoom >= ZOOM_MAX) zoom = ZOOM_MAX
 
   // Sizing
-  $: fullHeight = score ? (score.maxMeasure + 1) * TICK_PER_MEASURE : 0
   let innerHeight: number
-
+  
   // Resize on window resize
   $: app?.renderer.resize(CANVAS_WIDTH, innerHeight)
   
@@ -127,11 +126,12 @@
   $: if (app) {
     app.stage.pivot.y = MARGIN_BOTTOM - scrollTick / TICK_PER_MEASURE * measureHeight
   }
-
+  
   // Measure (Bar)
   $: measureHeight = MEASURE_HEIGHT * zoom
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
   $: maxMeasure = score.maxMeasure + 2
+  $: maxTick = score ? maxMeasure * TICK_PER_MEASURE : 0
 
   // Pointer (mouse) position -> lane / tick
   let mouseX: number
@@ -150,7 +150,7 @@
   // Scroll position
   let scrollTick = 0
   $: if (scrollTick < 0) scrollTick = 0
-  $: if (scrollTick >= fullHeight) scrollTick = fullHeight
+  $: if (scrollTick >= maxTick) scrollTick = maxTick
 
   type ScrollMode = 'page' | 'smooth'
   let scrollMode: ScrollMode = 'page'
@@ -523,7 +523,7 @@
           <Graphics
             x={MARGIN}
             y={0}
-            draw={(graphics) => { drawBackground(graphics, measureHeight, fullHeight, score.maxMeasure) }}
+            draw={(graphics) => { drawBackground(graphics, measureHeight, calcY(maxTick, measureHeight), score.maxMeasure) }}
           />
 
           <!-- BPM -->
@@ -532,7 +532,7 @@
           />
 
           <!-- MEASURE (BAR) NUMBER -->
-          {#each Array(score.maxMeasure + 2) as _, i}
+          {#each Array(maxMeasure + 1) as _, i}
             <Text
               text={`#${i + 1}`}
               anchor={new PIXI.Point(1, 0.5)}
