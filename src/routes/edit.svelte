@@ -50,8 +50,8 @@
   // Types
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing'
-  import type { Flick, MetaData, Single, Slide as SlideType } from '$lib/beatmap'
-  import type { Score } from '$lib/sus/analyze'
+  import type { Flick, MetaData, Single, Slide as SlideType } from '$lib/score/beatmap'
+  import type { Score } from '$lib/score/analyze'
 
   // Constants
   import {
@@ -72,11 +72,11 @@
     EFFECT_SOUNDS,
     RESOLUTION,
   } from '$lib/consts'
-  import { FLICK_TYPES } from '$lib/beatmap';
+  import { FLICK_TYPES } from '$lib/score/beatmap';
 
   // Functions
   import { onMount, setContext, tick } from 'svelte';
-  import { getMetaData, getScoreData, convertScoreData } from '$lib/sus/susIO'
+  import { getMetaData, getScoreData, convertScoreData } from '$lib/score/susIO'
   import { calcX, calcY, calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
   import { clamp } from '$lib/basic/math'
@@ -108,7 +108,7 @@
 
   // PIXI.js
   import { Pixi, Text, Sprite, Graphics } from 'svelte-pixi'
-  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/renderer';
+  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
 
   let PIXI: typeof import('pixi.js')
   let app: PIXI.Application

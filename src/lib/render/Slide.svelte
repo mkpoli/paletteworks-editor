@@ -1,6 +1,6 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
-  import type { Slide as SlideType } from "$lib/beatmap";
+  import type { Slide as SlideType } from "$lib/score/beatmap";
 
   // Svelte
   import { getContext, onMount, SvelteComponent } from "svelte";
@@ -15,7 +15,7 @@
     PIXI = await import('pixi.js')
   })
 
-  import { drawDiamonds, drawSlidePath } from "$lib/renderer";
+  import { drawDiamonds, drawSlidePath } from "$lib/render/renderer";
   export let slide: SlideType
   export let measureHeight: number
   let { start, end, critical, steps } = slide

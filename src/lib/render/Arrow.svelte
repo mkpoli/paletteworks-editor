@@ -1,6 +1,6 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
-  import type { Flick } from "$lib/beatmap"
+  import type { Flick } from "$lib/score/beatmap"
   import { LANE_WIDTH, MARGIN, NOTE_HEIGHT } from '$lib/consts';
 
   import { getContext, onMount, SvelteComponent } from "svelte";

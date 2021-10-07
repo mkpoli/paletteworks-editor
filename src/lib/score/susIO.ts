@@ -30,7 +30,7 @@ function getKey(note: NoteObject) {
   return `${note.tick}-${note.lane}`
 }
 
-import type { Flick, Single, Slide, SlideEnd, SlideStep, SlideStart } from '../beatmap'
+import type { Flick, Single, Slide, SlideEnd, SlideStep, SlideStart } from './beatmap'
 
 
 export function convertScoreData(score: Score): {

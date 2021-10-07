@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
-  import type { MetaData } from "./beatmap"
+  import type { MetaData } from "$lib/score/beatmap"
   const dispatch = createEventDispatcher()
 
   import IconButton from "./basic/IconButton.svelte"

@@ -1,6 +1,6 @@
 // Types
 import type PIXI from 'pixi.js' 
-import type { Slide, SlideNote, SlideStart, SlideStep } from '$lib/beatmap'
+import type { Slide, SlideNote, SlideStart, SlideStep } from '$lib/score/beatmap'
 import type { Mode } from '$lib/editing'
 
 // Consts
