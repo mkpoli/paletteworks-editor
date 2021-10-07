@@ -1,8 +1,11 @@
 import { LANE_WIDTH, MARGIN, MARGIN_BOTTOM, TICK_PER_MEASURE } from '$lib/consts'
 
 export function calcX(lane: number) {
-  // return MARGIN + lane * 30 - 12
   return MARGIN + (lane - 1) * LANE_WIDTH
+}
+
+export function calcMidX(lane: number, width: number) {
+  return MARGIN + (lane - 1 + width / 2) * LANE_WIDTH
 }
 
 export function calcY(tick: number, measureHeight: number): number {

@@ -1,6 +1,6 @@
 // Types
 import type PIXI from 'pixi.js' 
-import type { SlideEnd, SlideNote, SlideStart, SlideStep } from '$lib/beatmap'
+import type { Slide, SlideNote, SlideStart, SlideStep } from '$lib/beatmap'
 import type { Mode } from '$lib/editing'
 
 // Consts
@@ -22,7 +22,7 @@ import {
   DIAMOND_WIDTH,
   MEASURE_HEIGHT,
 } from '$lib/consts'
-import { calcX, calcY } from '$lib/timing'
+import { calcMidX, calcX, calcY } from '$lib/timing'
 import { MODE_TEXTURES } from '$lib/editing'
 
 // Drawing Functions
@@ -260,4 +260,77 @@ export function drawPlayhead(graphics: PIXI.Graphics, pixi, y: number) {
   graphics.addChild(playhead)
   drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y, 2, 2)
   return 
+}
+
+function createDiamond(
+  PIXI: typeof import('pixi.js'), TEXTURES: Record<string, PIXI.Texture>, x: number, y: number, critical: boolean
+): PIXI.Sprite {
+  const sprite = new PIXI.Sprite(TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`])
+  sprite.x = x
+  sprite.y = y
+  sprite.anchor.x = 0.5 
+  sprite.anchor.y = 0.5
+  sprite.width = DIAMOND_WIDTH
+  sprite.height = DIAMOND_HEIGHT
+  return sprite
+}
+
+export function drawDiamonds(
+  slide: Slide, measureHeight: number, container: PIXI.Container, PIXI: typeof import('pixi.js'), TEXTURES: Record<string, PIXI.Texture>
+) {
+  container.removeChildren()
+
+  const { start, end, critical, steps } = slide
+
+  let currentGroup: SlideNote[] = [start];
+  const connectedGroups = [...steps, end]
+    .reduce((acc: SlideNote[][], ele: SlideNote) => {
+      currentGroup.push(ele)
+      if (!('ignored' in ele) || !ele.ignored) {
+        acc.push([...currentGroup])
+        currentGroup = [ele]
+      }
+      return acc
+    }, [])
+    .filter((a: SlideNote[]) => a.length >= 3)
+
+  connectedGroups
+    .forEach((arr: SlideNote[]) => {
+      const origin = arr.shift() as SlideStart | SlideStep
+      const originX = calcMidX(origin.lane, origin.width)
+      const originY = calcY(origin.tick, measureHeight)
+
+      const target = arr.pop()
+      const targetX = calcMidX(target.lane, target.width)
+      const targetY = calcY(target.tick, measureHeight)
+
+      if ('diamond' in origin && origin.diamond) {
+        container.addChild(createDiamond(PIXI, TEXTURES, originX, originY, critical))
+      }
+
+      arr
+        .filter((current: SlideStep) => current.diamond)
+        .forEach((current) => {
+          const sprite = new PIXI.Sprite(TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`])
+          const currentY = calcY(current.tick, measureHeight)
+
+          const a = (targetY - originY) / Math.pow(targetX - originX, 2)
+
+          
+          let currentX: number
+
+          switch (origin.easeType) {
+            case 'easeIn':
+              currentX = (originX > targetX ? 1 : -1) * Math.abs(Math.sqrt((currentY - targetY) / -a)) + targetX
+              break
+            case 'easeOut':
+              currentX = (originX > targetX ? -1 : 1) * Math.abs(Math.sqrt((currentY - originY) / a)) + originX
+              break
+            default:
+              currentX = ((currentY - originY) / (targetY - originY)) * (targetX - originX) + originX
+              break
+          }
+          container.addChild(createDiamond(PIXI, TEXTURES, currentX, currentY, critical))
+        })
+    })
 }
