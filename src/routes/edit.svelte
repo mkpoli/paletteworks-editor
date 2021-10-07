@@ -5,6 +5,7 @@
 		// const url = `/NewScore2.sus`;
     // const url = `KING.sus`;
     // const url = `/TellYourWorld_EX.sus`;
+    // const url = `/TellYourWorldDiamond.sus`;
     // const url = `/Shoushitsu_MASTER.sus`;
     const url = `/DoctorFunkBeat_MASTER.sus`;
     // const url = `/DoctorDiamond.sus`
@@ -112,7 +113,6 @@
   let PIXI: typeof import('pixi.js')
   let app: PIXI.Application
 
-
   // Zooming
   let zoom = 1
   const ZOOM_MIN = 0.1
@@ -135,7 +135,7 @@
   // Measure (Bar)
   $: measureHeight = MEASURE_HEIGHT * zoom
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
-  $: maxMeasure = score.maxMeasure + 2
+  $: maxMeasure = score.maxMeasure + 1
   $: maxTick = score ? maxMeasure * TICK_PER_MEASURE : 0
 
   // Pointer (mouse) position -> lane / tick
@@ -528,7 +528,7 @@
           <Graphics
             x={MARGIN}
             y={0}
-            draw={(graphics) => { drawBackground(graphics, measureHeight, calcY(maxTick, measureHeight), score.maxMeasure) }}
+            draw={(graphics) => { drawBackground(graphics, measureHeight, calcY(maxTick, measureHeight), maxMeasure, innerHeight) }}
           />
 
           <!-- BPM -->

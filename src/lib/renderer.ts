@@ -62,7 +62,9 @@ export function drawDashedLine(graphics: PIXI.Graphics, fromX: number, fromY: nu
   }
 }
 
-export function drawBackground(graphics: PIXI.Graphics, measureHeight: number, topY: number, maxMeasure: number) {   
+export function drawBackground(
+  graphics: PIXI.Graphics, measureHeight: number, topY: number, maxMeasure: number, innerHeight: number
+) {   
   graphics.clear()
   
   // Draw lanes
@@ -78,7 +80,7 @@ export function drawBackground(graphics: PIXI.Graphics, measureHeight: number, t
   }
 
   // Draw bars
-  for (let i = 0; i < (maxMeasure + 2) * BEAT_IN_MEASURE + 1 ; i++) {
+  for (let i = 0; i < maxMeasure * BEAT_IN_MEASURE + 1 ; i++) {
     const y = innerHeight - (MARGIN_BOTTOM + i * measureHeight / BEAT_IN_MEASURE)
 
     if (i % BEAT_IN_MEASURE == 0) {
