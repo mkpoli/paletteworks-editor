@@ -19,6 +19,7 @@
     cursor: inherit;
     font-size: inherit;
     font-family: inherit;
+    min-width: 0;
   }
 
   input[type='text'] {

@@ -3,8 +3,11 @@
   import type { MetaData } from "$lib/score/beatmap"
   const dispatch = createEventDispatcher()
 
-  import ClickableIcon from "$lib/basic/ClickableIcon.svelte"
+  
+  import Icon from '@iconify/svelte'
   import Button from "$lib/basic/Button.svelte"
+  import ClickableIcon from "$lib/basic/ClickableIcon.svelte"
+  import TextInput from "$lib/basic/TextInput.svelte"
 
   import filesize from 'filesize'
 
@@ -28,9 +31,13 @@
   </div>
   <div class="panel">
     <h2>コントロール</h2>
-    <label for="goto">Goto Measure</label>
       <div style="display: flex; gap: 0.5em;">
-        <input type="text" bind:value={currentMeasure} name="goto" />
+        <TextInput
+          bind:value={currentMeasure}
+        >
+          <Icon icon="fontisto:hashtag" slot="head" style="flex-shrink: 0;"></Icon>
+          <span slot="tail" style="white-space: nowrap;">（小節）</span>
+        </TextInput>
         <Button
           icon="ph:arrow-bend-up-right-bold"
           on:click={() => {dispatch('goto')}}
