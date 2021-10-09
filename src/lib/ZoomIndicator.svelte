@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconButton from "./basic/IconButton.svelte";
+  import ClickableIcon from "./basic/ClickableIcon.svelte";
 
   export let zoom: number
   export let min: number
@@ -10,7 +10,7 @@
 </script>
 
 <div class="zoom-indicator" title="Zoom">
-  <IconButton
+  <ClickableIcon
     icon="system-uicons:zoom-in"
     height={ICON_HEIGHT}
     on:click={() => { if (zoom <= max + step)  zoom += step }}
@@ -18,7 +18,7 @@
   <div class="zoom-range-container">
     <input type="range" bind:value={zoom} min={min} max={max} step={step}>
   </div>
-  <IconButton
+  <ClickableIcon
     icon="system-uicons:zoom-out"
     height={ICON_HEIGHT}
     on:click={() => { if (zoom >= min + step)  zoom -= step }}

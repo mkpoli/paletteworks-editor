@@ -3,7 +3,7 @@
   import type { MetaData } from "$lib/score/beatmap"
   const dispatch = createEventDispatcher()
 
-  import IconButton from "./basic/IconButton.svelte"
+  import ClickableIcon from "$lib/basic/ClickableIcon.svelte"
 
   import filesize from 'filesize'
 
@@ -25,7 +25,7 @@
           on:click={() => {dispatch('goto')}}
         >Goto</button>
       </div>
-      <IconButton
+      <ClickableIcon
         icon={paused ? 'ph:play-fill' : 'ph:pause-bold'}
         width="4.5em"
         on:click={() => { paused = !paused }}

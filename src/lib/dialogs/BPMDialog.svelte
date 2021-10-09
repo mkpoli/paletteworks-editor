@@ -1,8 +1,8 @@
 <script lang="ts">
   import Modal from "$lib/basic/Modal.svelte"
   import Icon from '@iconify/svelte'
-  import IconButton from "$lib/basic/IconButton.svelte"
-  import { createEventDispatcher, tick } from "svelte";
+  import ClickableIcon from "$lib/basic/ClickableIcon.svelte"
+  import { createEventDispatcher, tick } from "svelte"
   export let opened: boolean
   export let value: number
   let valueString: string
@@ -23,7 +23,7 @@
   <div slot="presentation">
     <h2>BPM設定</h2>
     <div class="close">
-      <IconButton
+      <ClickableIcon
         icon="gridicons:cross"
         height="1.5em"
         on:click={() => { dispatch('cancel'); opened = false }}
