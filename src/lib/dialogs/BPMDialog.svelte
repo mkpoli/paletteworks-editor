@@ -3,6 +3,7 @@
   import Icon from '@iconify/svelte'
   import Button from "$lib/basic/Button.svelte"
   import ClickableIcon from "$lib/basic/ClickableIcon.svelte"
+  import TextInput from "$lib/basic/TextInput.svelte"
 
   import { createEventDispatcher, tick } from "svelte"
   const dispatch = createEventDispatcher()
@@ -35,10 +36,8 @@
         on:click={() => { dispatch('cancel'); opened = false }}
       />
     </div>
-    <div class="input-container">
-      <Icon icon="jam:music-f" height="1.5em" />
-      <Icon icon="ph:equals-bold" width="1em" />
-      <input type="text" name="bpm" bind:value={valueString} bind:this={inputElement} on:keydown={(e) => {
+    <TextInput
+      on:keydown={(e) => {
         switch (e.key) {
           case 'Enter':
             dispatch('ok')
@@ -49,9 +48,18 @@
             opened = false
             break
         }
-      }}>
-      <label for="bpm">(BPM)</label>
-    </div>
+      }}
+      bind:inputElement
+      bind:value={valueString}
+    >
+      <div slot="head">
+        <Icon icon="jam:music-f" height="1.5em" />
+        <Icon icon="ph:equals-bold" width="1em" />
+      </div>
+      <div slot="tail">
+        <span>(BPM)</span>
+      </div>
+    </TextInput>
     <Button
       class="ok"
       icon={!exist ? 'mdi:plus-thick' : 'ic:sharp-edit'}
@@ -89,48 +97,10 @@
     width: auto;
   }
 
-  button {
-    display: flex;
-    gap: 0.5em;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-  }
-
-  .input-container {
-    border: none;
-    border-radius: 5px;
-    color: inherit;
-    padding: 0.5em 1em;
-    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.6);
-    background: rgba(255, 255, 255, 0.1);
-    grid-area: t;
-    display: flex;
-    align-items: center;
-  }
-
-  .input-container:focus-within {
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
-  }
-
-  input {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-  }
-  
-  input:focus {
-    outline: none
-  }
-
   h2 {
     grid-area: h;
     display: block;
     margin: 0;
-  }
-
-  label {
-    grid-area: l;
   }
 
   [slot=presentation] :global(.ok) {
@@ -144,6 +114,16 @@
 
     background: transparent;
     color: #FF003D;
+  }
+
+  [slot=presentation] :global(.input-container) {
+    grid-area: t;
+  }
+
+  [slot=presentation] [slot=head] {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
   }
 
   .close {
