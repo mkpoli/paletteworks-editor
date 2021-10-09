@@ -4,6 +4,7 @@
   const dispatch = createEventDispatcher()
 
   import ClickableIcon from "$lib/basic/ClickableIcon.svelte"
+  import Button from "$lib/basic/Button.svelte"
 
   import filesize from 'filesize'
 
@@ -14,16 +15,26 @@
   export let files: FileList
   export let scrollMode: 'page' | 'smooth'
 </script>
-
 <div class="panel-container">
+  <div class="panel-bar">
+    <Button
+      icon="ic:baseline-photo-camera"
+      on:click={() => { dispatch('export') }}
+    >画像出力</Button>
+    <Button
+      icon="mdi:file-export-outline"
+      on:click={() => { dispatch('exportFile') }}
+      >譜面出力</Button>
+  </div>
   <div class="panel">
     <h2>コントロール</h2>
     <label for="goto">Goto Measure</label>
       <div style="display: flex; gap: 0.5em;">
         <input type="text" bind:value={currentMeasure} name="goto" />
-        <button
+        <Button
+          icon="ph:arrow-bend-up-right-bold"
           on:click={() => {dispatch('goto')}}
-        >Goto</button>
+        ></Button>
       </div>
       <ClickableIcon
         icon={paused ? 'ph:play-fill' : 'ph:pause-bold'}
@@ -37,9 +48,6 @@
           <option value={'smooth'}>スムーズ（再生ヘッド固定）</option>
         </select>
       </label>
-      <button on:click={() => { dispatch('export') }}>
-        Export to PNG
-      </button>
   </div>
   <div class="panel">
     <h2>基本情報</h2>
@@ -80,8 +88,15 @@
 <style>
 .panel-container {
   display: grid;
-  grid-template: repeat(2, auto) / repeat(2, auto);
+  grid-template: repeat(3, auto) / repeat(2, auto);
   padding: 1em;
+  gap: 1em;
+}
+
+.panel-bar {
+  grid-column: 1 / 3;
+
+  display: flex;
   gap: 1em;
 }
 

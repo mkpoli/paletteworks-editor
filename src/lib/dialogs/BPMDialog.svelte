@@ -1,6 +1,7 @@
 <script lang="ts">
   import Modal from "$lib/basic/Modal.svelte"
   import Icon from '@iconify/svelte'
+  import Button from "$lib/basic/Button.svelte"
   import ClickableIcon from "$lib/basic/ClickableIcon.svelte"
   import { createEventDispatcher, tick } from "svelte"
   export let opened: boolean
@@ -46,11 +47,20 @@
       }}>
       <label for="bpm">(BPM)</label>
     </div>
-    <button on:click={() => { dispatch('ok'); opened = false }} class="ok">
-      <Icon icon="ic:sharp-edit" />
+    <Button
+      class="ok"
+      icon="ic:sharp-edit"
+      on:click={() => { dispatch('ok'); opened = false }}
+    >
       OK
-    </button>
-    <button on:click={() => { dispatch('delete'); opened = false }} class="delete text"><Icon icon="mdi:delete" />Delete</button>
+    </Button>
+    <Button
+      class="delete text"
+      icon="mdi:delete"
+      on:click={() => { dispatch('delete'); opened = false }}
+    >
+      Delete
+    </Button>
   </div> 
 </Modal>
 
@@ -115,13 +125,13 @@
     grid-area: l;
   }
 
-  .ok {
+  [slot=presentation] :global(.ok) {
     grid-area: o;
 
     background: linear-gradient(180deg, #009C70 0%, #008080 100%);
   }
 
-  .delete {
+  [slot=presentation] :global(.delete) {
     grid-area: d;
 
     background: transparent;
