@@ -40,7 +40,10 @@
   import ZoomIndicator from '$lib/ZoomIndicator.svelte'
   import ControlHandler from '$lib/ControlHandler.svelte'
   import DebugInfo from '$lib/basic/DebugInfo.svelte'
-  import BpmDialog from '$lib/dialogs/BPMDialog.svelte';
+  import BpmDialog from '$lib/dialogs/BPMDialog.svelte'
+
+  // Toast
+  import { toast, SvelteToast } from '@zerodevx/svelte-toast'
 
   // Drawing
   import Note from '$lib/render/Note.svelte'
@@ -661,13 +664,16 @@
   }
   on:ok={() => {
     if (bpmDialogValue) {
+      const exist = bpms.has(lastPointerTick)
       bpms.set(lastPointerTick, bpmDialogValue)
       bpms = bpms
+      toast.push(!exist ? 'BPMを追加しました' : 'BPMを変更しました')
     }
   }}
   on:delete={() => {
     bpms.delete(lastPointerTick)
     bpms = bpms
+    toast.push('BPMを削除しました')
   }}
 />
 
@@ -680,6 +686,8 @@
 <svelte:window
   bind:innerHeight
 />
+
+<SvelteToast/>
 
 <style>
   /* Global Styles */
