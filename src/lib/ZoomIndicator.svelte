@@ -67,6 +67,7 @@
     transform: rotate(270deg);
     height: 10em;
     width: 10em;
+    min-width: 10em;
     position: relative;
   }
 
