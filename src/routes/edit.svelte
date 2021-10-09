@@ -656,6 +656,9 @@
 <BpmDialog
   bind:opened={bpmDialogOpened}
   bind:value={bpmDialogValue}
+  exist={
+    bpms.has(lastPointerTick)
+  }
   on:ok={() => {
     if (bpmDialogValue) {
       bpms.set(lastPointerTick, bpmDialogValue)

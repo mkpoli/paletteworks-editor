@@ -3,12 +3,17 @@
   import Icon from '@iconify/svelte'
   import Button from "$lib/basic/Button.svelte"
   import ClickableIcon from "$lib/basic/ClickableIcon.svelte"
+
   import { createEventDispatcher, tick } from "svelte"
+  const dispatch = createEventDispatcher()
+
   export let opened: boolean
   export let value: number
+  export let exist: boolean
+
   let valueString: string
   $: if (valueString) value = Number.parseFloat(valueString)
-  const dispatch = createEventDispatcher()
+
   let inputElement: HTMLInputElement
 </script>
 
@@ -49,18 +54,20 @@
     </div>
     <Button
       class="ok"
-      icon="ic:sharp-edit"
+      icon={!exist ? 'mdi:plus-thick' : 'ic:sharp-edit'}
       on:click={() => { dispatch('ok'); opened = false }}
     >
-      OK
+      {!exist ? '追加' : '変更'}
     </Button>
-    <Button
-      class="delete text"
-      icon="mdi:delete"
-      on:click={() => { dispatch('delete'); opened = false }}
-    >
-      Delete
-    </Button>
+    {#if exist}
+      <Button
+        class="delete text"
+        icon="mdi:delete"
+        on:click={() => { dispatch('delete'); opened = false }}
+      >
+        削除
+      </Button>
+    {/if}
   </div> 
 </Modal>
 
@@ -70,10 +77,11 @@
     display: grid;
     gap: 2em;
     /* grid-template: 1fr auto / auto 1fr auto ; */
+    grid-template-columns: repeat(5, 3em);
     grid-template-areas:
       "h h . . x"
       "t t t t t"
-      "o o . d d"
+      "d d . o o"
   }
 
   .close {
