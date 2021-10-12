@@ -138,7 +138,16 @@
   // Measure (Bar)
   $: measureHeight = MEASURE_HEIGHT * zoom
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
-  $: maxMeasure = score.maxMeasure + 1
+  $: maxMeasure = 
+    Math.ceil(
+      Math.max.apply(0,
+        slides
+          .map(({ start, end, steps }) => [start.tick, end.tick, steps.map(({ tick }) => tick)])
+          .concat(singleNotes.map(({ tick }) => tick))
+          .flat()
+      ) / TICK_PER_MEASURE
+    ) + 1
+
   $: maxTick = score ? maxMeasure * TICK_PER_MEASURE : 0
 
   // Pointer (mouse) position -> lane / tick
@@ -605,9 +614,7 @@
     <PropertyBox
       bind:currentMeasure
       on:goto={() => {
-        if (currentMeasure >= 1 && currentMeasure <= score.maxMeasure + 2) {
-          scrollTick = (currentMeasure - 1) * TICK_PER_MEASURE
-        }
+        scrollTick = (clamp(1, currentMeasure, maxMeasure + 1) - 1) * TICK_PER_MEASURE
       }}
       on:export={() => {
         const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION)
