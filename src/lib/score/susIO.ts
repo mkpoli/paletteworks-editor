@@ -61,10 +61,6 @@ export function convertScoreData(score: Score): {
   slides: Slide[],
   bpms: Map<number, number>
 } {
-  const offset = 0
-  function toTime(tick: number) {
-    return score.toTime(tick) + offset
-  }
   // Modifier Notes
   const flickMods = new Map<string, Flick>()
   const criticalMods = new Set<string>()
@@ -158,15 +154,12 @@ export function convertScoreData(score: Score): {
 
     const critical = criticalMods.has(getKey(startNote))
 
-    const isStartCritical = criticalMods.has(getKey(startNote))
-
     let start: SlideStart
     let end: SlideEnd
     const steps: SlideStep[] = []
 
     slide.forEach((note) => {
       const key = getKey(note)
-      const time = toTime(note.tick)
       const { tick, lane, width } = note
 
       const easeType =
