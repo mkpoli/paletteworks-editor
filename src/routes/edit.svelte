@@ -83,7 +83,7 @@
   import { calcX, calcY, calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
   import { clamp } from '$lib/basic/math'
-  import { closest, rotateNext } from '$lib/basic/collections';
+  import { closest, max, rotateNext } from '$lib/basic/collections';
 
   // Score Data
   export let susText: string;
@@ -138,13 +138,14 @@
   // Measure (Bar)
   $: measureHeight = MEASURE_HEIGHT * zoom
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
-  $: maxMeasure = 
-    Math.ceil(
-      Math.max.apply(0,
-        slides
-          .map(({ start, end, steps }) => [start.tick, end.tick, steps.map(({ tick }) => tick)])
-          .concat(singleNotes.map(({ tick }) => tick))
-          .flat()
+  $: maxMeasure = Math.ceil(
+      (
+        max(
+          slides
+            .map(({ start, end, steps }) => [start.tick, end.tick, steps.map(({ tick }) => tick)])
+            .concat(singleNotes.map(({ tick }) => tick))
+            .flat() as number[]
+        ) || 0
       ) / TICK_PER_MEASURE
     ) + 1
 

@@ -14,3 +14,10 @@ export function closest(arr: Array<number>, num: number, smaller: boolean=false)
   })
   return result
 }
+
+export function max(arr: Array<number>) {
+  if (!arr.length) {
+    return undefined
+  }
+  return Math.max(...arr)
+}
