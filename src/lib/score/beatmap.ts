@@ -1,6 +1,7 @@
 export interface MetaData {
   title: string
   artist: string
+  author: string
 }
 
 export interface INote {

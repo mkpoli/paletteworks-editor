@@ -64,11 +64,11 @@
     </label>
     <label>
       アーティスト
-      <input type="text">
+      <input type="text" bind:value={metadata.artist}>
     </label>
     <label>
       譜面作者
-      <input type="text">
+      <input type="text" bind:value={metadata.author}>
     </label>
   </div>
   <div class="panel">

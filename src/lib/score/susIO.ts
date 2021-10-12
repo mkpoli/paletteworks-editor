@@ -4,17 +4,40 @@ export default analyzer
 import { analyze } from './analyze';
 import type { Score } from './analyze'
 
-export interface MetaData {
-  title: string
-  artist: string
-}
-
 export function getMetaData(sus: string): MetaData {
-  const { TITLE, ARTIST } = analyzer.getMeta(sus)
-  return { 
-    title: TITLE,
-    artist: ARTIST
-   }
+  const lines = sus
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('#') && !line.includes(':'))
+    .map((line): [string, string] => {
+      const index = line.indexOf(' ')
+      return [
+        line.substring(1, index).trim(),
+        line.substring(index + 1).trim(),
+      ]
+    })
+
+  const metadata: MetaData = {
+    title: '',
+    artist: '',
+    author: ''
+  }
+  lines.forEach(([header, data]) => {
+    data = data.replace(/^"(.+(?="$))"$/, '$1');
+    switch (header) {
+      case 'TITLE':
+        metadata.title = data
+        break
+      case 'ARTIST':
+        metadata.artist = data
+        break
+      case 'DESIGNER':
+        metadata.author = data
+      default:
+        break
+    }
+  })
+  return metadata
 }
 
 export function getScoreData(sus: string) {
@@ -30,7 +53,7 @@ function getKey(note: NoteObject) {
   return `${note.tick}-${note.lane}`
 }
 
-import type { Flick, Single, Slide, SlideEnd, SlideStep, SlideStart } from './beatmap'
+import type { Flick, Single, Slide, SlideEnd, SlideStep, SlideStart, MetaData } from './beatmap'
 
 
 export function convertScoreData(score: Score): {
