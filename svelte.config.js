@@ -1,5 +1,4 @@
 import preprocess from 'svelte-preprocess'
-import loadVersion from 'vite-plugin-package-version'
 import path from 'path'
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -16,9 +15,9 @@ const config = {
           '$assets': path.resolve('./src/assets')
         }
       },
-      plugins: [
-        loadVersion()
-      ]
+      define: {
+        'process.env.PACKAGE_VERSION': JSON.stringify(process.env.npm_package_version)
+      }
     }
   }
 }
