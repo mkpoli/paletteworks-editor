@@ -24,7 +24,6 @@ export type Score = {
   directionalNotes: NoteObject[]
   slides: NoteObject[][]
   toTime: (tick: number) => number,
-  maxMeasure: number,
   timings: Timing[]
 }
 
@@ -42,28 +41,14 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
       ]
     })
 
-  // const maxMeasure = Math.max.apply(0, lines
-  //   .map(([header,]) => {
-  //     const measureIndex = header.match(/^(\d\d\d)[1-5]..*$/)
-  //     if (measureIndex) {
-  //       return Number(measureIndex[1])
-  //     } 
-  //   })
-  //   .filter((measureIndex, index, array) => {  
-  //     return measureIndex && index == array.lastIndexOf(measureIndex)
-  //   })) + 1
   const bpms = new Map<string, number>()
   const bpmChangeObjects: RawObject[] = []
   const tapNotes: NoteObject[] = []
   const directionalNotes: NoteObject[] = []
   const streams = new Map<string, NoteObject[]>()
 
-  let maxMeasure = 0
   lines.forEach((line) => {
     const [header, data] = line
-
-    // Count Measure
-    maxMeasure = Math.max(maxMeasure, +header.slice(0, 3) || 0)
 
     // BPM
     if (header.length === 5 && header.startsWith('BPM')) {
@@ -135,7 +120,6 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
     directionalNotes,
     slides,
     toTime,
-    maxMeasure,
     timings
   }
 }
