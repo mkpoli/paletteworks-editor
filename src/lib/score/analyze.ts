@@ -16,14 +16,12 @@ export type NoteObject = {
 type Timing = {
   tick: number;
   bpm: number;
-  time: number;
 }
 
 export type Score = {
   tapNotes: NoteObject[]
   directionalNotes: NoteObject[]
   slides: NoteObject[][]
-  toTime: (tick: number) => number,
   timings: Timing[]
 }
 
@@ -99,27 +97,14 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
         time += ((tick - prev.tick) * 60) / ticksPerBeat / prev.bpm
       }
 
-      return { tick, bpm, time }
+      return { tick, bpm }
     })
     .reverse()
-
-  const toTime = (tick: number) => {
-    const timing = timings.find((timing) => tick >= timing.tick)
-    if (!timing) throw 'Unexpected missing timing'
-
-    return (
-      timing.time +
-      ((tick - timing.tick) * 60) / ticksPerBeat / timing.bpm
-    )
-  }
-
-
 
   return {
     tapNotes,
     directionalNotes,
     slides,
-    toTime,
     timings
   }
 }
