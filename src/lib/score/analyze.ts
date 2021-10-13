@@ -13,7 +13,7 @@ export type NoteObject = {
   type: number
 }
 
-type Timing = {
+type BPM = {
   tick: number;
   bpm: number;
 }
@@ -22,7 +22,7 @@ export type Score = {
   tapNotes: NoteObject[]
   directionalNotes: NoteObject[]
   slides: NoteObject[][]
-  timings: Timing[]
+  bpms: BPM[]
 }
 
 const beatsPerMeasure = 4
@@ -39,8 +39,9 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
       ]
     })
 
-  const bpms = new Map<string, number>()
+  const bpmMap = new Map<string, number>()
   const bpmChangeObjects: RawObject[] = []
+  // const bpbChangeObjects: RawObject[] = []
   const tapNotes: NoteObject[] = []
   const directionalNotes: NoteObject[] = []
   const streams = new Map<string, NoteObject[]>()
@@ -50,7 +51,7 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
 
     // BPM
     if (header.length === 5 && header.startsWith('BPM')) {
-      bpms.set(header.substring(3), +data)
+      bpmMap.set(header.substring(3), +data)
       return
     }
 
@@ -88,9 +89,9 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
   const slides = [...streams.values()].map(toSlides).flat()
 
   let time = 0
-  const timings = bpmChangeObjects
+  const bpms = bpmChangeObjects
     .sort((a, b) => a.tick - b.tick)
-    .map(({ tick, value }) => ({ tick, bpm: bpms.get(value) || 0 }))
+    .map(({ tick, value }) => ({ tick, bpm: bpmMap.get(value) || 0 }))
     .map(({ tick, bpm }, i, values) => {
       const prev = values[i - 1]
       if (prev) {
@@ -105,7 +106,7 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
     tapNotes,
     directionalNotes,
     slides,
-    timings
+    bpms
   }
 }
 

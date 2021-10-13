@@ -216,7 +216,7 @@ export function convertScoreData(score: Score): {
     })
   })
 
-  const bpms = new Map<number, number>(score.timings.map(({ tick, bpm }) => [tick, bpm]))
+  const bpms = new Map<number, number>(score.bpms.map(({ tick, bpm }) => [tick, bpm]))
 
   return { singleNotes, slides, bpms }
 }
