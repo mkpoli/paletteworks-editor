@@ -1,4 +1,4 @@
-export interface MetaData {
+export interface Metadata {
   title: string
   artist: string
   author: string
@@ -38,7 +38,14 @@ export type Slide = {
   end: SlideEnd
   steps: SlideStep[]
 } & ICritical
-export type BPM = {
-  tick: number
-  bpm: number
+
+export type Score = {
+  singles: Single[]
+  slides: Slide[]
+  bpms: Map<number, number>
+}
+
+export type Beatmap = {
+  metadata: Metadata
+  score: Score
 }

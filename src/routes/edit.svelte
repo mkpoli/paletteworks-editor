@@ -1,20 +1,24 @@
 <script lang="ts" context="module">
   export const ssr = false;
 	export async function load({ page, fetch, session, context }) {
-		// const url = `/RelayPoint.sus`;
-		// const url = `/NewScore2.sus`;
-    // const url = `KING.sus`;
-    // const url = `/TellYourWorld_EX.sus`;
-    // const url = `/TellYourWorldDiamond.sus`;
-    // const url = `/Shoushitsu_MASTER.sus`;
-    const url = `/DoctorFunkBeat_MASTER.sus`;
+		// const url = `/RelayPoint.sus`
+		// const url = `/NewScore2.sus`
+    // const url = `KING.sus`
+    // const url = `/TellYourWorld_EX.sus`
+    const url = `/TellYourWorld_EX.reimported.sus`
+    // const url = `/TellYourWorldDiamond.sus`
+    // const url = `/Shoushitsu_MASTER.sus`
+    // const url = `/DoctorFunkBeat_MASTER.sus`
+    // const url = `/SingleAIR.sus`
     // const url = `/DoctorDiamond.sus`
-    // const url = `/SlideEase.sus`;
-    // const url = `MultipleBPM.sus`;
-    // const url = `SlideTest.sus`;
+    // const url = `/SlideEase.sus`
+    // const url = `MultipleBPM.sus`
+    // const url = `LongSingle.sus`
+    // const url = `SlideTest.sus`
     // const url = '/InvisibleRelayPoint.sus'
-    // const url = `ModNote.sus`;
-		const res = await fetch(url);
+    // const url = `ModNote.sus`
+    // const url = `MetaTest.sus`
+		const res = await fetch(url)
 
 		if (res.ok) {
 			return {
@@ -53,8 +57,7 @@
   // Types
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing'
-  import type { Flick, MetaData, Single, Slide as SlideType } from '$lib/score/beatmap'
-  import type { Score } from '$lib/score/analyze'
+  import type { Flick, Metadata, Single, Slide as SlideType } from '$lib/score/beatmap'
 
   // Constants
   import {
@@ -64,42 +67,31 @@
     MEASURE_HEIGHT,
     CANVAS_WIDTH,
     LANE_WIDTH,
-    NOTE_HEIGHT,
-    NOTE_PIVOT,
-    NOTE_WIDTH,
-    DIAMOND_HEIGHT,
-    DIAMOND_WIDTH,
-    DIAMOND_PIVOT,
     TICK_PER_MEASURE,
     TICK_PER_BEAT,
     EFFECT_SOUNDS,
     RESOLUTION,
   } from '$lib/consts'
-  import { FLICK_TYPES } from '$lib/score/beatmap';
+  import { FLICK_TYPES } from '$lib/score/beatmap'
 
   // Functions
-  import { onMount, setContext, tick } from 'svelte';
-  import { getMetaData, getScoreData, convertScoreData } from '$lib/score/susIO'
+  import { onMount, setContext, tick } from 'svelte'
+  import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { calcX, calcY, calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
   import { clamp } from '$lib/basic/math'
-  import { closest, max, rotateNext } from '$lib/basic/collections';
+  import { closest, max, rotateNext } from '$lib/basic/collections'
+  import { download } from '$lib/basic/file'
 
   // Score Data
-  export let susText: string;
-  let metadata: MetaData
-  let score: Score
-
-  // Load Score Data
-  metadata = getMetaData(susText)
-  score = getScoreData(susText)
-  let singleNotes: Single[]
+  export let susText: string
+  let metadata: Metadata
+  let singles: Single[]
   let slides: SlideType[]
-  let bpms: Map<number, number>
-  ({ singleNotes, slides, bpms } = convertScoreData(score))
+  let bpms: Map<number, number>;
+  ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
 
-  console.log(score)
-  console.log({ singleNotes, slides, bpms })
+  console.log({ singles, slides, bpms })
 
   // Sound
   import { AudioEvent, AudioScheduler, playOnce } from '$lib/audio';
@@ -143,13 +135,13 @@
         max(
           slides
             .map(({ start, end, steps }) => [start.tick, end.tick, steps.map(({ tick }) => tick)])
-            .concat(singleNotes.map(({ tick }) => tick))
+            .concat(singles.map(({ tick }) => tick))
             .flat() as number[]
         ) || 0
       ) / TICK_PER_MEASURE
     ) + 1
-
-  $: maxTick = score ? maxMeasure * TICK_PER_MEASURE : 0
+  $: dbg('maxMeasure', maxMeasure)
+  $: maxTick = maxMeasure * TICK_PER_MEASURE
 
   // Pointer (mouse) position -> lane / tick
   let mouseX: number
@@ -234,19 +226,19 @@
       }
 
       if (currentMode === 'tap') {
-        singleNotes.push({
+        singles.push({
           lane: pointerLane,
           tick: pointerTick,
           width: 2,
           critical: false,
           flick: 'no'
         })
-        singleNotes = singleNotes
+        singles = singles
         playOnce(audioContext, master, effectBuffers['stage'])
         return
       }
 
-      const singleHere = singleNotes.find((single) => (
+      const singleHere = singles.find((single) => (
             single.tick === pointerTick &&
             single.lane <= pointerLane && pointerLane <= single.lane + single.width
         )
@@ -255,7 +247,7 @@
       if (currentMode === 'flick') {
         if (singleHere) {
           singleHere.flick = rotateNext<Flick>(singleHere.flick, FLICK_TYPES)
-          singleNotes = singleNotes
+          singles = singles
           playOnce(audioContext, master, effectBuffers['stage'])
           return
         }
@@ -275,7 +267,7 @@
       if (currentMode === 'critical') {
         if (singleHere) {
           singleHere.critical = !singleHere.critical
-          singleNotes = singleNotes
+          singles = singles
           playOnce(audioContext, master, effectBuffers['stage'])
           return
         }
@@ -434,7 +426,7 @@
       startFrom: tick2secs(currentTick)
     }
 
-    const singleEvents: AudioEvent[] = singleNotes
+    const singleEvents: AudioEvent[] = singles
       .filter(({ tick }) => tick >= currentTick)
       .map(({ tick, critical, flick }) => ({
         time: tick2secs(tick - currentTick),
@@ -563,7 +555,7 @@
           {/each}
 
           <!-- SINGLE NOTES -->
-          {#each singleNotes as { lane, tick, width, critical, flick }}
+          {#each singles as { lane, tick, width, critical, flick }}
             <Note
               type={
                 critical
@@ -582,7 +574,7 @@
           {/each}
 
           <!-- FLICK ARROW -->
-          {#each singleNotes as { lane, tick, width, critical, flick }}
+          {#each singles as { lane, tick, width, critical, flick }}
             {#if flick !== 'no'}
               <Arrow
                 {...{ lane, tick, width, critical, flick, measureHeight }}
@@ -617,6 +609,12 @@
       on:goto={() => {
         scrollTick = (clamp(1, currentMeasure, maxMeasure + 1) - 1) * TICK_PER_MEASURE
       }}
+      on:exportFile={() => {
+        const sus = dumpSUS(metadata, { singles, slides, bpms })
+        console.log(sus)
+        const blob = new Blob([sus], {type: 'text/sus+plain'})
+        download(blob, `${new Date().toISOString().replace(':', '-')}.sus`)
+      }}
       on:export={() => {
         const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION)
         const columns = Math.ceil(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
@@ -639,20 +637,15 @@
 
         // const canvas = app.renderer.plugins.extract.canvas(app.stage)
         const canvas = app.renderer.plugins.extract.canvas(renderTexture);
-        canvas.toBlob((b) => {
-          var a = document.createElement('a');
-          document.body.append(a);
-          a.download = 'score.png';
-          a.href = URL.createObjectURL(b);
-          a.click();
-		      a.remove();
+        canvas.toBlob((blob) => {
+          download(blob, `${new Date().toISOString().replace(':', '-')}.png`)
         })
       }}
       statistics={{
-        'Taps': singleNotes.filter((x) => x.flick === 'no').length,
-        'Flicks': singleNotes.filter((x) => x.flick !== 'no').length,
+        'Taps': singles.filter((x) => x.flick === 'no').length,
+        'Flicks': singles.filter((x) => x.flick !== 'no').length,
         'Slides': slides.length,
-        'Total': singleNotes.length + slides.length,
+        'Total': singles.length + slides.length,
       }}
       bind:paused
       bind:metadata

@@ -1,28 +1,11 @@
 // Based on https://github.com/NonSpicyBurrito/sonolus-pjsekai-engine/blob/master/src/lib/sus/analyze.ts
 
+import type { Meta, Score, Timing, Note } from "./susdata"
+
 type Line = [string, string]
 type RawObject = {
   tick: number
   value: string
-}
-
-export type NoteObject = {
-  tick: number
-  lane: number
-  width: number
-  type: number
-}
-
-type BPM = {
-  tick: number;
-  bpm: number;
-}
-
-export type Score = {
-  tapNotes: NoteObject[]
-  directionalNotes: NoteObject[]
-  slides: NoteObject[][]
-  bpms: BPM[]
 }
 
 const beatsPerMeasure = 4
@@ -42,9 +25,9 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
   const bpmMap = new Map<string, number>()
   const bpmChangeObjects: RawObject[] = []
   // const bpbChangeObjects: RawObject[] = []
-  const tapNotes: NoteObject[] = []
-  const directionalNotes: NoteObject[] = []
-  const streams = new Map<string, NoteObject[]>()
+  const tapNotes: Note[] = []
+  const directionalNotes: Note[] = []
+  const streams = new Map<string, Note[]>()
 
   lines.forEach((line) => {
     const [header, data] = line
@@ -86,34 +69,25 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
     }
   })
 
-  const slides = [...streams.values()].map(toSlides).flat()
+  const slideNotes = [...streams.values()].map(toSlides).flat()
 
-  let time = 0
-  const bpms = bpmChangeObjects
+  const bpms: Timing[] = bpmChangeObjects
     .sort((a, b) => a.tick - b.tick)
-    .map(({ tick, value }) => ({ tick, bpm: bpmMap.get(value) || 0 }))
-    .map(({ tick, bpm }, i, values) => {
-      const prev = values[i - 1]
-      if (prev) {
-        time += ((tick - prev.tick) * 60) / ticksPerBeat / prev.bpm
-      }
-
-      return { tick, bpm }
-    })
+    .map(({ tick, value }) => ({ tick, value: bpmMap.get(value) || 0 }))
     .reverse()
 
   return {
     tapNotes,
     directionalNotes,
-    slides,
+    slideNotes,
     bpms
   }
 }
 
-function toSlides(stream: NoteObject[]) {
-  const slides: NoteObject[][] = []
+function toSlides(stream: Note[]) {
+  const slides: Note[][] = []
 
-  let current: NoteObject[] | undefined
+  let current: Note[] | undefined
   stream
     .sort((a, b) => a.tick - b.tick)
     .forEach((note) => {
@@ -161,4 +135,42 @@ function toRawObjects([header, data]: Line, ticksPerBeat: number) {
         }
     )
     .filter((object): object is RawObject => !!object)
+}
+
+
+export function getMetaData(sus: string): Meta {
+  const lines = sus
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('#') && !line.includes(':'))
+    .map((line): [string, string] => {
+      const index = line.indexOf(' ')
+      return [
+        line.substring(1, index).trim(),
+        line.substring(index + 1).trim(),
+      ]
+    })
+
+  const metadata: Meta = {
+    title: '',
+    artist: '',
+    designer: ''
+  }
+  lines.forEach(([header, data]) => {
+    data = data.replace(/^"(.*(?="$))"$/, '$1')
+    switch (header) {
+      case 'TITLE':
+        metadata.title = data
+        break
+      case 'ARTIST':
+        metadata.artist = data
+        break
+      case 'DESIGNER':
+        metadata.designer = data
+        break
+      default:
+        break
+    }
+  })
+  return metadata
 }
