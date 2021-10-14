@@ -136,7 +136,7 @@
           slides
             .map(({ start, end, steps }) => [start.tick, end.tick, steps.map(({ tick }) => tick)])
             .concat(singles.map(({ tick }) => tick))
-            .flat() as number[]
+            .flat(2) as number[]
         ) || 0
       ) / TICK_PER_MEASURE
     ) + 1
