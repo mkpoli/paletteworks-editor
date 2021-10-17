@@ -62,13 +62,19 @@ export function drawDashedLine(graphics: PIXI.Graphics, fromX: number, fromY: nu
 }
 
 export function drawBackground(
-  graphics: PIXI.Graphics, measureHeight: number, topY: number, maxMeasure: number, innerHeight: number
-) {   
+  PIXI: typeof import('pixi.js'),
+  graphics: PIXI.Graphics,
+  measureHeight: number,
+  topY: number,
+  maxMeasure: number,
+  innerHeight: number
+) {
+  graphics.removeChildren()
   graphics.clear()
-  
+
   // Draw lanes
   for (let i = 1; i < 14; i++) {
-    const x = i * LANE_WIDTH
+    const x = MARGIN + i * LANE_WIDTH
     if (i % 2 != 0) {
       graphics.lineStyle(2, COLORS.COLOR_LANE_PRIMARY, 1, 0.5)
     } else {
@@ -84,12 +90,22 @@ export function drawBackground(
 
     if (i % BEAT_IN_MEASURE == 0) {
       graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
-      graphics.moveTo(0, y)
-      graphics.lineTo(LANE_AREA_WIDTH, y)
+      graphics.moveTo(MARGIN, y)
+      graphics.lineTo(MARGIN + LANE_AREA_WIDTH, y)
+
+      const number = i / BEAT_IN_MEASURE
+      const text = new PIXI.Text(`#${number + 1}`, {
+        fill: 'white'
+      })
+      text.x = MARGIN - TEXT_MARGIN
+      text.y = y
+      text.anchor.x = 1
+      text.anchor.y = 0.5
+      graphics.addChild(text)
     } else {
       graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
-      graphics.moveTo(LANE_WIDTH, y)
-      graphics.lineTo(LANE_AREA_WIDTH - LANE_WIDTH, y)
+      graphics.moveTo(MARGIN + LANE_WIDTH, y)
+      graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
     }
   }
 }

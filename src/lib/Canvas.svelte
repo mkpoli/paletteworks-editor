@@ -42,28 +42,13 @@
 
   <!-- BACKGROUND -->
   <Graphics
-    x={MARGIN}
-    y={0}
-    draw={(graphics) => { drawBackground(graphics, measureHeight, calcY(maxTick, measureHeight), maxMeasure, innerHeight) }}
+    draw={(graphics) => { drawBackground(PIXI, graphics, measureHeight, calcY(maxTick, measureHeight), maxMeasure, innerHeight) }}
   />
 
   <!-- BPM -->
   <Graphics
     draw={(graphics) => { drawBPMs(graphics, PIXI, bpms, measureHeight) }}
   />
-
-  <!-- MEASURE (BAR) NUMBER -->
-  {#each Array(maxMeasure + 1) as _, i}
-    <Text
-      text={`#${i + 1}`}
-      anchor={new PIXI.Point(1, 0.5)}
-      x={MARGIN - TEXT_MARGIN}
-      y={innerHeight - (MARGIN_BOTTOM + (i * measureHeight))}
-      style={{
-        fill: 'white'
-      }}
-    />
-  {/each}
 
   <!-- SINGLE NOTES -->
   {#each singles as { lane, tick, width, critical, flick }}
