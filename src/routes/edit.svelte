@@ -666,7 +666,7 @@
   }
 
   .cursor-select {
-    cursor: url('$assets/select-cursor.png') 13 13, auto
+    cursor: url('$assets/select-cursor.png') 6 4, auto
   }
 </style>
 
