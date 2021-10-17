@@ -1,8 +1,12 @@
 <script lang="ts">
   import Icon, { addIcon } from '@iconify/svelte'
 
+  import Menu from '$lib/basic/ui/Menu.svelte'
+  import MenuItem from '$lib/basic/ui/MenuItem.svelte'
+  import MenuDivider from '$lib/basic/ui/MenuDivider.svelte'
+  import MenuTrigger from '$lib/basic/ui/MenuTrigger.svelte'
+
   import { ALLOWED_SNAPPINGS, MODE_TEXTURES } from '$lib/editing'
-  
   import type { Mode, SnapTo } from '$lib/editing'
 
   addIcon('custom:logo', {
@@ -17,24 +21,48 @@
   function setMode(mode: string) {
     currentMode = mode as Mode
   }
+
+  let menu: HTMLDivElement
 </script>
 
 <div class="toolbox-container">
-  <div class="menu-container">
-    <Icon icon="custom:logo" width=36 />
-    PaletteWorks
-    <Icon icon="ph:caret-down-fill" width=15 />
-  </div>
+  <Menu bind:menu={menu}>
+    <MenuTrigger class="menu-trigger" {menu} slot="trigger">
+      <Icon icon="custom:logo" width=36 />
+      PaletteWorks
+      <Icon icon="ph:caret-down-fill" width=15 />
+    </MenuTrigger>
+
+    <MenuItem icon="ic:outline-insert-drive-file" text="ファイル (&F)">
+      <MenuItem icon="eos-icons:content-new" text="新規 (&N)"/>
+      <MenuDivider/>
+      <MenuItem icon="ic:baseline-folder-open" text="開く (&O)"/>
+      <MenuDivider/>
+      <MenuItem icon="mdi:content-save" text="保存 (&S)"/>
+      <MenuDivider/>
+      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)"/>
+    </MenuItem>
+    <MenuDivider/>
+      <MenuItem icon="ic:sharp-edit" text="編集 (&E)" >
+        <MenuItem icon="ic:round-undo" text="元に戻す (&U)" />
+        <MenuItem icon="ic:round-redo" text="やり直し (&R)" />
+        <MenuDivider/>
+        <MenuItem icon="ic:content-cut" text="切り取り (&X)" />
+        <MenuItem icon="mdi:content-copy" text="コピー (&C)" />
+        <MenuItem icon="mdi:content-save" text="貼り付け (&V)" />
+      </MenuItem>
+    <MenuDivider/>
+    <MenuItem icon="vaadin:cog" text="設定 (&P)" />
+    <MenuDivider/>
+    <MenuItem icon="vaadin:question-circle-o" text="ヘルプ (&H)" disabled={true} />
+  </Menu>
+
   <div class="tool-container">
     {#each Object.entries(MODE_TEXTURES) as [ mode, src ]}
       <button on:click={() => { setMode(mode) }} class:current={ currentMode === mode }>
         <img src={src} alt={`${mode} Mode`} />
       </button>
     {/each}
-    <!-- <label>
-      <input type="checkbox" />
-      SNAP?
-    </label> -->
     <select bind:value={snapTo}>
       {#each ALLOWED_SNAPPINGS as snap}
         <option value={snap}>{snap}分音符</option>
@@ -50,7 +78,7 @@
     grid-template-rows: auto 1fr;
   }
 
-  .menu-container {
+  .toolbox-container :global(.menu-trigger) {
     padding: 1em;
     display: flex;
     justify-content: center;
@@ -60,7 +88,7 @@
     border-bottom: 2px solid #000;
   }
 
-  .menu-container:hover {
+  .toolbox-container :global(.menu-trigger:hover) {
     filter: brightness(1.5);
   }
 

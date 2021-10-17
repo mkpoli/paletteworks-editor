@@ -40,12 +40,14 @@
   import ToolBox from '$lib/ToolBox.svelte'
   import PropertyBox from '$lib/PropertyBox.svelte'
   
-  // Components
+  // UI Components
   import ZoomIndicator from '$lib/ZoomIndicator.svelte'
   import ControlHandler from '$lib/ControlHandler.svelte'
   import DebugInfo from '$lib/basic/DebugInfo.svelte'
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte'
-
+  import Menu from '$lib/basic/ui/Menu.svelte';
+  import MenuItem from '$lib/basic/ui/MenuItem.svelte';
+  import MenuTrigger from '$lib/basic/ui/MenuTrigger.svelte'
   // Toast
   import { toast, SvelteToast } from '@zerodevx/svelte-toast'
 
@@ -176,6 +178,7 @@
   // Textures
   import spritesheet from '$assets/spritesheet.json'
   import spritesheetImage from '$assets/spritesheet.png'
+
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
   setContext('TEXTURES', TEXTURES)
@@ -504,6 +507,8 @@
     // Start -> Pause
     scheduler?.stop()
   }
+
+  let menu: HTMLDivElement
 </script>
 
 <svelte:head>
@@ -689,6 +694,11 @@
 />
 
 <SvelteToast/>
+
+<Menu bind:menu>
+  <MenuTrigger contextArea={canvasContainer} {menu} slot="trigger" ></MenuTrigger>
+  <MenuItem icon="mdi:delete" text="削除"/>
+</Menu>
 
 <style>
   /* Global Styles */

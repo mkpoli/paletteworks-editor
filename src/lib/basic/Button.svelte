@@ -2,9 +2,10 @@
   import Icon from '@iconify/svelte'
 
   export let icon: string = null
+  export let disabled: boolean = false
 </script>
 
-<button on:click class={$$props.class}>
+<button on:click class={$$props.class} {disabled}>
   {#if icon}
     <Icon icon={icon} height="1em" />
   {/if}
@@ -35,7 +36,7 @@
     background: transparent;
   }
 
-  button:hover {
+  button:hover:not([disabled]) {
     filter: brightness(1.2);
   }
 </style>
