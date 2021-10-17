@@ -33,26 +33,26 @@
       <Icon icon="ph:caret-down-fill" width=15 />
     </MenuTrigger>
 
-    <MenuItem icon="ic:outline-insert-drive-file" text="ファイル (&F)">
-      <MenuItem icon="eos-icons:content-new" text="新規 (&N)"/>
+    <MenuItem icon="ic:outline-insert-drive-file" text="ファイル (&F)" disabled={true}>
+      <MenuItem icon="eos-icons:content-new" text="新規 (&N)" disabled={true}/>
       <MenuDivider/>
-      <MenuItem icon="ic:baseline-folder-open" text="開く (&O)"/>
+      <MenuItem icon="ic:baseline-folder-open" text="開く (&O)" disabled={true}/>
       <MenuDivider/>
-      <MenuItem icon="mdi:content-save" text="保存 (&S)"/>
+      <MenuItem icon="mdi:content-save" text="保存 (&S)" disabled={true}/>
       <MenuDivider/>
-      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)"/>
+      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" disabled={true}/>
     </MenuItem>
     <MenuDivider/>
-      <MenuItem icon="ic:sharp-edit" text="編集 (&E)" >
-        <MenuItem icon="ic:round-undo" text="元に戻す (&U)" />
-        <MenuItem icon="ic:round-redo" text="やり直し (&R)" />
+      <MenuItem icon="ic:sharp-edit" text="編集 (&E)" disabled={true}>
+        <MenuItem icon="ic:round-undo" text="元に戻す (&U)" disabled={true} />
+        <MenuItem icon="ic:round-redo" text="やり直し (&R)" disabled={true} />
         <MenuDivider/>
-        <MenuItem icon="ic:content-cut" text="切り取り (&X)" />
-        <MenuItem icon="mdi:content-copy" text="コピー (&C)" />
-        <MenuItem icon="mdi:content-save" text="貼り付け (&V)" />
+        <MenuItem icon="ic:content-cut" text="切り取り (&X)" disabled={true} />
+        <MenuItem icon="mdi:content-copy" text="コピー (&C)" disabled={true} />
+        <MenuItem icon="mdi:content-save" text="貼り付け (&V)" disabled={true} />
       </MenuItem>
     <MenuDivider/>
-    <MenuItem icon="vaadin:cog" text="設定 (&P)" />
+    <MenuItem icon="vaadin:cog" text="設定 (&P)" disabled={true} />
     <MenuDivider/>
     <MenuItem icon="vaadin:question-circle-o" text="ヘルプ (&H)" disabled={true} />
   </Menu>

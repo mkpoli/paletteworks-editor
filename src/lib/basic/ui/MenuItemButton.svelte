@@ -62,8 +62,15 @@
     border-radius: 0;
   }
 
-  .menu-item :global(button:hover) {
+  .menu-item :global(button:hover:not([disabled])) {
     background-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .menu-item :global(button[disabled]) {
+    filter:
+      blur(0.5px)
+      brightness(.85);
+    text-decoration: line-through;
   }
 
   .menu-item :global(.chevron) {
