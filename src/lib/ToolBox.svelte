@@ -1,10 +1,10 @@
 <script lang="ts">
   import Icon, { addIcon } from '@iconify/svelte'
 
-  import Menu from '$lib/basic/ui/Menu.svelte'
-  import MenuItem from '$lib/basic/ui/MenuItem.svelte'
-  import MenuDivider from '$lib/basic/ui/MenuDivider.svelte'
-  import MenuTrigger from '$lib/basic/ui/MenuTrigger.svelte'
+  import Menu from '$lib/ui/Menu.svelte'
+  import MenuItem from '$lib/ui/MenuItem.svelte'
+  import MenuDivider from '$lib/ui/MenuDivider.svelte'
+  import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
 
   import { ALLOWED_SNAPPINGS, MODE_TEXTURES } from '$lib/editing'
   import type { Mode, SnapTo } from '$lib/editing'

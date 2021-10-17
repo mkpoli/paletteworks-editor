@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ClickableIcon from "./basic/ClickableIcon.svelte";
+  import ClickableIcon from "$lib/ui/ClickableIcon.svelte";
 
   export let zoom: number
   export let min: number

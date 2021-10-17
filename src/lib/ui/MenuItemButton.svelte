@@ -2,7 +2,7 @@
   import { createEventDispatcher } from "svelte"
 
   import Icon from "@iconify/svelte"
-  import Button from "$lib/basic/Button.svelte"
+  import Button from "$lib/ui/Button.svelte"
 
   export let container: HTMLDivElement
   export let hasSubMenu: boolean

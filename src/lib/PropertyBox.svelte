@@ -5,9 +5,9 @@
 
   
   import Icon from '@iconify/svelte'
-  import Button from "$lib/basic/Button.svelte"
-  import ClickableIcon from "$lib/basic/ClickableIcon.svelte"
-  import TextInput from "$lib/basic/TextInput.svelte"
+  import Button from "$lib/ui/Button.svelte"
+  import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
+  import TextInput from "$lib/ui/TextInput.svelte"
 
   import filesize from 'filesize'
 

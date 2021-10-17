@@ -43,11 +43,11 @@
   // UI Components
   import ZoomIndicator from '$lib/ZoomIndicator.svelte'
   import ControlHandler from '$lib/ControlHandler.svelte'
-  import DebugInfo from '$lib/basic/DebugInfo.svelte'
+  import DebugInfo from '$lib/ui/DebugInfo.svelte'
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte'
-  import Menu from '$lib/basic/ui/Menu.svelte';
-  import MenuItem from '$lib/basic/ui/MenuItem.svelte';
-  import MenuTrigger from '$lib/basic/ui/MenuTrigger.svelte'
+  import Menu from '$lib/ui/Menu.svelte';
+  import MenuItem from '$lib/ui/MenuItem.svelte';
+  import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
   // Toast
   import { toast, SvelteToast } from '@zerodevx/svelte-toast'
 
