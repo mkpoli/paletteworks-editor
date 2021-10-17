@@ -528,7 +528,9 @@
         {pointerLane}
         {currentMode}
         {innerHeight}
-        score={{ singles, slides, bpms }}
+        {singles}
+        {slides}
+        {bpms}
       />
       <div class="zoom-indicator-container">
         <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />

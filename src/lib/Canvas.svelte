@@ -1,14 +1,14 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
   import type { Mode } from '$lib/editing'
-  import type { Score } from '$lib/score/beatmap';
+  import type { Score, Single, Slide as SlideType } from '$lib/score/beatmap';
 
   import { getContext } from 'svelte'
   import { calcX, calcY } from '$lib/timing'
-  import { Pixi, Text, Sprite, Graphics } from 'svelte-pixi'
+  import { Pixi, Text, Graphics } from 'svelte-pixi'
   import { LANE_WIDTH, MARGIN, MARGIN_BOTTOM, TEXT_MARGIN } from '$lib/consts'
-  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
-  
+  import { drawBackground, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
+
   // Notes
   import Note from '$lib/render/Note.svelte'
   import Arrow from '$lib/render/Arrow.svelte'
@@ -20,7 +20,6 @@
   export let currentTick: number
   export let maxTick: number
   export let maxMeasure: number
-  export let score: Score
   export let pointerLane: number
   export let pointerTick: number
   export let currentMode: Mode
@@ -28,7 +27,9 @@
 
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
 
-  const { singles, slides, bpms } = score
+  export let singles: Single[]
+  export let slides: SlideType[]
+  export let bpms: Map<number, number>
 </script>
 
 <Pixi {app}>
