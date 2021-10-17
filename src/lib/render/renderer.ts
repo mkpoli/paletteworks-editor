@@ -9,7 +9,6 @@ import {
   BEAT_IN_MEASURE,
   MARGIN_BOTTOM,
   LANE_WIDTH,
-  LANE_COUNT,
   LANE_AREA_WIDTH,
   TEXT_MARGIN,
   MARGIN,
@@ -26,7 +25,7 @@ import { calcMidX, calcX, calcY } from '$lib/timing'
 import { MODE_TEXTURES } from '$lib/editing'
 
 // Drawing Functions
-export function drawDashedLine(graphics: PIXI.Graphics, fromX: number, fromY: number, toX: number, toY: number, dash: number = 10, gap: number = 8) {
+export function drawDashedLine(graphics: PIXI.Graphics, fromX: number, fromY: number, toX: number, toY: number, dash = 10, gap = 8) {
   graphics.moveTo(fromX, fromY);
   const currentPosition = {
     x: fromX,
@@ -215,17 +214,19 @@ export function drawSnappingElements(
     case 'tap':
     case 'flick':
     case 'slide':
-    case 'critical':
+    case 'critical': {
       const [NOTE_PIVOT_X, NOTE_PIVOT_Y] = NOTE_PIVOT
       floating.pivot.set(NOTE_PIVOT_X, NOTE_PIVOT_Y)
       floating.height = NOTE_HEIGHT
       floating.width = NOTE_WIDTH * 2
       break
-    case 'mid':
+    }
+    case 'mid': {
       const [DIAMOND_PIVOT_X, DIAMOND_PIVOT_Y] = DIAMOND_PIVOT
       floating.pivot.set(DIAMOND_PIVOT_X, DIAMOND_PIVOT_Y)
       floating.height = DIAMOND_HEIGHT
       floating.width = DIAMOND_WIDTH
+    }
   }
 
   floating.alpha = 0.5
@@ -313,7 +314,6 @@ export function drawDiamonds(
       arr
         .filter((current: SlideStep) => current.diamond)
         .forEach((current) => {
-          const sprite = new PIXI.Sprite(TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`])
           const currentY = calcY(current.tick, measureHeight)
 
           const a = (targetY - originY) / Math.pow(targetX - originX, 2)
