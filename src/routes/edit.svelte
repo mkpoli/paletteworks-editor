@@ -71,6 +71,7 @@
 
   // Functions
   import { onMount, setContext, tick } from 'svelte'
+  import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
@@ -231,20 +232,8 @@
   let currentMode: Mode = 'select'
   let snapTo: SnapTo = 8
 
-  let debugInfo = new Map<string, string | number>()
-  function formatPoint(x: number, y: number) {
-    return `(${x?.toFixed(3)}, ${y?.toFixed(3)})`
-  }
-  
-  function dbg(title: string, value: string | number) {
-    debugInfo.set(title, value)
-    debugInfo = debugInfo
-  }
-
-  $: dbg('mouse', formatPoint(mouseX, mouseY))
   $: dbg('scrollTick', scrollTick)
-  $: dbg('pointerLane', pointerLane)
-  $: dbg('pointerTick', pointerTick)
+
   
   $: currentBPM = bpms.get(closest([...bpms.keys()], currentTick, true))
   $: dbg('closestTick', currentBPM)
@@ -440,7 +429,7 @@
       bind:scrollMode
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
-    <DebugInfo bind:debugInfo />
+    <DebugInfo/>
   {/if}
 </main>
 
