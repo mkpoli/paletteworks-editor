@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
-  import type { MetaData } from "$lib/score/beatmap"
+  import type { Metadata } from "$lib/score/beatmap"
   const dispatch = createEventDispatcher()
 
   
@@ -14,7 +14,7 @@
   export let currentMeasure: number
   export let statistics: Record<string, number>
   export let paused: boolean
-  export let metadata: MetaData
+  export let metadata: Metadata
   export let files: FileList
   export let scrollMode: 'page' | 'smooth'
 </script>
