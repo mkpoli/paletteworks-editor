@@ -9,7 +9,7 @@
   import { LANE_WIDTH } from '$lib/consts'
   import { drawBackground, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
   import { FLICK_TYPES } from '$lib/score/beatmap'
-  import { rotateNext } from '$lib/basic/collections'
+  import { closest, rotateNext } from '$lib/basic/collections'
 
   // Notes
   import Note from '$lib/render/Note.svelte'
@@ -44,7 +44,7 @@
       if (currentMode === 'bpm') {
         dispatch('changeBPM', {
           tick: pointerTick,
-          bpm: bpms.get(pointerTick)
+          bpm: bpms.get(pointerTick) || bpms.get(closest([...bpms.keys()], pointerTick, true))
         })
         return
       }
