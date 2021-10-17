@@ -73,10 +73,9 @@
   import { onMount, setContext, tick } from 'svelte'
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
-  import { calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
   import { clamp } from '$lib/basic/math'
-  import { closest, max, rotateNext } from '$lib/basic/collections'
+  import { closest, max } from '$lib/basic/collections'
   import { download } from '$lib/basic/file'
 
   // Score Data
@@ -136,20 +135,6 @@
   $: dbg('maxMeasure', maxMeasure)
   $: maxTick = maxMeasure * TICK_PER_MEASURE
 
-  // Pointer (mouse) position -> lane / tick
-  let mouseX: number
-  let mouseY: number
-
-  $: pointerLane = clamp(2, snap(calcLane(mouseX), 1), 12)
-  $: pointerTick = clamp(
-    0,
-    snap(
-      calcTick(mouseY, measureHeight) + scrollTick,
-      TICK_PER_MEASURE / snapTo,
-    ),
-    maxMeasure * TICK_PER_MEASURE
-  )
-
   // Scroll position
   let scrollTick = 0
   $: if (scrollTick < 0) scrollTick = 0
@@ -199,11 +184,6 @@
     })
 
     app.stage.interactive = true
-    app.stage.on('mousemove', (event: PIXI.InteractionEvent) => {
-      const { x, y } = event.data.global
-      mouseX = x
-      mouseY = y
-    })
 
     // app.stage.addChild(new PIXI.Sprite.from(createGradientCanvas(CANVAS_WIDTH, innerHeight, ['#503c9f', '#48375b'])))
     const baseTexture = new PIXI.BaseTexture(spritesheetImage, null);
@@ -360,8 +340,8 @@
         {maxTick}
         {currentTick}
         {measureHeight}
-        {pointerTick}
-        {pointerLane}
+        {scrollTick}
+        {snapTo}
         {currentMode}
         {innerHeight}
         bind:singles
@@ -436,9 +416,7 @@
 <BpmDialog
   bind:opened={bpmDialogOpened}
   bind:value={bpmDialogValue}
-  exist={
-    bpms.has(lastPointerTick)
-  }
+  exist={bpms.has(lastPointerTick)}
   on:ok={() => {
     if (bpmDialogValue) {
       const exist = bpms.has(lastPointerTick)

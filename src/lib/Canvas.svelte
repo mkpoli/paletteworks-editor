@@ -3,18 +3,19 @@
   import type { Mode } from '$lib/editing'
   import type { Flick, Single, Slide as SlideType } from '$lib/score/beatmap';
 
-  import { createEventDispatcher, getContext, onMount } from 'svelte'
-  import { calcX, calcY } from '$lib/timing'
+  import { calcLaneTick, calcX, calcY } from '$lib/timing'
   import { Pixi, Graphics } from 'svelte-pixi'
   import { LANE_WIDTH } from '$lib/consts'
   import { drawBackground, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
+  import { dbg, formatPoint } from '$lib/basic/debug'
 
   // Notes
   import Note from '$lib/render/Note.svelte'
   import Arrow from '$lib/render/Arrow.svelte'
   import Slide from '$lib/render/Slide.svelte'
+  import { dbg, formatPoint } from './basic/debug'
 
   export let app: PIXI.Application
   export let PIXI: typeof import('pixi.js')
@@ -140,7 +141,13 @@
       }
     })
 
-    app.renderer.view.addEventListener('pointermove', async () => {
+    app.stage.addListener('pointermove', (event: PIXI.InteractionEvent) => {
+      pointer = event.data.global;
+
+      ({ lane: pointerLane, tick: pointerTick } = calcLaneTick(
+        pointer, snapTo, measureHeight, scrollTick, maxMeasure
+      ))
+
       if (currentMode === 'slide' && dragging && draggingSlide) {
         draggingSlide.end.lane = pointerLane
         draggingSlide.end.tick = pointerTick
