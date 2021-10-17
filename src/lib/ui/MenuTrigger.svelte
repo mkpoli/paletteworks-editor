@@ -25,11 +25,10 @@
     }
   })
 
-  $: menu && instance?.setContent(menu), console.log(menu)
+  $: menu && instance?.setContent(menu)
 
   $: if (contextArea) {
     // Context Menu
-    console.log(`contextArea registered`)
     instance = tippy(contextArea, {
       placement: 'right-start',
       trigger: 'manual',
@@ -41,7 +40,6 @@
       event.preventDefault()
 
       const mouseRect = new DOMRect(event.clientX, event.clientY, 0, 0)
-      console.log(mouseRect)
       instance.setProps({
         getReferenceClientRect: () => mouseRect
       })
