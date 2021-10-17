@@ -38,6 +38,7 @@
 <script lang="ts">
   // Parts
   import ToolBox from '$lib/ToolBox.svelte'
+  import Canvas from '$lib/Canvas.svelte'
   import PropertyBox from '$lib/PropertyBox.svelte'
   
   // UI Components
@@ -48,13 +49,9 @@
   import Menu from '$lib/ui/Menu.svelte';
   import MenuItem from '$lib/ui/MenuItem.svelte';
   import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
+
   // Toast
   import { toast, SvelteToast } from '@zerodevx/svelte-toast'
-
-  // Drawing
-  import Note from '$lib/render/Note.svelte'
-  import Arrow from '$lib/render/Arrow.svelte'
-  import Slide from '$lib/render/Slide.svelte'
 
   // Types
   import type PIXI from 'pixi.js'
@@ -63,12 +60,9 @@
 
   // Constants
   import {
-    MARGIN,
     MARGIN_BOTTOM,
-    TEXT_MARGIN,
     MEASURE_HEIGHT,
     CANVAS_WIDTH,
-    LANE_WIDTH,
     TICK_PER_MEASURE,
     TICK_PER_BEAT,
     EFFECT_SOUNDS,
@@ -79,7 +73,7 @@
   // Functions
   import { onMount, setContext, tick } from 'svelte'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
-  import { calcX, calcY, calcLane, calcTick } from '$lib/timing'
+  import { calcLane, calcTick } from '$lib/timing'
   import { snap } from '$lib/editing'
   import { clamp } from '$lib/basic/math'
   import { closest, max, rotateNext } from '$lib/basic/collections'
@@ -104,9 +98,6 @@
   let master: GainNode
 
   // PIXI.js
-  import { Pixi, Text, Sprite, Graphics } from 'svelte-pixi'
-  import { drawBackground, drawSlidePath, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
-
   let PIXI: typeof import('pixi.js')
   let app: PIXI.Application
 
@@ -526,85 +517,19 @@
       bind:this={canvasContainer}
       style={`width: ${CANVAS_WIDTH}px;`}
     >
-      <Pixi {app}>
-          <!-- PLAYHEAD -->
-          <Graphics
-            draw={(graphics) => {
-              drawPlayhead(graphics, PIXI, calcY(currentTick, measureHeight))
-            }}
-          />
-
-          <!-- BACKGROUND -->
-          <Graphics
-            x={MARGIN}
-            y={0}
-            draw={(graphics) => { drawBackground(graphics, measureHeight, calcY(maxTick, measureHeight), maxMeasure, innerHeight) }}
-          />
-
-          <!-- BPM -->
-          <Graphics
-            draw={(graphics) => { drawBPMs(graphics, PIXI, bpms, measureHeight) }}
-          />
-
-          <!-- MEASURE (BAR) NUMBER -->
-          {#each Array(maxMeasure + 1) as _, i}
-            <Text
-              text={`#${i + 1}`}
-              anchor={new PIXI.Point(1, 0.5)}
-              x={MARGIN - TEXT_MARGIN}
-              y={innerHeight - (MARGIN_BOTTOM + (i * measureHeight))}
-              style={{
-                fill: 'white'
-              }}
-            />
-          {/each}
-
-          <!-- SINGLE NOTES -->
-          {#each singles as { lane, tick, width, critical, flick }}
-            <Note
-              type={
-                critical
-                  ? 'critical'
-                  : flick !== 'no'
-                    ? 'flick'
-                    : 'tap'
-                  }
-              {...{ lane, tick, width, measureHeight }}
-            />
-          {/each}
-    
-          <!-- SLIDE NOTES -->
-          {#each slides as slide}
-            <Slide {slide} {measureHeight} />
-          {/each}
-
-          <!-- FLICK ARROW -->
-          {#each singles as { lane, tick, width, critical, flick }}
-            {#if flick !== 'no'}
-              <Arrow
-                {...{ lane, tick, width, critical, flick, measureHeight }}
-              />
-            {/if}
-          {/each}
-          {#each slides as { end: { lane, tick, width, flick }, critical }}
-            {#if flick !== 'no'}
-              <Arrow
-                {...{ lane, tick, width, critical, flick, measureHeight }}
-              />
-            {/if}
-          {/each}
-
-          <!-- FLOATING ITEMS -->
-          <Graphics
-            draw={(graphics) => {
-              drawSnappingElements(
-                graphics, PIXI, TEXTURES, currentMode,
-                calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight),
-                bpms.has(pointerTick)
-              )
-            }}
-          />
-      </Pixi>
+      <Canvas
+        bind:app
+        {PIXI}
+        {maxMeasure}
+        {maxTick}
+        {currentTick}
+        {measureHeight}
+        {pointerTick}
+        {pointerLane}
+        {currentMode}
+        {innerHeight}
+        score={{ singles, slides, bpms }}
+      />
       <div class="zoom-indicator-container">
         <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
       </div>
