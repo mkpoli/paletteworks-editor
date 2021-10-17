@@ -1,13 +1,15 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
   import type { Mode } from '$lib/editing'
-  import type { Score, Single, Slide as SlideType } from '$lib/score/beatmap';
+  import type { Flick, Single, Slide as SlideType } from '$lib/score/beatmap';
 
-  import { getContext } from 'svelte'
+  import { createEventDispatcher, getContext, onMount } from 'svelte'
   import { calcX, calcY } from '$lib/timing'
-  import { Pixi, Text, Graphics } from 'svelte-pixi'
-  import { LANE_WIDTH, MARGIN, MARGIN_BOTTOM, TEXT_MARGIN } from '$lib/consts'
+  import { Pixi, Graphics } from 'svelte-pixi'
+  import { LANE_WIDTH } from '$lib/consts'
   import { drawBackground, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
+  import { FLICK_TYPES } from '$lib/score/beatmap'
+  import { rotateNext } from '$lib/basic/collections'
 
   // Notes
   import Note from '$lib/render/Note.svelte'
@@ -30,6 +32,161 @@
   export let singles: Single[]
   export let slides: SlideType[]
   export let bpms: Map<number, number>
+
+  const dispatch = createEventDispatcher<{
+    changeBPM: { tick: number, bpm: number },
+    playSound: string
+  }>()
+  let dragging: boolean = false
+  let draggingSlide: SlideType = null
+  onMount(() => {
+    app.renderer.view.addEventListener('click', async () => {
+      if (currentMode === 'bpm') {
+        dispatch('changeBPM', {
+          tick: pointerTick,
+          bpm: bpms.get(pointerTick)
+        })
+        return
+      }
+
+      if (currentMode === 'tap') {
+        singles.push({
+          lane: pointerLane,
+          tick: pointerTick,
+          width: 2,
+          critical: false,
+          flick: 'no'
+        })
+        singles = singles
+        dispatch('playSound', 'stage')
+        return
+      }
+
+      const singleHere = singles.find((single) => (
+            single.tick === pointerTick &&
+            single.lane <= pointerLane && pointerLane <= single.lane + single.width
+        )
+      )
+
+      if (currentMode === 'flick') {
+        if (singleHere) {
+          singleHere.flick = rotateNext<Flick>(singleHere.flick, FLICK_TYPES)
+          singles = singles
+          dispatch('playSound', 'stage')
+          return
+        }
+
+        const slideEndHere = slides.find((slide) => (
+          slide.end.tick === pointerTick &&
+          slide.end.lane <= pointerLane && pointerLane <= slide.end.lane + slide.end.width
+        ))
+        if (slideEndHere) {
+          slideEndHere.end.flick = rotateNext<Flick>(slideEndHere.end.flick, FLICK_TYPES)
+          slides = slides
+          dispatch('playSound', 'stage')
+        }
+        return
+      }
+
+      if (currentMode === 'critical') {
+        if (singleHere) {
+          singleHere.critical = !singleHere.critical
+          singles = singles
+          dispatch('playSound', 'stage')
+          return
+        }
+
+        const slideHere = slides.find((slide) => {
+          return (
+            slide.start.tick === pointerTick &&
+            slide.start.lane <= pointerLane && pointerLane <= slide.start.lane + slide.start.width
+          ) || (
+            slide.end.tick === pointerTick &&
+            slide.end.lane <= pointerLane && pointerLane <= slide.end.lane + slide.end.width
+          )
+        })
+
+        if (slideHere) {
+          slideHere.critical = !slideHere.critical
+          slides = slides
+          dispatch('playSound', 'stage')
+          return
+        }
+      }
+    })
+
+    app.renderer.view.addEventListener('pointerdown', async () => {
+      if (currentMode === 'slide') {
+        dragging = true
+        draggingSlide = {
+          start: {
+            tick: pointerTick,
+            lane: pointerLane,
+            width: 2,
+            easeType: false
+          },
+          end: {
+            tick: pointerTick,
+            lane: pointerLane,
+            flick: 'no',
+            width: 2
+          },
+          critical: false,
+          steps: []
+        }
+        slides.push(draggingSlide)
+        slides = slides
+        dispatch('playSound', 'stage')
+      }
+    })
+
+    app.renderer.view.addEventListener('pointermove', async () => {
+      if (currentMode === 'slide' && dragging && draggingSlide) {
+        draggingSlide.end.lane = pointerLane
+        draggingSlide.end.tick = pointerTick
+        slides = slides
+      }
+    })
+
+    app.renderer.view.addEventListener('pointerup', async () => {
+      if (currentMode === 'slide' && dragging && draggingSlide) {
+        if (draggingSlide.end.tick < draggingSlide.start.tick) {
+          // Swap
+          const tick = draggingSlide.start.tick
+          const lane = draggingSlide.start.lane
+          // TODO: width
+          draggingSlide.start.tick = draggingSlide.end.tick
+          draggingSlide.start.lane = draggingSlide.end.lane
+          draggingSlide.end.tick = tick
+          draggingSlide.end.lane = lane
+        }
+        slides = slides
+        dragging = false
+        draggingSlide = null
+      } 
+    })
+
+    // app.renderer.view.addEventListener('dblclick', () => {
+    //   if (currentMode === 'bpm') {
+    //     bpms.delete(pointerTick)
+    //     bpms = bpms
+    //     return
+    //   }
+
+    //   if (currentMode === 'select') {
+    //     const singleHere = singleNotes.find((single) => (
+    //           single.tick === pointerTick &&
+    //           single.lane <= pointerLane && pointerLane <= single.lane + single.width
+    //       )
+    //     )
+    //     if (singleHere) {
+    //       singleNotes.splice(singleNotes.indexOf(singleHere), 1)
+    //       singleNotes = singleNotes
+    //       return
+    //     }
+    //   }
+    // })
+  })
 </script>
 
 <Pixi {app}>

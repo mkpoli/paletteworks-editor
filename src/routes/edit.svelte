@@ -56,7 +56,7 @@
   // Types
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing'
-  import type { Flick, Metadata, Single, Slide as SlideType } from '$lib/score/beatmap'
+  import type { Metadata, Single, Slide as SlideType } from '$lib/score/beatmap'
 
   // Constants
   import {
@@ -68,7 +68,6 @@
     EFFECT_SOUNDS,
     RESOLUTION,
   } from '$lib/consts'
-  import { FLICK_TYPES } from '$lib/score/beatmap'
 
   // Functions
   import { onMount, setContext, tick } from 'svelte'
@@ -174,9 +173,6 @@
   let TEXTURES: Record<string, PIXI.Texture> = {}
   setContext('TEXTURES', TEXTURES)
 
-  let dragging: boolean = false
-  let draggingSlide: SlideType = null
-
   onMount(async () => {
     // Initialise Audio
     audioContext = new AudioContext()
@@ -208,155 +204,6 @@
       mouseY = y
     })
 
-    app.renderer.view.addEventListener('click', async () => {
-      if (currentMode === 'bpm') {
-        lastPointerTick = pointerTick
-        if (bpms.has(pointerTick)) {
-          bpmDialogValue = bpms.get(pointerTick)
-        }
-        await tick()
-        bpmDialogOpened = true
-        return
-      }
-
-      if (currentMode === 'tap') {
-        singles.push({
-          lane: pointerLane,
-          tick: pointerTick,
-          width: 2,
-          critical: false,
-          flick: 'no'
-        })
-        singles = singles
-        playOnce(audioContext, master, effectBuffers['stage'])
-        return
-      }
-
-      const singleHere = singles.find((single) => (
-            single.tick === pointerTick &&
-            single.lane <= pointerLane && pointerLane <= single.lane + single.width
-        )
-      )
-
-      if (currentMode === 'flick') {
-        if (singleHere) {
-          singleHere.flick = rotateNext<Flick>(singleHere.flick, FLICK_TYPES)
-          singles = singles
-          playOnce(audioContext, master, effectBuffers['stage'])
-          return
-        }
-
-        const slideEndHere = slides.find((slide) => (
-          slide.end.tick === pointerTick &&
-          slide.end.lane <= pointerLane && pointerLane <= slide.end.lane + slide.end.width
-        ))
-        if (slideEndHere) {
-          slideEndHere.end.flick = rotateNext<Flick>(slideEndHere.end.flick, FLICK_TYPES)
-          slides = slides
-          playOnce(audioContext, master, effectBuffers['stage'])
-        }
-        return
-      }
-
-      if (currentMode === 'critical') {
-        if (singleHere) {
-          singleHere.critical = !singleHere.critical
-          singles = singles
-          playOnce(audioContext, master, effectBuffers['stage'])
-          return
-        }
-
-        const slideHere = slides.find((slide) => {
-          return (
-            slide.start.tick === pointerTick &&
-            slide.start.lane <= pointerLane && pointerLane <= slide.start.lane + slide.start.width
-          ) || (
-            slide.end.tick === pointerTick &&
-            slide.end.lane <= pointerLane && pointerLane <= slide.end.lane + slide.end.width
-          )
-        })
-
-        if (slideHere) {
-          slideHere.critical = !slideHere.critical
-          slides = slides
-          playOnce(audioContext, master, effectBuffers['stage'])
-          return
-        }
-      }
-    })
-
-    app.renderer.view.addEventListener('pointerdown', async () => {
-      if (currentMode === 'slide') {
-        dragging = true
-        draggingSlide = {
-          start: {
-            tick: pointerTick,
-            lane: pointerLane,
-            width: 2,
-            easeType: false
-          },
-          end: {
-            tick: pointerTick,
-            lane: pointerLane,
-            flick: 'no',
-            width: 2
-          },
-          critical: false,
-          steps: []
-        }
-        slides.push(draggingSlide)
-        slides = slides
-        playOnce(audioContext, master, effectBuffers['stage'])
-      }
-    })
-
-    app.renderer.view.addEventListener('pointermove', async () => {
-      if (currentMode === 'slide' && dragging && draggingSlide) {
-        draggingSlide.end.lane = pointerLane
-        draggingSlide.end.tick = pointerTick
-        slides = slides
-      }
-    })
-
-    app.renderer.view.addEventListener('pointerup', async () => {
-      if (currentMode === 'slide' && dragging && draggingSlide) {
-        if (draggingSlide.end.tick < draggingSlide.start.tick) {
-          // Swap
-          const tick = draggingSlide.start.tick
-          const lane = draggingSlide.start.lane
-          // TODO: width
-          draggingSlide.start.tick = draggingSlide.end.tick
-          draggingSlide.start.lane = draggingSlide.end.lane
-          draggingSlide.end.tick = tick
-          draggingSlide.end.lane = lane
-        }
-        slides = slides
-        dragging = false
-        draggingSlide = null
-      } 
-    })
-
-    // app.renderer.view.addEventListener('dblclick', () => {
-    //   if (currentMode === 'bpm') {
-    //     bpms.delete(pointerTick)
-    //     bpms = bpms
-    //     return
-    //   }
-
-    //   if (currentMode === 'select') {
-    //     const singleHere = singleNotes.find((single) => (
-    //           single.tick === pointerTick &&
-    //           single.lane <= pointerLane && pointerLane <= single.lane + single.width
-    //       )
-    //     )
-    //     if (singleHere) {
-    //       singleNotes.splice(singleNotes.indexOf(singleHere), 1)
-    //       singleNotes = singleNotes
-    //       return
-    //     }
-    //   }
-    // })
-  
     // app.stage.addChild(new PIXI.Sprite.from(createGradientCanvas(CANVAS_WIDTH, innerHeight, ['#503c9f', '#48375b'])))
     const baseTexture = new PIXI.BaseTexture(spritesheetImage, null);
     const spritesheetObj = new PIXI.Spritesheet(baseTexture, spritesheet)
@@ -528,9 +375,17 @@
         {pointerLane}
         {currentMode}
         {innerHeight}
-        {singles}
-        {slides}
-        {bpms}
+        bind:singles
+        bind:slides
+        bind:bpms
+        on:changeBPM={async (event) => {
+          ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)
+          await tick()
+          bpmDialogOpened = true
+        }}
+        on:playSound={(event) => {
+          playOnce(audioContext, master, effectBuffers[event.detail])
+        }}
       />
       <div class="zoom-indicator-container">
         <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
