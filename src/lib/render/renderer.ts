@@ -5,9 +5,6 @@ import type { Mode } from '$lib/editing'
 // Consts
 import COLORS from '$lib/colors'
 import {
-  BEAT_IN_MEASURE,
-  MARGIN_BOTTOM,
-  LANE_WIDTH,
   LANE_AREA_WIDTH,
   TEXT_MARGIN,
   MARGIN,
@@ -17,7 +14,6 @@ import {
   DIAMOND_PIVOT,
   DIAMOND_HEIGHT,
   DIAMOND_WIDTH,
-  MEASURE_HEIGHT,
 } from '$lib/consts'
 import { MODE_TEXTURES } from '$lib/editing'
 
@@ -55,55 +51,6 @@ export function drawDashedLine(graphics: PIXI.Graphics, fromX: number, fromY: nu
         : toY;
 
     graphics.moveTo(currentPosition.x, currentPosition.y);
-  }
-}
-
-export function drawBackground(
-  PIXI: typeof import('pixi.js'),
-  graphics: PIXI.Graphics,
-  measureHeight: number,
-  topY: number,
-  maxMeasure: number,
-  innerHeight: number
-) {
-  graphics.removeChildren()
-  graphics.clear()
-
-  // Draw lanes
-  for (let i = 1; i < 14; i++) {
-    const x = MARGIN + i * LANE_WIDTH
-    if (i % 2 != 0) {
-      graphics.lineStyle(2, COLORS.COLOR_LANE_PRIMARY, 1, 0.5)
-    } else {
-      graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
-    }
-    graphics.moveTo(x, innerHeight)
-    graphics.lineTo(x, topY - MEASURE_HEIGHT / BEAT_IN_MEASURE)
-  }
-
-  // Draw bars
-  for (let i = 0; i < maxMeasure * BEAT_IN_MEASURE + 1 ; i++) {
-    const y = innerHeight - (MARGIN_BOTTOM + i * measureHeight / BEAT_IN_MEASURE)
-
-    if (i % BEAT_IN_MEASURE == 0) {
-      graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
-      graphics.moveTo(MARGIN, y)
-      graphics.lineTo(MARGIN + LANE_AREA_WIDTH, y)
-
-      const number = i / BEAT_IN_MEASURE
-      const text = new PIXI.Text(`#${number + 1}`, {
-        fill: 'white'
-      })
-      text.x = MARGIN - TEXT_MARGIN
-      text.y = y
-      text.anchor.x = 1
-      text.anchor.y = 0.5
-      graphics.addChild(text)
-    } else {
-      graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
-      graphics.moveTo(MARGIN + LANE_WIDTH, y)
-      graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
-    }
   }
 }
 

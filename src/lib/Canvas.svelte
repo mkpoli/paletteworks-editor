@@ -6,13 +6,14 @@
   import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
   import { Pixi, Graphics } from 'svelte-pixi'
   import { LANE_WIDTH } from '$lib/consts'
-  import { drawBackground, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
+  import { drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/selection'
 
   // Background
+  import Background from '$lib/render/Background.svelte'
   import BPM from '$lib/render/BPM.svelte'
 
   // Notes
@@ -25,7 +26,6 @@
   export let PIXI: typeof import('pixi.js')
   export let measureHeight: number
   export let currentTick: number
-  export let maxTick: number
   export let maxMeasure: number
   export let snapTo: number
   export let scrollTick: number
@@ -293,8 +293,8 @@
   />
 
   <!-- BACKGROUND -->
-  <Graphics
-    draw={(graphics) => { drawBackground(PIXI, graphics, measureHeight, $position.calcY(maxTick), maxMeasure, innerHeight) }}
+  <Background
+    {maxMeasure}
   />
 
   <!-- BPM -->
