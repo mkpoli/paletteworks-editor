@@ -111,45 +111,6 @@ export function drawBackground(
 }
 
 
-const EASE_RATIOS = {
-  curved: 0.5,
-  straight: 0
-}
-const SHRINK_WIDTH = LANE_WIDTH / 8
-
-export function drawSlidePath(graphics: PIXI.Graphics, slideNotes: SlideNote[], critical: boolean, measureHeight: number) {
-  graphics.clear()
-  slideNotes
-  .reduce((acc: [SlideNote, SlideNote][], ele: SlideNote, ind: number, arr: SlideNote[]) => {
-      if (ind < arr.length - 1) {
-        acc.push([arr[ind], arr[ind + 1]])
-      }
-      return acc
-    }, [] as [SlideNote, SlideNote][])
-    .forEach(([origin, target]) => {
-      const easeInRatio = 'easeType' in origin && origin.easeType === 'easeIn' ? EASE_RATIOS.curved : EASE_RATIOS.straight
-      const easeOutRatio = 'easeType' in origin && origin.easeType === 'easeOut' ? EASE_RATIOS.curved : EASE_RATIOS.straight
-
-      const origin_x_left = calcX(origin.lane) + SHRINK_WIDTH
-      const origin_x_right = calcX(origin.lane) + origin.width * LANE_WIDTH - SHRINK_WIDTH
-      const origin_y = calcY(origin.tick, measureHeight) 
-      
-      const target_x_left = calcX(target.lane) + SHRINK_WIDTH
-      const target_x_right = calcX(target.lane) + target.width * LANE_WIDTH - SHRINK_WIDTH
-      const target_y = calcY(target.tick, measureHeight)
-
-      graphics.beginFill(critical ? COLORS.COLOR_SLIDE_PATH : COLORS.COLOR_SLIDE_PATH_CRITICAL, COLORS.ALPHA_SLIDE_PATH)
-      graphics.moveTo(origin_x_left, origin_y)
-      graphics.bezierCurveTo(origin_x_left, origin_y - (origin_y - target_y) * easeInRatio, target_x_left, target_y + (origin_y - target_y) * easeOutRatio, target_x_left, target_y)
-      // graphics.moveTo(target_x_left, target_y)
-      graphics.lineTo(target_x_right, target_y)
-      graphics.bezierCurveTo(target_x_right, target_y + (origin_y - target_y) * easeOutRatio, origin_x_right, origin_y - (origin_y - target_y) * easeInRatio, origin_x_right, origin_y)
-      graphics.closePath()
-      graphics.endFill()
-      // graphics.lineTo(origin_x_right, origin_y)
-      // graphics.moveTo(origin_x_right, origin_y)
-    })    
-}
 
 export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number>, measureHeight: number) {
   graphics.clear()

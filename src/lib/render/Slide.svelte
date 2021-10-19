@@ -8,16 +8,17 @@
 
   // Components
   import Note from '$lib/render/Note.svelte'
-  let Graphics: typeof SvelteComponent
+  import SlidePath from '$lib/render/SlidePath.svelte'
+
   let Container: typeof SvelteComponent
   let PIXI: typeof import('pixi.js')
   onMount(async () => {
-    ({ Graphics, Container } = await import('svelte-pixi'))
+    ({ Container } = await import('svelte-pixi'))
     PIXI = await import('pixi.js')
   })
   import { position } from '$lib/position'
   // Functions
-  import { drawDiamonds, drawSlidePath } from "$lib/render/renderer"
+  import { drawDiamonds } from "$lib/render/renderer"
 
   // Props
   export let slide: SlideType
@@ -37,12 +38,9 @@
 </script>
 
 <!-- SLIDE PATH -->
-<svelte:component
-  this={Graphics}
-  draw={(graphics) => {drawSlidePath(
-    graphics, [
-      start, ...steps.filter((x) => !x.ignored) , end
-    ], critical, measureHeight)}}
+<SlidePath
+  notes={[start, ...steps.filter((x) => !x.ignored), end]}
+  {critical}
 />
 
 <!-- SLIDE START -->
