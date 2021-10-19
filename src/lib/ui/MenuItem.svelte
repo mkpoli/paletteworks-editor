@@ -7,7 +7,7 @@
   export let text: string
   export let disabled: boolean = false
 
-  let container: HTMLDivElement
+  let container: HTMLDivElement = null
 
   const hasSubMenu: boolean = !!$$slots.default
   let subMenu: HTMLDivElement
