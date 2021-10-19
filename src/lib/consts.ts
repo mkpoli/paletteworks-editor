@@ -12,6 +12,8 @@ export const TEXT_MARGIN = 15
 
 export const LANE_WIDTH = 30
 export const LANE_COUNT_REAL = 12
+export const LANE_MIN = 2
+export const LANE_MAX = 13
 export const LANE_COUNT = LANE_COUNT_REAL + 2
 export const LANE_AREA_WIDTH = LANE_WIDTH * LANE_COUNT
 export const MEASURE_HEIGHT = 300

@@ -1,21 +1,23 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
   import type { Mode } from '$lib/editing'
-  import type { Flick, Single, Slide as SlideType } from '$lib/score/beatmap';
+  import type { Flick, Single, Slide as SlideType, Note as NoteType } from '$lib/score/beatmap';
 
-  import { calcLaneTick, calcX, calcY } from '$lib/timing'
+  import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
+  import { calcX, calcY } from '$lib/timing'
   import { Pixi, Graphics } from 'svelte-pixi'
   import { LANE_WIDTH } from '$lib/consts'
   import { drawBackground, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
+  import { selectedNotes } from '$lib/selection'
 
   // Notes
   import Note from '$lib/render/Note.svelte'
   import Arrow from '$lib/render/Arrow.svelte'
   import Slide from '$lib/render/Slide.svelte'
-  import { dbg, formatPoint } from './basic/debug'
+  import Selection from '$lib/render/Selection.svelte'
 
   export let app: PIXI.Application
   export let PIXI: typeof import('pixi.js')
@@ -28,12 +30,40 @@
   export let currentMode: Mode
   export let innerHeight: number
 
-  import { PositionManager } from '$lib/position'
-  const position = new PositionManager()
-  setContext('position', position)
-  $: position.measureHeight = measureHeight
-  $: position.snapTo = snapTo
-  $: position.scrollTick = scrollTick
+  setContext('app', app)
+
+  let pointA: PIXI.Point = new PIXI.Point(300, 800)
+  let pointB: PIXI.Point = new PIXI.Point(400, 500)
+
+  $: pointA && dbg('selectA', formatPoint(pointA.x, pointA.y))
+  $: pointB && dbg('selectB', formatPoint(pointB.x, pointB.y))
+
+
+  import { PositionManager, position } from '$lib/position'
+  let pointer: PIXI.Point
+  let pointerLane: number
+  let pointerTick: number
+  $: $position = new PositionManager(measureHeight, scrollTick, snapTo, innerHeight)
+  $: if (pointer) {
+    pointerLane = $position.calcLane(pointer.x)
+    pointerTick = $position.calcTick(pointer.y)
+  }
+  $: dbg('iH - p.y', innerHeight - pointer?.y)
+  $: pointer && dbg('pointer', formatPoint(pointer.x, pointer.y))
+  $: dbg('pointer(Lane, Tick)', formatPoint(pointerLane, pointerTick))
+  
+  function point2rect(pointA: PIXI.Point, pointB: PIXI.Point) {
+    const 左 = Math.min(pointA.x, pointB.x)
+    const 右 = Math.max(pointA.x, pointB.x)
+    const 上 = Math.min(pointA.y, pointB.y)
+    const 下 = Math.max(pointA.y, pointB.y)
+
+    return new PIXI.Rectangle(
+      左, 上, 右 - 左, 下 - 上
+    )
+  }
+
+  $: selectRect = point2rect(pointA, pointB)
 
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
 
@@ -47,8 +77,14 @@
   }>()
   let dragging: boolean = false
   let draggingSlide: SlideType = null
+  $: if (currentMode) {
+    dragging = false
+    draggingSlide = null
+  }
+
   onMount(() => {
-    app.renderer.view.addEventListener('click', async () => {
+    app.stage.sortableChildren = true
+    app.renderer.view.addEventListener('click', () => {
       if (currentMode === 'bpm') {
         dispatch('changeBPM', {
           tick: pointerTick,
@@ -71,8 +107,8 @@
       }
 
       const singleHere = singles.find((single) => (
-            single.tick === pointerTick &&
-            single.lane <= pointerLane && pointerLane <= single.lane + single.width
+          single.tick === pointerTick &&
+          single.lane <= pointerLane && pointerLane <= single.lane + single.width
         )
       )
 
@@ -123,60 +159,104 @@
       }
     })
 
-    app.renderer.view.addEventListener('pointerdown', async () => {
-      if (currentMode === 'slide') {
-        dragging = true
-        draggingSlide = {
-          start: {
-            tick: pointerTick,
-            lane: pointerLane,
-            width: 2,
-            easeType: false
-          },
-          end: {
-            tick: pointerTick,
-            lane: pointerLane,
-            flick: 'no',
-            width: 2
-          },
-          critical: false,
-          steps: []
+    app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
+      if (event.button == 2) return
+      app.renderer.view.setPointerCapture(event.pointerId)
+      switch (currentMode) {
+        case 'select': {
+          dragging = true
+
+          pointA = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
+          pointB = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
+          selectedNotes.set([])
+          break
         }
-        slides.push(draggingSlide)
-        slides = slides
-        dispatch('playSound', 'stage')
+        case 'slide': {
+          dragging = true
+          draggingSlide = {
+            start: {
+              tick: pointerTick,
+              lane: pointerLane,
+              width: 2,
+              easeType: false
+            },
+            end: {
+              tick: pointerTick,
+              lane: pointerLane,
+              flick: 'no',
+              width: 2
+            },
+            critical: false,
+            steps: []
+          }
+          slides.push(draggingSlide)
+          slides = slides
+          dispatch('playSound', 'stage')
+          break
+        }
       }
     })
+
+
 
     app.stage.addListener('pointermove', (event: PIXI.InteractionEvent) => {
-      pointer = event.data.global;
+      pointer = event.data.global
 
-      pointerLane = position.calcLane(pointer.x)
-      pointerTick = position.calcTick(pointer.y)
-
-      if (currentMode === 'slide' && dragging && draggingSlide) {
-        draggingSlide.end.lane = pointerLane
-        draggingSlide.end.tick = pointerTick
-        slides = slides
+      if (!dragging) {
+        return
+      }
+      switch (currentMode) {
+        case 'select': {
+          pointB = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
+          break
+        }
+        case 'slide': {
+          draggingSlide.end.lane = pointerLane
+          draggingSlide.end.tick = pointerTick
+          slides = slides
+          break
+        }
       }
     })
 
-    app.renderer.view.addEventListener('pointerup', async () => {
-      if (currentMode === 'slide' && dragging && draggingSlide) {
-        if (draggingSlide.end.tick < draggingSlide.start.tick) {
-          // Swap
-          const tick = draggingSlide.start.tick
-          const lane = draggingSlide.start.lane
-          // TODO: width
-          draggingSlide.start.tick = draggingSlide.end.tick
-          draggingSlide.start.lane = draggingSlide.end.lane
-          draggingSlide.end.tick = tick
-          draggingSlide.end.lane = lane
+    function calcSelection(): NoteType[] {
+      return [
+        ...singles.filter(({ tick, lane }) => $position.inRect(lane, tick, selectRect)),
+        ...slides
+          .map(({ start, end, steps }) => [start, end, ...steps])
+          .flat()
+          .filter(({ lane, tick }) => $position.inRect(lane, tick, selectRect))
+      ]
+    }
+
+    app.renderer.view.addEventListener('pointerup', (event: PointerEvent) => {
+      if (!dragging) {
+        return
+      }
+      app.renderer.view.releasePointerCapture(event.pointerId)
+      switch (currentMode) {
+        case 'select': {
+          selectedNotes.set(calcSelection())
+          console.log({ selectedNotes })
+          break
         }
-        slides = slides
-        dragging = false
-        draggingSlide = null
-      } 
+        case 'slide': {
+          if (draggingSlide.end.tick < draggingSlide.start.tick) {
+            // Swap
+            const tick = draggingSlide.start.tick
+            const lane = draggingSlide.start.lane
+            // TODO: width
+            draggingSlide.start.tick = draggingSlide.end.tick
+            draggingSlide.start.lane = draggingSlide.end.lane
+            draggingSlide.end.tick = tick
+            draggingSlide.end.lane = lane
+          }
+          slides = slides
+          draggingSlide = null
+          break
+        }
+      }
+      dragging = false
     })
 
     // app.renderer.view.addEventListener('dblclick', () => {
@@ -264,5 +344,10 @@
         bpms.has(pointerTick)
       )
     }}
+  />
+
+  <Selection
+    {dragging}
+    rect={selectRect}
   />
 </Pixi>
