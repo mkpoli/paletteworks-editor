@@ -14,10 +14,16 @@
     ({ Graphics, Container } = await import('svelte-pixi'));
     PIXI = await import('pixi.js')
   })
+  import { position } from '$lib/position'
 
   import { drawDiamonds, drawSlidePath } from "$lib/render/renderer";
   export let slide: SlideType
-  export let measureHeight: number
+
+  let measureHeight: number
+  position.subscribe((v) => {
+    measureHeight = v.measureHeight
+  })
+
   let { start, end, critical, steps } = slide
 
   let container: PIXI.Container

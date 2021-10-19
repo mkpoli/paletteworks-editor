@@ -316,7 +316,7 @@
 
   <!-- SLIDE NOTES -->
   {#each slides as slide}
-    <Slide {slide} {measureHeight} />
+    <Slide {slide} />
   {/each}
 
   <!-- FLICK ARROW -->
