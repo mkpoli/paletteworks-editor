@@ -23,10 +23,17 @@
   export let currentTick: number
   export let maxTick: number
   export let maxMeasure: number
-  export let pointerLane: number
-  export let pointerTick: number
+  export let snapTo: number
+  export let scrollTick: number
   export let currentMode: Mode
   export let innerHeight: number
+
+  import { PositionManager } from '$lib/position'
+  const position = new PositionManager()
+  setContext('position', position)
+  $: position.measureHeight = measureHeight
+  $: position.snapTo = snapTo
+  $: position.scrollTick = scrollTick
 
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
 
@@ -144,9 +151,8 @@
     app.stage.addListener('pointermove', (event: PIXI.InteractionEvent) => {
       pointer = event.data.global;
 
-      ({ lane: pointerLane, tick: pointerTick } = calcLaneTick(
-        pointer, snapTo, measureHeight, scrollTick, maxMeasure
-      ))
+      pointerLane = position.calcLane(pointer.x)
+      pointerTick = position.calcTick(pointer.y)
 
       if (currentMode === 'slide' && dragging && draggingSlide) {
         draggingSlide.end.lane = pointerLane
