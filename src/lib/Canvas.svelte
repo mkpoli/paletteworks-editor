@@ -344,3 +344,17 @@
     rect={selectRect}
   />
 </Pixi>
+
+<svelte:window
+  on:keydown={(event) => {
+    if (event.key == 'Delete') {
+      $selectedNotes.forEach((note) => {
+        singles = singles.filter((item) => item !== note)
+        slides = slides.filter(({ start, end }) => start !== note && end !== note)
+        slides.forEach((slide) => {
+            slide.steps = slide.steps.filter((item) => item !== note)
+          })
+      })
+    }
+  }}
+></svelte:window>
