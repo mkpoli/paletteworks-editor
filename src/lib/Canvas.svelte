@@ -7,11 +7,14 @@
   import { calcX, calcY } from '$lib/timing'
   import { Pixi, Graphics } from 'svelte-pixi'
   import { LANE_WIDTH } from '$lib/consts'
-  import { drawBackground, drawBPMs, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
+  import { drawBackground, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/selection'
+
+  // Background
+  import BPM from '$lib/render/BPM.svelte'
 
   // Notes
   import Note from '$lib/render/Note.svelte'
@@ -296,8 +299,8 @@
   />
 
   <!-- BPM -->
-  <Graphics
-    draw={(graphics) => { drawBPMs(graphics, PIXI, bpms, measureHeight) }}
+  <BPM
+    {bpms}
   />
 
   <!-- SINGLE NOTES -->

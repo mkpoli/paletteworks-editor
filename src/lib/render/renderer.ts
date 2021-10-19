@@ -11,7 +11,6 @@ import {
   LANE_AREA_WIDTH,
   TEXT_MARGIN,
   MARGIN,
-  FONT_FAMILY,
   NOTE_HEIGHT,
   NOTE_WIDTH,
   NOTE_PIVOT,
@@ -20,7 +19,6 @@ import {
   DIAMOND_WIDTH,
   MEASURE_HEIGHT,
 } from '$lib/consts'
-import { calcY } from '$lib/timing'
 import { MODE_TEXTURES } from '$lib/editing'
 
 // Drawing Functions
@@ -107,33 +105,6 @@ export function drawBackground(
       graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
     }
   }
-}
-
-
-
-export function drawBPMs(graphics: PIXI.Graphics, pixi, bpms: Map<number, number>, measureHeight: number) {
-  graphics.clear()
-  graphics.lineStyle(1, COLORS.COLOR_BPM, 1)
-  graphics.removeChildren()
-
-  // Draw BPMs
-  bpms.forEach((bpm, tick) => {
-    const newY = calcY(tick, measureHeight)
-
-    // Draw BPM LINES
-    graphics.moveTo(MARGIN, newY)
-    graphics.lineTo(MARGIN + LANE_AREA_WIDTH, newY)
-
-    // Draw BPM Texts
-    const text: PIXI.Text = graphics.addChild(new pixi.Text(`𝅘𝅥=${bpm}`, {
-        fill: COLORS.COLOR_BPM,
-        fontSize: 20,
-        fontFamily: FONT_FAMILY
-      }))
-    text.anchor.set(0.5, 0.5)
-
-    text.setTransform(MARGIN + LANE_AREA_WIDTH + LANE_WIDTH + TEXT_MARGIN, newY)
-  })
 }
 
 let lastText: PIXI.Text
