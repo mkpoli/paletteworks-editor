@@ -4,7 +4,6 @@
   import type { Flick, Single, Slide as SlideType, Note as NoteType } from '$lib/score/beatmap';
 
   import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
-  import { calcX, calcY } from '$lib/timing'
   import { Pixi, Graphics } from 'svelte-pixi'
   import { LANE_WIDTH } from '$lib/consts'
   import { drawBackground, drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
@@ -289,13 +288,13 @@
   <!-- PLAYHEAD -->
   <Graphics
     draw={(graphics) => {
-      drawPlayhead(graphics, PIXI, calcY(currentTick, measureHeight))
+      drawPlayhead(graphics, PIXI, $position.calcY(currentTick))
     }}
   />
 
   <!-- BACKGROUND -->
   <Graphics
-    draw={(graphics) => { drawBackground(PIXI, graphics, measureHeight, calcY(maxTick, measureHeight), maxMeasure, innerHeight) }}
+    draw={(graphics) => { drawBackground(PIXI, graphics, measureHeight, $position.calcY(maxTick), maxMeasure, innerHeight) }}
   />
 
   <!-- BPM -->
@@ -334,7 +333,7 @@
     draw={(graphics) => {
       drawSnappingElements(
         graphics, PIXI, TEXTURES, currentMode,
-        calcX(pointerLane) + LANE_WIDTH, calcY(pointerTick, measureHeight),
+        $position.calcX(pointerLane) + LANE_WIDTH, $position.calcY(pointerTick),
         bpms.has(pointerTick)
       )
     }}

@@ -1,10 +1,16 @@
 <script lang="ts">
-  import type PIXI from 'pixi.js'
-  import type { Flick } from "$lib/score/beatmap"
+  // Constants
   import { LANE_WIDTH, MARGIN, NOTE_HEIGHT } from '$lib/consts';
 
+  // Types
+  import type PIXI from 'pixi.js'
+  import type { Flick } from "$lib/score/beatmap"
+
+  // Functions
   import { getContext, onMount, SvelteComponent } from "svelte";
-  import { calcY } from '$lib/timing';
+
+  // Stores
+  import { position } from '$lib/position'
 
   let Sprite: typeof SvelteComponent
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
@@ -35,7 +41,7 @@
   x={
     MARGIN + (lane - 1 + width / 2) * LANE_WIDTH
   }
-  y={calcY(tick, measureHeight) - NOTE_HEIGHT + 15}
+  y={$position.calcY(tick) - NOTE_HEIGHT + 15}
   scale={{
     x: 0.25 * (flick === 'left' ? 1 : -1),
     y: 0.25
