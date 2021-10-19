@@ -67,6 +67,7 @@
     TICK_PER_BEAT,
     EFFECT_SOUNDS,
     RESOLUTION,
+    SNAPTO_DEFAULT,
   } from '$lib/consts'
 
   // Functions
@@ -209,7 +210,7 @@
   $: dbg('currentTick', currentTick)
 
   let currentMode: Mode = 'select'
-  let snapTo: SnapTo = 8
+  let snapTo: SnapTo = SNAPTO_DEFAULT
 
   $: dbg('scrollTick', scrollTick)
 
