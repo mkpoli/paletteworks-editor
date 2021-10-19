@@ -301,17 +301,8 @@
   />
 
   <!-- SINGLE NOTES -->
-  {#each singles as { lane, tick, width, critical, flick }}
-    <Note
-      type={
-        critical
-          ? 'critical'
-          : flick !== 'no'
-            ? 'flick'
-            : 'tap'
-          }
-      {...{ lane, tick, width, measureHeight }}
-    />
+  {#each singles as note}
+    <Note {note}/>
   {/each}
 
   <!-- SLIDE NOTES -->

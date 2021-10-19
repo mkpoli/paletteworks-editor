@@ -1,9 +1,10 @@
 <script lang="ts">
+  // Types
   import type PIXI from 'pixi.js'
-  import type { Slide as SlideType } from "$lib/score/beatmap";
+  import type { Single, Slide as SlideType, SlideNote } from "$lib/score/beatmap"
 
   // Svelte
-  import { getContext, onMount, SvelteComponent } from "svelte";
+  import { getContext, onMount, SvelteComponent } from "svelte"
 
   // Components
   import Note from '$lib/render/Note.svelte'
@@ -11,12 +12,14 @@
   let Container: typeof SvelteComponent
   let PIXI: typeof import('pixi.js')
   onMount(async () => {
-    ({ Graphics, Container } = await import('svelte-pixi'));
+    ({ Graphics, Container } = await import('svelte-pixi'))
     PIXI = await import('pixi.js')
   })
   import { position } from '$lib/position'
+  // Functions
+  import { drawDiamonds, drawSlidePath } from "$lib/render/renderer"
 
-  import { drawDiamonds, drawSlidePath } from "$lib/render/renderer";
+  // Props
   export let slide: SlideType
 
   let measureHeight: number
@@ -31,7 +34,6 @@
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
 
   $: if (PIXI) drawDiamonds(slide, measureHeight, container, PIXI, TEXTURES)
-
 </script>
 
 <!-- SLIDE PATH -->
@@ -45,10 +47,9 @@
 
 <!-- SLIDE START -->
 <Note
-  type={
-    critical ? 'critical' : 'slide'
-  }
-  {...{ lane: start.lane, tick: start.tick, width: start.width, measureHeight }}
+  note={start}
+  slide
+  {critical}
 />
 
 <!-- SLIDE STEPS -->
@@ -59,12 +60,7 @@
 
 <!-- SLIDE END -->
 <Note
-  type={
-    critical
-      ? 'critical'
-      : end.flick !== 'no'
-        ? 'flick'
-        : 'slide'
-  }
-  {...{ lane: end.lane, tick: end.tick, width: end.width, measureHeight }}
+  note={end}
+  slide
+  {critical}
 />
