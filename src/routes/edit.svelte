@@ -73,8 +73,7 @@
   import { onMount, setContext, tick } from 'svelte'
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
-  import { snap } from '$lib/editing'
-  import { clamp } from '$lib/basic/math'
+  import { clamp, snap } from '$lib/basic/math'
   import { closest, max } from '$lib/basic/collections'
   import { download } from '$lib/basic/file'
 
