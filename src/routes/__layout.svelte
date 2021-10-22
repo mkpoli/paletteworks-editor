@@ -1,3 +1,7 @@
+<script>
+  import '@mszu/pixi-ssr-shim'
+</script>
+
 <slot />
 
 <style global>
