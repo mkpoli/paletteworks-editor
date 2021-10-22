@@ -5,7 +5,7 @@
   import tippy from 'tippy.js'
 
   export let menu: HTMLDivElement
-  
+
   let instance: TippyInstance
 
   export let contextArea: HTMLElement = null
@@ -25,7 +25,9 @@
     }
   })
 
-  $: menu && instance?.setContent(menu)
+  $: if (menu && instance) {
+    instance.setContent(menu)
+  }
 
   $: if (contextArea) {
     // Context Menu

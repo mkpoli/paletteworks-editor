@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { hideAll } from 'tippy.js'
   import { createEventDispatcher } from "svelte"
 
   import Icon from "@iconify/svelte"
@@ -16,13 +17,19 @@
   let altPressed: boolean
 
   const dispatch = createEventDispatcher()
+
+  function onclick() {
+    hideAll()
+    dispatch('click')
+  }
+
   function onkeydown(event: KeyboardEvent) {
     if (event.key == 'Alt') {
       altPressed = true
     }
 
     if (shortcutKey && event.altKey && shortcutKey.toLowerCase() === event.key ) {
-      dispatch('click')
+      onclick()
     }
   }
   function onkeyup(event: KeyboardEvent) {
@@ -42,7 +49,7 @@
     {icon}
     {disabled}
     class="text"
-    on:click
+    on:click={onclick}
   >
     <div>{@html text.replace(/&([A-Z])/, `<span style="text-decoration: ${altPressed ? 'underline' : 'none'};">$1</span>`)}</div>
     {#if hasSubMenu}
