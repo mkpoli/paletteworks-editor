@@ -6,17 +6,16 @@
   import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
   import { Pixi, Graphics } from 'svelte-pixi'
   import { LANE_WIDTH } from '$lib/consts'
-  import { drawSnappingElements, drawPlayhead } from '$lib/render/renderer';
+  import { drawSnappingElements } from '$lib/render/renderer';
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/selection'
 
-  // Background
+  // Score Components
   import Background from '$lib/render/Background.svelte'
   import BPM from '$lib/render/BPM.svelte'
-
-  // Notes
+  import Playhead from '$lib/render/Playhead.svelte'
   import Note from '$lib/render/Note.svelte'
   import Slide from '$lib/render/Slide.svelte'
   import Selection from '$lib/render/Selection.svelte'
@@ -41,6 +40,7 @@
 
 
   import { PositionManager, position } from '$lib/position'
+
   let pointer: PIXI.Point
   let pointerLane: number
   let pointerTick: number
@@ -285,10 +285,8 @@
 
 <Pixi {app}>
   <!-- PLAYHEAD -->
-  <Graphics
-    draw={(graphics) => {
-      drawPlayhead(graphics, PIXI, $position.calcY(currentTick))
-    }}
+  <Playhead
+    {currentTick}
   />
 
   <!-- BACKGROUND -->
