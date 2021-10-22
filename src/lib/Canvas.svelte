@@ -322,7 +322,7 @@
       <Slide {slide} />
     {/each}
 
-    <!-- FLOATING ITEMS --> -->
+    <!-- FLOATING ITEMS -->
     <Graphics
       draw={(graphics) => {
         drawSnappingElements(
@@ -338,9 +338,9 @@
       rect={selectRect}
     />
   </Pixi>
-<div class="zoom-indicator-container">
-  <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
-</div>
+  <div class="zoom-indicator-container">
+    <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
+  </div>
 </div>
 
 <Menu bind:menu>
