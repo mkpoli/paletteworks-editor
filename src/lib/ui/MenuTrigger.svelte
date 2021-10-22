@@ -39,6 +39,10 @@
     contextArea.addEventListener('contextmenu', (event: MouseEvent) => {
       event.preventDefault()
 
+      if (menu.childElementCount < 1) {
+        return
+      }
+
       const mouseRect = new DOMRect(event.clientX, event.clientY, 0, 0)
       instance.setProps({
         getReferenceClientRect: () => mouseRect
