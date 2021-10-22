@@ -6,3 +6,8 @@ export function download(b: Blob, filename: string) {
   a.click()
   a.remove()
 }
+
+export function toBlob(content: string) {
+  const blob = new Blob([content], {type: 'text/sus+plain'})
+  return blob
+}

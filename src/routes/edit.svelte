@@ -76,7 +76,7 @@
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { clamp, snap } from '$lib/basic/math'
   import { closest, max } from '$lib/basic/collections'
-  import { download } from '$lib/basic/file'
+  import { download, toBlob } from '$lib/basic/file'
 
   // Score Data
   export let susText: string
@@ -368,8 +368,7 @@
       on:exportFile={() => {
         const sus = dumpSUS(metadata, { singles, slides, bpms })
         console.log(sus)
-        const blob = new Blob([sus], {type: 'text/sus+plain'})
-        download(blob, `${new Date().toISOString().replace(':', '-')}.sus`)
+        download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
       }}
       on:export={() => {
         const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION)
