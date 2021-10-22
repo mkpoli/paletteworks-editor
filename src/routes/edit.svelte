@@ -5,7 +5,7 @@
 		// const url = `/NewScore2.sus`
     // const url = `KING.sus`
     // const url = `/TellYourWorld_EX.sus`
-    const url = `/TellYourWorld_EX.reimported.sus`
+    // const url = `/TellYourWorld_EX.reimported.sus`
     // const url = `/TellYourWorldDiamond.sus`
     // const url = `/Shoushitsu_MASTER.sus`
     // const url = `/DoctorFunkBeat_MASTER.sus`
@@ -14,7 +14,7 @@
     // const url = `/SlideEase.sus`
     // const url = `MultipleBPM.sus`
     // const url = `LongSingle.sus`
-    // const url = `SlideTest.sus`
+    const url = `SlideTest.sus`
     // const url = '/InvisibleRelayPoint.sus'
     // const url = `ModNote.sus`
     // const url = `MetaTest.sus`
