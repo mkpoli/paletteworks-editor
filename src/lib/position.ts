@@ -49,14 +49,18 @@ export class PositionManager {
     return Math.floor(clamp(LANE_MIN, (x - MARGIN) / LANE_WIDTH + 1, LANE_MAX))
   }
 
-  calcTick(y: number): number {
+  calcRawTick(y: number): number {
     const rawTick = (this.containerHeight - y - MARGIN_BOTTOM) / this.measureHeight * TICK_PER_MEASURE
-    return Math.max(0, snap(rawTick, TICK_PER_MEASURE / this.snapTo))
+    return Math.max(0, rawTick)
+  }
+
+  calcTick(y: number): number {
+    return Math.max(0, snap(this.calcRawTick(y), TICK_PER_MEASURE / this.snapTo))
   }
 
   inRect(lane: number, tick: number, rect: IRect): boolean {
-    const top = this.calcTick(rect.top)
-    const bottom = this.calcTick(rect.bottom)
+    const top = this.calcRawTick(rect.top)
+    const bottom = this.calcRawTick(rect.bottom)
     const left = this.calcLane(rect.left)
     const right = this.calcLane(rect.right)
     return between(left, lane, right) && between(top, tick, bottom)
