@@ -1,11 +1,8 @@
 <script lang="ts" context="module">
   export const ssr = false;
 	export async function load({ page, fetch, session, context }) {
-		// const url = `/RelayPoint.sus`
-		// const url = `/NewScore2.sus`
     // const url = `KING.sus`
     // const url = `/TellYourWorld_EX.sus`
-    // const url = `/TellYourWorld_EX.reimported.sus`
     // const url = `/TellYourWorldDiamond.sus`
     // const url = `/Shoushitsu_MASTER.sus`
     // const url = `/DoctorFunkBeat_MASTER.sus`
@@ -87,6 +84,9 @@
 
   console.log({ singles, slides, bpms })
 
+  // Stores
+  import { selectedNotes } from '$lib/selection'
+
   // Sound
   import { AudioEvent, AudioScheduler, playOnce } from '$lib/audio';
   let audioContext: AudioContext
@@ -151,9 +151,6 @@
   // Textures
   import spritesheet from '$assets/spritesheet.json'
   import spritesheetImage from '$assets/spritesheet.png'
-import { selectedNotes } from '$lib/selection';
-
-
   let TEXTURES: Record<string, PIXI.Texture> = {}
   setContext('TEXTURES', TEXTURES)
 
@@ -324,41 +321,42 @@ import { selectedNotes } from '$lib/selection';
       bind:currentMode
       bind:snapTo
     />
-
-      <Canvas
-        bind:app
-        {PIXI}
-        {maxMeasure}
-        {currentTick}
-        {measureHeight}
-        {scrollTick}
-        {snapTo}
-        {currentMode}
-        {innerHeight}
-        bind:singles
-        bind:slides
-        bind:bpms
-        bind:zoom
-        on:changeBPM={async (event) => {
-          ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)
-          await tick()
-          bpmDialogOpened = true
-        }}
-        on:playSound={(event) => {
-          playOnce(audioContext, master, effectBuffers[event.detail])
-        }}
-        on:delete={() => {
-          $selectedNotes.forEach((note) => {
-            singles = singles.filter((item) => item !== note)
-            slides = slides.filter(({ start, end }) => start !== note && end !== note)
-            slides.forEach((slide) => {
-                slide.steps = slide.steps.filter((item) => item !== note)
-              })
+    <Canvas
+      bind:app
+      {PIXI}
+      {maxMeasure}
+      {currentTick}
+      {measureHeight}
+      {scrollTick}
+      {snapTo}
+      {currentMode}
+      {innerHeight}
+      bind:singles
+      bind:slides
+      bind:bpms
+      bind:zoom
+      on:changeBPM={async (event) => {
+        ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)
+        await tick()
+        bpmDialogOpened = true
+      }}
+      on:playSound={(event) => {
+        playOnce(audioContext, master, effectBuffers[event.detail])
+      }}
+      on:delete={() => {
+        $selectedNotes.forEach((note) => {
+          console.log('before', { slides })
+          singles = singles.filter((item) => item !== note)
+          // slides = slides.filter(({ start, end }) => start !== note && end !== note)
+          slides = slides.filter(({ start, end }) => start !== note && end !== note)
+          slides.forEach((slide) => {
+            slide.steps = slide.steps.filter((item) => item !== note)
           })
-        }}
-      />
-
-
+          slides = [...slides]
+          console.log('after', { slides })
+        })
+      }}
+    />
     <PropertyBox
       bind:currentMeasure
       on:goto={() => {

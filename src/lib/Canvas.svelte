@@ -296,48 +296,48 @@
   class="canvas-container"
   bind:this={canvasContainer}
 >
-<Pixi {app}>
-  <!-- PLAYHEAD -->
-  <Playhead
-    {currentTick}
-  />
+  <Pixi {app}>
+    <!-- PLAYHEAD -->
+    <Playhead
+      {currentTick}
+    />
 
-  <!-- BACKGROUND -->
-  <Background
-    {maxMeasure}
-  />
+    <!-- BACKGROUND -->
+    <Background
+      {maxMeasure}
+    />
 
-  <!-- BPM -->
-  <BPM
-    {bpms}
-  />
+    <!-- BPM -->
+    <BPM
+      {bpms}
+    />
 
-  <!-- SINGLE NOTES -->
-  {#each singles as note}
-    <Note {note}/>
-  {/each}
+    <!-- SINGLE NOTES -->
+    {#each singles as note}
+      <Note {note}/>
+    {/each}
 
-  <!-- SLIDE NOTES -->
-  {#each slides as slide}
-    <Slide {slide} />
-  {/each}
+    <!-- SLIDE NOTES -->
+    {#each slides as slide}
+      <Slide {slide} />
+    {/each}
 
-  <!-- FLOATING ITEMS -->
-  <Graphics
-    draw={(graphics) => {
-      drawSnappingElements(
-        graphics, PIXI, TEXTURES, currentMode,
-        $position.calcX(pointerLane) + LANE_WIDTH, $position.calcY(pointerTick),
-        bpms.has(pointerTick)
-      )
-    }}
-  />
+    <!-- FLOATING ITEMS --> -->
+    <Graphics
+      draw={(graphics) => {
+        drawSnappingElements(
+          graphics, PIXI, TEXTURES, currentMode,
+          $position.calcX(pointerLane) + LANE_WIDTH, $position.calcY(pointerTick),
+          bpms.has(pointerTick)
+        )
+      }}
+    />
 
-  <Selection
-    {dragging}
-    rect={selectRect}
-  />
-</Pixi>
+    <Selection
+      {dragging}
+      rect={selectRect}
+    />
+  </Pixi>
 <div class="zoom-indicator-container">
   <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
 </div>
