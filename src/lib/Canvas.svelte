@@ -18,7 +18,6 @@
 
   // Notes
   import Note from '$lib/render/Note.svelte'
-  import Arrow from '$lib/render/Arrow.svelte'
   import Slide from '$lib/render/Slide.svelte'
   import Selection from '$lib/render/Selection.svelte'
 
@@ -310,22 +309,6 @@
   <!-- SLIDE NOTES -->
   {#each slides as slide}
     <Slide {slide} />
-  {/each}
-
-  <!-- FLICK ARROW -->
-  {#each singles as { lane, tick, width, critical, flick }}
-    {#if flick !== 'no'}
-      <Arrow
-        {...{ lane, tick, width, critical, flick, measureHeight }}
-      />
-    {/if}
-  {/each}
-  {#each slides as { end: { lane, tick, width, flick }, critical }}
-    {#if flick !== 'no'}
-      <Arrow
-        {...{ lane, tick, width, critical, flick, measureHeight }}
-      />
-    {/if}
   {/each}
 
   <!-- FLOATING ITEMS -->

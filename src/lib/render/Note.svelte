@@ -8,6 +8,8 @@
   import type PIXI from 'pixi.js'
   import type { Flick, Note as NoteType } from '$lib/score/beatmap'
 
+  import Arrow from '$lib/render/Arrow.svelte'
+
   export let note: NoteType
   export let critical: boolean = false
   export let slide: boolean = false
@@ -82,3 +84,10 @@
     app.stage.removeChild(border)
   })
 </script>
+
+<!-- FLICK ARROW -->
+{#if flick !== 'no'}
+  <Arrow
+    {...{ lane, tick, width, critical, flick }}
+  />
+{/if}
