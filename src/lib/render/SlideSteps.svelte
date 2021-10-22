@@ -4,7 +4,7 @@
 
   // Functions
   import { position, PositionManager } from '$lib/position'
-  import { getContext, onMount } from 'svelte'
+  import { getContext, onDestroy, onMount } from 'svelte'
 
   // Types
   import type PIXI from 'pixi.js'
@@ -38,6 +38,11 @@
     app.stage.addChild(graphics)
   })
 
+  onDestroy(() => {
+    app.stage.removeChild(container)
+    app.stage.removeChild(graphics)
+  })
+
   // Draw
   function createDiamond(x: number, y: number, critical: boolean): PIXI.Sprite {
     const sprite = new PIXI.Sprite(TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`])
@@ -50,7 +55,7 @@
     return sprite
   }
 
-  function drawDiamonds(position: PositionManager) {
+  function drawDiamonds(position: PositionManager, slide: Slide) {
     container.removeChildren()
     const { start, end, critical, steps } = slide
 
@@ -108,7 +113,7 @@
 
   const SLIDE_STEP_MARGIN_X = -5
   const SLIDE_STEP_MARGIN_Y = 0
-  function drawSteps(position: PositionManager) {
+  function drawSteps(position: PositionManager, slide: Slide) {
     graphics.clear()
 
     slide.steps.forEach(({ lane, tick, width, ignored }) => {
@@ -202,8 +207,8 @@
     })
   }
   $: if (container) {
-    drawDiamonds($position)
-    drawSteps($position)
+    drawDiamonds($position, slide)
+    drawSteps($position, slide)
   }
 </script>
 

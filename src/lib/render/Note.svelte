@@ -52,6 +52,10 @@
     app.stage.addChild(instance)
   })
 
+  onDestroy(() => {
+    app.stage.removeChild(instance)
+  })
+
   $: if (instance) {
     instance.x = $position.calcMidX(lane, width)
     instance.y = $position.calcY(tick)
@@ -60,10 +64,6 @@
       noteWidth, 0.5 * NOTE_HEIGHT
     )
   }
-
-  onDestroy(() => {
-    app.stage.removeChild(instance)
-  })
 </script>
 
 <!-- FLICK ARROW -->

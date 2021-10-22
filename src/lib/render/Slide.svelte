@@ -11,7 +11,7 @@
   // Props
   export let slide: SlideType
 
-  let { start, end, critical, steps } = slide
+  $: ({ start, end, critical, steps } = slide)
 </script>
 
 <!-- SLIDE PATH -->
@@ -35,6 +35,6 @@
 <!-- SLIDE END -->
 <Note
   note={end}
-  slide
+  slide={true}
   {critical}
 />

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getContext, onMount } from 'svelte'
+  import { getContext, onDestroy, onMount } from 'svelte'
   
   import COLORS from '$lib/colors'
   import { LANE_WIDTH } from '$lib/consts';
@@ -24,6 +24,10 @@
     PIXI = await import('pixi.js')
     graphics = new PIXI.Graphics()
     app.stage.addChild(graphics)
+  })
+
+  onDestroy(() => {
+    app.stage.removeChild(graphics)
   })
 
   $: graphics && $position && drawSlidePath(notes)
