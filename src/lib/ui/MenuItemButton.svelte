@@ -42,6 +42,7 @@
     {icon}
     {disabled}
     class="text"
+    on:click
   >
     <div>{@html text.replace(/&([A-Z])/, `<span style="text-decoration: ${altPressed ? 'underline' : 'none'};">$1</span>`)}</div>
     {#if hasSubMenu}

@@ -21,6 +21,7 @@
       {disabled}
       {hasSubMenu}
       bind:container
+      on:click
     />
   </MenuTrigger>
 {:else}
@@ -30,6 +31,7 @@
     {disabled}
     {hasSubMenu}
     bind:container
+    on:click
   />
 {/if}
 
