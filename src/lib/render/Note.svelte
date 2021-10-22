@@ -1,5 +1,4 @@
 <script lang="ts">
-  import COLORS from '$lib/colors'
   import { NOTE_HEIGHT } from '$lib/consts';  
   import { getContext, onDestroy, onMount } from "svelte";
   import { selectedNotes } from '$lib/selection'
@@ -9,6 +8,7 @@
   import type { Flick, Note as NoteType } from '$lib/score/beatmap'
 
   import Arrow from '$lib/render/Arrow.svelte'
+  import NoteControl from './NoteControl.svelte'
 
   export let note: NoteType
   export let critical: boolean = false
@@ -34,12 +34,8 @@
   let instance: PIXI.NineSlicePlane
   let currentRect: PIXI.Rectangle
 
-  let border: PIXI.Graphics
-
-  const SELECTION_MARGIN = 5
-
   onMount(async () => {
-    (PIXI = await import('pixi.js'))
+    PIXI = await import('pixi.js')
 
     const texture = TEXTURES[type]
     instance = new PIXI.NineSlicePlane(
@@ -54,9 +50,6 @@
     instance.scale.y = 1
     instance.zIndex = 1
     app.stage.addChild(instance)
-    border = new PIXI.Graphics()
-    border.zIndex = 8
-    app.stage.addChild(border)
   })
 
   $: if (instance) {
@@ -68,20 +61,8 @@
     )
   }
 
-  $: if (PIXI && currentRect) {
-    border.clear()
-    if ($selectedNotes.includes(note)) {
-      border.lineStyle(3, COLORS.COLOR_SELECTION, 1)
-      border.drawRoundedRect(
-        currentRect.x - SELECTION_MARGIN, currentRect.y - SELECTION_MARGIN,
-        currentRect.width + 2 * SELECTION_MARGIN, currentRect.height + 2 * SELECTION_MARGIN, 10
-      )
-    }
-  }
-
   onDestroy(() => {
     app.stage.removeChild(instance)
-    app.stage.removeChild(border)
   })
 </script>
 
@@ -91,3 +72,5 @@
     {...{ lane, tick, width, critical, flick }}
   />
 {/if}
+
+<NoteControl draw={$selectedNotes.includes(note)} rect={currentRect}></NoteControl>

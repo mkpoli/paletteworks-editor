@@ -9,6 +9,7 @@
   // Types
   import type PIXI from 'pixi.js'
   import type { Slide, SlideNote, SlideStart, SlideStep } from '$lib/score/beatmap'
+  import NoteControl from './NoteControl.svelte'
   
   // Props
   export let slide: Slide
@@ -16,6 +17,9 @@
   // Contexts
   const app = getContext<PIXI.Application>('app')
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+
+  // Stores
+  import { selectedNotes } from '$lib/selection'
 
   // Variables
   let PIXI: typeof import('pixi.js')
@@ -202,3 +206,12 @@
     drawSteps($position)
   }
 </script>
+
+{#if PIXI}
+  {#each slide.steps as step}
+    <NoteControl draw={$selectedNotes.includes(step)} rect={new PIXI.Rectangle(
+      $position.calcX(step.lane) - SLIDE_STEP_MARGIN_X, $position.calcY(step.tick) - 0.5 * 0.5 * NOTE_HEIGHT,
+      step.width * LANE_WIDTH + 2 * SLIDE_STEP_MARGIN_X, 0.5 * NOTE_HEIGHT
+    )}></NoteControl>
+  {/each}
+{/if}
