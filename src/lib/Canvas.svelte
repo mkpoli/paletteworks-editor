@@ -5,7 +5,7 @@
 
   import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
   import { Pixi, Graphics } from 'svelte-pixi'
-  import { LANE_WIDTH } from '$lib/consts'
+  import { CANVAS_WIDTH, LANE_WIDTH, ZOOM_MIN, ZOOM_MAX } from '$lib/consts'
   import { drawSnappingElements } from '$lib/render/renderer';
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
@@ -20,6 +20,12 @@
   import Slide from '$lib/render/Slide.svelte'
   import Selection from '$lib/render/Selection.svelte'
 
+  // UI Components
+  import Menu from '$lib/ui/Menu.svelte'
+  import MenuItem from '$lib/ui/MenuItem.svelte'
+  import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
+  import ZoomIndicator from '$lib/ZoomIndicator.svelte'
+
   export let app: PIXI.Application
   export let PIXI: typeof import('pixi.js')
   export let measureHeight: number
@@ -29,6 +35,7 @@
   export let scrollTick: number
   export let currentMode: Mode
   export let innerHeight: number
+  export let zoom: number
 
   setContext('app', app)
 
@@ -37,7 +44,6 @@
 
   $: pointA && dbg('selectA', formatPoint(pointA.x, pointA.y))
   $: pointB && dbg('selectB', formatPoint(pointB.x, pointB.y))
-
 
   import { PositionManager, position } from '$lib/position'
 
@@ -74,7 +80,8 @@
 
   const dispatch = createEventDispatcher<{
     changeBPM: { tick: number, bpm: number },
-    playSound: string
+    playSound: string,
+    delete: void
   }>()
   let dragging: boolean = false
   let draggingSlide: SlideType = null
@@ -198,8 +205,6 @@
       }
     })
 
-
-
     app.stage.addListener('pointermove', (event: PIXI.InteractionEvent) => {
       pointer = event.data.global
 
@@ -281,8 +286,17 @@
     //   }
     // })
   })
+
+  let menu: HTMLDivElement
+
+  let canvasContainer: HTMLDivElement
 </script>
 
+<div
+class="canvas-container"
+bind:this={canvasContainer}
+style={`width: ${CANVAS_WIDTH}px;`}
+>
 <Pixi {app}>
   <!-- PLAYHEAD -->
   <Playhead
@@ -325,17 +339,40 @@
     rect={selectRect}
   />
 </Pixi>
+<div class="zoom-indicator-container">
+  <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
+</div>
+</div>
+
+<Menu bind:menu>
+  <MenuTrigger contextArea={canvasContainer} {menu} slot="trigger" ></MenuTrigger>
+  <MenuItem icon="mdi:delete" text="削除" on:click={() => dispatch('delete')} />
+</Menu>
 
 <svelte:window
   on:keydown={(event) => {
     if (event.key == 'Delete') {
-      $selectedNotes.forEach((note) => {
-        singles = singles.filter((item) => item !== note)
-        slides = slides.filter(({ start, end }) => start !== note && end !== note)
-        slides.forEach((slide) => {
-            slide.steps = slide.steps.filter((item) => item !== note)
-          })
-      })
+      dispatch('delete')
     }
   }}
 ></svelte:window>
+
+<style>
+  .canvas-container {
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    position: relative;
+    background: linear-gradient(180deg, rgb(11.24% 0% 29.08%) 0%, rgb(6.27% 0% 14.83%) 100%);
+  }
+
+  .zoom-indicator-container {
+    height: 100%;
+    padding: 1em;
+    display: flex;    
+    flex-direction: column;
+    justify-content: end;
+  }
+</style>

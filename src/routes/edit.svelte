@@ -42,13 +42,9 @@
   import PropertyBox from '$lib/PropertyBox.svelte'
   
   // UI Components
-  import ZoomIndicator from '$lib/ZoomIndicator.svelte'
   import ControlHandler from '$lib/ControlHandler.svelte'
   import DebugInfo from '$lib/ui/DebugInfo.svelte'
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte'
-  import Menu from '$lib/ui/Menu.svelte';
-  import MenuItem from '$lib/ui/MenuItem.svelte';
-  import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
 
   // Toast
   import { toast, SvelteToast } from '@zerodevx/svelte-toast'
@@ -68,6 +64,9 @@
     EFFECT_SOUNDS,
     RESOLUTION,
     SNAPTO_DEFAULT,
+    ZOOM_DEFAULT,
+    ZOOM_MAX,
+    ZOOM_MIN,
   } from '$lib/consts'
 
   // Functions
@@ -100,14 +99,12 @@
   let PIXI: typeof import('pixi.js')
   let app: PIXI.Application
 
-  // Zooming
-  let zoom = 1
-  const ZOOM_MIN = 0.1
-  const ZOOM_MAX = 10.0
+  // Sizing
+  let zoom: number = ZOOM_DEFAULT
+
   $: if (zoom <= ZOOM_MIN) zoom = ZOOM_MIN
   $: if (zoom >= ZOOM_MAX) zoom = ZOOM_MAX
 
-  // Sizing
   let innerHeight: number
   $: fullHeight = MARGIN_BOTTOM + maxMeasure * measureHeight + measureHeight 
 
@@ -154,6 +151,7 @@
   // Textures
   import spritesheet from '$assets/spritesheet.json'
   import spritesheetImage from '$assets/spritesheet.png'
+import { selectedNotes } from '$lib/selection';
 
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
@@ -202,7 +200,6 @@
     })
   })
 
-  let canvasContainer: HTMLDivElement
   // audioFileURL = files && files[0] ? URL.createObjectURL(files[0]) : undefined 
   let files: FileList
   let paused: boolean = true
@@ -315,7 +312,6 @@
     scheduler?.stop()
   }
 
-  let menu: HTMLDivElement
 </script>
 
 <svelte:head>
@@ -328,16 +324,11 @@
       bind:currentMode
       bind:snapTo
     />
-    <div
-      class="canvas-container"
-      bind:this={canvasContainer}
-      style={`width: ${CANVAS_WIDTH}px;`}
-    >
+
       <Canvas
         bind:app
         {PIXI}
         {maxMeasure}
-        {maxTick}
         {currentTick}
         {measureHeight}
         {scrollTick}
@@ -347,6 +338,7 @@
         bind:singles
         bind:slides
         bind:bpms
+        bind:zoom
         on:changeBPM={async (event) => {
           ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)
           await tick()
@@ -355,11 +347,18 @@
         on:playSound={(event) => {
           playOnce(audioContext, master, effectBuffers[event.detail])
         }}
+        on:delete={() => {
+          $selectedNotes.forEach((note) => {
+            singles = singles.filter((item) => item !== note)
+            slides = slides.filter(({ start, end }) => start !== note && end !== note)
+            slides.forEach((slide) => {
+                slide.steps = slide.steps.filter((item) => item !== note)
+              })
+          })
+        }}
       />
-      <div class="zoom-indicator-container">
-        <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
-      </div>
-    </div>
+
+
     <PropertyBox
       bind:currentMeasure
       on:goto={() => {
@@ -443,11 +442,6 @@
 
 <SvelteToast/>
 
-<Menu bind:menu>
-  <MenuTrigger contextArea={canvasContainer} {menu} slot="trigger" ></MenuTrigger>
-  <MenuItem icon="mdi:delete" text="削除"/>
-</Menu>
-
 <style>
   /* Global Styles */
   :global(body) {
@@ -462,28 +456,10 @@
     grid-template-columns: auto 1fr auto auto;
   }  
 
-  .canvas-container {
-    height: 100vh;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    position: relative;
-    background: linear-gradient(180deg, rgb(11.24% 0% 29.08%) 0%, rgb(6.27% 0% 14.83%) 100%);
-  }
-
   :global(canvas) {
     display: block;
     width: 100%;
     height: 100%;
-  }
-
-  .zoom-indicator-container {
-    height: 100%;
-    padding: 1em;
-    display: flex;    
-    flex-direction: column;
-    justify-content: end;
   }
 
   .cursor-select {

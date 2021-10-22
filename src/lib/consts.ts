@@ -31,6 +31,10 @@ export const DIAMOND_PIVOT = [0.15189873417, 0.5]
 export const DIAMOND_WIDTH = 30
 export const DIAMOND_HEIGHT = 30 / 158 * 160
 
+export const ZOOM_MIN = 0.1
+export const ZOOM_MAX = 10.0
+export const ZOOM_DEFAULT = 1
+
 export const TEXTURE_NAMES = [
   'noteC.png',
   'noteF.png',
