@@ -318,7 +318,7 @@ import { selectedNotes } from '$lib/selection';
   <title>PaletteWorks Editor</title>
 </svelte:head>
 
-<main class="cursor-select">
+<main class="cursor-select" style={`grid-template-columns: auto ${CANVAS_WIDTH}px auto auto;`}>
   {#if app}
     <ToolBox
       bind:currentMode
@@ -453,7 +453,7 @@ import { selectedNotes } from '$lib/selection';
   /* Main */
   main {
     display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    /* grid-template-columns: auto 1fr 1fr; */
   }  
 
   :global(canvas) {

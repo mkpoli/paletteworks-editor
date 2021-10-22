@@ -243,7 +243,7 @@
       switch (currentMode) {
         case 'select': {
           selectedNotes.set(calcSelection())
-          console.log({ selectedNotes })
+          console.log($selectedNotes)
           break
         }
         case 'slide': {
@@ -293,9 +293,8 @@
 </script>
 
 <div
-class="canvas-container"
-bind:this={canvasContainer}
-style={`width: ${CANVAS_WIDTH}px;`}
+  class="canvas-container"
+  bind:this={canvasContainer}
 >
 <Pixi {app}>
   <!-- PLAYHEAD -->
