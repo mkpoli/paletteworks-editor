@@ -346,7 +346,9 @@ style={`width: ${CANVAS_WIDTH}px;`}
 
 <Menu bind:menu>
   <MenuTrigger contextArea={canvasContainer} {menu} slot="trigger" ></MenuTrigger>
-  <MenuItem icon="mdi:delete" text="削除" on:click={() => dispatch('delete')} />
+  {#if $selectedNotes.length}
+    <MenuItem icon="mdi:delete" text="削除" on:click={() => dispatch('delete')} />
+  {/if}
 </Menu>
 
 <svelte:window
