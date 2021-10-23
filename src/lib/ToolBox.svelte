@@ -9,6 +9,8 @@
   import { ALLOWED_SNAPPINGS, MODE_TEXTURES } from '$lib/editing'
   import type { Mode, SnapTo } from '$lib/editing'
 
+  import { createEventDispatcher } from 'svelte'
+
   addIcon('custom:logo', {
     body: `<path d="M258 29L472.609 243.609L256 337.821L256 335.486V74L72.2283 257.891L256 337.821V358L103.869 291.478L256 443.708L256 358L481.684 259.316L258 483L37.4242 262.424L31 256L42.1788 244.821L258 29Z" fill="currentColor"></path>`,
     width: 512,
@@ -23,6 +25,10 @@
   }
 
   let menu: HTMLDivElement
+
+  const dispatch = createEventDispatcher<{
+    'save': void
+  }>()
 </script>
 
 <div class="toolbox-container">
@@ -33,12 +39,12 @@
       <Icon icon="ph:caret-down-fill" width=15 />
     </MenuTrigger>
 
-    <MenuItem icon="ic:outline-insert-drive-file" text="ファイル (&F)" disabled={true}>
+    <MenuItem icon="ic:outline-insert-drive-file" text="ファイル (&F)">
       <MenuItem icon="eos-icons:content-new" text="新規 (&N)" disabled={true}/>
       <MenuDivider/>
       <MenuItem icon="ic:baseline-folder-open" text="開く (&O)" disabled={true}/>
       <MenuDivider/>
-      <MenuItem icon="mdi:content-save" text="保存 (&S)" disabled={true}/>
+      <MenuItem icon="mdi:content-save" text="保存 (&S)" on:click={() => dispatch('save')}/>
       <MenuDivider/>
       <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" disabled={true}/>
     </MenuItem>

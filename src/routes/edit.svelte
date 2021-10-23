@@ -203,6 +203,12 @@
   let bpmDialogOpened: boolean = false
   let bpmDialogValue: number = 120
   let lastPointerTick: number = 0
+
+  function exportSUS() {
+    const sus = dumpSUS(metadata, { singles, slides, bpms })
+    console.log(sus)
+    download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
+  }
 </script>
 
 <svelte:head>
@@ -214,6 +220,7 @@
     <ToolBox
       bind:currentMode
       bind:snapTo
+      on:save={exportSUS}
     />
     <Canvas
       bind:app
@@ -254,11 +261,7 @@
       on:goto={() => {
         scrollTick = (clamp(1, currentMeasure, maxMeasure + 1) - 1) * TICK_PER_MEASURE
       }}
-      on:exportFile={() => {
-        const sus = dumpSUS(metadata, { singles, slides, bpms })
-        console.log(sus)
-        download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
-      }}
+      on:exportFile={exportSUS}
       on:export={() => {
         const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION)
         const columns = Math.ceil(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
