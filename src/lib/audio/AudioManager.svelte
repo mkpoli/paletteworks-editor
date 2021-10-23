@@ -72,26 +72,26 @@
       }))
 
     const slideEvents = slides
-      .filter(({ end: { tick } }) => tick >= currentTick)
-      .reduce((acc, { critical, start, end, steps }) => {
-        const startEvent: AudioEvent = start.tick >= currentTick
+      .filter(({ tail: { tick } }) => tick >= currentTick)
+      .reduce((acc, { critical, head, tail, steps }) => {
+        const startEvent: AudioEvent = head.tick >= currentTick
           ? {
-              time: tick2secs(start.tick - currentTick),
+              time: tick2secs(head.tick - currentTick),
               sound: !critical ? 'tick' : 'tickCritical'
             }
           : null
 
         const connectEvent: AudioEvent = 
           {
-            time: tick2secs(Math.max(start.tick, currentTick) - currentTick),
+            time: tick2secs(Math.max(head.tick, currentTick) - currentTick),
             sound: !critical ? 'connect' : 'connectCritical',
-            loopTo: tick2secs(end.tick - currentTick)
+            loopTo: tick2secs(tail.tick - currentTick)
           }
   
         const endEvent: AudioEvent = 
           {
-            time: tick2secs(end.tick - currentTick),
-            sound: end.flick !== 'no'
+            time: tick2secs(tail.tick - currentTick),
+            sound: tail.flick !== 'no'
                 ? (critical ? 'flickCritical' : 'flick')
                 : (critical ? 'tapCritical' : 'tapPerfect' ) 
           }

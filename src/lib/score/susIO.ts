@@ -1,8 +1,8 @@
 import type { Note, Timing, Score as SusScore, Meta } from '$lib/score/sus/susdata'
-import type { Flick, Single, Slide, SlideEnd, SlideStep, SlideStart, Metadata, Score, Beatmap } from './beatmap'
+import type { Flick, Single, Slide, SlideTail, SlideStep, SlideHead, Metadata, Score, Beatmap } from './beatmap'
 
-import { analyze, getMetaData } from '$lib/score/sus/analyze';
-import { dump } from '$lib/score/sus/generate';
+import { analyze, getMetaData } from '$lib/score/sus/analyze'
+import { dump } from '$lib/score/sus/generate'
 
 export function getScoreData(sus: string): SusScore {
   const TICKS_PER_BIT = 480
@@ -109,8 +109,8 @@ export function convertScoreData(score: SusScore): Score {
 
     const critical = criticalMods.has(getKey(startNote))
 
-    let start: SlideStart
-    let end: SlideEnd
+    let head: SlideHead
+    let tail: SlideTail
     const steps: SlideStep[] = []
 
     slide.forEach((note) => {
@@ -128,7 +128,7 @@ export function convertScoreData(score: SusScore): Score {
       switch (note.type) {
         case 1: {
           // Start Note
-          start = {
+          head = {
             tick,
             lane,
             width,
@@ -139,7 +139,7 @@ export function convertScoreData(score: SusScore): Score {
         case 2: {
           // End Note
           const flick = flickMods.get(key) || 'no'
-          end = {
+          tail = {
             tick,
             lane,
             width,
@@ -164,8 +164,8 @@ export function convertScoreData(score: SusScore): Score {
     })
 
     slides.push({
-      start,
-      end,
+      head: head,
+      tail: tail,
       steps,
       critical
     })
@@ -203,35 +203,35 @@ export function exportScoreData(score: Score): SusScore {
     }
   })
 
-  slides.forEach(({ start, end, steps, critical }) => {
+  slides.forEach(({ head, tail, steps, critical }) => {
     const slideNote: Note[] = []
 
     // Slide Start
     slideNote.push({
-      tick: start.tick,
-      lane: start.lane,
-      width: start.width,
+      tick: head.tick,
+      lane: head.lane,
+      width: head.width,
       type: 1
     })
     tapNotes.push({
-      tick: start.tick,
-      lane: start.lane,
-      width: start.width,
+      tick: head.tick,
+      lane: head.lane,
+      width: head.width,
       type: 1
     })
-    if (start.easeType) {
+    if (head.easeType) {
       directionalNotes.push({
-        tick: start.tick,
-        lane: start.lane,
-        width: start.width,
-        type: start.easeType === 'easeIn' ? 2 : 6
+        tick: head.tick,
+        lane: head.lane,
+        width: head.width,
+        type: head.easeType === 'easeIn' ? 2 : 6
       })
     }
     if (critical) {
       tapNotes.push({
-        tick: start.tick,
-        lane: start.lane,
-        width: start.width,
+        tick: head.tick,
+        lane: head.lane,
+        width: head.width,
         type: 2
       })
     }
@@ -264,23 +264,23 @@ export function exportScoreData(score: Score): SusScore {
 
     // Slide End
     slideNote.push({
-      tick: end.tick,
-      lane: end.lane,
-      width: end.width,
+      tick: tail.tick,
+      lane: tail.lane,
+      width: tail.width,
       type: 2
     })
     tapNotes.push({
-      tick: end.tick,
-      lane: end.lane,
-      width: end.width,
+      tick: tail.tick,
+      lane: tail.lane,
+      width: tail.width,
       type: 1
     })
-    if (end.flick !== 'no') {
+    if (tail.flick !== 'no') {
       directionalNotes.push({
-        tick: end.tick,
-        lane: end.lane,
-        width: end.width,
-        type: FLICK_TO_TYPE[end.flick]
+        tick: tail.tick,
+        lane: tail.lane,
+        width: tail.width,
+        type: FLICK_TO_TYPE[tail.flick]
       })
     }    
     slideNotes.push(slideNote)

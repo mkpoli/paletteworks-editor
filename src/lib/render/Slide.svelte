@@ -10,18 +10,18 @@
   // Props
   export let slide: SlideType
 
-  $: ({ start, end, critical, steps } = slide)
+  $: ({ head, tail, critical, steps } = slide)
 </script>
 
 <!-- SLIDE PATH -->
 <SlidePath
-  notes={[start, ...steps.filter((x) => !x.ignored), end]}
+  notes={[head, ...steps.filter((x) => !x.ignored), tail]}
   {critical}
 />
 
 <!-- SLIDE START -->
 <Note
-  note={start}
+  note={head}
   slide={true}
   {critical}
 />
@@ -33,7 +33,7 @@
 
 <!-- SLIDE END -->
 <Note
-  note={end}
+  note={tail}
   slide={true}
   {critical}
 />

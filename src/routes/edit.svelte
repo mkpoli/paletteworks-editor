@@ -120,7 +120,7 @@
       (
         max(
           slides
-            .map(({ start, end, steps }) => [start.tick, end.tick, steps.map(({ tick }) => tick)])
+            .map(({ head, tail, steps }) => [head.tick, tail.tick, steps.map(({ tick }) => tick)])
             .concat(singles.map(({ tick }) => tick))
             .flat(2) as number[]
         ) || 0
@@ -241,7 +241,7 @@
       on:delete={() => {
         $selectedNotes.forEach((note) => {
           singles = singles.filter((item) => item !== note)
-          slides = slides.filter(({ start, end }) => start !== note && end !== note)
+          slides = slides.filter(({ head, tail }) => head !== note && tail !== note)
           slides.forEach((slide) => {
             slide.steps = slide.steps.filter((item) => item !== note)
           })

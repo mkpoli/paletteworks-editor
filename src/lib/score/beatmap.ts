@@ -26,16 +26,16 @@ interface IEase {
 }
 
 export type Single = INote & IDirectional & ICritical
-export type SlideStart = INote & IEase
+export type SlideHead = INote & IEase
 export type SlideStep = INote & {
   diamond: boolean,
   ignored: boolean,
 } & IEase
-export type SlideEnd = INote & IDirectional
-export type SlideNote = SlideStart | SlideStep | SlideEnd
+export type SlideTail = INote & IDirectional
+export type SlideNote = SlideHead | SlideStep | SlideTail
 export type Slide = {
-  start: SlideStart
-  end: SlideEnd
+  head: SlideHead
+  tail: SlideTail
   steps: SlideStep[]
 } & ICritical
 

@@ -8,7 +8,7 @@
 
   // Types
   import type PIXI from 'pixi.js'
-  import type { Slide, SlideNote, SlideStart, SlideStep } from '$lib/score/beatmap'
+  import type { Slide, SlideNote, SlideHead, SlideStep } from '$lib/score/beatmap'
   import NoteControl from './NoteControl.svelte'
   
   // Props
@@ -57,10 +57,10 @@
 
   function drawDiamonds(position: PositionManager, slide: Slide) {
     container.removeChildren()
-    const { start, end, critical, steps } = slide
+    const { head, tail, critical, steps } = slide
 
-    let currentGroup: SlideNote[] = [start];
-    const connectedGroups = [...steps, end]
+    let currentGroup: SlideNote[] = [head];
+    const connectedGroups = [...steps, tail]
       .reduce((acc: SlideNote[][], ele: SlideNote) => {
         currentGroup.push(ele)
         if (!('ignored' in ele) || !ele.ignored) {
@@ -73,7 +73,7 @@
 
     connectedGroups
       .forEach((arr: SlideNote[]) => {
-        const origin = arr.shift() as SlideStart | SlideStep
+        const origin = arr.shift() as SlideHead | SlideStep
         const originX = position.calcMidX(origin.lane, origin.width)
         const originY = position.calcY(origin.tick)
 

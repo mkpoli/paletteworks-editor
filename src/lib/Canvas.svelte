@@ -5,7 +5,7 @@
 
   import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
   import { Pixi, Graphics } from 'svelte-pixi'
-  import { CANVAS_WIDTH, LANE_WIDTH, ZOOM_MIN, ZOOM_MAX } from '$lib/consts'
+  import { LANE_WIDTH, ZOOM_MIN, ZOOM_MAX } from '$lib/consts'
   import { drawSnappingElements } from '$lib/render/renderer';
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
@@ -129,11 +129,11 @@
         }
 
         const slideEndHere = slides.find((slide) => (
-          slide.end.tick === pointerTick &&
-          slide.end.lane <= pointerLane && pointerLane <= slide.end.lane + slide.end.width
+          slide.tail.tick === pointerTick &&
+          slide.tail.lane <= pointerLane && pointerLane <= slide.tail.lane + slide.tail.width
         ))
         if (slideEndHere) {
-          slideEndHere.end.flick = rotateNext<Flick>(slideEndHere.end.flick, FLICK_TYPES)
+          slideEndHere.tail.flick = rotateNext<Flick>(slideEndHere.tail.flick, FLICK_TYPES)
           slides = slides
           dispatch('playSound', 'stage')
         }
@@ -150,11 +150,11 @@
 
         const slideHere = slides.find((slide) => {
           return (
-            slide.start.tick === pointerTick &&
-            slide.start.lane <= pointerLane && pointerLane <= slide.start.lane + slide.start.width
+            slide.head.tick === pointerTick &&
+            slide.head.lane <= pointerLane && pointerLane <= slide.head.lane + slide.head.width
           ) || (
-            slide.end.tick === pointerTick &&
-            slide.end.lane <= pointerLane && pointerLane <= slide.end.lane + slide.end.width
+            slide.tail.tick === pointerTick &&
+            slide.tail.lane <= pointerLane && pointerLane <= slide.tail.lane + slide.tail.width
           )
         })
 
@@ -182,13 +182,13 @@
         case 'slide': {
           dragging = true
           draggingSlide = {
-            start: {
+            head: {
               tick: pointerTick,
               lane: pointerLane,
               width: 2,
               easeType: false
             },
-            end: {
+            tail: {
               tick: pointerTick,
               lane: pointerLane,
               flick: 'no',
@@ -217,8 +217,8 @@
           break
         }
         case 'slide': {
-          draggingSlide.end.lane = pointerLane
-          draggingSlide.end.tick = pointerTick
+          draggingSlide.tail.lane = pointerLane
+          draggingSlide.tail.tick = pointerTick
           slides = slides
           break
         }
@@ -229,7 +229,7 @@
       return [
         ...singles.filter(({ tick, lane }) => $position.inRect(lane, tick, selectRect)),
         ...slides
-          .map(({ start, end, steps }) => [start, end, ...steps])
+          .map(({ head, tail, steps }) => [head, tail, ...steps])
           .flat()
           .filter(({ lane, tick }) => $position.inRect(lane, tick, selectRect))
       ]
@@ -247,15 +247,15 @@
           break
         }
         case 'slide': {
-          if (draggingSlide.end.tick < draggingSlide.start.tick) {
+          if (draggingSlide.tail.tick < draggingSlide.head.tick) {
             // Swap
-            const tick = draggingSlide.start.tick
-            const lane = draggingSlide.start.lane
+            const tick = draggingSlide.head.tick
+            const lane = draggingSlide.head.lane
             // TODO: width
-            draggingSlide.start.tick = draggingSlide.end.tick
-            draggingSlide.start.lane = draggingSlide.end.lane
-            draggingSlide.end.tick = tick
-            draggingSlide.end.lane = lane
+            draggingSlide.head.tick = draggingSlide.tail.tick
+            draggingSlide.head.lane = draggingSlide.tail.lane
+            draggingSlide.tail.tick = tick
+            draggingSlide.tail.lane = lane
           }
           slides = slides
           draggingSlide = null
