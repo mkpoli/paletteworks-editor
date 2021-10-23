@@ -19,7 +19,9 @@
   const dispatch = createEventDispatcher()
 
   function onclick() {
-    hideAll()
+    if (!hasSubMenu) {
+      hideAll()
+    }
     dispatch('click')
   }
 
