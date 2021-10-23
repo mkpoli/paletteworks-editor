@@ -3,10 +3,8 @@
   import type { Mode } from '$lib/editing'
   import type { Flick, Single, Slide as SlideType, Note as NoteType } from '$lib/score/beatmap';
 
-  import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
-  import { Pixi, Graphics } from 'svelte-pixi'
-  import { LANE_WIDTH, ZOOM_MIN, ZOOM_MAX } from '$lib/consts'
-  import { drawSnappingElements } from '$lib/render/renderer';
+  import { createEventDispatcher, onMount, setContext } from 'svelte'
+  import { ZOOM_MIN, ZOOM_MAX } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
@@ -74,8 +72,6 @@
   }
 
   $: selectRect = point2rect(pointA, pointB)
-
-  const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
 
   export let singles: Single[]
   export let slides: SlideType[]
@@ -287,6 +283,8 @@
     //     }
     //   }
     // })
+
+    canvasContainer.appendChild(app.view)
   })
 
   let menu: HTMLDivElement
@@ -296,9 +294,10 @@
 
 <div
   class="canvas-container"
-  bind:this={canvasContainer}
 >
-  <Pixi {app}>
+  <div
+    bind:this={canvasContainer}
+  >
     <!-- PLAYHEAD -->
     <Playhead
       {currentTick}
@@ -336,7 +335,7 @@
       {dragging}
       rect={selectRect}
     />
-  </Pixi>
+  </div>
   <div class="zoom-indicator-container">
     <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
   </div>
