@@ -19,6 +19,7 @@
   import Note from '$lib/render/Note.svelte'
   import Slide from '$lib/render/Slide.svelte'
   import Selection from '$lib/render/Selection.svelte'
+  import Floating from './render/Floating.svelte'
 
   // UI Components
   import Menu from '$lib/ui/Menu.svelte'
@@ -325,14 +326,11 @@
     {/each}
 
     <!-- FLOATING ITEMS -->
-    <Graphics
-      draw={(graphics) => {
-        drawSnappingElements(
-          graphics, PIXI, TEXTURES, currentMode,
-          $position.calcX(pointerLane) + LANE_WIDTH, $position.calcY(pointerTick),
-          bpms.has(pointerTick)
-        )
-      }}
+    <Floating
+      {pointerLane}
+      {pointerTick}
+      {bpms}
+      {currentMode}
     />
 
     <Selection
