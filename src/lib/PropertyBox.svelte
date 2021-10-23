@@ -21,14 +21,14 @@
 </script>
 <div class="panel-container">
   <div class="panel-bar">
-    <Button
+    <!-- <Button
       icon="ic:baseline-photo-camera"
       on:click={() => { dispatch('export') }}
     >画像出力</Button>
     <Button
       icon="mdi:file-export-outline"
       on:click={() => { dispatch('exportFile') }}
-      >譜面出力</Button>
+      >譜面出力</Button> -->
 
     Selected: {$selectedNotes.length}
   </div>

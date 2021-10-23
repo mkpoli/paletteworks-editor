@@ -103,7 +103,6 @@
   // $: if (zoom >= ZOOM_MAX) zoom = ZOOM_MAX
 
   let innerHeight: number
-  $: fullHeight = MARGIN_BOTTOM + maxMeasure * measureHeight + measureHeight 
 
   // Resize on window resize
   $: app?.renderer.resize(CANVAS_WIDTH, innerHeight)
@@ -200,6 +199,7 @@
 
   $: dbg('bpms', [...bpms.entries()].map((e) => `[${e[0]}]=${e[1]}bpm`).join('\n'))
 
+  // BPM
   let bpmDialogOpened: boolean = false
   let bpmDialogValue: number = 120
   let lastPointerTick: number = 0
@@ -209,6 +209,8 @@
     console.log(sus)
     download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
   }
+
+  let imageDialogOpened: boolean = false
 </script>
 
 <svelte:head>
@@ -221,6 +223,7 @@
       bind:currentMode
       bind:snapTo
       on:save={exportSUS}
+      on:image={() => { imageDialogOpened = true }}
     />
     <Canvas
       bind:app
@@ -236,6 +239,7 @@
       bind:slides
       bind:bpms
       bind:zoom
+      bind:imageDialogOpened
       on:changeBPM={async (event) => {
         ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)
         await tick()
@@ -260,33 +264,6 @@
       bind:currentMeasure
       on:goto={() => {
         scrollTick = (clamp(1, currentMeasure, maxMeasure + 1) - 1) * TICK_PER_MEASURE
-      }}
-      on:exportFile={exportSUS}
-      on:export={() => {
-        const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION)
-        const columns = Math.ceil(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
-        const COLUMN_WIDTH = app.renderer.width * 0.9
-        const renderTexture = PIXI.RenderTexture.create({
-          width: COLUMN_WIDTH * columns, height: COLUMN_HEIGHT,
-          resolution: 0.35
-        })
-        
-        console.log({ columns })
-        for (let i = 0; i < columns; i++) {
-          app.renderer.render(app.stage, {
-            renderTexture, clear: false,
-            transform: new PIXI.Matrix(
-              RESOLUTION, 0, 0, RESOLUTION,
-              i * COLUMN_WIDTH,
-              snap((i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION) + app.stage.pivot.y * RESOLUTION, measureHeight * RESOLUTION) + measureHeight * RESOLUTION - innerHeight * RESOLUTION) //fullHeight - 2 * innerHeight
-          })
-        }
-
-        // const canvas = app.renderer.plugins.extract.canvas(app.stage)
-        const canvas = app.renderer.plugins.extract.canvas(renderTexture);
-        canvas.toBlob((blob) => {
-          download(blob, `${new Date().toISOString().replace(':', '-')}.png`)
-        })
       }}
       statistics={{
         'Taps': singles.filter((x) => x.flick === 'no').length,

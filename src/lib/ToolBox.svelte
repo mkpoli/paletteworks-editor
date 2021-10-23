@@ -27,7 +27,8 @@
   let menu: HTMLDivElement
 
   const dispatch = createEventDispatcher<{
-    'save': void
+    'save': void,
+    'image': void
   }>()
 </script>
 
@@ -46,7 +47,7 @@
       <MenuDivider/>
       <MenuItem icon="mdi:content-save" text="保存 (&S)" on:click={() => dispatch('save')}/>
       <MenuDivider/>
-      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" disabled={true}/>
+      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" on:click={() => dispatch('image')}/>
     </MenuItem>
     <MenuDivider/>
       <MenuItem icon="ic:sharp-edit" text="編集 (&E)" disabled={true}>

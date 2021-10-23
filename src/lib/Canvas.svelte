@@ -25,6 +25,7 @@
   import MenuItem from '$lib/ui/MenuItem.svelte'
   import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
   import ZoomIndicator from '$lib/ZoomIndicator.svelte'
+  import ImageDialog from '$lib/dialogs/ImageDialog.svelte'
 
   export let app: PIXI.Application
   export let PIXI: typeof import('pixi.js')
@@ -36,6 +37,7 @@
   export let currentMode: Mode
   export let innerHeight: number
   export let zoom: number
+  export let imageDialogOpened: boolean
 
   setContext('app', app)
 
@@ -343,12 +345,19 @@
   </div>
 </div>
 
+<!-- CONTEXT MENU -->
 <Menu bind:menu>
   <MenuTrigger contextArea={canvasContainer} {menu} slot="trigger" ></MenuTrigger>
   {#if $selectedNotes.length}
     <MenuItem icon="mdi:delete" text="削除" on:click={() => dispatch('delete')} />
   {/if}
 </Menu>
+
+<!-- EXPORT IMAGE DIALOG -->
+<ImageDialog
+  bind:opened={imageDialogOpened}
+  {maxMeasure}
+/>
 
 <svelte:window
   on:keydown={(event) => {
