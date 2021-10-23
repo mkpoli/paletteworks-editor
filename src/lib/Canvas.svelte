@@ -227,11 +227,11 @@
 
     function calcSelection(): NoteType[] {
       return [
-        ...singles.filter(({ tick, lane }) => $position.inRect(lane, tick, selectRect)),
+        ...singles.filter(({ tick, lane, width }) => $position.intersectRect(lane, width, tick, selectRect)),
         ...slides
           .map(({ head, tail, steps }) => [head, tail, ...steps])
           .flat()
-          .filter(({ lane, tick }) => $position.inRect(lane, tick, selectRect))
+          .filter(({ lane, width, tick }) => $position.intersectRect(lane, width, tick, selectRect))
       ]
     }
 

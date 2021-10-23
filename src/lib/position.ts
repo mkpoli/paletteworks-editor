@@ -62,12 +62,13 @@ export class PositionManager {
     return Math.max(0, snap(this.calcRawTick(y), TICK_PER_MEASURE / this.snapTo))
   }
 
-  inRect(lane: number, tick: number, rect: IRect): boolean {
+  intersectRect(lane: number, width: number, tick: number, rect: IRect): boolean {
+    const laneR = lane + width
     const top = this.calcRawTick(rect.top)
     const bottom = this.calcRawTick(rect.bottom)
     const left = this.calcRawLane(rect.left)
     const right = this.calcRawLane(rect.right)
-    return between(left, lane, right) && between(top, tick, bottom)
+    return lane < right && laneR > left && between(top, tick, bottom)
   }
 }
 
