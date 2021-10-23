@@ -10,6 +10,7 @@
   import TextInput from "$lib/ui/TextInput.svelte"
 
   import filesize from 'filesize'
+  import { selectedNotes } from "./selection"
 
   export let currentMeasure: number
   export let statistics: Record<string, number>
@@ -28,6 +29,8 @@
       icon="mdi:file-export-outline"
       on:click={() => { dispatch('exportFile') }}
       >譜面出力</Button>
+
+    Selected: {$selectedNotes.length}
   </div>
   <div class="panel">
     <h2>コントロール</h2>
@@ -72,10 +75,10 @@
     </label>
   </div>
   <div class="panel">
-    <h2>統計</h2>
-    <ul>
+    <h2>統計</h2> 
+    <ul class="statistics">
       {#each Object.entries(statistics) as [ name, value ]}
-        <li>{`${name}: ${value}`}</li>
+        <li><span class="title">{name}</span><value>{value}</value></li>
       {/each}
     </ul>
   </div>  
@@ -93,6 +96,21 @@
 </div>
 
 <style>
+
+ul.statistics {
+  list-style-type: none;
+}
+
+ul.statistics li {
+  display: flex;
+}
+
+ul .title {
+  font-weight: bold;
+  display: block;
+  width: 5em;
+}
+
 .panel-container {
   display: grid;
   grid-template: repeat(3, auto) / repeat(2, auto);
