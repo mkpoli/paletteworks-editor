@@ -246,7 +246,6 @@
       switch (currentMode) {
         case 'select': {
           selectedNotes.set(calcSelection())
-          console.log($selectedNotes)
           break
         }
         case 'slide': {

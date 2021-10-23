@@ -51,7 +51,6 @@
       const arrayBuffer = await response.arrayBuffer()
       return [name, await audioContext.decodeAudioData(arrayBuffer)]
     })))
-    console.log({effectBuffers})
   })
 
 
@@ -114,8 +113,6 @@
     const events: Array<AudioEvent> = [bgmEvent, ...singleEvents, ...slideEvents]
       .filter((event) => event)
       .sort(({ time: a }, { time: b }) => a - b)
-
-    console.log(events)
 
     return new AudioScheduler(audioContext, audioNodes, {
       events,

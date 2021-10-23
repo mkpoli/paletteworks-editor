@@ -39,7 +39,6 @@
       resolution
     })
     
-    console.log({ columns })
     for (let i = 0; i < columns; i++) {
       app.renderer.render(app.stage, {
         renderTexture, clear: false,

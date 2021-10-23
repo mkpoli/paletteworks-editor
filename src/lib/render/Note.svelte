@@ -53,7 +53,6 @@
   })
 
   onDestroy(() => {
-    console.log('destroyed', note)
     app.stage.removeChild(instance)
   })
 

@@ -82,7 +82,6 @@ export function dump(metadata: Meta, score: Score, comment: string) {
   })
 
   const provider = new ChannelProvider()
-  console.log(slideNotes)
   slideNotes.forEach((steps) => {
     const startTick = steps[0].tick
     const endTick = steps[steps.length - 1].tick

@@ -206,7 +206,6 @@
 
   function exportSUS() {
     const sus = dumpSUS(metadata, { singles, slides, bpms })
-    console.log(sus)
     download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
   }
 
