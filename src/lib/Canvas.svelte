@@ -175,7 +175,10 @@
 
           pointA = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
           pointB = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
-          selectedNotes.set([])
+
+          if (!event.shiftKey) {
+            selectedNotes.set([])
+          }
           break
         }
         case 'slide': {
@@ -241,7 +244,7 @@
       app.renderer.view.releasePointerCapture(event.pointerId)
       switch (currentMode) {
         case 'select': {
-          selectedNotes.set(calcSelection())
+          $selectedNotes = $selectedNotes.concat(calcSelection())
           break
         }
         case 'slide': {
