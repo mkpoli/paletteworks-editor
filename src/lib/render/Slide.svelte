@@ -7,7 +7,6 @@
   import SlidePath from '$lib/render/SlidePath.svelte'
   import SlideSteps from '$lib/render/SlideSteps.svelte'
 
-
   // Props
   export let slide: SlideType
 

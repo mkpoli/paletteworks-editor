@@ -14,7 +14,7 @@
   export let critical: boolean = false
   export let slide: boolean = false
 
-  const { lane, tick, width } = note
+  $: ({ lane, tick, width } = note)
   const flick: Flick = 'flick' in note ? note.flick : 'no'
   critical = 'critical' in note ? note.critical : critical
 
@@ -53,6 +53,7 @@
   })
 
   onDestroy(() => {
+    console.log('destroyed', note)
     app.stage.removeChild(instance)
   })
 

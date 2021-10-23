@@ -11,7 +11,8 @@
     // const url = `/SlideEase.sus`
     // const url = `MultipleBPM.sus`
     // const url = `LongSingle.sus`
-    const url = `SlideTest.sus`
+    // const url = `SlideTest.sus`
+    const url = `TwoSlide.sus`
     // const url = '/InvisibleRelayPoint.sus'
     // const url = `ModNote.sus`
     // const url = `MetaTest.sus`
@@ -345,15 +346,12 @@
       }}
       on:delete={() => {
         $selectedNotes.forEach((note) => {
-          console.log('before', { slides })
           singles = singles.filter((item) => item !== note)
-          // slides = slides.filter(({ start, end }) => start !== note && end !== note)
           slides = slides.filter(({ start, end }) => start !== note && end !== note)
           slides.forEach((slide) => {
             slide.steps = slide.steps.filter((item) => item !== note)
           })
-          slides = [...slides]
-          console.log('after', { slides })
+          slides = slides
         })
       }}
     />
