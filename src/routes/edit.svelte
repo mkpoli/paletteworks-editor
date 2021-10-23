@@ -90,7 +90,7 @@
   import { selectedNotes } from '$lib/selection'
 
   // Sound
-  let soundQueue: string[]
+  let soundQueue: string[] = []
 
   // PIXI.js
   let PIXI: typeof import('pixi.js')
