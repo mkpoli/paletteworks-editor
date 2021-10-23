@@ -45,7 +45,7 @@
       <MenuDivider/>
       <MenuItem icon="ic:baseline-folder-open" text="開く (&O)" disabled={true}/>
       <MenuDivider/>
-      <MenuItem icon="mdi:content-save" text="保存 (&S)" on:click={() => dispatch('save')}/>
+      <MenuItem icon="mdi:file-export-outline" text="譜面保存 (&S)" on:click={() => dispatch('save')}/>
       <MenuDivider/>
       <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" on:click={() => dispatch('image')}/>
     </MenuItem>
