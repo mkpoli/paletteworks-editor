@@ -72,29 +72,30 @@
       }))
 
     const slideEvents = slides
+      .filter(({ end: { tick } }) => tick >= currentTick)
       .reduce((acc, { critical, start, end, steps }) => {
-        const connectEvent: AudioEvent = 
-          end.tick <= currentTick
-            ? {
-                time: tick2secs(Math.max(start.tick, currentTick) - currentTick),
-                sound: !critical ? 'connect' : 'connectCritical',
-                loopTo: tick2secs(end.tick - currentTick)
-              }
-            : null
         const startEvent: AudioEvent = start.tick >= currentTick
           ? {
               time: tick2secs(start.tick - currentTick),
               sound: !critical ? 'tick' : 'tickCritical'
             }
           : null
-        const endEvent: AudioEvent = end.tick >= currentTick
-          ? {
+
+        const connectEvent: AudioEvent = 
+          {
+            time: tick2secs(Math.max(start.tick, currentTick) - currentTick),
+            sound: !critical ? 'connect' : 'connectCritical',
+            loopTo: tick2secs(end.tick - currentTick)
+          }
+  
+        const endEvent: AudioEvent = 
+          {
             time: tick2secs(end.tick - currentTick),
             sound: end.flick !== 'no'
                 ? (critical ? 'flickCritical' : 'flick')
                 : (critical ? 'tapCritical' : 'tapPerfect' ) 
           }
-          : null
+
         const stepEvents = steps
           .filter(({ tick }) => tick >= currentTick)
           .reduce((a, { tick, diamond }) => {
@@ -106,6 +107,7 @@
             }
             return a
           }, [] as AudioEvent[])
+
         return [...acc, connectEvent, startEvent, endEvent, ...stepEvents]
       }, [] as AudioEvent[])
 
@@ -120,6 +122,9 @@
       callback(event: AudioEvent, offset: number) {
         const soundSource = audioContext.createBufferSource()
         soundSource.buffer = effectBuffers[event.sound]
+        if (event.loopTo) {
+          soundSource.loop = true
+        }
         audioNodes.push(soundSource)
         soundSource.connect(master)
         const startTime = event.time + offset
