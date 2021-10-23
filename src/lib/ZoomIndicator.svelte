@@ -7,13 +7,17 @@
   export let step: number
 
   const ICON_HEIGHT = '2em'
+
+  function onclick(event: MouseEvent, factor: number) {
+    zoom += factor * step * (event.shiftKey ? 10 : 1)
+  }
 </script>
 
 <div class="zoom-indicator" title="Zoom">
   <ClickableIcon
     icon="system-uicons:zoom-in"
     height={ICON_HEIGHT}
-    on:click={() => { if (zoom <= max + step)  zoom += step }}
+    on:click={(event) => { onclick(event, 1) }}
   />
   <div class="zoom-range-container">
     <input type="range" bind:value={zoom} min={min} max={max} step={step}>
@@ -21,7 +25,7 @@
   <ClickableIcon
     icon="system-uicons:zoom-out"
     height={ICON_HEIGHT}
-    on:click={() => { if (zoom >= min + step)  zoom -= step }}
+    on:click={(event) => { onclick(event, -1) }}
   />
   <div class="zoom-number">
     {zoom.toFixed(1)}x

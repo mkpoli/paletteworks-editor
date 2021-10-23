@@ -15,7 +15,7 @@
   }
 </script>
 
-<button on:click={() => {dispatch('click')}} on:keydown={handleKeydown}>
+<button on:click on:keydown={handleKeydown}>
   <Icon icon={icon} height={height} width={width} />
 </button>
 

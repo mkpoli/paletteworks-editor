@@ -100,7 +100,7 @@
   let zoom: number = ZOOM_DEFAULT
 
   $: if (zoom <= ZOOM_MIN) zoom = ZOOM_MIN
-  $: if (zoom >= ZOOM_MAX) zoom = ZOOM_MAX
+  // $: if (zoom >= ZOOM_MAX) zoom = ZOOM_MAX
 
   let innerHeight: number
   $: fullHeight = MARGIN_BOTTOM + maxMeasure * measureHeight + measureHeight 
