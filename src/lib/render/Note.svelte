@@ -15,10 +15,11 @@
   export let slide: boolean = false
 
   $: ({ lane, tick, width } = note)
-  const flick: Flick = 'flick' in note ? note.flick : 'no'
-  critical = 'critical' in note ? note.critical : critical
+  let flick: Flick
+  $: flick = 'flick' in note ? note.flick : 'no'
+  $: critical = 'critical' in note ? note.critical : critical
 
-  const type = critical
+  $: type = critical
                 ? 'noteC.png'
                 : flick !== 'no'
                   ? 'noteF.png'
@@ -42,7 +43,6 @@
       texture,
       250, 0, 250, 0
     )
-    instance.width = noteWidth
     instance.height = NOTE_HEIGHT
     instance.pivot.x = noteWidth * 0.5
     instance.pivot.y = NOTE_HEIGHT * 0.5
@@ -57,8 +57,10 @@
   })
 
   $: if (instance) {
+    instance.texture = TEXTURES[type]
     instance.x = $position.calcMidX(lane, width)
     instance.y = $position.calcY(tick)
+    instance.width = noteWidth
     currentRect = new PIXI.Rectangle(
       $position.calcX(lane), $position.calcY(tick) - 0.5 * 0.5 * NOTE_HEIGHT,
       noteWidth, 0.5 * NOTE_HEIGHT

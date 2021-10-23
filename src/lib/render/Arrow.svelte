@@ -7,7 +7,7 @@
   import type { Flick } from "$lib/score/beatmap"
 
   // Functions
-  import { getContext, onMount } from "svelte";
+  import { getContext, onDestroy, onMount } from "svelte";
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -29,19 +29,26 @@
   let PIXI: typeof import('pixi.js')
   onMount(async () => {
     PIXI = await import('pixi.js')
-    sprite = new PIXI.Sprite(TEXTURES[
-      `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.min(width, 6) }${(flick === 'left' || flick === 'right') ? '_diagonal': ''}.png`
-    ])
+    sprite = new PIXI.Sprite()
     sprite.anchor.x = 0.5
     sprite.anchor.y = 0.5
-    sprite.scale.x = 0.25 * (flick === 'left' ? 1 : -1)
     sprite.scale.y = 0.25
     sprite.zIndex = 3
     app.stage.addChild(sprite)
   })
-
+  onDestroy(() => {
+    app.stage.removeChild(sprite)
+  })
+  
   $: if (sprite) {
     sprite.x = $position.calcMidX(lane, width)
     sprite.y = $position.calcY(tick) - NOTE_HEIGHT + 15
+  }
+
+  $: if (sprite) {
+    sprite.texture = TEXTURES[
+      `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.min(width, 6) }${(flick === 'left' || flick === 'right') ? '_diagonal': ''}.png`
+    ]
+    sprite.scale.x = 0.25 * (flick === 'left' ? 1 : -1)
   }
 </script>

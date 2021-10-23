@@ -317,12 +317,12 @@
     />
 
     <!-- SINGLE NOTES -->
-    {#each singles as note}
+    {#each singles as note (note)}
       <Note {note}/>
     {/each}
 
     <!-- SLIDE NOTES -->
-    {#each slides as slide}
+    {#each slides as slide (slide)}
       <Slide {slide} />
     {/each}
 
