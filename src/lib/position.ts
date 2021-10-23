@@ -58,8 +58,8 @@ export class PositionManager {
     return Math.max(0, rawTick)
   }
 
-  calcTick(y: number): number {
-    return Math.max(0, snap(this.calcRawTick(y), TICK_PER_MEASURE / this.snapTo))
+  calcTick(y: number, scrollTick: number): number {
+    return Math.max(0, snap(this.calcRawTick(y) + scrollTick, TICK_PER_MEASURE / this.snapTo))
   }
 
   intersectRect(lane: number, width: number, tick: number, rect: IRect): boolean {

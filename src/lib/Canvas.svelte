@@ -53,7 +53,7 @@
   $: $position = new PositionManager(measureHeight, scrollTick, snapTo, innerHeight)
   $: if (pointer) {
     pointerLane = $position.calcLane(pointer.x)
-    pointerTick = $position.calcTick(pointer.y)
+    pointerTick = $position.calcTick(pointer.y, scrollTick)
   }
   $: dbg('iH - p.y', innerHeight - pointer?.y)
   $: pointer && dbg('pointer', formatPoint(pointer.x, pointer.y))
