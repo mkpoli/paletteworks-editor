@@ -18,6 +18,7 @@
   export let metadata: Metadata
   export let files: FileList
   export let scrollMode: 'page' | 'smooth'
+  export let visibility: Record<string, boolean>
 </script>
 <div class="panel-container">
   <div class="panel-bar">
@@ -69,7 +70,21 @@
     <h2>統計</h2> 
     <ul class="statistics">
       {#each Object.entries(statistics) as [ name, value ]}
-        <li><span class="title">{name}</span><value>{value}</value></li>
+        <li>
+          <ClickableIcon
+            icon={visibility[name] ? 'ic:baseline-visibility' : 'ic:baseline-visibility-off'}
+            width="1.5em"
+            on:click={() => {
+              visibility[name] = !visibility[name]
+              if (name === 'Total') {
+                Object.keys(visibility).forEach((key) => {
+                  visibility[key] = visibility[name]
+                })
+              }
+            }}
+          />
+          <span class="title">{name}</span><value>{value}</value>
+        </li>
       {/each}
     </ul>
   </div>  
@@ -87,6 +102,9 @@
 </div>
 
 <style>
+ul {
+  padding: 0 2em;
+}
 
 ul.statistics {
   list-style-type: none;
@@ -94,6 +112,7 @@ ul.statistics {
 
 ul.statistics li {
   display: flex;
+  gap: 1em;
 }
 
 ul .title {

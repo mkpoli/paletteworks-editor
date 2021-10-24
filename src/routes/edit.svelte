@@ -210,6 +210,14 @@
   }
 
   let imageDialogOpened: boolean = false
+
+  let visibility: Record<string, boolean> = {
+    'Taps': true,
+    'Flicks': true, 
+    'Slides': true,
+    'SlideSteps': false,
+    'Total': true
+  }
 </script>
 
 <svelte:head>
@@ -234,6 +242,7 @@
       {snapTo}
       {currentMode}
       {innerHeight}
+      {visibility}
       bind:singles
       bind:slides
       bind:bpms
@@ -268,12 +277,14 @@
         'Taps': singles.filter((x) => x.flick === 'no').length,
         'Flicks': singles.filter((x) => x.flick !== 'no').length,
         'Slides': slides.length,
+        'SlideSteps': slides.map(({steps}) => steps).reduce((acc, ele) => acc += ele.length, 0),
         'Total': singles.length + slides.length,
       }}
       bind:paused
       bind:metadata
       bind:files
       bind:scrollMode
+      bind:visibility
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
     <DebugInfo/>

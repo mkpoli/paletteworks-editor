@@ -37,6 +37,7 @@
   export let innerHeight: number
   export let zoom: number
   export let imageDialogOpened: boolean
+  export let visibility: Record<string, boolean>
 
   setContext('app', app)
 
@@ -318,13 +319,17 @@
 
     <!-- SINGLE NOTES -->
     {#each singles as note (note)}
-      <Note {note}/>
+      {#if visibility.Flicks && note.flick !== 'no' || visibility.Taps && note.flick === 'no' }
+        <Note {note}/>
+      {/if}
     {/each}
 
     <!-- SLIDE NOTES -->
-    {#each slides as slide (slide)}
-      <Slide {slide} />
-    {/each}
+    {#if visibility.Slides}
+      {#each slides as slide (slide)}
+        <Slide {slide} stepsVisible={visibility.SlideSteps} />
+      {/each}
+    {/if}
 
     <!-- FLOATING ITEMS -->
     <Floating

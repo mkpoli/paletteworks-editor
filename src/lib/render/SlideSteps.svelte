@@ -13,6 +13,7 @@
   
   // Props
   export let slide: Slide
+  export let stepsVisible: boolean
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -113,16 +114,19 @@
 
   const SLIDE_STEP_MARGIN_X = -5
   const SLIDE_STEP_MARGIN_Y = 0
-  function drawSteps(position: PositionManager, slide: Slide) {
+  function drawSteps(position: PositionManager, slide: Slide, visible: boolean) {
     graphics.clear()
 
+    if (!visible) {
+      return
+    }
     slide.steps.forEach(({ lane, tick, width, ignored }) => {
+
       const noteWidth = width * LANE_WIDTH
       const currentRect = new PIXI.Rectangle(
         position.calcX(lane), position.calcY(tick) - 0.5 * 0.5 * NOTE_HEIGHT,
         noteWidth, 0.5 * NOTE_HEIGHT
       )
-      
 
       // graphics.lineStyle(0)
       // 案１      
@@ -208,7 +212,7 @@
   }
   $: if (container) {
     drawDiamonds($position, slide)
-    drawSteps($position, slide)
+    drawSteps($position, slide, stepsVisible)
   }
 </script>
 

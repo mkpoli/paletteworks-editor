@@ -9,6 +9,7 @@
 
   // Props
   export let slide: SlideType
+  export let stepsVisible: boolean
 
   $: ({ head, tail, critical, steps } = slide)
 </script>
@@ -29,6 +30,7 @@
 <!-- SLIDE STEPS -->
 <SlideSteps
   {slide}
+  {stepsVisible}
 />
 
 <!-- SLIDE END -->
