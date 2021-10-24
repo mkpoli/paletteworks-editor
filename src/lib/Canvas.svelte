@@ -1,7 +1,7 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
   import type { Mode } from '$lib/editing'
-  import type { Flick, Single, Slide as SlideType, Note as NoteType } from '$lib/score/beatmap';
+  import type { Single, Slide as SlideType, Note as NoteType, SlideStep } from '$lib/score/beatmap';
 
   import { createEventDispatcher, onMount, setContext } from 'svelte'
   import { ZOOM_MIN, ZOOM_MAX } from '$lib/consts'
@@ -242,6 +242,47 @@
   let menu: HTMLDivElement
 
   let canvasContainer: HTMLDivElement
+
+  function onslideclick(slide: SlideType) {
+    switch (currentMode) {
+      case 'flick': {
+        slide.tail.flick = rotateNext(slide.tail.flick, FLICK_TYPES)
+        slides = slides
+        dispatch('playSound', 'stage')
+        break
+      }
+      case 'critical': {
+        slide.critical = !slide.critical
+        slides = slides
+        dispatch('playSound', 'stage')
+        break
+      }
+      case 'mid': {
+        if (pointerTick === slide.head.tick || pointerTick === slide.tail.tick) break
+        
+        const found = slide.steps.find(({ tick }) => tick === pointerTick)
+        if (found) {
+          console.log(found)
+          found.diamond = !found.diamond
+        } else {
+          const step: SlideStep = {
+            lane: pointerLane,
+            width: slide.head.width,
+            tick: pointerTick,
+            diamond: true,
+            easeType: false,
+            ignored: false
+          }
+          slide.steps.push(step)
+          slide.steps.sort(({ tick: a }, { tick: b }) => a - b)
+        }
+        slides = slides
+        console.log(slides)
+        dispatch('playSound', 'stage')
+        break
+      }
+    }
+  }
 </script>
 
 <div
@@ -290,22 +331,7 @@
     <!-- SLIDE NOTES -->
     {#if visibility.Slides}
       {#each slides as slide (slide)}
-        <Slide {slide} stepsVisible={visibility.SlideSteps} on:click={() => {
-          switch (currentMode) {
-            case 'flick': {
-              slide.tail.flick = rotateNext(slide.tail.flick, FLICK_TYPES)
-              slides = slides
-              dispatch('playSound', 'stage')
-              break
-            }
-            case 'critical': {
-              slide.critical = !slide.critical
-              slides = slides
-              dispatch('playSound', 'stage')
-              return
-            }
-          }
-        }}/>
+        <Slide {slide} stepsVisible={visibility.SlideSteps} on:click={() => {onslideclick(slide)}}/>
       {/each}
     {/if}
 

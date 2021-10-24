@@ -60,7 +60,7 @@
     container.removeChildren()
     const { head, tail, critical, steps } = slide
 
-    let currentGroup: SlideNote[] = [head];
+    let currentGroup: SlideNote[] = [head]
     const connectedGroups = [...steps, tail]
       .reduce((acc: SlideNote[][], ele: SlideNote) => {
         currentGroup.push(ele)
@@ -70,8 +70,7 @@
         }
         return acc
       }, [])
-      .filter((a: SlideNote[]) => a.length >= 3)
-
+      // .filter((a: SlideNote[]) => a.length >= 3)
     connectedGroups
       .forEach((arr: SlideNote[]) => {
         const origin = arr.shift() as SlideHead | SlideStep
