@@ -41,12 +41,11 @@
     const texture = TEXTURES[type]
     instance = new PIXI.NineSlicePlane(
       texture,
-      250, 0, 250, 0
+      100, 0, 100, 0
     )
     instance.height = NOTE_HEIGHT
-    instance.pivot.x = noteWidth * 0.5
     instance.pivot.y = NOTE_HEIGHT * 0.5
-    instance.scale.x = 354 / (248 + 30)
+    instance.scale.x = 0.25
     instance.scale.y = 1
     instance.zIndex = 1
     app.stage.addChild(instance)
@@ -60,7 +59,8 @@
     instance.texture = TEXTURES[type]
     instance.x = $position.calcMidX(lane, width)
     instance.y = $position.calcY(tick)
-    instance.width = noteWidth
+    instance.width = width * 123 + 100
+    instance.pivot.x = instance.width * 0.5
     currentRect = new PIXI.Rectangle(
       $position.calcX(lane), $position.calcY(tick) - 0.5 * 0.5 * NOTE_HEIGHT,
       noteWidth, 0.5 * NOTE_HEIGHT
