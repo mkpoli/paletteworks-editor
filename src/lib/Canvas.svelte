@@ -4,7 +4,7 @@
   import type { Single, Slide as SlideType, Note as NoteType, SlideStep } from '$lib/score/beatmap';
 
   import { createEventDispatcher, onMount, setContext } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
@@ -105,7 +105,7 @@
         singles.push({
           lane: pointerLane,
           tick: pointerTick,
-          width: 2,
+          width: Math.min(2, LANE_MAX - pointerLane + 1),
           critical: false,
           flick: 'no'
         })

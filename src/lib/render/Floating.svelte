@@ -20,6 +20,7 @@
     DIAMOND_HEIGHT,
     DIAMOND_WIDTH,
     LANE_WIDTH,
+LANE_MAX,
   } from '$lib/consts'
   import { MODE_TEXTURES } from '$lib/editing'
   import { drawDashedLine } from './renderer';
@@ -93,7 +94,13 @@
     switch (currentMode) {
       case 'tap':
       case 'slide':
-        container.setTransform($position.calcMidX(pointerLane, 2), $position.calcY(pointerTick),)
+        if (pointerLane > LANE_MAX - 1) {
+          floating.scale.x = 0.125
+          container.setTransform($position.calcMidX(pointerLane, 1), $position.calcY(pointerTick))
+        } else {
+          floating.scale.x = 0.25
+          container.setTransform($position.calcMidX(pointerLane, 2), $position.calcY(pointerTick))
+        }
         break
       case 'critical':
       case 'flick':
