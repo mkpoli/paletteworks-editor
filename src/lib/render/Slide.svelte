@@ -18,6 +18,7 @@
 <SlidePath
   notes={[head, ...steps.filter((x) => !x.ignored), tail]}
   {critical}
+  on:click
 />
 
 <!-- SLIDE START -->
@@ -25,6 +26,7 @@
   note={head}
   slide={true}
   {critical}
+  on:click
 />
 
 <!-- SLIDE STEPS -->
@@ -38,4 +40,5 @@
   note={tail}
   slide={true}
   {critical}
+  on:click
 />

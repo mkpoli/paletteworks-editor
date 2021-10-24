@@ -1,6 +1,6 @@
 <script lang="ts">
   import { NOTE_HEIGHT } from '$lib/consts';  
-  import { getContext, onDestroy, onMount } from "svelte";
+  import { createEventDispatcher, getContext, onDestroy, onMount } from "svelte";
   import { selectedNotes } from '$lib/selection'
   import { position } from '$lib/position'
 
@@ -35,6 +35,10 @@
   let instance: PIXI.NineSlicePlane
   let currentRect: PIXI.Rectangle
 
+  const dispatch = createEventDispatcher<{
+    'click': void
+  }>()
+
   onMount(async () => {
     PIXI = await import('pixi.js')
 
@@ -48,6 +52,10 @@
     instance.scale.x = 0.25
     instance.scale.y = 1
     instance.zIndex = 1
+    instance.interactive = true
+    instance.addListener('click', () => {
+      dispatch('click')
+    })
     app.stage.addChild(instance)
   })
 

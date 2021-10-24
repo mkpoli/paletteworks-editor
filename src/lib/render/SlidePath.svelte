@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getContext, onDestroy, onMount } from 'svelte'
+  import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
   
   import COLORS from '$lib/colors'
   import { LANE_WIDTH } from '$lib/consts';
@@ -10,6 +10,10 @@
 
   export let notes: SlideNote[]
   export let critical: boolean 
+
+  const dispatch = createEventDispatcher<{
+    'click': void
+  }>()
 
   const EASE_RATIOS = {
     curved: 0.5,
@@ -23,6 +27,10 @@
   onMount(async () => {
     PIXI = await import('pixi.js')
     graphics = new PIXI.Graphics()
+    graphics.interactive = true
+    graphics.addListener('click', () => {
+      dispatch('click')
+    })
     app.stage.addChild(graphics)
   })
 

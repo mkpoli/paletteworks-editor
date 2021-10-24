@@ -28,7 +28,8 @@
   export let currentMode: Mode
   export let pointerLane: number
   export let pointerTick: number
-  export let bpms
+  export let bpms: Map<number, number>
+  export let pointer: PIXI.Point
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -37,22 +38,82 @@
   // Variables
   let PIXI: typeof import('pixi.js')
   let graphics: PIXI.Graphics
+  let container: PIXI.Container
+  let floating: PIXI.Sprite
+  let flickArrow: PIXI.Sprite
 
+  let isMounted: boolean = false
   onMount(async () => {
     PIXI = await import('pixi.js')
+    container = new PIXI.Container
+    container.alpha = 0.5
+    container.zIndex = 4
+    app.stage.addChild(container)
+
     graphics = new PIXI.Graphics()
     graphics.zIndex = 4
     app.stage.addChild(graphics)
+
+    floating = new PIXI.Sprite()
+    floating.anchor.set(0.5, 0.5)
+    floating.scale.set(0.25, 0.25)
+    container.addChild(floating)
+
+    flickArrow = new PIXI.Sprite(TEXTURES['notes_flick_arrow_02.png'])
+    flickArrow.anchor.set(0.5, 0.5)
+    flickArrow.scale.set(0.25, 0.25)
+    flickArrow.y = -40
+    container.addChild(flickArrow)
+
+    isMounted = true
   })
 
+  // Update floating texture & visibility
+  $: if (isMounted) {
+    floating.texture = TEXTURES[MODE_TEXTURES[currentMode]]
+
+    if (currentMode === 'flick') {
+      flickArrow.visible = true
+    } else {
+      flickArrow.visible = false
+    }
+
+    if (
+      currentMode === 'critical' || currentMode === 'flick' ||
+      currentMode === 'tap' || currentMode === 'slide' || currentMode === 'mid'
+    ) {
+      floating.visible = true
+    } else {
+      floating.visible = false
+    }
+  }
+
+  // Update floating position
+  $: if (isMounted && pointer && floating.visible) {
+    switch (currentMode) {
+      case 'tap':
+      case 'slide':
+        container.setTransform($position.calcMidX(pointerLane, 2), $position.calcY(pointerTick),)
+        break
+      case 'critical':
+      case 'flick':
+      case 'mid':
+        container.setTransform(pointer.x, pointer.y + app.stage.pivot.y)
+        break
+    }
+  }
+
+  // Draw BPM
   $: if (graphics) {
-    drawSnappingElements(
-      currentMode, $position.calcX(pointerLane) + LANE_WIDTH, $position.calcY(pointerTick), bpms.has(pointerTick)
+    drawFloatingBPM(
+      currentMode,
+      $position.calcX(pointerLane) + LANE_WIDTH, $position.calcY(pointerTick),
+      bpms.has(pointerTick)
     )
   }
 
   let lastText: PIXI.Text
-  function drawSnappingElements(
+  function drawFloatingBPM(
     currentMode: Mode, x:number, y: number, hasBPM: boolean
   ) {
     graphics.clear()
@@ -60,10 +121,6 @@
       lastText.destroy()
     }
     graphics.removeChildren()
-  
-    if (currentMode == 'select') {
-      return
-    }
   
     if (currentMode == 'bpm') {
       const text = new PIXI.Text(hasBPM ? `↑ BPM` : `+ BPM`, {
@@ -80,46 +137,5 @@
       }
       return
     }
-  
-    if (currentMode === 'flick') {
-      const flickArrow: PIXI.Sprite = new PIXI.Sprite(
-        TEXTURES['notes_flick_arrow_02.png']
-      )
-      flickArrow.anchor.set(0.5, 0.5)
-      flickArrow.setTransform(x, y - 45)
-      flickArrow.alpha = 0.5
-      flickArrow.height = 0.75 * NOTE_HEIGHT
-      flickArrow.width = NOTE_WIDTH
-      graphics.addChild(flickArrow)
-    }
-  
-    const floating: PIXI.Sprite = new PIXI.Sprite(
-      TEXTURES[currentMode === 'flick' ? 'noteF.png' : MODE_TEXTURES[currentMode]]
-    )
-    floating.anchor.set(0.5, 0.5)
-    floating.setTransform(x, y)
-    
-    switch (currentMode) {
-      case 'tap':
-      case 'flick':
-      case 'slide':
-      case 'critical': {
-        const [NOTE_PIVOT_X, NOTE_PIVOT_Y] = NOTE_PIVOT
-        floating.pivot.set(NOTE_PIVOT_X, NOTE_PIVOT_Y)
-        floating.height = NOTE_HEIGHT
-        floating.width = NOTE_WIDTH * 2
-        break
-      }
-      case 'mid': {
-        const [DIAMOND_PIVOT_X, DIAMOND_PIVOT_Y] = DIAMOND_PIVOT
-        floating.pivot.set(DIAMOND_PIVOT_X, DIAMOND_PIVOT_Y)
-        floating.height = DIAMOND_HEIGHT
-        floating.width = DIAMOND_WIDTH
-      }
-    }
-  
-    floating.alpha = 0.5
-    graphics.addChild(floating)
-    // floating.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, y)
   }
 </script>

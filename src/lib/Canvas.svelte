@@ -113,58 +113,6 @@
         dispatch('playSound', 'stage')
         return
       }
-
-      const singleHere = singles.find((single) => (
-          single.tick === pointerTick &&
-          single.lane <= pointerLane && pointerLane <= single.lane + single.width
-        )
-      )
-
-      if (currentMode === 'flick') {
-        if (singleHere) {
-          singleHere.flick = rotateNext<Flick>(singleHere.flick, FLICK_TYPES)
-          singles = singles
-          dispatch('playSound', 'stage')
-          return
-        }
-
-        const slideEndHere = slides.find((slide) => (
-          slide.tail.tick === pointerTick &&
-          slide.tail.lane <= pointerLane && pointerLane <= slide.tail.lane + slide.tail.width
-        ))
-        if (slideEndHere) {
-          slideEndHere.tail.flick = rotateNext<Flick>(slideEndHere.tail.flick, FLICK_TYPES)
-          slides = slides
-          dispatch('playSound', 'stage')
-        }
-        return
-      }
-
-      if (currentMode === 'critical') {
-        if (singleHere) {
-          singleHere.critical = !singleHere.critical
-          singles = singles
-          dispatch('playSound', 'stage')
-          return
-        }
-
-        const slideHere = slides.find((slide) => {
-          return (
-            slide.head.tick === pointerTick &&
-            slide.head.lane <= pointerLane && pointerLane <= slide.head.lane + slide.head.width
-          ) || (
-            slide.tail.tick === pointerTick &&
-            slide.tail.lane <= pointerLane && pointerLane <= slide.tail.lane + slide.tail.width
-          )
-        })
-
-        if (slideHere) {
-          slideHere.critical = !slideHere.critical
-          slides = slides
-          dispatch('playSound', 'stage')
-          return
-        }
-      }
     })
 
     app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
@@ -320,14 +268,44 @@
     <!-- SINGLE NOTES -->
     {#each singles as note (note)}
       {#if visibility.Flicks && note.flick !== 'no' || visibility.Taps && note.flick === 'no' }
-        <Note {note}/>
+        <Note {note} on:click={() => {
+          switch (currentMode) {
+            case 'flick': {
+              note.flick = rotateNext(note.flick, FLICK_TYPES)
+              singles = singles
+              dispatch('playSound', 'stage')
+              break
+            }
+            case 'critical': {
+              note.critical = !note.critical
+              singles = singles
+              dispatch('playSound', 'stage')
+              return
+            }
+          }
+        }}/>
       {/if}
     {/each}
 
     <!-- SLIDE NOTES -->
     {#if visibility.Slides}
       {#each slides as slide (slide)}
-        <Slide {slide} stepsVisible={visibility.SlideSteps} />
+        <Slide {slide} stepsVisible={visibility.SlideSteps} on:click={() => {
+          switch (currentMode) {
+            case 'flick': {
+              slide.tail.flick = rotateNext(slide.tail.flick, FLICK_TYPES)
+              slides = slides
+              dispatch('playSound', 'stage')
+              break
+            }
+            case 'critical': {
+              slide.critical = !slide.critical
+              slides = slides
+              dispatch('playSound', 'stage')
+              return
+            }
+          }
+        }}/>
       {/each}
     {/if}
 
@@ -337,6 +315,7 @@
       {pointerTick}
       {bpms}
       {currentMode}
+      {pointer}
     />
 
     <Selection

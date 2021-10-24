@@ -59,7 +59,7 @@ export class PositionManager {
   }
 
   calcTick(y: number, scrollTick: number): number {
-    return Math.max(0, snap(this.calcRawTick(y) + scrollTick, TICK_PER_MEASURE / this.snapTo))
+    return snap(this.calcRawTick(y) + scrollTick, TICK_PER_MEASURE / this.snapTo)
   }
 
   intersectRect(lane: number, width: number, tick: number, rect: IRect): boolean {

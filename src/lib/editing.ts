@@ -11,8 +11,7 @@ export const MODE_TEXTURES: Record<Mode, ImageSource> = {
   tap: 'noteN.png',
   slide: 'noteL.png',
   mid: 'notes_long_among.png',
-  // flick: 'noteF.png',
-  flick: 'notes_flick_arrow_01.png',
+  flick: 'noteF.png',
   critical: 'noteC.png',
   bpm: bpmImage,
 }
