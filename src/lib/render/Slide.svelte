@@ -23,7 +23,7 @@
 
 <!-- SLIDE START -->
 <Note
-  note={head}
+  bind:note={head}
   slide={true}
   {critical}
   on:click
@@ -37,7 +37,7 @@
 
 <!-- SLIDE END -->
 <Note
-  note={tail}
+  bind:note={tail}
   slide={true}
   {critical}
   on:click

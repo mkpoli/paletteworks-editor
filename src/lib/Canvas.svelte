@@ -50,12 +50,22 @@
   import { PositionManager, position } from '$lib/position'
 
   let pointer: PIXI.Point
+
+  const pointerData = {
+    lane: 0,
+    tick: 0
+  }
+
+  setContext('pointer', pointerData)
+
   let pointerLane: number
   let pointerTick: number
   $: $position = new PositionManager(measureHeight, scrollTick, snapTo, innerHeight)
   $: if (pointer) {
     pointerLane = $position.calcLane(pointer.x)
     pointerTick = $position.calcTick(pointer.y, scrollTick)
+    pointerData.lane = pointerLane
+    pointerData.tick = pointerTick
   }
   $: dbg('iH - p.y', innerHeight - pointer?.y)
   $: pointer && dbg('pointer', formatPoint(pointer.x, pointer.y))
@@ -89,6 +99,16 @@
     dragging = false
     draggingSlide = null
   }
+  let shiftKey: boolean = false
+  $: dbg('shiftKey', shiftKey)
+  document.addEventListener('keydown', (event: KeyboardEvent) => {
+    shiftKey = event.shiftKey
+  })
+  document.addEventListener('keyup', (event: KeyboardEvent) => {
+    shiftKey = event.shiftKey
+  })
+
+  import { moving } from './moving'
 
   onMount(() => {
     app.stage.sortableChildren = true
@@ -115,9 +135,10 @@
       }
     })
 
-    app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
-      if (event.button == 2) return
-      app.renderer.view.setPointerCapture(event.pointerId)
+    app.renderer.plugins.interaction.addListener('pointerdown', (event: PIXI.InteractionEvent) => {
+      if (event.data.button == 2) return
+      if ($moving) return
+      app.renderer.view.setPointerCapture(event.data.pointerId)
       switch (currentMode) {
         case 'select': {
           dragging = true
@@ -125,7 +146,7 @@
           pointA = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
           pointB = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
 
-          if (!event.shiftKey) {
+          if (!shiftKey) {
             selectedNotes.set([])
           }
           break
@@ -189,6 +210,9 @@
     app.renderer.view.addEventListener('pointerup', (event: PointerEvent) => {
       if (!dragging) {
         return
+      }
+      if ($moving) {
+        $moving = false
       }
       app.renderer.view.releasePointerCapture(event.pointerId)
       switch (currentMode) {
@@ -309,29 +333,32 @@
     <!-- SINGLE NOTES -->
     {#each singles as note (note)}
       {#if visibility.Flicks && note.flick !== 'no' || visibility.Taps && note.flick === 'no' }
-        <Note {note} on:click={() => {
-          switch (currentMode) {
-            case 'flick': {
-              note.flick = rotateNext(note.flick, FLICK_TYPES)
-              singles = singles
-              dispatch('playSound', 'stage')
-              break
-            }
-            case 'critical': {
-              note.critical = !note.critical
-              singles = singles
-              dispatch('playSound', 'stage')
-              return
-            }
-          }
-        }}/>
+        <Note
+          bind:note
+          on:click={() => {
+            switch (currentMode) {
+              case 'flick': {
+                note.flick = rotateNext(note.flick, FLICK_TYPES)
+                singles = singles
+                dispatch('playSound', 'stage')
+                break
+              }
+              case 'critical': {
+                note.critical = !note.critical
+                singles = singles
+                dispatch('playSound', 'stage')
+                return
+              }
+           }
+          }}
+        />
       {/if}
     {/each}
 
     <!-- SLIDE NOTES -->
     {#if visibility.Slides}
       {#each slides as slide (slide)}
-        <Slide {slide} stepsVisible={visibility.SlideSteps} on:click={() => {onslideclick(slide)}}/>
+        <Slide bind:slide stepsVisible={visibility.SlideSteps} on:click={() => {onslideclick(slide)}}/>
       {/each}
     {/if}
 
@@ -345,7 +372,7 @@
     />
 
     <Selection
-      {dragging}
+      dragging={dragging && currentMode === 'select'}
       rect={selectRect}
     />
   </div>

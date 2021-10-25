@@ -5,7 +5,7 @@
     // const url = `/TellYourWorld_EX.sus`
     // const url = `/TellYourWorldDiamond.sus`
     // const url = `/Shoushitsu_MASTER.sus`
-    // const url = `/DoctorFunkBeat_MASTER.sus`
+    const url = `/DoctorFunkBeat_MASTER.sus`
     // const url = `/SingleAIR.sus`
     // const url = `/DoctorDiamond.sus`
     // const url = `/SlideEase.sus`
@@ -13,7 +13,7 @@
     // const url = `LongSingle.sus`
     // const url = `SlideTest.sus`
     // const url = `TwoSlide.sus`
-    const url = `SuperLongSlide.sus`
+    // const url = `SuperLongSlide.sus`
     // const url = '/InvisibleRelayPoint.sus'
     // const url = `ModNote.sus`
     // const url = `MetaTest.sus`

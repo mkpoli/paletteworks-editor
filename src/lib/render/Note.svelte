@@ -29,14 +29,23 @@
 
   const NOTE_WIDTH = 30
   $: noteWidth = width * NOTE_WIDTH
+
+  // Contexts
   const app = getContext<PIXI.Application>('app')
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+  const pointer = getContext<{lane: number, tick: number}>('pointer')
+
+  // Stores
+  import { moving, movingNotes } from '$lib/moving'
+
+  // Variables
   let PIXI: typeof import('pixi.js')
   let instance: PIXI.NineSlicePlane
   let currentRect: PIXI.Rectangle
+  let movingOffset: number
 
   const dispatch = createEventDispatcher<{
-    'click': void
+    'click': void,
   }>()
 
   onMount(async () => {
@@ -53,8 +62,27 @@
     instance.scale.y = 1
     instance.zIndex = 1
     instance.interactive = true
+    instance.cursor = 'move'
     instance.addListener('click', () => {
       dispatch('click')
+    })
+    instance.addListener('pointerdown', (event: PIXI.InteractionEvent) => {
+      event.stopPropagation()
+      if (event.data.pointerType)
+      app.renderer.view.setPointerCapture(event.data.pointerId)
+      $moving = true
+      $movingNotes = [note]
+      movingOffset = pointer.lane - note.lane
+    })
+    instance.addListener('pointermove', () => {
+      if ($moving && $movingNotes.includes(note)) {
+        note.lane = pointer.lane - movingOffset
+        note.tick = pointer.tick
+      }
+    })
+    instance.addListener('pointerup', (event: PIXI.InteractionEvent) => {
+      app.renderer.view.releasePointerCapture(event.data.pointerId)
+      $moving = false
     })
     app.stage.addChild(instance)
   })
