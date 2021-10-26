@@ -337,6 +337,7 @@
     background: var(--color-background-main);
     color: var(--color-text-main);
     font-family: 'FOT-RodinNTLG Pro';
+    user-select: none;
   }
 
   /* Main */

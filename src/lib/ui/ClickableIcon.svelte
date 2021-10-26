@@ -7,6 +7,7 @@
   export let icon: string
   export let height: string = undefined
   export let width: string = undefined
+  export let href: string = null
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === ' ') {
@@ -15,9 +16,15 @@
   }
 </script>
 
-<button on:click on:keydown={handleKeydown}>
-  <Icon icon={icon} height={height} width={width} />
-</button>
+{#if href}
+  <a {href} target="_blank">
+    <Icon icon={icon} height={height} width={width} />
+  </a>
+{:else}
+  <button on:click on:keydown={handleKeydown}>
+    <Icon icon={icon} height={height} width={width} />
+  </button>
+{/if}
 
 <style>
   button {

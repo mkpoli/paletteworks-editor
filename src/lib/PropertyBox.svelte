@@ -22,7 +22,7 @@
 </script>
 <div class="panel-container">
   <div class="panel-bar">
-    選択されたアイテム数 {$selectedNotes.length}
+
   </div>
   <div class="panel">
     <h2>コントロール</h2>
@@ -86,7 +86,9 @@
           <span class="title">{name}</span><value>{value}</value>
         </li>
       {/each}
+      <li><p>選択されたアイテム数 {$selectedNotes.length}</p></li>
     </ul>
+
   </div>  
   <div class="panel">
     <h2>音楽情報</h2>
