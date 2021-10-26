@@ -108,7 +108,8 @@
     shiftKey = event.shiftKey
   })
 
-  import { moving } from './moving'
+  import { MoveEvent, moving, movingNotes, movingOffsets } from './moving'
+  $: dbg('moving', $moving)
 
   import moveCursor from '$assets/move-cursor.png'
   import resizeCursor from '$assets/resize-cursor.png'
@@ -213,11 +214,11 @@
     }
 
     app.renderer.view.addEventListener('pointerup', (event: PointerEvent) => {
+      if ($moving) {
+        onmoveend()
+      }
       if (!dragging) {
         return
-      }
-      if ($moving) {
-        $moving = false
       }
       app.renderer.view.releasePointerCapture(event.pointerId)
       switch (currentMode) {
@@ -272,6 +273,10 @@
 
   let canvasContainer: HTMLDivElement
 
+  $: if (app) {
+    app.renderer.plugins.interaction.setCursorMode($moving ? 'move' : 'default')
+  }
+
   function onslideclick(slide: SlideType) {
     switch (currentMode) {
       case 'flick': {
@@ -312,6 +317,33 @@
       }
     }
   }
+
+  function onmovestart(origin: MoveEvent) {
+    const { lane, tick, note } = origin.detail
+    $moving = true
+    $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
+    $movingNotes.forEach((movingNote) => {
+      $movingOffsets.set(movingNote, {
+        lane: lane - movingNote.lane,
+        tick: tick - movingNote.tick
+      })
+    })
+  }
+
+  function onmove() {
+    $movingNotes.forEach((note) => {
+      note.lane = pointerData.lane - $movingOffsets.get(note).lane
+      note.tick = pointerData.tick - $movingOffsets.get(note).tick
+    })
+    singles = singles
+    slides = slides
+  }
+
+  function onmoveend() {
+    $moving = false
+    $movingNotes = []
+  }
+
 </script>
 
 <div
@@ -356,6 +388,9 @@
               }
            }
           }}
+          on:movestart={onmovestart}
+          on:move={onmove}
+          on:moveend={onmoveend}
         />
       {/if}
     {/each}
@@ -363,7 +398,13 @@
     <!-- SLIDE NOTES -->
     {#if visibility.Slides}
       {#each slides as slide (slide)}
-        <Slide bind:slide stepsVisible={visibility.SlideSteps} on:click={() => {onslideclick(slide)}}/>
+        <Slide
+          bind:slide
+          stepsVisible={visibility.SlideSteps}
+          on:click={() => {onslideclick(slide)}}
+          on:move={onmove}
+          on:movestart={onmovestart}
+        />
       {/each}
     {/if}
 

@@ -217,9 +217,16 @@
 
 {#if PIXI}
   {#each slide.steps as step}
-    <NoteControl draw={$selectedNotes.includes(step)} rect={new PIXI.Rectangle(
-      $position.calcX(step.lane) - SLIDE_STEP_MARGIN_X, $position.calcY(step.tick) - 0.5 * 0.5 * NOTE_HEIGHT,
-      step.width * LANE_WIDTH + 2 * SLIDE_STEP_MARGIN_X, 0.5 * NOTE_HEIGHT
-    )}></NoteControl>
+    <NoteControl
+      draw={$selectedNotes.includes(step)}
+      rect={new PIXI.Rectangle(
+        $position.calcX(step.lane) - SLIDE_STEP_MARGIN_X, $position.calcY(step.tick) - 0.5 * 0.5 * NOTE_HEIGHT,
+        step.width * LANE_WIDTH + 2 * SLIDE_STEP_MARGIN_X, 0.5 * NOTE_HEIGHT
+      )}
+      bind:note={step}
+      on:movestart
+      on:move
+      on:moveend
+    ></NoteControl>
   {/each}
 {/if}

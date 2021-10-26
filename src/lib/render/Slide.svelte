@@ -27,12 +27,18 @@
   slide={true}
   {critical}
   on:click
+  on:move
+  on:movestart
+  on:moveend
 />
 
 <!-- SLIDE STEPS -->
 <SlideSteps
-  {slide}
+  bind:slide
   {stepsVisible}
+  on:movestart
+  on:move
+  on:moveend
 />
 
 <!-- SLIDE END -->
@@ -41,4 +47,7 @@
   slide={true}
   {critical}
   on:click
+  on:move
+  on:movestart
+  on:moveend
 />
