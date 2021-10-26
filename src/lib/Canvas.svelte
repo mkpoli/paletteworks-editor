@@ -110,7 +110,12 @@
 
   import { moving } from './moving'
 
+  import moveCursor from '$assets/move-cursor.png'
+  import resizeCursor from '$assets/resize-cursor.png'
   onMount(() => {
+    app.renderer.plugins.interaction.cursorStyles['move'] = `url(${moveCursor}) 16 16, move`
+    app.renderer.plugins.interaction.cursorStyles['ew-resize'] = `url(${resizeCursor}) 16 16, ew-resize`
+
     app.stage.sortableChildren = true
     app.renderer.view.addEventListener('click', () => {
       if (currentMode === 'bpm') {
