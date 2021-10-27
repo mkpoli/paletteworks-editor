@@ -79,7 +79,10 @@
     delete: void,
     copy: void,
     cut: void,
-    paste: void
+    paste: void,
+    movestart: void,
+    move: void
+    moveend: void
   }>()
   let dragging: boolean = false
   let draggingSlide: SlideType = null
@@ -96,7 +99,7 @@
     shiftKey = event.shiftKey
   })
 
-  import { MoveEvent, moving, movingNotes, movingOffsets } from './editing/moving'
+  import { moving } from './editing/moving'
   $: dbg('moving', $moving)
 
   import moveCursor from '$assets/move-cursor.png'
@@ -204,7 +207,7 @@
 
     app.renderer.view.addEventListener('pointerup', (event: PointerEvent) => {
       if ($moving) {
-        onmoveend()
+        dispatch('moveend')
       }
       if (!dragging) {
         return
@@ -286,32 +289,6 @@
       }
     }
   }
-
-  function onmovestart(origin: MoveEvent) {
-    const { lane, tick, note } = origin.detail
-    $moving = true
-    $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
-    $movingNotes.forEach((movingNote) => {
-      $movingOffsets.set(movingNote, {
-        lane: lane - movingNote.lane,
-        tick: tick - movingNote.tick
-      })
-    })
-  }
-
-  function onmove() {
-    $movingNotes.forEach((note) => {
-      note.lane = $cursor.lane - $movingOffsets.get(note).lane
-      note.tick = $cursor.tick - $movingOffsets.get(note).tick
-    })
-    singles = singles
-    slides = slides
-  }
-
-  function onmoveend() {
-    $moving = false
-    $movingNotes = []
-  }
 </script>
 
 <div
@@ -356,9 +333,9 @@
               }
            }
           }}
-          on:movestart={onmovestart}
-          on:move={onmove}
-          on:moveend={onmoveend}
+          on:movestart
+          on:move
+          on:moveend
         />
       {/if}
     {/each}
@@ -370,8 +347,9 @@
           bind:slide
           stepsVisible={visibility.SlideSteps}
           on:click={() => {onslideclick(slide)}}
-          on:move={onmove}
-          on:movestart={onmovestart}
+          on:move
+          on:movestart
+          on:moveend
         />
       {/each}
     {/if}

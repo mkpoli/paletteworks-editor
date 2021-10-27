@@ -303,6 +303,35 @@
       ...pastedSlides.map(({ head, tail, steps }) => [head, tail, ...steps]).flat()
     ]
   }
+
+  // Moving
+  import { moving, movingNotes, movingOffsets } from '$lib/editing/moving'
+  import type { MoveEvent } from '$lib/editing/moving'
+  function onmovestart(origin: MoveEvent) {
+    const { lane, tick, note } = origin.detail
+    $moving = true
+    $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
+    $movingNotes.forEach((movingNote) => {
+      $movingOffsets.set(movingNote, {
+        lane: lane - movingNote.lane,
+        tick: tick - movingNote.tick
+      })
+    })
+  }
+
+  function onmove() {
+    $movingNotes.forEach((note) => {
+      note.lane = $cursor.lane - $movingOffsets.get(note).lane
+      note.tick = $cursor.tick - $movingOffsets.get(note).tick
+    })
+    singles = singles
+    slides = slides
+  }
+
+  function onmoveend() {
+    $moving = false
+    $movingNotes = []
+  }
 </script>
 
 <svelte:head>
@@ -351,6 +380,9 @@
       on:copy={oncopy}
       on:cut={oncut}
       on:paste={onpaste}
+      on:move={onmove}
+      on:movestart={onmovestart}
+      on:moveend={onmoveend}
     />
     <PropertyBox
       bind:currentMeasure

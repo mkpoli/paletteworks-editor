@@ -53,7 +53,7 @@
       <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" on:click={() => dispatch('image')}/>
     </MenuItem>
     <MenuDivider/>
-      <MenuItem icon="ic:sharp-edit" text="編集 (&E)" disabled={true}>
+      <MenuItem icon="ic:sharp-edit" text="編集 (&E)">
         <MenuItem icon="ic:round-undo" text="元に戻す (&U)" disabled={true} />
         <MenuItem icon="ic:round-redo" text="やり直し (&R)" disabled={true} />
         <MenuDivider/>
