@@ -6,8 +6,8 @@
   import MenuDivider from '$lib/ui/MenuDivider.svelte'
   import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
 
-  import { ALLOWED_SNAPPINGS, MODE_TEXTURES } from '$lib/editing'
-  import type { Mode, SnapTo } from '$lib/editing'
+  import { ALLOWED_SNAPPINGS, MODE_TEXTURES } from '$lib/editing/modes'
+  import type { Mode, SnapTo } from '$lib/editing/modes'
 
   import { createEventDispatcher } from 'svelte'
 

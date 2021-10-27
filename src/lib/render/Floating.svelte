@@ -5,7 +5,7 @@
 
   // Types
   import type PIXI from 'pixi.js' 
-  import type { Mode } from '$lib/editing'
+  import type { Mode } from '$lib/editing/modes'
 
   // Consts
   import COLORS from '$lib/colors'
@@ -22,7 +22,7 @@
     LANE_WIDTH,
 LANE_MAX,
   } from '$lib/consts'
-  import { MODE_TEXTURES } from '$lib/editing'
+  import { MODE_TEXTURES } from '$lib/editing/modes'
   import { drawDashedLine } from './renderer';
 
   // Props

@@ -15,7 +15,7 @@
   export let note: Note
 
   // Stores
-  import { moving } from '$lib/moving'
+  import { moving } from '$lib/editing/moving'
 
   // Contexts
   const app = getContext<PIXI.Application>('app')

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { NOTE_HEIGHT } from '$lib/consts';  
   import { createEventDispatcher, getContext, onDestroy, onMount } from "svelte";
-  import { selectedNotes } from '$lib/selection'
+  import { selectedNotes } from '$lib/editing/selection'
   import { position } from '$lib/position'
 
   import type PIXI from 'pixi.js'

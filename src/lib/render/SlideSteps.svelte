@@ -20,7 +20,7 @@
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
 
   // Stores
-  import { selectedNotes } from '$lib/selection'
+  import { selectedNotes } from '$lib/editing/selection'
 
   // Variables
   let PIXI: typeof import('pixi.js')

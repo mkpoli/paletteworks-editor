@@ -51,7 +51,7 @@
 
   // Types
   import type PIXI from 'pixi.js'
-  import type { Mode, SnapTo } from '$lib/editing'
+  import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { Metadata, Single, Slide as SlideType } from '$lib/score/beatmap'
 
   // Constants
@@ -87,7 +87,7 @@
   console.log({ singles, slides, bpms })
 
   // Stores
-  import { selectedNotes } from '$lib/selection'
+  import { selectedNotes } from '$lib/editing/selection'
 
   // Sound
   let soundQueue: string[] = []

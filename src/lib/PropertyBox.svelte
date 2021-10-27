@@ -10,7 +10,7 @@
   import TextInput from "$lib/ui/TextInput.svelte"
 
   import filesize from 'filesize'
-  import { selectedNotes } from "./selection"
+  import { selectedNotes } from "$lib/editing/selection"
 
   export let currentMeasure: number
   export let statistics: Record<string, number>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
-  import type { Mode } from '$lib/editing'
+  import type { Mode } from '$lib/editing/modes'
   import type { Single, Slide as SlideType, Note as NoteType, SlideStep } from '$lib/score/beatmap';
 
   import { createEventDispatcher, onMount, setContext } from 'svelte'
@@ -8,7 +8,7 @@
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
-  import { selectedNotes } from '$lib/selection'
+  import { selectedNotes } from '$lib/editing/selection'
 
   // Score Components
   import Background from '$lib/render/Background.svelte'
@@ -108,7 +108,7 @@
     shiftKey = event.shiftKey
   })
 
-  import { MoveEvent, moving, movingNotes, movingOffsets } from './moving'
+  import { MoveEvent, moving, movingNotes, movingOffsets } from './editing/moving'
   $: dbg('moving', $moving)
 
   import moveCursor from '$assets/move-cursor.png'
