@@ -13,24 +13,18 @@
     LANE_AREA_WIDTH,
     TEXT_MARGIN,
     MARGIN,
-    NOTE_HEIGHT,
-    NOTE_WIDTH,
-    NOTE_PIVOT,
-    DIAMOND_PIVOT,
-    DIAMOND_HEIGHT,
-    DIAMOND_WIDTH,
     LANE_WIDTH,
-LANE_MAX,
+    LANE_MAX,
   } from '$lib/consts'
   import { MODE_TEXTURES } from '$lib/editing/modes'
   import { drawDashedLine } from './renderer';
 
   // Props
   export let currentMode: Mode
-  export let pointerLane: number
-  export let pointerTick: number
   export let bpms: Map<number, number>
-  export let pointer: PIXI.Point
+
+  // Stores
+  import { pointer, cursor } from '$lib/position'
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -90,22 +84,22 @@ LANE_MAX,
   }
 
   // Update floating position
-  $: if (isMounted && pointer && floating.visible) {
+  $: if (isMounted && $pointer && floating.visible) {
     switch (currentMode) {
       case 'tap':
       case 'slide':
-        if (pointerLane > LANE_MAX - 1) {
+        if ($cursor.lane > LANE_MAX - 1) {
           floating.scale.x = 0.125
-          container.setTransform($position.calcMidX(pointerLane, 1), $position.calcY(pointerTick))
+          container.setTransform($position.calcMidX($cursor.lane, 1), $position.calcY($cursor.tick))
         } else {
           floating.scale.x = 0.25
-          container.setTransform($position.calcMidX(pointerLane, 2), $position.calcY(pointerTick))
+          container.setTransform($position.calcMidX($cursor.lane, 2), $position.calcY($cursor.tick))
         }
         break
       case 'critical':
       case 'flick':
       case 'mid':
-        container.setTransform(pointer.x, pointer.y + app.stage.pivot.y)
+        container.setTransform($pointer.x, $pointer.y + app.stage.pivot.y)
         break
     }
   }
@@ -114,8 +108,8 @@ LANE_MAX,
   $: if (graphics) {
     drawFloatingBPM(
       currentMode,
-      $position.calcX(pointerLane) + LANE_WIDTH, $position.calcY(pointerTick),
-      bpms.has(pointerTick)
+      $position.calcX($cursor.lane) + LANE_WIDTH, $position.calcY($cursor.tick),
+      bpms.has($cursor.tick)
     )
   }
 

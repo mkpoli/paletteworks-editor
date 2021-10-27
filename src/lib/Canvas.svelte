@@ -47,29 +47,14 @@
   $: pointA && dbg('selectA', formatPoint(pointA.x, pointA.y))
   $: pointB && dbg('selectB', formatPoint(pointB.x, pointB.y))
 
-  import { PositionManager, position } from '$lib/position'
-
-  let pointer: PIXI.Point
-
-  const pointerData = {
-    lane: 0,
-    tick: 0
-  }
-
-  setContext('pointer', pointerData)
-
-  let pointerLane: number
-  let pointerTick: number
+  import { PositionManager, position, pointer, cursor } from '$lib/position'
   $: $position = new PositionManager(measureHeight, scrollTick, snapTo, innerHeight)
-  $: if (pointer) {
-    pointerLane = $position.calcLane(pointer.x)
-    pointerTick = $position.calcTick(pointer.y, scrollTick)
-    pointerData.lane = pointerLane
-    pointerData.tick = pointerTick
+  $: $cursor = {
+    lane: $position.calcLane($pointer.x),
+    tick: $position.calcTick($pointer.y, scrollTick),
   }
-  $: dbg('iH - p.y', innerHeight - pointer?.y)
-  $: pointer && dbg('pointer', formatPoint(pointer.x, pointer.y))
-  $: dbg('pointer(Lane, Tick)', formatPoint(pointerLane, pointerTick))
+  $: dbg('pointer', formatPoint($pointer.x, $pointer.y))
+  $: dbg('cursor', formatPoint($cursor.lane, $cursor.tick))
   
   function point2rect(pointA: PIXI.Point, pointB: PIXI.Point) {
     const 左 = Math.min(pointA.x, pointB.x)
@@ -121,17 +106,17 @@
     app.renderer.view.addEventListener('click', () => {
       if (currentMode === 'bpm') {
         dispatch('changeBPM', {
-          tick: pointerTick,
-          bpm: bpms.get(pointerTick) || bpms.get(closest([...bpms.keys()], pointerTick, true))
+          tick: $cursor.tick,
+          bpm: bpms.get($cursor.tick) || bpms.get(closest([...bpms.keys()], $cursor.tick, true))
         })
         return
       }
 
       if (currentMode === 'tap') {
         singles.push({
-          lane: pointerLane,
-          tick: pointerTick,
-          width: Math.min(2, LANE_MAX - pointerLane + 1),
+          lane: $cursor.lane,
+          tick: $cursor.tick,
+          width: Math.min(2, LANE_MAX - $cursor.lane + 1),
           critical: false,
           flick: 'no'
         })
@@ -149,8 +134,8 @@
         case 'select': {
           dragging = true
 
-          pointA = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
-          pointB = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
+          pointA = new PIXI.Point($pointer.x, $pointer.y + app.stage.pivot.y)
+          pointB = new PIXI.Point($pointer.x, $pointer.y + app.stage.pivot.y)
 
           if (!shiftKey) {
             selectedNotes.set([])
@@ -161,14 +146,14 @@
           dragging = true
           draggingSlide = {
             head: {
-              tick: pointerTick,
-              lane: pointerLane,
+              tick: $cursor.tick,
+              lane: $cursor.lane,
               width: 2,
               easeType: false
             },
             tail: {
-              tick: pointerTick,
-              lane: pointerLane,
+              tick: $cursor.tick,
+              lane: $cursor.lane,
               flick: 'no',
               width: 2
             },
@@ -184,19 +169,20 @@
     })
 
     app.stage.addListener('pointermove', (event: PIXI.InteractionEvent) => {
-      pointer = event.data.global
+      const { x, y } = event.data.global
+      $pointer = { x, y }
 
       if (!dragging) {
         return
       }
       switch (currentMode) {
         case 'select': {
-          pointB = new PIXI.Point(pointer.x, pointer.y + app.stage.pivot.y)
+          pointB = new PIXI.Point(x, y + app.stage.pivot.y)
           break
         }
         case 'slide': {
-          draggingSlide.tail.lane = pointerLane
-          draggingSlide.tail.tick = pointerTick
+          draggingSlide.tail.lane = $cursor.lane
+          draggingSlide.tail.tick = $cursor.tick
           slides = slides
           break
         }
@@ -245,26 +231,6 @@
       dragging = false
     })
 
-    // app.renderer.view.addEventListener('dblclick', () => {
-    //   if (currentMode === 'bpm') {
-    //     bpms.delete(pointerTick)
-    //     bpms = bpms
-    //     return
-    //   }
-
-    //   if (currentMode === 'select') {
-    //     const singleHere = singleNotes.find((single) => (
-    //           single.tick === pointerTick &&
-    //           single.lane <= pointerLane && pointerLane <= single.lane + single.width
-    //       )
-    //     )
-    //     if (singleHere) {
-    //       singleNotes.splice(singleNotes.indexOf(singleHere), 1)
-    //       singleNotes = singleNotes
-    //       return
-    //     }
-    //   }
-    // })
 
     canvasContainer.appendChild(app.view)
   })
@@ -292,17 +258,17 @@
         break
       }
       case 'mid': {
-        if (pointerTick === slide.head.tick || pointerTick === slide.tail.tick) break
+        if ($cursor.tick === slide.head.tick || $cursor.tick === slide.tail.tick) break
         
-        const found = slide.steps.find(({ tick }) => tick === pointerTick)
+        const found = slide.steps.find(({ tick }) => tick === $cursor.tick)
         if (found) {
           console.log(found)
           found.diamond = !found.diamond
         } else {
           const step: SlideStep = {
-            lane: pointerLane,
+            lane: $cursor.lane,
             width: slide.head.width,
-            tick: pointerTick,
+            tick: $cursor.tick,
             diamond: true,
             easeType: false,
             ignored: false
@@ -332,8 +298,8 @@
 
   function onmove() {
     $movingNotes.forEach((note) => {
-      note.lane = pointerData.lane - $movingOffsets.get(note).lane
-      note.tick = pointerData.tick - $movingOffsets.get(note).tick
+      note.lane = $cursor.lane - $movingOffsets.get(note).lane
+      note.tick = $cursor.tick - $movingOffsets.get(note).tick
     })
     singles = singles
     slides = slides
@@ -343,7 +309,6 @@
     $moving = false
     $movingNotes = []
   }
-
 </script>
 
 <div
@@ -410,11 +375,8 @@
 
     <!-- FLOATING ITEMS -->
     <Floating
-      {pointerLane}
-      {pointerTick}
       {bpms}
       {currentMode}
-      {pointer}
     />
 
     <Selection

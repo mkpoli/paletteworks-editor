@@ -73,3 +73,16 @@ export class PositionManager {
 }
 
 export const position = writable<PositionManager>(null)
+
+export type LaneTick = {
+  lane: number,
+  tick: number,
+}
+
+export type Point = {
+  x: number,
+  y: number
+}
+
+export const cursor = writable<LaneTick>({ lane: 0, tick: 0 })
+export const pointer = writable<Point>({ x: 0, y: 0 })

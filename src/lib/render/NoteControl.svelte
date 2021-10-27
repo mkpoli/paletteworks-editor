@@ -16,10 +16,10 @@
 
   // Stores
   import { moving } from '$lib/editing/moving'
+  import { cursor } from '$lib/position'
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
-  const pointer = getContext<{lane: number, tick: number}>('pointer')
 
   // Event
   const dispatch = createEventDispatcher<{
@@ -55,8 +55,8 @@
       // }
       app.renderer.view.setPointerCapture(event.data.pointerId)
       dispatch('movestart', {
-        lane: pointer.lane,
-        tick: pointer.tick,
+        lane: $cursor.lane,
+        tick: $cursor.tick,
         note
       })
     })
