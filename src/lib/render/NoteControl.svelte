@@ -99,7 +99,7 @@
     graphics.cursor = 'ew-resize'
   }
 
-  $: if (PIXI) {
+  $: if (PIXI && rect) {
     graphics.clear()
     middle.hitArea = rect
     if (draw) {
@@ -107,5 +107,5 @@
       drawControl(rect.left - SELECTION_MARGIN, rect.top + rect.height / 2)
       drawControl(rect.right + SELECTION_MARGIN, rect.top + rect.height / 2)
     }
-  }  
+  }
 </script>

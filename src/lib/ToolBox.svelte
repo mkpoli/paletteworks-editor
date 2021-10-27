@@ -28,7 +28,10 @@
 
   const dispatch = createEventDispatcher<{
     'save': void,
-    'image': void
+    'image': void,
+    'copy': void,
+    'cut': void,
+    'paste': void,
   }>()
 </script>
 
@@ -54,9 +57,9 @@
         <MenuItem icon="ic:round-undo" text="元に戻す (&U)" disabled={true} />
         <MenuItem icon="ic:round-redo" text="やり直し (&R)" disabled={true} />
         <MenuDivider/>
-        <MenuItem icon="ic:content-cut" text="切り取り (&X)" disabled={true} />
-        <MenuItem icon="mdi:content-copy" text="コピー (&C)" disabled={true} />
-        <MenuItem icon="mdi:content-save" text="貼り付け (&V)" disabled={true} />
+        <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut')} />
+        <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy')} />
+        <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')} />
       </MenuItem>
     <MenuDivider/>
     <MenuItem icon="vaadin:cog" text="設定 (&P)" disabled={true} />

@@ -76,7 +76,10 @@
   const dispatch = createEventDispatcher<{
     changeBPM: { tick: number, bpm: number },
     playSound: string,
-    delete: void
+    delete: void,
+    copy: void,
+    cut: void,
+    paste: void
   }>()
   let dragging: boolean = false
   let draggingSlide: SlideType = null
@@ -407,6 +410,18 @@
   on:keydown={(event) => {
     if (event.key == 'Delete') {
       dispatch('delete')
+    }
+
+    if (event.ctrlKey && event.key == 'c') {
+      dispatch('copy')
+    }
+
+    if (event.ctrlKey && event.key == 'x') {
+      dispatch('cut')
+    }
+
+    if (event.ctrlKey && event.key == 'v') {
+      dispatch('paste')
     }
   }}
 ></svelte:window>

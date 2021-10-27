@@ -52,7 +52,7 @@
   // Types
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
-  import type { Metadata, Single, Slide as SlideType } from '$lib/score/beatmap'
+  import type { Metadata, Single, Slide as SlideType, Note as NoteType } from '$lib/score/beatmap'
 
   // Constants
   import {
@@ -88,6 +88,7 @@
 
   // Stores
   import { selectedNotes } from '$lib/editing/selection'
+  import { clipboardSlides, clipboardSingles, clipboardOffsets } from '$lib/editing/clipboard'
 
   // Sound
   let soundQueue: string[] = []
@@ -147,6 +148,7 @@
   // Textures
   import spritesheet from '$assets/spritesheet.json'
   import spritesheetImage from '$assets/spritesheet.png'
+  import { cursor } from '$lib/position'
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
   setContext('TEXTURES', TEXTURES)
@@ -218,6 +220,89 @@
     'SlideSteps': false,
     'Total': true
   }
+
+  function deleteNote(note: NoteType) {
+    singles = singles.filter((item) => item !== note)
+    slides.forEach((slide) => {
+      slide.steps = slide.steps.filter((item) => item !== note)
+    })
+    slides = slides.filter(({ head, tail }) => head !== note && tail !== note)
+  }
+
+  function copyNotes() {
+    if (!$selectedNotes.length) return
+
+    $clipboardSingles = singles
+      .filter((single) => $selectedNotes.includes(single))
+
+    $clipboardSlides = slides
+      .filter(({ head, tail, steps }) => (
+        $selectedNotes.includes(head) || $selectedNotes.includes(tail)
+        || steps.some((step) => $selectedNotes.includes(step))
+      ))
+
+    $clipboardSlides.map(({ head, tail, steps }) => [head, tail, ...steps]).flat()
+      .concat($clipboardSingles)
+      .forEach((note) => {
+        $clipboardOffsets.set(note, {
+          lane: $cursor.lane - note.lane,
+          tick: $cursor.tick - note.tick
+        })
+      })
+  }
+
+  function oncopy() {
+    copyNotes()
+  }
+
+  function oncut() {
+    copyNotes()
+    $selectedNotes.forEach(deleteNote)
+  }
+  
+  function onpaste() {
+    const pastedSingles = $clipboardSingles.map((note) => {
+      const { width, critical, flick } = note
+      return {
+        lane: $cursor.lane - $clipboardOffsets.get(note).lane,
+        tick: $cursor.tick - $clipboardOffsets.get(note).tick,
+        width, critical, flick
+      }
+    })
+    singles = singles.concat(pastedSingles)
+    
+    const pastedSlides = $clipboardSlides.map((slide): SlideType => {
+      const { head, tail, steps, critical } = slide
+      return {
+        head: {
+          lane: $cursor.lane - $clipboardOffsets.get(head).lane,
+          tick: $cursor.tick - $clipboardOffsets.get(head).tick,
+          width: head.width, easeType: head.easeType
+        },
+        tail: {
+          lane: $cursor.lane - $clipboardOffsets.get(tail).lane,
+          tick: $cursor.tick - $clipboardOffsets.get(tail).tick,
+          width: tail.width, flick: tail.flick
+        },
+        steps: steps.map((note) => (
+          {
+            lane: $cursor.lane - $clipboardOffsets.get(note).lane,
+            tick: $cursor.tick - $clipboardOffsets.get(note).tick,
+            width: note.width,
+            diamond: note.diamond,
+            easeType: note.easeType,
+            ignored: note.ignored
+          })),
+        critical
+      }
+    })
+    slides = slides.concat(pastedSlides)
+
+    $selectedNotes = [
+      ...pastedSingles,
+      ...pastedSlides.map(({ head, tail, steps }) => [head, tail, ...steps]).flat()
+    ]
+  }
 </script>
 
 <svelte:head>
@@ -231,6 +316,9 @@
       bind:snapTo
       on:save={exportSUS}
       on:image={() => { imageDialogOpened = true }}
+      on:copy={oncopy}
+      on:cut={oncut}
+      on:paste={onpaste}
     />
     <Canvas
       bind:app
@@ -258,15 +346,11 @@
         soundQueue = soundQueue
       }}
       on:delete={() => {
-        $selectedNotes.forEach((note) => {
-          singles = singles.filter((item) => item !== note)
-          slides = slides.filter(({ head, tail }) => head !== note && tail !== note)
-          slides.forEach((slide) => {
-            slide.steps = slide.steps.filter((item) => item !== note)
-          })
-          slides = slides
-        })
+        $selectedNotes.forEach(deleteNote)
       }}
+      on:copy={oncopy}
+      on:cut={oncut}
+      on:paste={onpaste}
     />
     <PropertyBox
       bind:currentMeasure
