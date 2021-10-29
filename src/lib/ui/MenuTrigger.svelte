@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
 
   import type { Instance as TippyInstance } from 'tippy.js'
   import tippy from 'tippy.js'
@@ -10,6 +10,11 @@
 
   export let contextArea: HTMLElement = null
   export let sub: boolean = false
+
+  const dispatch = createEventDispatcher<{
+    contextmenu: void,
+    hidden: void
+  }>()
 
   let trigger: HTMLButtonElement
   onMount(() => {
@@ -35,11 +40,16 @@
       placement: 'right-start',
       trigger: 'manual',
       interactive: true,
-      offset: [0, 0]
+      offset: [0, 0],
+      onHidden() {
+        dispatch('hidden')
+      }
     })
 
     contextArea.addEventListener('contextmenu', (event: MouseEvent) => {
       event.preventDefault()
+
+      dispatch('contextmenu')
 
       if (menu.childElementCount < 1) {
         return
