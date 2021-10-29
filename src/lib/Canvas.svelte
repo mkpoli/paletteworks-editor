@@ -1,7 +1,7 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
   import type { Mode } from '$lib/editing/modes'
-  import type { Single, Slide as SlideType, Note as NoteType, SlideStep } from '$lib/score/beatmap';
+  import type { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase } from '$lib/score/beatmap';
 
   import { createEventDispatcher, onMount, setContext } from 'svelte'
   import { ZOOM_MIN, ZOOM_MAX, LANE_MAX } from '$lib/consts'
@@ -23,6 +23,7 @@
   import Menu from '$lib/ui/Menu.svelte'
   import MenuItem from '$lib/ui/MenuItem.svelte'
   import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
+  import MenuDivider from './ui/MenuDivider.svelte'
   import ZoomIndicator from '$lib/ZoomIndicator.svelte'
   import ImageDialog from '$lib/dialogs/ImageDialog.svelte'
 
@@ -82,7 +83,11 @@
     paste: void,
     movestart: void,
     move: void
-    moveend: void
+    moveend: void,
+    changecurve: {
+      note: IEase,
+      type: EaseType
+    }
   }>()
   let dragging: boolean = false
   let draggingSlide: SlideType = null
@@ -105,6 +110,8 @@
   import moveCursor from '$assets/move-cursor.png'
   import resizeCursor from '$assets/resize-cursor.png'
   import selectCursor from '$assets/select-cursor.png'
+
+  import { clipboardSingles } from './editing/clipboard'
 
   const myCursorStyle = {
     move: `url(${moveCursor}) 16 16, move`,
@@ -297,6 +304,25 @@
       }
     }
   }
+
+
+  // let currentNote: NoteType
+
+  // function getCurrentNote(): NoteType {
+  //   return singles.find(({ lane, tick }) => lane === $cursor.lane && tick === $cursor.tick)
+  //     ?? slides.map(({ head, tail, steps }) => [head, tail, ...steps]).flat()
+  //       .find(({ lane, tick }) => lane === $cursor.lane && tick === $cursor.tick)
+  // }
+
+  // function oncontextmenu() {
+    // currentNote = getCurrentNote()
+  // }
+
+  let currentNote: NoteType
+
+  function onchangecurve(type: EaseType) {
+    dispatch('changecurve', { note: currentNote as IEase, type })
+  }
 </script>
 
 <div
@@ -358,6 +384,7 @@
           on:move
           on:movestart
           on:moveend
+          on:rightclick={(event) => { currentNote = event.detail.note; console.log('onrightclick', currentNote) }}
         />
       {/each}
     {/if}
@@ -380,9 +407,26 @@
 
 <!-- CONTEXT MENU -->
 <Menu bind:menu>
-  <MenuTrigger contextArea={canvasContainer} {menu} slot="trigger" ></MenuTrigger>
+  <MenuTrigger
+    contextArea={canvasContainer}
+    {menu}
+    slot="trigger"
+    on:hidden={() => { currentNote = null }}
+  ></MenuTrigger>
   {#if $selectedNotes.length}
     <MenuItem icon="mdi:delete" text="削除" on:click={() => dispatch('delete')} />
+    <MenuDivider/>
+    <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut')} />
+    <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy')} />
+  {/if}
+  <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')}
+    disabled={!$clipboardSingles.length && !$clipboardSingles.length}
+  />
+  {#if !$selectedNotes.length && currentNote && 'easeType' in currentNote}
+    <MenuDivider/>
+    <MenuItem icon="custom:straight" text="直線" on:click={() => { onchangecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>
+    <MenuItem icon="custom:curve-in" text="加速" on:click={() => { onchangecurve('easeIn'); currentNote = currentNote }} checked={currentNote.easeType === 'easeIn'}/>
+    <MenuItem icon="custom:curve-out" text="減速" on:click={() => { onchangecurve('easeOut'); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
   {/if}
 </Menu>
 

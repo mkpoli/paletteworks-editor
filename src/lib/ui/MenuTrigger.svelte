@@ -41,7 +41,7 @@
       trigger: 'manual',
       interactive: true,
       offset: [0, 0],
-      onHidden() {
+      onHide() {
         dispatch('hidden')
       }
     })

@@ -138,6 +138,10 @@
     gap: 2em;
   }
 
+  .description h2 {
+    text-shadow: 2px 2px 30px #8603ab;
+  }
+
   a.button {
     display: block;
     font-size: 3em;

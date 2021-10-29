@@ -54,6 +54,23 @@
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { Metadata, Single, Slide as SlideType, Note as NoteType } from '$lib/score/beatmap'
 
+  import { addIcon } from '@iconify/svelte'
+  addIcon('custom:curve-in', {
+    body: '<path d="M28.5 2C29.0523 2 29.5 2.44772 29.5 3C29.5 20.1387 14.9617 30 3.5 30C2.94772 30 2.5 29.5523 2.5 29C2.5 28.4477 2.94772 28 3.5 28C14.0383 28 27.5 18.8613 27.5 3C27.5 2.44772 27.9477 2 28.5 2Z" fill="currentColor"/>',
+    width: 32,
+    height: 32
+  })
+  addIcon('custom:curve-out', {
+    body: '<path d="M5.19905 26.3298C4.94543 27.3909 4.70894 28.3804 4.46382 29.2666C4.31659 29.7989 3.76572 30.111 3.23342 29.9638C2.70112 29.8166 2.38897 29.2657 2.5362 28.7334C2.7527 27.9507 2.96986 27.0387 3.2091 26.0339C4.11982 22.2092 5.35054 17.0406 8.08288 12.5433C9.82904 9.66915 12.2072 7.02045 15.5387 5.09512C18.8714 3.16914 23.1013 2 28.5 2C29.0523 2 29.5 2.44771 29.5 3C29.5 3.55228 29.0523 4 28.5 4C23.3988 4 19.5244 5.1017 16.5394 6.82676C13.5533 8.55247 11.4001 10.935 9.79214 13.5817C7.24318 17.7772 6.11053 22.5162 5.19905 26.3298Z" fill="currentColor"/>',
+    width: 32,
+    height: 32
+  })
+  addIcon('custom:straight', {
+    body: '<path d="M29.1931 2.27917C29.5912 2.66196 29.6036 3.29501 29.2208 3.69311L4.22083 29.6931C3.83804 30.0912 3.205 30.1036 2.80689 29.7208C2.40879 29.338 2.39637 28.705 2.77917 28.3069L27.7792 2.30689C28.162 1.90879 28.795 1.89637 29.1931 2.27917Z" fill="currentColor"/>',
+    width: 32,
+    height: 32
+  })
+
   // Constants
   import {
     MARGIN_BOTTOM,
@@ -383,6 +400,10 @@
       on:move={onmove}
       on:movestart={onmovestart}
       on:moveend={onmoveend}
+      on:changecurve={(event) => {
+        event.detail.note.easeType = event.detail.type
+        slides = slides
+      }}
     />
     <PropertyBox
       bind:currentMeasure
