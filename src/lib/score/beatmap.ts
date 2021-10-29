@@ -22,6 +22,7 @@ interface ICritical {
 }
 
 export type EaseType = 'easeIn' | 'easeOut' | false
+export type DiamondType = 'ignored' | 'visible' | 'invisible'
 
 export interface IEase {
   easeType: EaseType,

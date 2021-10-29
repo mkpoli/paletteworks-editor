@@ -1,7 +1,7 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
   import type { Mode } from '$lib/editing/modes'
-  import type { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase } from '$lib/score/beatmap';
+  import type { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType } from '$lib/score/beatmap'
 
   import { createEventDispatcher, onMount, setContext } from 'svelte'
   import { ZOOM_MIN, ZOOM_MAX, LANE_MAX } from '$lib/consts'
@@ -87,6 +87,10 @@
     changecurve: {
       note: IEase,
       type: EaseType
+    },
+    changediamond: {
+      note: SlideStep,
+      type: DiamondType
     }
   }>()
   let dragging: boolean = false
@@ -112,6 +116,7 @@
   import selectCursor from '$assets/select-cursor.png'
 
   import { clipboardSingles } from './editing/clipboard'
+import SlideSteps from './render/SlideSteps.svelte';
 
   const myCursorStyle = {
     move: `url(${moveCursor}) 16 16, move`,
@@ -323,6 +328,19 @@
   function onchangecurve(type: EaseType) {
     dispatch('changecurve', { note: currentNote as IEase, type })
   }
+
+  function onchangediamond(type: DiamondType) {
+    dispatch('changediamond', { note: currentNote as SlideStep, type})
+  }
+
+  function calcDiamondType(note: NoteType): DiamondType {
+    const _note = note as SlideStep
+    return _note.ignored
+      ? 'ignored'
+      : _note.diamond
+        ? 'visible'
+        : 'invisible'
+  }
 </script>
 
 <div
@@ -427,6 +445,12 @@
     <MenuItem icon="custom:straight" text="直線" on:click={() => { onchangecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>
     <MenuItem icon="custom:curve-in" text="加速" on:click={() => { onchangecurve('easeOut'); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
     <MenuItem icon="custom:curve-out" text="減速" on:click={() => { onchangecurve('easeIn'); currentNote = currentNote }} checked={currentNote.easeType === 'easeIn'}/>
+  {/if}
+  {#if !$selectedNotes.length && currentNote && 'ignored' in currentNote}
+    <MenuDivider/>
+    <MenuItem icon="custom:diamond-visible" text="可視" on:click={() => { onchangediamond('visible'); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'visible'}/>
+    <MenuItem icon="custom:diamond-ignored" text="無視" on:click={() => { onchangediamond('ignored'); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'ignored'}/>
+    <MenuItem icon="custom:diamond-invisible" text="不可視" on:click={() => { onchangediamond('invisible'); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'invisible'}/>
   {/if}
 </Menu>
 
