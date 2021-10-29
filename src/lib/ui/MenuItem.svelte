@@ -69,8 +69,12 @@
       {#if hasSubMenu}
         <Icon icon="ic:round-chevron-right" width="1.5em" class="chevron" />
       {/if}
-      {#if checked}
-        <Icon icon="mdi:checkbox-marked-circle-outline" width="1.5em" class="chevron" />
+      {#if checked !== undefined}
+        {#if checked}
+          <Icon icon="mdi:checkbox-marked-circle" width="1.5em" class="chevron" />
+        {:else}
+          <Icon icon="mdi:checkbox-blank-circle-outline" width="1.5em" class="chevron" />
+        {/if}
       {/if}
     </Button>
   </div>
