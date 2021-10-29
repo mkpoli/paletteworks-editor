@@ -425,8 +425,8 @@
   {#if !$selectedNotes.length && currentNote && 'easeType' in currentNote}
     <MenuDivider/>
     <MenuItem icon="custom:straight" text="直線" on:click={() => { onchangecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>
-    <MenuItem icon="custom:curve-in" text="加速" on:click={() => { onchangecurve('easeIn'); currentNote = currentNote }} checked={currentNote.easeType === 'easeIn'}/>
-    <MenuItem icon="custom:curve-out" text="減速" on:click={() => { onchangecurve('easeOut'); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
+    <MenuItem icon="custom:curve-in" text="加速" on:click={() => { onchangecurve('easeOut'); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
+    <MenuItem icon="custom:curve-out" text="減速" on:click={() => { onchangecurve('easeIn'); currentNote = currentNote }} checked={currentNote.easeType === 'easeIn'}/>
   {/if}
 </Menu>
 
