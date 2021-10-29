@@ -29,7 +29,9 @@
       tick: number,
       note: Note
     },
-    moveend: void
+    moveend: void,
+    click: { note: Note },
+    rightclick: { note: Note }
   }>()
 
   // Variables
@@ -67,6 +69,12 @@
     middle.addListener('pointerup', (event: PIXI.InteractionEvent) => {
       app.renderer.view.releasePointerCapture(event.data.pointerId)
       dispatch('moveend')
+    })
+    middle.addListener('click', () => {
+      dispatch('click', { note })
+    })
+    middle.addListener('rightclick', () => {
+      dispatch('rightclick', { note })
     })
     app.stage.addChild(middle)
   })

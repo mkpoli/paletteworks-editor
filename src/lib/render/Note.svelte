@@ -39,10 +39,6 @@
   let instance: PIXI.NineSlicePlane
   let currentRect: PIXI.Rectangle
 
-  const dispatch = createEventDispatcher<{
-    'click': void,
-  }>()
-
   onMount(async () => {
     PIXI = await import('pixi.js')
 
@@ -57,9 +53,6 @@
     instance.scale.y = 1
     instance.zIndex = 1
     instance.interactive = true
-    instance.addListener('click', () => {
-      dispatch('click')
-    })
     app.stage.addChild(instance)
   })
 
@@ -91,6 +84,8 @@
   on:move
   on:movestart
   on:moveend
+  on:click
+  on:rightclick
   draw={$selectedNotes.includes(note)}
   rect={currentRect}
   bind:note

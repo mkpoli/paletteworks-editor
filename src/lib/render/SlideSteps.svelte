@@ -227,6 +227,7 @@
       on:movestart
       on:move
       on:moveend
+      on:rightclick
     ></NoteControl>
   {/each}
 {/if}

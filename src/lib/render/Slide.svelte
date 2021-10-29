@@ -27,6 +27,7 @@
   slide={true}
   {critical}
   on:click
+  on:rightclick
   on:move
   on:movestart
   on:moveend
@@ -39,6 +40,7 @@
   on:movestart
   on:move
   on:moveend
+  on:rightclick
 />
 
 <!-- SLIDE END -->
