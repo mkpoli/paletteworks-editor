@@ -9,14 +9,13 @@
   export let icon: string
   export let text: string
   export let disabled: boolean = false
-  export let checked: boolean = false
+  export let checked: boolean = undefined
   
   let container: HTMLDivElement = null
   
   const hasSubMenu: boolean = !!$$slots.default
   let subMenu: HTMLDivElement
-  
-  
+
   $: shortcutKey = text.match(/&([A-Z])/)?.[1]
   
   let altPressed: boolean
@@ -26,7 +25,7 @@
   
   import { hideAll } from 'tippy.js'
   function onclick() {
-    if (!hasSubMenu) {
+    if (!hasSubMenu && checked === undefined) {
       hideAll()
     }
     dispatch('click')
