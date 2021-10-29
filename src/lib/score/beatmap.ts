@@ -21,8 +21,10 @@ interface ICritical {
   critical: boolean
 }
 
-interface IEase {
-  easeType: 'easeIn' | 'easeOut' | false,
+export type EaseType = 'easeIn' | 'easeOut' | false
+
+export interface IEase {
+  easeType: EaseType,
 }
 
 export type Single = INote & IDirectional & ICritical
