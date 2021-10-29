@@ -7,6 +7,7 @@
 
   export let container: HTMLDivElement
   export let hasSubMenu: boolean
+  export let checked: boolean
 
   export let icon: string
   export let text: string
@@ -56,6 +57,9 @@
     <div>{@html text.replace(/&([A-Z])/, `<span style="text-decoration: ${altPressed ? 'underline' : 'none'};">$1</span>`)}</div>
     {#if hasSubMenu}
       <Icon icon="ic:round-chevron-right" width="1.5em" class="chevron" />
+    {/if}
+    {#if checked}
+      <Icon icon="mdi:checkbox-marked-circle-outline" width="1.5em" class="chevron" />
     {/if}
   </Button>
 </div>

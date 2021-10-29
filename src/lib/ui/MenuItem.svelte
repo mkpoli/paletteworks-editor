@@ -8,6 +8,7 @@
   export let icon: string
   export let text: string
   export let disabled: boolean = false
+  export let checked: boolean = false
 
   let container: HTMLDivElement = null
 
@@ -26,6 +27,7 @@
     {text}
     {disabled}
     {hasSubMenu}
+    {checked}
     bind:container
     on:click
   />
