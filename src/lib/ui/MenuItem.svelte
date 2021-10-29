@@ -3,6 +3,8 @@
   import MenuTrigger from "./MenuTrigger.svelte"
   import MenuItemButton from "./MenuItemButton.svelte"
 
+  import Wrapper from "./Wrapper.svelte"
+
   export let icon: string
   export let text: string
   export let disabled: boolean = false
@@ -13,18 +15,12 @@
   let subMenu: HTMLDivElement
 </script>
 
-{#if subMenu}
-  <MenuTrigger menu={subMenu} sub={true}>
-    <MenuItemButton 
-      {icon}
-      {text}
-      {disabled}
-      {hasSubMenu}
-      bind:container
-      on:click
-    />
-  </MenuTrigger>
-{:else}
+<Wrapper
+  component={MenuTrigger}
+  wrap={hasSubMenu}
+  menu={subMenu}
+  sub={true}
+>
   <MenuItemButton 
     {icon}
     {text}
@@ -33,7 +29,7 @@
     bind:container
     on:click
   />
-{/if}
+  </Wrapper>
 
 {#if hasSubMenu}
   <Menu bind:menu={subMenu}>
