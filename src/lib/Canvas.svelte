@@ -3,7 +3,7 @@
   import type { Mode } from '$lib/editing/modes'
   import type { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType } from '$lib/score/beatmap'
 
-  import { createEventDispatcher, onMount, setContext } from 'svelte'
+  import { createEventDispatcher, onMount, setContext, tick } from 'svelte'
   import { ZOOM_MIN, ZOOM_MAX, LANE_MAX } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { closest, rotateNext } from '$lib/basic/collections'
@@ -78,9 +78,10 @@
   const dispatch = createEventDispatcher<{
     changeBPM: { tick: number, bpm: number },
     playSound: string,
-    delete: void,
-    copy: void,
-    cut: void,
+    deleteselection: void,
+    deletecurrent: { note: NoteType },
+    copy: { notes: NoteType[] },
+    cut: { notes: NoteType[] },
     paste: void,
     movestart: void,
     move: void
@@ -267,27 +268,6 @@
     app.renderer.plugins.interaction.setCursorMode($moving ? 'move' : 'default')
   }
 
-  function onslideclick(slide: SlideType) {
-    switch (currentMode) {
-      case 'mid': {
-
-      }
-    }
-  }
-
-
-  // let currentNote: NoteType
-
-  // function getCurrentNote(): NoteType {
-  //   return singles.find(({ lane, tick }) => lane === $cursor.lane && tick === $cursor.tick)
-  //     ?? slides.map(({ head, tail, steps }) => [head, tail, ...steps]).flat()
-  //       .find(({ lane, tick }) => lane === $cursor.lane && tick === $cursor.tick)
-  // }
-
-  // function oncontextmenu() {
-    // currentNote = getCurrentNote()
-  // }
-
   let currentNote: NoteType
 
   function onchangecurve(type: EaseType) {
@@ -353,6 +333,7 @@
           on:movestart
           on:move
           on:moveend
+          on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
         />
       {/if}
@@ -369,7 +350,7 @@
           on:move
           on:movestart
           on:moveend
-          on:rightclick={(event) => { currentNote = event.detail.note; console.log('onrightclick', currentNote) }}
+          on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
         />
       {/each}
@@ -397,13 +378,21 @@
     contextArea={canvasContainer}
     {menu}
     slot="trigger"
-    on:hidden={() => { currentNote = null }}
+    on:hidden={async () => {
+      await tick()
+      currentNote = null
+    }}
   ></MenuTrigger>
   {#if $selectedNotes.length}
-    <MenuItem icon="mdi:delete" text="削除" on:click={() => dispatch('delete')} />
+    <MenuItem icon="mdi:delete" text="削除（全部）" on:click={() => dispatch('deleteselection')} />
     <MenuDivider/>
-    <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut')} />
-    <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy')} />
+    <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut', { notes: $selectedNotes })} />
+    <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy', { notes: $selectedNotes })} />
+  {:else if currentNote}
+    <MenuItem icon="mdi:delete" text="削除" on:click={() => { dispatch('deletecurrent', { note: currentNote })}} />
+    <MenuDivider/>
+    <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut', { notes: [currentNote] })} />
+    <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy', { notes: [currentNote] })} />
   {/if}
   <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')}
     disabled={!$clipboardSingles.length && !$clipboardSingles.length}
@@ -431,15 +420,15 @@
 <svelte:window
   on:keydown={(event) => {
     if (event.key == 'Delete') {
-      dispatch('delete')
+      dispatch('deleteselection')
     }
 
     if (event.ctrlKey && event.key == 'c') {
-      dispatch('copy')
+      dispatch('copy', { notes: $selectedNotes })
     }
 
     if (event.ctrlKey && event.key == 'x') {
-      dispatch('cut')
+      dispatch('cut', { notes: $selectedNotes })
     }
 
     if (event.ctrlKey && event.key == 'v') {

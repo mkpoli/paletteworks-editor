@@ -263,16 +263,16 @@
     slides = slides.filter(({ head, tail }) => head !== note && tail !== note)
   }
 
-  function copyNotes() {
-    if (!$selectedNotes.length) return
+  function copyNotes(notes: NoteType[]) {
+    if (!notes.length) return
 
     $clipboardSingles = singles
-      .filter((single) => $selectedNotes.includes(single))
+      .filter((single) => notes.includes(single))
 
     $clipboardSlides = slides
       .filter(({ head, tail, steps }) => (
-        $selectedNotes.includes(head) || $selectedNotes.includes(tail)
-        || steps.some((step) => $selectedNotes.includes(step))
+        notes.includes(head) || notes.includes(tail)
+        || steps.some((step) => notes.includes(step))
       ))
 
     $clipboardSlides.map(({ head, tail, steps }) => [head, tail, ...steps]).flat()
@@ -285,13 +285,9 @@
       })
   }
 
-  function oncopy() {
-    copyNotes()
-  }
-
-  function oncut() {
-    copyNotes()
-    $selectedNotes.forEach(deleteNote)
+  function cutNotes(notes: NoteType[]) {
+    copyNotes(notes)
+    notes.forEach(deleteNote)
   }
   
   function onpaste() {
@@ -395,8 +391,8 @@
       bind:snapTo
       on:save={exportSUS}
       on:image={() => { imageDialogOpened = true }}
-      on:copy={oncopy}
-      on:cut={oncut}
+      on:copy={() => { copyNotes($selectedNotes) }}
+      on:cut={() => { cutNotes($selectedNotes) }}
       on:paste={onpaste}
     />
     <Canvas
@@ -425,11 +421,15 @@
         soundQueue.push(event.detail)
         soundQueue = soundQueue
       }}
-      on:delete={() => {
+      on:deleteselection={() => {
         $selectedNotes.forEach(deleteNote)
       }}
-      on:copy={oncopy}
-      on:cut={oncut}
+      on:deletecurrent={(event) => {
+        console.log(event.detail.note)
+        deleteNote(event.detail.note)
+      }}
+      on:copy={(event) => { copyNotes(event.detail.notes) }}
+      on:cut={(event) => { cutNotes(event.detail.notes) }}
       on:paste={onpaste}
       on:move={onmove}
       on:movestart={onmovestart}
