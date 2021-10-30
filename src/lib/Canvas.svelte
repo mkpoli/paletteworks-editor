@@ -39,6 +39,7 @@
   export let zoom: number
   export let imageDialogOpened: boolean
   export let visibility: Record<string, boolean>
+  export let shiftKey: boolean
 
   setContext('app', app)
 
@@ -94,6 +95,9 @@
     },
     selectsingle: {
       note: NoteType
+    },
+    slideclick: {
+      slide: SlideType
     }
   }>()
   let dragging: boolean = false
@@ -102,14 +106,6 @@
     dragging = false
     draggingSlide = null
   }
-  let shiftKey: boolean = false
-  $: dbg('shiftKey', shiftKey)
-  document.addEventListener('keydown', (event: KeyboardEvent) => {
-    shiftKey = event.shiftKey
-  })
-  document.addEventListener('keyup', (event: KeyboardEvent) => {
-    shiftKey = event.shiftKey
-  })
 
   import { moving } from './editing/moving'
   $: dbg('moving', $moving)
@@ -273,41 +269,8 @@
 
   function onslideclick(slide: SlideType) {
     switch (currentMode) {
-      case 'flick': {
-        slide.tail.flick = rotateNext(slide.tail.flick, FLICK_TYPES)
-        slides = slides
-        dispatch('playSound', 'stage')
-        break
-      }
-      case 'critical': {
-        slide.critical = !slide.critical
-        slides = slides
-        dispatch('playSound', 'stage')
-        break
-      }
       case 'mid': {
-        if ($cursor.tick === slide.head.tick || $cursor.tick === slide.tail.tick) break
-        
-        const found = slide.steps.find(({ tick }) => tick === $cursor.tick)
-        if (found) {
-          console.log(found)
-          found.diamond = !found.diamond
-        } else {
-          const step: SlideStep = {
-            lane: $cursor.lane,
-            width: slide.head.width,
-            tick: $cursor.tick,
-            diamond: true,
-            easeType: false,
-            ignored: false
-          }
-          slide.steps.push(step)
-          slide.steps.sort(({ tick: a }, { tick: b }) => a - b)
-        }
-        slides = slides
-        console.log(slides)
-        dispatch('playSound', 'stage')
-        break
+
       }
     }
   }
@@ -401,7 +364,8 @@
         <Slide
           bind:slide
           stepsVisible={visibility.SlideSteps}
-          on:click={() => {onslideclick(slide)}}
+          on:stepclick
+          on:click={(event) => { dispatch('slideclick', event.detail) }}
           on:move
           on:movestart
           on:moveend

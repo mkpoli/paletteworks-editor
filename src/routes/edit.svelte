@@ -52,7 +52,7 @@
   // Types
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
-  import type { Metadata, Single, Slide as SlideType, Note as NoteType } from '$lib/score/beatmap'
+  import { Metadata, Single, Slide as SlideType, Note as NoteType, FLICK_TYPES, toDiamondType, fromDiamondType, DIAMOND_TYPES, EASE_TYPES } from '$lib/score/beatmap'
 
   import { addIcon } from '@iconify/svelte'
   addIcon('custom:curve-in', {
@@ -107,7 +107,7 @@
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { clamp, snap } from '$lib/basic/math'
-  import { closest, max } from '$lib/basic/collections'
+  import { closest, max, rotateNext } from '$lib/basic/collections'
   import { download, toBlob } from '$lib/basic/file'
 
   // Score Data
@@ -368,6 +368,20 @@
     $moving = false
     $movingNotes = []
   }
+
+  function playSound(name: string) {
+    soundQueue.push(name)
+    soundQueue = soundQueue
+  }
+
+  let shiftKey: boolean = false
+  $: dbg('shiftKey', shiftKey)
+  document.addEventListener('keydown', (event: KeyboardEvent) => {
+    shiftKey = event.shiftKey
+  })
+  document.addEventListener('keyup', (event: KeyboardEvent) => {
+    shiftKey = event.shiftKey
+  })
 </script>
 
 <svelte:head>
@@ -396,6 +410,7 @@
       {currentMode}
       {innerHeight}
       {visibility}
+      {shiftKey}
       bind:singles
       bind:slides
       bind:bpms
@@ -441,11 +456,76 @@
         slides = slides
       }}
       on:selectsingle={(event) => {
+        if (currentMode !== 'select') return
         const slide = slides
           .map(({ head, tail, steps }) => [head, tail, ...steps])
           .find((slideNotes) => slideNotes.includes(event.detail.note))
         console.log(slide)
         $selectedNotes = slide ?? [event.detail.note]
+      }}
+      on:slideclick={(event) => {
+        const { slide } = event.detail
+        switch (currentMode) {
+          case 'flick': {
+            slide.tail.flick = rotateNext(slide.tail.flick, FLICK_TYPES)
+            slides = slides
+            playSound('stage')
+            break
+          }
+          case 'critical': {
+            slide.critical = !slide.critical
+            slides = slides
+            playSound('stage')
+            break
+          }
+          case 'mid': {
+            if ($cursor.tick === slide.head.tick || $cursor.tick === slide.tail.tick) break
+            const found = slide.steps.find(({ tick }) => tick === $cursor.tick)
+            if (!found) {
+              const step = {
+                lane: $cursor.lane,
+                width: slide.head.width,
+                tick: $cursor.tick,
+                diamond: true,
+                easeType: false,
+                ignored: false
+              }
+              slide.steps.push(step)
+              slide.steps.sort(({ tick: a }, { tick: b }) => a - b)
+            }
+            slides = slides
+            console.log(slides)
+            playSound('stage')
+            break
+          }
+        }
+      }}
+      on:stepclick={(event) => {
+        const { note, slide } = event.detail
+        switch (currentMode) {
+          case 'flick': {
+            slide.tail.flick = rotateNext(slide.tail.flick, FLICK_TYPES)
+            slides = slides
+            playSound('stage')
+            break
+          }
+          case 'critical': {
+            slide.critical = !slide.critical
+            slides = slides
+            playSound('stage')
+            break
+          }
+          case 'mid': {
+            if (!shiftKey) {
+              [note.diamond, note.ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
+            } else {
+              note.easeType = rotateNext(note.easeType, EASE_TYPES)
+            }
+            slides = slides
+            playSound('stage')
+            break
+          }
+        }
       }}
     />
     <PropertyBox

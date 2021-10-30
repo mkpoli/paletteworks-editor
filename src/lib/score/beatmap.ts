@@ -21,8 +21,27 @@ interface ICritical {
   critical: boolean
 }
 
-export type EaseType = 'easeIn' | 'easeOut' | false
-export type DiamondType = 'ignored' | 'visible' | 'invisible'
+export const EASE_TYPES = ['easeIn', 'easeOut', false]
+export type EaseType = typeof EASE_TYPES[number]
+
+export const DIAMOND_TYPES = ['ignored', 'visible', 'invisible']
+export type DiamondType = typeof DIAMOND_TYPES[number]
+
+export function toDiamondType(diamond: boolean, ignored: boolean): DiamondType {
+  return ignored
+    ? 'ignored'
+    : diamond
+      ? 'visible'
+      : 'invisible'
+}
+
+export function fromDiamondType(diamondType: DiamondType): [diamond: boolean, ignored: boolean] {
+  return {
+    'visible': [true, false],
+    'invisible': [false, false],
+    'ignored': [true, true],
+  }[diamondType] as [boolean, boolean]
+}
 
 export interface IEase {
   easeType: EaseType,

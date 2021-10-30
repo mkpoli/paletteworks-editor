@@ -227,6 +227,7 @@
       on:movestart
       on:move
       on:moveend
+      on:click
       on:rightclick
       on:dblclick
     ></NoteControl>
