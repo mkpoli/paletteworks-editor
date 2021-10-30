@@ -54,6 +54,7 @@
   $: $cursor = {
     lane: $position.calcLane($pointer.x),
     tick: $position.calcTick($pointer.y, scrollTick),
+    laneSide: $position.calcLaneSide($pointer.x)
   }
   $: dbg('pointer', formatPoint($pointer.x, $pointer.y))
   $: dbg('cursor', formatPoint($cursor.lane, $cursor.tick))
@@ -84,8 +85,11 @@
     cut: { notes: NoteType[] },
     paste: void,
     movestart: void,
-    move: void
+    move: void,
     moveend: void,
+    resizestart: void,
+    resize: void,
+    resizeend: void,
     changecurve: {
       note: IEase,
       type: EaseType
@@ -116,6 +120,7 @@
   import selectCursor from '$assets/select-cursor.png'
 
   import { clipboardSingles } from './editing/clipboard'
+  import { resizing } from './editing/resizing'
 
   const myCursorStyle = {
     move: `url(${moveCursor}) 16 16, move`,
@@ -153,6 +158,7 @@
     app.renderer.plugins.interaction.addListener('pointerdown', (event: PIXI.InteractionEvent) => {
       if (event.data.button == 2) return
       if ($moving) return
+      if ($resizing) return
       app.renderer.view.setPointerCapture(event.data.pointerId)
       switch (currentMode) {
         case 'select': {
@@ -227,6 +233,9 @@
       if ($moving) {
         dispatch('moveend')
       }
+      if ($resizing) {
+        dispatch('resizeend')
+      }
       if (!dragging) {
         return
       }
@@ -263,9 +272,19 @@
 
   let canvasContainer: HTMLDivElement
 
+  function setCursor(cursor: string) {
+    app.renderer.plugins.interaction.cursorStyles.default =  myCursorStyle[cursor]
+    app.renderer.plugins.interaction.setCursorMode(cursor)
+  }
+
   $: if (app) {
-    app.renderer.plugins.interaction.cursorStyles.default = $moving ? myCursorStyle.move : myCursorStyle.select
-    app.renderer.plugins.interaction.setCursorMode($moving ? 'move' : 'default')
+    if ($moving) {
+      setCursor('move')
+    } else if ($resizing) {
+      setCursor('resize')
+    } else {
+      setCursor('select')
+    }
   }
 
   let currentNote: NoteType

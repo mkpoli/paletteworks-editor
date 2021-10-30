@@ -18,6 +18,8 @@
   // Stores
   import { moving } from '$lib/editing/moving'
   import { cursor } from '$lib/position'
+  import { resizing, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
+  import { selectedNotes } from '$lib/editing/selection'
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -40,10 +42,59 @@
   let PIXI: typeof import('pixi.js')
   let graphics: PIXI.Graphics
   let middle: PIXI.Container
+  let controlL: PIXI.Graphics
+  let controlR: PIXI.Graphics
+  const SIDE_MARGIN = 10
+  function onresizestart(right: boolean) {
+    return () => {
+      $resizing = true
+      $resizingNotes = $selectedNotes.length && $selectedNotes.includes(note) ? $selectedNotes : [note]
+      $resizingNotes.forEach((note) => {
+        const reference = right ? note.lane : note.lane + note.width
+        const mutating = right ? note.lane + note.width : note.lane
+        $resizingOffsets.set(note, { reference, offset: $cursor.laneSide - mutating })
+      })
+    }
+  }
+
+  function onresizing() {
+    if ($resizing && $resizingNotes.includes(note)) {
+      const { reference, offset } = $resizingOffsets.get(note)
+      if ($cursor.laneSide - offset === reference) return
+      const newL = Math.min(reference, $cursor.laneSide - offset)
+      const newR = Math.max(reference, $cursor.laneSide - offset)
+      note.lane = newL
+      note.width = newR - newL
+      note = note
+    }
+  }
+
+  function onresizeend() {
+    $resizing = false
+  }
 
   onMount(async () => {
     PIXI = await import('pixi.js')
     
+    controlL = new PIXI.Graphics()
+    controlL.zIndex = 5
+    controlL.interactive = true
+    controlL.addListener('pointerdown', onresizestart(false))
+    controlL.addListener('pointermove', onresizing)
+    controlL.addListener('pointerup', onresizeend)
+    controlL.cursor = 'ew-resize'
+    app.stage.addChild(controlL)
+
+    controlR = new PIXI.Graphics()
+    controlR.zIndex = 5
+    controlR.cursor = 'ew-resize'
+    controlR.interactive = true
+    controlR.addListener('pointerdown', onresizestart(true))
+    controlR.addListener('pointermove', onresizing)
+    controlR.addListener('pointerup', onresizeend)
+    controlR.cursor = 'ew-resize'
+    app.stage.addChild(controlR)
+
     graphics = new PIXI.Graphics()
     graphics.zIndex = 4
     app.stage.addChild(graphics)
@@ -65,7 +116,7 @@
       })
     })
     middle.addListener('pointermove', () => {
-      if (!$moving) return
+      if (!$moving || $resizing) return
       dispatch('move')
     })
     middle.addListener('pointerup', (event: PIXI.InteractionEvent) => {
@@ -100,7 +151,7 @@
   }
 
   const CONTROL_SIZE = 10
-  function drawControl(x: number, y: number) {
+  function drawControl(graphics: PIXI.Graphics, x: number, y: number) {
     graphics.lineStyle(2, COLORS.COLOR_SELECTION, 1)
     graphics.beginFill(0xFFFFFF)
     graphics.drawRect(
@@ -108,17 +159,26 @@
       CONTROL_SIZE, CONTROL_SIZE
     )
     graphics.endFill()
-    graphics.interactive = true
-    graphics.cursor = 'ew-resize'
   }
 
   $: if (PIXI && rect) {
     graphics.clear()
-    middle.hitArea = rect
+    controlL.clear()
+    controlR.clear()
+    middle.hitArea = new PIXI.Rectangle(
+      rect.x + SIDE_MARGIN, rect.y, rect.width - 2 * SIDE_MARGIN, rect.height
+    )
+    controlL.hitArea = new PIXI.Rectangle(
+      rect.x - SIDE_MARGIN, rect.y, SIDE_MARGIN * 2, rect.height
+    )
+    controlR.hitArea = new PIXI.Rectangle(
+      rect.right - SIDE_MARGIN, rect.y, SIDE_MARGIN * 2, rect.height
+    )
+
     if (draw) {
       drawBorder()
-      drawControl(rect.left - SELECTION_MARGIN, rect.top + rect.height / 2)
-      drawControl(rect.right + SELECTION_MARGIN, rect.top + rect.height / 2)
+      drawControl(controlL, rect.left - SELECTION_MARGIN, rect.top + rect.height / 2)
+      drawControl(controlR, rect.right + SELECTION_MARGIN, rect.top + rect.height / 2)
     }
   }
 </script>
