@@ -2,7 +2,7 @@ export function rotateNext<T>(cur: T, arr: Readonly<Array<T>>) {
   return arr[(arr.indexOf(cur) + 1) % arr.length]
 }
 
-export function closest(arr: Array<number>, num: number, smaller: boolean=false): number {
+export function closest(arr: Array<number>, num: number, smaller = false): number {
   let result: number
   arr.some((val) => {
     if (smaller && val > num) {

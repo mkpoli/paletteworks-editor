@@ -116,7 +116,6 @@
   import selectCursor from '$assets/select-cursor.png'
 
   import { clipboardSingles } from './editing/clipboard'
-import SlideSteps from './render/SlideSteps.svelte';
 
   const myCursorStyle = {
     move: `url(${moveCursor}) 16 16, move`,
