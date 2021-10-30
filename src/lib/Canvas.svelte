@@ -91,6 +91,9 @@
     changediamond: {
       note: SlideStep,
       type: DiamondType
+    },
+    selectsingle: {
+      note: NoteType
     }
   }>()
   let dragging: boolean = false
@@ -387,6 +390,7 @@
           on:movestart
           on:move
           on:moveend
+          on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
         />
       {/if}
     {/each}
@@ -402,6 +406,7 @@
           on:movestart
           on:moveend
           on:rightclick={(event) => { currentNote = event.detail.note; console.log('onrightclick', currentNote) }}
+          on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
         />
       {/each}
     {/if}

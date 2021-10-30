@@ -31,6 +31,7 @@
   on:move
   on:movestart
   on:moveend
+  on:dblclick
 />
 
 <!-- SLIDE STEPS -->
@@ -41,6 +42,7 @@
   on:move
   on:moveend
   on:rightclick
+  on:dblclick
 />
 
 <!-- SLIDE END -->
@@ -52,4 +54,5 @@
   on:move
   on:movestart
   on:moveend
+  on:dblclick
 />

@@ -440,6 +440,13 @@
         }
         slides = slides
       }}
+      on:selectsingle={(event) => {
+        const slide = slides
+          .map(({ head, tail, steps }) => [head, tail, ...steps])
+          .find((slideNotes) => slideNotes.includes(event.detail.note))
+        console.log(slide)
+        $selectedNotes = slide ?? [event.detail.note]
+      }}
     />
     <PropertyBox
       bind:currentMeasure

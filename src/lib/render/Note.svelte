@@ -1,6 +1,6 @@
 <script lang="ts">
   import { NOTE_HEIGHT } from '$lib/consts';  
-  import { createEventDispatcher, getContext, onDestroy, onMount } from "svelte";
+  import { getContext, onDestroy, onMount } from "svelte";
   import { selectedNotes } from '$lib/editing/selection'
   import { position } from '$lib/position'
 
@@ -86,6 +86,7 @@
   on:moveend
   on:click
   on:rightclick
+  on:dblclick
   draw={$selectedNotes.includes(note)}
   rect={currentRect}
   bind:note

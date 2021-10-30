@@ -4,6 +4,7 @@
 
   // Functions
   import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
+  import '$lib/basic/dblclick'
 
   // Types
   import type PIXI from 'pixi.js'
@@ -31,7 +32,8 @@
     },
     moveend: void,
     click: { note: Note },
-    rightclick: { note: Note }
+    rightclick: { note: Note },
+    dblclick: { note: Note }
   }>()
 
   // Variables
@@ -75,6 +77,9 @@
     })
     middle.addListener('rightclick', () => {
       dispatch('rightclick', { note })
+    })
+    middle.addListener('dblclick', () => {
+      dispatch('dblclick', { note })
     })
     app.stage.addChild(middle)
   })
