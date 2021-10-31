@@ -3,11 +3,13 @@
 
   export let icon: string = null
   export let disabled: boolean = false
+  export let height: string = undefined
+  export let width: string = undefined
 </script>
 
 <button on:click class={$$props.class} {disabled}>
   {#if icon}
-    <Icon icon={icon} height="1em" />
+    <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
   {/if}
   <slot/>
 </button>
@@ -16,7 +18,7 @@
   button {
     appearance: none;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--input-border-radius);
     color: inherit;
     padding: 0.5em 1em;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
@@ -34,6 +36,17 @@
     box-shadow: none;
     border: none;
     background: transparent;
+  }
+
+  button.action {
+    border-radius: 0;
+    box-shadow: none;
+    height: 100%;
+    margin-right: -1rem;
+  }
+
+  button.action > :global(svg) {
+    font-size: 1.5em;
   }
 
   button:hover:not([disabled]) {

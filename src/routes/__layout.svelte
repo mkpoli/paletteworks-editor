@@ -8,6 +8,8 @@
   :root {
     --color-background-main: #2e3142;
     --color-text-main: #eeeeee;
+
+    --input-border-radius: 10px;
   }
 
   body {
@@ -29,7 +31,7 @@
   input[type='text'] {
     appearance: none;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--input-border-radius);
     color: inherit;
     padding: 0.5em 1em;
     box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.6);

@@ -3,11 +3,13 @@
   import type { Metadata } from "$lib/score/beatmap"
   const dispatch = createEventDispatcher()
 
-  
+  // UI Components
   import Icon from '@iconify/svelte'
   import Button from "$lib/ui/Button.svelte"
-  import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
+  import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
   import TextInput from "$lib/ui/TextInput.svelte"
+  import Select from '$lib/ui/Select.svelte'
+  import FileInput from '$lib/ui/FileInput.svelte'
 
   import filesize from 'filesize'
   import { selectedNotes } from "$lib/editing/selection"
@@ -21,9 +23,6 @@
   export let visibility: Record<string, boolean>
 </script>
 <div class="panel-container">
-  <div class="panel-bar">
-
-  </div>
   <div class="panel">
     <h2>コントロール</h2>
       <div style="display: flex; gap: 0.5em;">
@@ -31,24 +30,31 @@
           bind:value={currentMeasure}
         >
           <Icon icon="fontisto:hashtag" slot="head" style="flex-shrink: 0;"></Icon>
-          <span slot="tail" style="white-space: nowrap;">（小節）</span>
+          <span style="white-space: nowrap;" slot="tail">（小節）</span>
+          <Button
+            slot="action"
+            class="action"
+            icon="ph:arrow-bend-up-right-bold"
+            width="1.8em"
+            on:click={() => {dispatch('goto')}}
+          ></Button>
         </TextInput>
-        <Button
-          icon="ph:arrow-bend-up-right-bold"
-          on:click={() => {dispatch('goto')}}
-        ></Button>
       </div>
       <ClickableIcon
         icon={paused ? 'ph:play-fill' : 'ph:pause-bold'}
         width="4.5em"
         on:click={() => { paused = !paused }}
       />
-      <label>
+      <label for="scroll">
         スクロール方式
-        <select bind:value={scrollMode}>
-          <option value={'page'}>ページ・スクロール</option>
-          <option value={'smooth'}>スムーズ（再生ヘッド固定）</option>
-        </select>
+        <Select
+          bind:value={scrollMode}
+          options={[
+            ['page', '上下スクロール'],
+            ['smooth', '固定スクロール']
+          ]}
+          name="scroll"
+        />
       </label>
   </div>
   <div class="panel">
@@ -92,9 +98,16 @@
   </div>  
   <div class="panel">
     <h2>音楽情報</h2>
-    <label>
-      音楽ファイル（.mp3）{#if files && files[0]}{filesize(files[0].size)}{/if}
-      <input type="file" bind:files>
+    <label for="music">
+      音楽ファイル {files && files[0] ? filesize(files[0].size) : ''}
+      <FileInput
+        bind:files
+        accept="audio/*"
+        name="music"
+        openIcon="mdi:folder-music"
+        fileIcon="mdi:file-music-outline"
+        text="音楽ファイルを開く"
+      />
     </label>
     <label>
       オフセット
@@ -104,11 +117,14 @@
 </div>
 
 <style>
-ul {
-  padding: 0 2em;
-}
-
 ul.statistics {
+  width: auto;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+
   list-style-type: none;
 }
 
@@ -125,27 +141,22 @@ ul .title {
 
 .panel-container {
   display: grid;
-  grid-template: repeat(3, auto) / repeat(2, auto);
+  grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+  height: 100vh;
   padding: 1em;
-  gap: 1em;
-}
-
-.panel-bar {
-  grid-column: 1 / 3;
-
-  display: flex;
-  gap: 1em;
+  gap: 0.65em 0.85em;
 }
 
 .panel {
   background: rgba(255, 255, 255, 0.1);
-  box-shadow: 1px 1px 5px #000;
-  border-radius: 1em;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+  border-radius: 0.5em;
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  grid-template-rows: 32px;
   padding: 1.5em;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 h2 {

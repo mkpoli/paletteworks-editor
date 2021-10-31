@@ -95,7 +95,8 @@
     align-items: center;
     font-weight: 800;
     gap: 1em;
-    border-bottom: 2px solid #000;
+    background: rgba(0, 0, 0, 0.025);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.45);
   }
 
   .toolbox-container :global(.menu-trigger:hover) {

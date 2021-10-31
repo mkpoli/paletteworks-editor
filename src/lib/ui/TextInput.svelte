@@ -1,24 +1,26 @@
 <script lang="ts">
   export let value: string | number
   export let inputElement: HTMLInputElement = null
+  export let disabled: boolean = false
 </script>
 
 <div class="input-container">
   <slot name="head" />
-  <input type="text" name="bpm" bind:value={value} bind:this={inputElement} on:keydown>
+  <input type="text" bind:value={value} bind:this={inputElement} on:keydown {disabled}>
   <slot name="tail"/>
+  <slot name="action"></slot>
 </div>
 
 <style>
   .input-container {
     border: none;
-    border-radius: 5px;
+    border-radius: var(--input-border-radius);
     color: inherit;
     padding: 0 1em;
     box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.6);
     background: rgba(255, 255, 255, 0.1);
     flex-grow: 1;
-
+    overflow: hidden;
     display: flex;
     align-items: center;
   }
