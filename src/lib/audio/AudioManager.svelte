@@ -11,6 +11,7 @@
   export let soundQueue: string[]
   export let singles: Single[]
   export let slides: Slide[]
+  export let bgmURL: string
 
   let scheduler: AudioScheduler
   let audioContext: AudioContext
@@ -28,12 +29,38 @@
     scheduler?.stop()
   }
 
+  function onbgmchange(bgmURL) {
+    paused = true
+    scheduler?.stop()
+    currentTick = 0
+  }
+
+  $: onbgmchange(bgmURL)
+
+  // $: if (bgmURL && scheduler) {
+  //   scheduler.stop()
+  //   currentTick = 0
+  // }
+
   $: if (soundQueue) {
     soundQueue.forEach((sound) => {
       playOnce(audioContext, master, effectBuffers[sound])
     })
     soundQueue = []
   }
+
+  let bgmBuffer: AudioBuffer
+
+  async function createAudioBuffer(url: string) {
+    const response = await fetch(url)
+    const arrayBuffer = await response.arrayBuffer()
+    return await audioContext.decodeAudioData(arrayBuffer)
+  }
+
+
+  $: createAudioBuffer(bgmURL).then((buffer) => {
+    bgmBuffer = buffer
+  })
 
   function tick2secs(tick: number) {
     return tick / (TICK_PER_BEAT * currentBPM / 60)
@@ -118,7 +145,7 @@
       events,
       callback(event: AudioEvent, offset: number) {
         const soundSource = audioContext.createBufferSource()
-        soundSource.buffer = effectBuffers[event.sound]
+        soundSource.buffer = event.sound === 'bgm' ? bgmBuffer : effectBuffers[event.sound]
         if (event.loopTo) {
           soundSource.loop = true
         }

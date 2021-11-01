@@ -217,7 +217,8 @@
     })
   })
 
-  // audioFileURL = files && files[0] ? URL.createObjectURL(files[0]) : undefined 
+  $: bgmURL = files && files[0] ? URL.createObjectURL(files[0]) : undefined 
+
   let files: FileList
   let paused: boolean = true
   let currentTick: number = 0
@@ -577,11 +578,12 @@
 />
 
 <AudioManager
-  {paused}
-  {currentTick}
+  bind:paused
+  bind:currentTick
   {currentBPM}
   {slides}
   {singles}
+  {bgmURL}
   bind:soundQueue
 />
 
