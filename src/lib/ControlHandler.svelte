@@ -1,9 +1,15 @@
-<svelte:window
-  on:wheel|preventDefault|nonpassive={mousewheel}
-  on:keydown={keyboard}
-/>
-
 <script lang="ts">
+  import type { Note } from '$lib/score/beatmap'
+  
+  import { createEventDispatcher } from 'svelte'
+  import { selectedNotes } from '$lib/editing/selection'
+  const dispatch = createEventDispatcher<{
+    deleteselection: void,
+    copy: { notes: Note[] },
+    cut: { notes: Note[] },
+    paste: void,
+  }>()
+
   export let zoom: number
   export let paused: boolean
   export let scrollTick: number
@@ -15,9 +21,30 @@
     }
   }
 
-  function keyboard(e: KeyboardEvent) {
-    if (e.key === ' ') {
+  function keyboard(event: KeyboardEvent) {
+    if (event.key === ' ') {
       paused = !paused
     }
-  }  
+    
+    if (event.key == 'Delete') {
+      dispatch('deleteselection')
+    }
+
+    if (event.ctrlKey && event.key == 'c') {
+      dispatch('copy', { notes: $selectedNotes })
+    }
+
+    if (event.ctrlKey && event.key == 'x') {
+      dispatch('cut', { notes: $selectedNotes })
+    }
+
+    if (event.ctrlKey && event.key == 'v') {
+      dispatch('paste')
+    }
+  }
 </script>
+
+<svelte:window
+  on:wheel|preventDefault|nonpassive={mousewheel}
+  on:keydown={keyboard}
+/>

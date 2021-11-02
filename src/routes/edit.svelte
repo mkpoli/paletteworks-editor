@@ -575,6 +575,12 @@
   bind:zoom
   bind:paused
   bind:scrollTick
+  on:deleteselection={() => {
+    $selectedNotes.forEach(deleteNote)
+  }}
+  on:copy={() => { copyNotes($selectedNotes) }}
+  on:cut={() => { cutNotes($selectedNotes) }}
+  on:paste={onpaste}
 />
 
 <AudioManager

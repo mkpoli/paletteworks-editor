@@ -436,26 +436,6 @@
   {maxMeasure}
 />
 
-<svelte:window
-  on:keydown={(event) => {
-    if (event.key == 'Delete') {
-      dispatch('deleteselection')
-    }
-
-    if (event.ctrlKey && event.key == 'c') {
-      dispatch('copy', { notes: $selectedNotes })
-    }
-
-    if (event.ctrlKey && event.key == 'x') {
-      dispatch('cut', { notes: $selectedNotes })
-    }
-
-    if (event.ctrlKey && event.key == 'v') {
-      dispatch('paste')
-    }
-  }}
-></svelte:window>
-
 <style>
   .canvas-container {
     height: 100vh;
