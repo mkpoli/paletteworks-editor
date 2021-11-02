@@ -256,19 +256,21 @@
     'Total': true
   }
 
-  function deleteNote(note: NoteType) {
-    if (singles.includes(note as Single)) {
-      const removeSingle = new RemoveSingle(singles, note as Single)
-      singles = removeSingle.exec()
-      history.push(removeSingle)
-      playSound('stage')
-    }
+  function deleteNotes(notes: NoteType[]) {
+    const selectedSingles = singles.filter((note) => notes.includes(note))
+    const removeSingles = new RemoveSingles(singles, selectedSingles)
+    singles = removeSingles.exec()
+    history.push(removeSingles)
+    playSound('stage')
 
-    // singles = singles.filter((item) => item !== note)
-    slides.forEach((slide) => {
-      slide.steps = slide.steps.filter((item) => item !== note)
+    const selectedSlideNotes = notes.filter((note) => !singles.includes(note))
+
+    selectedSlideNotes.forEach((note) => {
+      slides.forEach((slide) => {
+        slide.steps = slide.steps.filter((item) => item !== note)
+      })
+      slides = slides.filter(({ head, tail }) => head !== note && tail !== note)
     })
-    slides = slides.filter(({ head, tail }) => head !== note && tail !== note)
   }
 
   function copyNotes(notes: NoteType[]) {
@@ -295,7 +297,7 @@
 
   function cutNotes(notes: NoteType[]) {
     copyNotes(notes)
-    notes.forEach(deleteNote)
+    deleteNotes(notes)
   }
   
   function onpaste() {
@@ -387,7 +389,7 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddSingle, Mutation, RemoveSingle, SingleMutation, UpdateSingle } from '$lib/editing/mutations'
+  import { AddSingle, Mutation, RemoveSingles, SingleMutation, UpdateSingle } from '$lib/editing/mutations'
   let history: Mutation[] = []
   let redoHistory: Mutation[] = []
 </script>
@@ -433,13 +435,7 @@
         soundQueue.push(event.detail)
         soundQueue = soundQueue
       }}
-      on:deleteselection={() => {
-        $selectedNotes.forEach(deleteNote)
-      }}
-      on:deletecurrent={(event) => {
-        console.log(event.detail.note)
-        deleteNote(event.detail.note)
-      }}
+      on:delete={(event) => { deleteNotes(event.detail.notes) }}
       on:copy={(event) => { copyNotes(event.detail.notes) }}
       on:cut={(event) => { cutNotes(event.detail.notes) }}
       on:paste={onpaste}
@@ -620,9 +616,7 @@
     history.push(mutation)
     playSound('stage')
   }}
-  on:deleteselection={() => {
-    $selectedNotes.forEach(deleteNote)
-  }}
+  on:delete={() => { deleteNotes($selectedNotes) }}
   on:copy={() => { copyNotes($selectedNotes) }}
   on:cut={() => { cutNotes($selectedNotes) }}
   on:paste={onpaste}

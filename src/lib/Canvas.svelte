@@ -79,8 +79,7 @@
   const dispatch = createEventDispatcher<{
     changeBPM: { tick: number, bpm: number },
     playSound: string,
-    deleteselection: void,
-    deletecurrent: { note: NoteType },
+    delete: { notes: NoteType[] },
     copy: { notes: NoteType[] },
     cut: { notes: NoteType[] },
     paste: void,
@@ -414,12 +413,12 @@
     }}
   ></MenuTrigger>
   {#if $selectedNotes.length}
-    <MenuItem icon="mdi:delete" text="削除（全部）" on:click={() => dispatch('deleteselection')} />
+    <MenuItem icon="mdi:delete" text="削除（全部）" on:click={() => dispatch('delete', { notes: $selectedNotes })} />
     <MenuDivider/>
     <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut', { notes: $selectedNotes })} />
     <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy', { notes: $selectedNotes })} />
   {:else if currentNote}
-    <MenuItem icon="mdi:delete" text="削除" on:click={() => { dispatch('deletecurrent', { note: currentNote })}} />
+    <MenuItem icon="mdi:delete" text="削除" on:click={() => { dispatch('delete', { notes: [currentNote] })}} />
     <MenuDivider/>
     <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut', { notes: [currentNote] })} />
     <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy', { notes: [currentNote] })} />

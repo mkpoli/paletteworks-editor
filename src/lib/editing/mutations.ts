@@ -66,19 +66,19 @@ export class UpdateSingle extends SingleMutation {
   }
 }
 
-export class RemoveSingle extends SingleMutation {
-  oldNote: Single
-  constructor(singles: Single[], oldNote: Single) {
+export class RemoveSingles extends SingleMutation {
+  oldNotes: Single[]
+  constructor(singles: Single[], oldNotes: Single[]) {
     super(singles)
-    this.oldNote = oldNote
+    this.oldNotes = oldNotes
   }
 
   exec() {
-    this.singles = this.singles.filter((note) => note !== this.oldNote)
+    this.singles = this.singles.filter((note) => !this.oldNotes.includes(note))
     return this.singles
   }
   
   undo() {
-    return [...this.singles, this.oldNote]
+    return [...this.singles, ...this.oldNotes]
   }
 }

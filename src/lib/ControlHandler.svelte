@@ -4,9 +4,9 @@
   import { createEventDispatcher } from 'svelte'
   import { selectedNotes } from '$lib/editing/selection'
   const dispatch = createEventDispatcher<{
-    deleteselection: void,
-    copy: { notes: Note[] },
-    cut: { notes: Note[] },
+    delete: void,
+    copy: void,
+    cut: void,
     paste: void,
     undo: void,
     redo: void
@@ -29,15 +29,15 @@
     }
     
     if (event.key == 'Delete') {
-      dispatch('deleteselection')
+      dispatch('delete')
     }
 
     if (event.ctrlKey && event.key == 'c') {
-      dispatch('copy', { notes: $selectedNotes })
+      dispatch('copy')
     }
 
     if (event.ctrlKey && event.key == 'x') {
-      dispatch('cut', { notes: $selectedNotes })
+      dispatch('cut')
     }
 
     if (event.ctrlKey && event.key == 'v') {
