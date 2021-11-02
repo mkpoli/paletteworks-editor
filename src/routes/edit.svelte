@@ -379,9 +379,33 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddSingle, BatchMutation, BatchRemove, Mutation, RemoveSingles, RemoveSlides, RemoveSlideSteps, SingleMutation, UpdateSingle } from '$lib/editing/mutations'
+  import { AddSingle, BatchMutation, BatchRemove, Mutation, SingleMutation, UpdateSingle } from '$lib/editing/mutations'
   let history: Mutation[] = []
   let redoHistory: Mutation[] = []
+  function onundo() {
+    console.log('undo')
+    const mutation = history.pop()
+    if (!mutation) return
+    if (mutation instanceof SingleMutation) {
+      singles = mutation.undo()
+    } else if (mutation instanceof BatchMutation) {
+      ({ singles, slides } = mutation.undo())
+    }
+    redoHistory.push(mutation)
+    playSound('stage')
+  }
+  function onredo() {
+    const mutation = redoHistory.pop()
+    if (!mutation) return
+    console.log('redo', { mutation })
+    if (mutation instanceof SingleMutation) {
+      singles = mutation.exec()
+    } else if (mutation instanceof BatchMutation) {
+      ({ singles, slides } = mutation.exec())
+    }
+    history.push(mutation)
+    playSound('stage')
+  }
 </script>
 
 <svelte:head>
@@ -398,6 +422,8 @@
       on:copy={() => { copyNotes($selectedNotes) }}
       on:cut={() => { cutNotes($selectedNotes) }}
       on:paste={onpaste}
+      on:undo={onundo}
+      on:redo={onredo}
     />
     <Canvas
       bind:app
@@ -585,31 +611,8 @@
   bind:zoom
   bind:paused
   bind:scrollTick
-  on:undo={() => {
-    console.log('undo')
-    const mutation = history.pop()
-    if (!mutation) return
-    if (mutation instanceof SingleMutation) {
-      singles = mutation.undo()
-    } else if (mutation instanceof BatchMutation) {
-      ({ singles, slides } = mutation.undo())
-    }
-    redoHistory.push(mutation)
-    playSound('stage')
-    // slides = slides
-  }}
-  on:redo={() => {
-    const mutation = redoHistory.pop()
-    if (!mutation) return
-    console.log('redo', { mutation })
-    if (mutation instanceof SingleMutation) {
-      singles = mutation.exec()
-    } else if (mutation instanceof BatchMutation) {
-      ({ singles, slides } = mutation.exec())
-    }
-    history.push(mutation)
-    playSound('stage')
-  }}
+  on:undo={onundo}
+  on:redo={onredo}
   on:delete={() => { deleteNotes($selectedNotes) }}
   on:copy={() => { copyNotes($selectedNotes) }}
   on:cut={() => { cutNotes($selectedNotes) }}

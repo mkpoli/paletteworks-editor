@@ -32,6 +32,8 @@
     'copy': void,
     'cut': void,
     'paste': void,
+    'undo': void,
+    'redo': void,
   }>()
 </script>
 
@@ -54,8 +56,8 @@
     </MenuItem>
     <MenuDivider/>
       <MenuItem icon="ic:sharp-edit" text="編集 (&E)">
-        <MenuItem icon="ic:round-undo" text="元に戻す (&U)" disabled={true} />
-        <MenuItem icon="ic:round-redo" text="やり直し (&R)" disabled={true} />
+        <MenuItem icon="ic:round-undo" text="元に戻す (&U)" on:click={() => dispatch('undo')} />
+        <MenuItem icon="ic:round-redo" text="やり直し (&R)" on:click={() => dispatch('redo')} />
         <MenuDivider/>
         <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut')} />
         <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy')} />
