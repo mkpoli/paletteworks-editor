@@ -138,6 +138,8 @@
   onDestroy(() => {
     app.stage.removeChild(graphics)
     app.stage.removeChild(middle)
+    app.stage.removeChild(controlL)
+    app.stage.removeChild(controlR)
   })
 
   const SELECTION_MARGIN = 5
