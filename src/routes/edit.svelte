@@ -257,9 +257,7 @@
   }
 
   function deleteNotes(notes: NoteType[]) {
-    const batchRemove = new BatchRemove(singles, slides, notes);
-    ({ singles, slides } = batchRemove.exec())
-    history.push(batchRemove)
+    exec(new BatchRemove(singles, slides, notes))
     playSound('stage')
   }
 
@@ -379,32 +377,41 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddSingle, BatchMutation, BatchRemove, Mutation, SingleMutation, UpdateSingle } from '$lib/editing/mutations'
+  import { AddSingle, BatchMutation, BatchRemove, Mutation, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
   let history: Mutation[] = []
   let redoHistory: Mutation[] = []
+
   function onundo() {
     console.log('undo')
     const mutation = history.pop()
     if (!mutation) return
     if (mutation instanceof SingleMutation) {
       singles = mutation.undo()
+    } else if (mutation instanceof SlideMutation) {
+      slides = mutation.undo()
     } else if (mutation instanceof BatchMutation) {
       ({ singles, slides } = mutation.undo())
     }
     redoHistory.push(mutation)
     playSound('stage')
   }
+
   function onredo() {
     const mutation = redoHistory.pop()
     if (!mutation) return
-    console.log('redo', { mutation })
+    exec(mutation)
+    playSound('stage')
+  }
+
+  function exec(mutation: Mutation) {
     if (mutation instanceof SingleMutation) {
       singles = mutation.exec()
+    } else if (mutation instanceof SlideMutation) {
+      slides = mutation.exec()
     } else if (mutation instanceof BatchMutation) {
       ({ singles, slides } = mutation.exec())
     }
     history.push(mutation)
-    playSound('stage')
   }
 </script>
 
@@ -458,26 +465,20 @@
       on:move={onmove}
       on:movestart={onmovestart}
       on:moveend={onmoveend}
-      on:changecurve={(event) => {
-        event.detail.note.easeType = event.detail.type
-        slides = slides
+      on:changecurve={({ detail: { note, type } }) => {
+        // @ts-ignore
+        exec(new UpdateSlideNote(slides, note, {
+          easeType: type
+        }))
+        playSound('stage')
       }}
-      on:changediamond={(event) => {
-        switch (event.detail.type) {
-          case 'visible':
-            event.detail.note.diamond = true
-            event.detail.note.ignored = false
-            break
-          case 'invisible':
-            event.detail.note.diamond = false
-            event.detail.note.ignored = false
-            break
-          case 'ignored':
-            event.detail.note.diamond = true
-            event.detail.note.ignored = true
-            break
-        }
-        slides = slides
+      on:changediamond={({ detail: { note, type }}) => {
+        const [diamond, ignored] = fromDiamondType(type)
+
+        exec(new UpdateSlideNote(slides, note, {
+          diamond, ignored
+        }))
+        playSound('stage')
       }}
       on:selectsingle={(event) => {
         if (currentMode !== 'select') return
@@ -491,21 +492,22 @@
         const { slide } = event.detail
         switch (currentMode) {
           case 'flick': {
-            slide.tail.flick = rotateNext(slide.tail.flick, FLICK_TYPES)
-            slides = slides
+            exec(new UpdateSlideNote(slides, slide.tail, {
+              flick: rotateNext(slide.tail.flick, FLICK_TYPES)
+            }))
             playSound('stage')
             break
           }
           case 'critical': {
-            slide.critical = !slide.critical
-            slides = slides
+            exec(new UpdateSlide(slides, slide, {
+              critical: !slide.critical
+            }))
             playSound('stage')
             break
           }
           case 'mid': {
             if ($cursor.tick === slide.head.tick || $cursor.tick === slide.tail.tick) break
-            const found = slide.steps.find(({ tick }) => tick === $cursor.tick)
-            if (!found) {
+            if (!slide.steps.some(({ tick }) => tick === $cursor.tick)) {
               const step = {
                 lane: $cursor.lane,
                 width: slide.head.width,
@@ -514,12 +516,11 @@
                 easeType: false,
                 ignored: false
               }
-              slide.steps.push(step)
-              slide.steps.sort(({ tick: a }, { tick: b }) => a - b)
+              exec(new UpdateSlide(slides, slide, {
+                steps: [...slide.steps, step].sort(({ tick: a }, { tick: b }) => a - b)
+              }))
+              playSound('stage')
             }
-            slides = slides
-            console.log(slides)
-            playSound('stage')
             break
           }
         }
@@ -528,40 +529,42 @@
         const { note, slide } = event.detail
         switch (currentMode) {
           case 'flick': {
-            slide.tail.flick = rotateNext(slide.tail.flick, FLICK_TYPES)
-            slides = slides
+            exec(new UpdateSlideNote(slides, slide.tail, {
+              flick: rotateNext(slide.tail.flick, FLICK_TYPES)
+            }))
             playSound('stage')
             break
           }
           case 'critical': {
-            slide.critical = !slide.critical
-            slides = slides
+            exec(new UpdateSlide(slides, slide, {
+              critical: !slide.critical
+            }))
             playSound('stage')
             break
           }
           case 'mid': {
             if (!shiftKey) {
-              [note.diamond, note.ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
+              const [diamond, ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
+              exec(new UpdateSlideNote(slides, note, {
+                diamond, ignored
+              }))
+              playSound('stage')
             } else {
-              note.easeType = rotateNext(note.easeType, EASE_TYPES)
+              exec(new UpdateSlideNote(slides, note, {
+                easeType: rotateNext(note.easeType, EASE_TYPES)
+              }))
+              playSound('stage')
             }
-            slides = slides
-            playSound('stage')
             break
           }
         }
       }}
       on:addsingle={({ detail: { note }}) => {
-        const addSingle = new AddSingle(singles, note)
-        singles = addSingle.exec()
-        history.push(addSingle)
+        exec(new AddSingle(singles, note))
         playSound('stage')
       }}
       on:updatesingle={({ detail: { note, modification }}) => {
-        const updateSingle = new UpdateSingle(singles, note, modification)
-        console.log(updateSingle)
-        singles = updateSingle.exec()
-        history.push(updateSingle)
+        exec(new UpdateSingle(singles, note, modification))
         playSound('stage')
       }}
     />

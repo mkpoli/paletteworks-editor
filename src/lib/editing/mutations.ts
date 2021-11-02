@@ -1,4 +1,4 @@
-import type { Note, Single, Slide, SlideStep } from '$lib/score/beatmap'
+import type { Note, Single, Slide, SlideNote, SlideStep } from '$lib/score/beatmap'
 
 export abstract class Mutation {
   abstract exec()
@@ -123,6 +123,59 @@ export class RemoveSlides extends SlideMutation {
   undo() {
     return [...this.slides, ...this.targetSlides]
   }
+}
+
+export class UpdateSlideNote extends SlideMutation {
+  targetNote: SlideNote
+  modification: Partial<SlideNote>
+  originalData: Partial<SlideNote>
+  constructor(slides: Slide[], targetNote: SlideNote, modification: Partial<SlideNote>) {
+    super(slides)
+    this.targetNote = targetNote
+    this.modification = modification
+    this.originalData = Object.fromEntries(Object.keys(modification).map((key) => [key, this.targetNote[key]]))
+  }
+
+  exec() {
+    Object.entries(this.modification).forEach(([key, value]) => {
+      this.targetNote[key] = value
+    })
+    return this.slides
+  }
+  
+  undo() {
+    Object.entries(this.originalData).forEach(([key, value]) => {
+      this.targetNote[key] = value
+    })
+    return this.slides
+  }
+}
+
+export class UpdateSlide extends SlideMutation {
+  targetSlide: Slide
+  modification: Partial<Slide>
+  originalData: Partial<Slide>
+  constructor(slides: Slide[], targetSlide: Slide, modification: Partial<Slide>) {
+    super(slides)
+    this.targetSlide = targetSlide
+    this.modification = modification
+    this.originalData = Object.fromEntries(Object.keys(modification).map((key) => [key, this.targetSlide[key]]))
+  }
+  
+  exec() {
+    Object.entries(this.modification).forEach(([key, value]) => {
+      this.targetSlide[key] = value
+    })
+    return this.slides
+  }
+  
+  undo() {
+    Object.entries(this.originalData).forEach(([key, value]) => {
+      this.targetSlide[key] = value
+    })
+    return this.slides
+  }
+  
 }
 
 export abstract class BatchMutation extends Mutation implements SingleMutation, SlideMutation {
