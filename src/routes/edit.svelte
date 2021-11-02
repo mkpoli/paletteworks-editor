@@ -257,20 +257,10 @@
   }
 
   function deleteNotes(notes: NoteType[]) {
-    const selectedSingles = singles.filter((note) => notes.includes(note))
-    const removeSingles = new RemoveSingles(singles, selectedSingles)
-    singles = removeSingles.exec()
-    history.push(removeSingles)
+    const batchRemove = new BatchRemove(singles, slides, notes);
+    ({ singles, slides } = batchRemove.exec())
+    history.push(batchRemove)
     playSound('stage')
-
-    const selectedSlideNotes = notes.filter((note) => !singles.includes(note))
-
-    selectedSlideNotes.forEach((note) => {
-      slides.forEach((slide) => {
-        slide.steps = slide.steps.filter((item) => item !== note)
-      })
-      slides = slides.filter(({ head, tail }) => head !== note && tail !== note)
-    })
   }
 
   function copyNotes(notes: NoteType[]) {
@@ -389,7 +379,7 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddSingle, Mutation, RemoveSingles, SingleMutation, UpdateSingle } from '$lib/editing/mutations'
+  import { AddSingle, BatchMutation, BatchRemove, Mutation, RemoveSingles, RemoveSlides, RemoveSlideSteps, SingleMutation, UpdateSingle } from '$lib/editing/mutations'
   let history: Mutation[] = []
   let redoHistory: Mutation[] = []
 </script>
@@ -601,6 +591,8 @@
     if (!mutation) return
     if (mutation instanceof SingleMutation) {
       singles = mutation.undo()
+    } else if (mutation instanceof BatchMutation) {
+      ({ singles, slides } = mutation.undo())
     }
     redoHistory.push(mutation)
     playSound('stage')
@@ -612,6 +604,8 @@
     console.log('redo', { mutation })
     if (mutation instanceof SingleMutation) {
       singles = mutation.exec()
+    } else if (mutation instanceof BatchMutation) {
+      ({ singles, slides } = mutation.exec())
     }
     history.push(mutation)
     playSound('stage')
