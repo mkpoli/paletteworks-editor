@@ -257,7 +257,14 @@
   }
 
   function deleteNote(note: NoteType) {
-    singles = singles.filter((item) => item !== note)
+    if (singles.includes(note as Single)) {
+      const removeSingle = new RemoveSingle(singles, note as Single)
+      singles = removeSingle.exec()
+      history.push(removeSingle)
+      playSound('stage')
+    }
+
+    // singles = singles.filter((item) => item !== note)
     slides.forEach((slide) => {
       slide.steps = slide.steps.filter((item) => item !== note)
     })
@@ -379,6 +386,10 @@
   document.addEventListener('keyup', (event: KeyboardEvent) => {
     shiftKey = event.shiftKey
   })
+
+  import { AddSingle, Mutation, RemoveSingle, SingleMutation, UpdateSingle } from '$lib/editing/mutations'
+  let history: Mutation[] = []
+  let redoHistory: Mutation[] = []
 </script>
 
 <svelte:head>
@@ -528,6 +539,19 @@
           }
         }
       }}
+      on:addsingle={({ detail: { note }}) => {
+        const addSingle = new AddSingle(singles, note)
+        singles = addSingle.exec()
+        history.push(addSingle)
+        playSound('stage')
+      }}
+      on:updatesingle={({ detail: { note, modification }}) => {
+        const updateSingle = new UpdateSingle(singles, note, modification)
+        console.log(updateSingle)
+        singles = updateSingle.exec()
+        history.push(updateSingle)
+        playSound('stage')
+      }}
     />
     <PropertyBox
       bind:currentMeasure
@@ -575,6 +599,27 @@
   bind:zoom
   bind:paused
   bind:scrollTick
+  on:undo={() => {
+    console.log('undo')
+    const mutation = history.pop()
+    if (!mutation) return
+    if (mutation instanceof SingleMutation) {
+      singles = mutation.undo()
+    }
+    redoHistory.push(mutation)
+    playSound('stage')
+    // slides = slides
+  }}
+  on:redo={() => {
+    const mutation = redoHistory.pop()
+    if (!mutation) return
+    console.log('redo', { mutation })
+    if (mutation instanceof SingleMutation) {
+      singles = mutation.exec()
+    }
+    history.push(mutation)
+    playSound('stage')
+  }}
   on:deleteselection={() => {
     $selectedNotes.forEach(deleteNote)
   }}

@@ -8,6 +8,8 @@
     copy: { notes: Note[] },
     cut: { notes: Note[] },
     paste: void,
+    undo: void,
+    redo: void
   }>()
 
   export let zoom: number
@@ -40,6 +42,14 @@
 
     if (event.ctrlKey && event.key == 'v') {
       dispatch('paste')
+    }
+
+    if (event.ctrlKey && event.key == 'z') {
+      dispatch('undo')
+    }
+
+    if (event.ctrlKey && event.key == 'y' || event.ctrlKey && event.shiftKey && event.key == 'z') {
+      dispatch('redo')
     }
   }
 </script>

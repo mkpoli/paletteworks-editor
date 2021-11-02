@@ -103,6 +103,13 @@
     },
     slideclick: {
       slide: SlideType
+    },
+    addsingle: {
+      note: Single
+    },
+    updatesingle: {
+      note: Single,
+      modification: Partial<Single>
     }
   }>()
   let dragging: boolean = false
@@ -142,15 +149,15 @@
       }
 
       if (currentMode === 'tap') {
-        singles.push({
-          lane: $cursor.lane,
-          tick: $cursor.tick,
-          width: Math.min(2, LANE_MAX - $cursor.lane + 1),
-          critical: false,
-          flick: 'no'
+        dispatch('addsingle', { 
+          note : {
+            lane: $cursor.lane,
+            tick: $cursor.tick,
+            width: Math.min(2, LANE_MAX - $cursor.lane + 1),
+            critical: false,
+            flick: 'no'
+          }
         })
-        singles = singles
-        dispatch('playSound', 'stage')
         return
       }
     })
@@ -336,15 +343,19 @@
           on:click={() => {
             switch (currentMode) {
               case 'flick': {
-                note.flick = rotateNext(note.flick, FLICK_TYPES)
-                singles = singles
-                dispatch('playSound', 'stage')
+                dispatch('updatesingle', {
+                  note, modification: {
+                    flick: rotateNext(note.flick, FLICK_TYPES)
+                  }
+                })
                 break
               }
               case 'critical': {
-                note.critical = !note.critical
-                singles = singles
-                dispatch('playSound', 'stage')
+                dispatch('updatesingle', {
+                  note, modification: {
+                    critical: !note.critical
+                  }
+                })
                 return
               }
            }
