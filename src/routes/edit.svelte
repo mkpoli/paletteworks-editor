@@ -297,8 +297,6 @@
         width, critical, flick
       }
     })
-    singles = singles.concat(pastedSingles)
-    
     const pastedSlides = $clipboardSlides.map((slide): SlideType => {
       const { head, tail, steps, critical } = slide
       return {
@@ -324,7 +322,8 @@
         critical
       }
     })
-    slides = slides.concat(pastedSlides)
+
+    exec(new BatchAdd(singles, slides, pastedSingles, pastedSlides))
 
     $selectedNotes = [
       ...pastedSingles,
@@ -377,7 +376,7 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddSingle, BatchMutation, BatchRemove, Mutation, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
+  import { AddSingle, BatchAdd, BatchMutation, BatchRemove, Mutation, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
   let history: Mutation[] = []
   let redoHistory: Mutation[] = []
 

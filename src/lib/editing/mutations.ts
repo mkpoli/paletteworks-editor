@@ -11,6 +11,9 @@ export abstract class SingleMutation extends Mutation {
     super()
     this.singles = singles
   }
+
+  abstract exec(): Single[]
+  abstract undo(): Single[]
 }
 
 // TODO: BPM Mutation...
@@ -30,6 +33,23 @@ export class AddSingle extends SingleMutation {
     return this.singles.filter((note) => note !== this.newNote)
   }
 }
+export class AddSingles extends SingleMutation {
+  newNotes: Single[]
+  constructor(singles: Single[], newNotes: Single[]) {
+    super(singles)
+    this.newNotes = newNotes
+  }
+
+  exec() {
+    return [...this.singles, ...this.newNotes]
+  }
+
+  undo() {
+    return this.singles.filter((note) => !this.newNotes.includes(note))
+  }
+}
+
+
 
 export class UpdateSingle extends SingleMutation {
   note: Single
@@ -80,6 +100,25 @@ export abstract class SlideMutation extends Mutation {
   constructor(slides: Slide[]) {
     super()
     this.slides = slides
+  }
+
+  abstract exec(): Slide[]
+  abstract undo(): Slide[]
+}
+
+export class AddSlides extends SlideMutation {
+  newSlides: Slide[]
+  constructor(slides: Slide[], newSlides: Slide[]) {
+    super(slides)
+    this.newSlides = newSlides
+  }
+
+  exec() {
+    return [...this.slides, ...this.newSlides]
+  }
+
+  undo() {
+    return this.slides.filter((note) => !this.newSlides.includes(note))
   }
 }
 
@@ -225,6 +264,28 @@ export class BatchRemove extends BatchMutation {
     this.slides = this.removeSlides.undo()
     this.slides = this.removeSlideSteps.undo()
     this.singles = this.removeSingles.undo()
+    return { singles: this.singles, slides: this.slides }
+  }
+}
+
+export class BatchAdd extends BatchMutation {
+  addSingles: AddSingles
+  addSlides: AddSlides
+  constructor(singles: Single[], slides: Slide[], newSingles: Single[], newSlides: Slide[]) {
+    super(singles, slides)
+    this.addSingles = new AddSingles(singles, newSingles)
+    this.addSlides = new AddSlides(slides, newSlides)
+  }
+
+  exec(): { singles: Single[], slides: Slide[] } {
+    this.singles = this.addSingles.exec()
+    this.slides = this.addSlides.exec()
+    return { singles: this.singles, slides: this.slides }
+  }
+
+  undo(): { singles: Single[], slides: Slide[] } {
+    this.slides = this.addSlides.undo()
+    this.singles = this.addSingles.undo()
     return { singles: this.singles, slides: this.slides }
   }
 }
