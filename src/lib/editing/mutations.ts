@@ -214,7 +214,6 @@ export class UpdateSlide extends SlideMutation {
     })
     return this.slides
   }
-  
 }
 
 export abstract class BatchMutation extends Mutation implements SingleMutation, SlideMutation {
@@ -286,6 +285,32 @@ export class BatchAdd extends BatchMutation {
   undo(): { singles: Single[], slides: Slide[] } {
     this.slides = this.addSlides.undo()
     this.singles = this.addSingles.undo()
+    return { singles: this.singles, slides: this.slides }
+  }
+}
+
+export class BatchUpdate extends BatchMutation {
+  modifications: Map<Note, Partial<Note>>
+  originalDatas: Map<Note, Partial<Note>>
+  constructor(singles: Single[], slides: Slide[], modifications: Map<Note, Partial<Note>>, originalDatas: Map<Note, Partial<Note>>) {
+    super(singles, slides)
+    this.modifications = modifications
+    this.originalDatas = originalDatas
+  }
+  exec() {
+    this.modifications.forEach((modification, note) => {
+      Object.entries(modification).forEach(([key, value]) => {
+        note[key] = value
+      })
+    })
+    return { singles: this.singles, slides: this.slides }
+  }
+  undo() {
+    this.originalDatas.forEach((originalData, note) => {
+      Object.entries(originalData).forEach(([key, value]) => {
+        note[key] = value
+      })
+    })
     return { singles: this.singles, slides: this.slides }
   }
 }

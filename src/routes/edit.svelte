@@ -332,7 +332,7 @@
   }
 
   // Moving
-  import { moving, movingNotes, movingOffsets } from '$lib/editing/moving'
+  import { moving, movingNotes, movingOffsets, movingOrigins } from '$lib/editing/moving'
   import type { MoveEvent } from '$lib/editing/moving'
   function onmovestart(origin: MoveEvent) {
     if (currentMode !== 'select') return
@@ -344,6 +344,10 @@
       $movingOffsets.set(movingNote, {
         lane: lane - movingNote.lane,
         tick: tick - movingNote.tick
+      })
+      $movingOrigins.set(movingNote, {
+        lane: movingNote.lane,
+        tick: movingNote.tick
       })
     })
   }
@@ -359,7 +363,16 @@
 
   function onmoveend() {
     $moving = false
-    $movingNotes = []
+  
+    const movingTargets = new Map($movingNotes.map((note) => 
+      [note, {
+        lane: note.lane,
+        tick: note.tick
+      }]
+    ))
+    const batchUpdate = new BatchUpdate(singles, slides, movingTargets, $movingOrigins)
+    history.push(batchUpdate)
+    playSound('stage')
   }
 
   function playSound(name: string) {
@@ -376,7 +389,7 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddSingle, BatchAdd, BatchMutation, BatchRemove, Mutation, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
+  import { AddSingle, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, Mutation, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
   let history: Mutation[] = []
   let redoHistory: Mutation[] = []
 
