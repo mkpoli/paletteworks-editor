@@ -109,6 +109,9 @@
     updatesingle: {
       note: Single,
       modification: Partial<Single>
+    },
+    addslide: {
+      slide: SlideType
     }
   }>()
   let dragging: boolean = false
@@ -263,6 +266,7 @@
             draggingSlide.tail.lane = lane
           }
           slides = slides
+          dispatch('addslide', { slide: draggingSlide })
           draggingSlide = null
           break
         }

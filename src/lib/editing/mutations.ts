@@ -114,11 +114,11 @@ export class AddSlides extends SlideMutation {
   }
 
   exec() {
-    return [...this.slides, ...this.newSlides]
+    return [...this.slides, ...this.newSlides.filter((slide) => !this.slides.includes(slide))]
   }
 
   undo() {
-    return this.slides.filter((note) => !this.newSlides.includes(note))
+    return this.slides.filter((slide) => !this.newSlides.includes(slide))
   }
 }
 
