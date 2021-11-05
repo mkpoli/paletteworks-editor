@@ -88,7 +88,6 @@
     moveend: void,
     resizestart: void,
     resize: void,
-    resizeend: void,
     changecurve: {
       note: IEase,
       type: EaseType
@@ -243,7 +242,7 @@
         dispatch('moveend')
       }
       if ($resizing) {
-        dispatch('resizeend')
+        $resizing = false
       }
       if (!dragging) {
         return

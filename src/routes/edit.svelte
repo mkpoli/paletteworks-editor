@@ -425,6 +425,27 @@
     }
     history.push(mutation)
   }
+
+  import { calcResized, resizing, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
+  resizing.subscribe((value) => {
+    if (!$resizingNotes.length) return
+    if (!value) {
+      const modifications = new Map($resizingNotes.map((note) => {
+        const { reference, offset } = $resizingOffsets.get(note)
+        const [ lane, width ] = calcResized(reference, $cursor.laneSide - offset)
+        return [note, { lane, width }]
+      }))
+
+      const originalDatas = new Map($resizingNotes.map((note) => {
+        const { reference, mutating } = $resizingOffsets.get(note)
+        const [ lane, width ] = calcResized(reference, mutating)
+        return [note, { lane, width }]
+      }))
+
+      exec(new BatchUpdate(singles, slides, modifications, originalDatas, 'リサイズ'))
+      playSound('stage')
+    }
+  })
 </script>
 
 <svelte:head>

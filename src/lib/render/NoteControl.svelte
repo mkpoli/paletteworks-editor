@@ -18,7 +18,7 @@
   // Stores
   import { moving } from '$lib/editing/moving'
   import { cursor } from '$lib/position'
-  import { resizing, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
+  import { calcResized, resizing, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
   import { selectedNotes } from '$lib/editing/selection'
 
   // Contexts
@@ -52,7 +52,7 @@
       $resizingNotes.forEach((note) => {
         const reference = right ? note.lane : note.lane + note.width
         const mutating = right ? note.lane + note.width : note.lane
-        $resizingOffsets.set(note, { reference, offset: $cursor.laneSide - mutating })
+        $resizingOffsets.set(note, { reference, mutating, offset: $cursor.laneSide - mutating })
       })
     }
   }
@@ -61,10 +61,7 @@
     if ($resizing && $resizingNotes.includes(note)) {
       const { reference, offset } = $resizingOffsets.get(note)
       if ($cursor.laneSide - offset === reference) return
-      const newL = Math.min(reference, $cursor.laneSide - offset)
-      const newR = Math.max(reference, $cursor.laneSide - offset)
-      note.lane = newL
-      note.width = newR - newL
+      [note.lane, note.width] = calcResized(reference, $cursor.laneSide - offset)
       note = note
     }
   }
@@ -121,6 +118,7 @@
     })
     middle.addListener('pointerup', (event: PIXI.InteractionEvent) => {
       app.renderer.view.releasePointerCapture(event.data.pointerId)
+      if (!$moving || $resizing) return
       dispatch('moveend')
     })
     middle.addListener('click', () => {
