@@ -5,7 +5,7 @@
 
   // Types
   import type PIXI from 'pixi.js' 
-  import type { Mode } from '$lib/editing/modes'
+  import { Mode, MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
 
   // Consts
   import COLORS from '$lib/colors'
@@ -65,7 +65,7 @@
 
   // Update floating texture & visibility
   $: if (isMounted) {
-    floating.texture = TEXTURES[MODE_TEXTURES[currentMode]]
+    floating.texture = TEXTURES[MODE_FLOATING_TEXTURES[currentMode]]
 
     if (currentMode === 'flick') {
       flickArrow.visible = true

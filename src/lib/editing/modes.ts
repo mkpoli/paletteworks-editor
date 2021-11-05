@@ -20,3 +20,11 @@ export const MODE_TEXTURES: Record<Mode, ImageSource> = {
   critical,
   bpm,
 }
+
+export const MODE_FLOATING_TEXTURES: Record<string, string> = {
+  tap: 'noteN.png',
+  slide: 'noteL.png',
+  mid: 'notes_long_among.png',
+  flick: 'noteF.png',
+  critical: 'noteC.png',
+}
