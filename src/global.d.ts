@@ -1,6 +1,7 @@
 /// <reference types="@sveltejs/kit" />
 interface ImportMeta {
   env: {
-    PACKAGE_VERSION: string
+    PACKAGE_VERSION: string,
+    DEV: boolean
   }
 }

@@ -11,7 +11,6 @@
   </nav>
 </header>
 <main>
-
 <section class="description">
   <div class="container">
     <h2>PaletteWorks Editor とは</h2>

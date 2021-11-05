@@ -661,7 +661,9 @@
       bind:volume
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
-    <DebugInfo/>
+    {#if import.meta.env.DEV}
+      <DebugInfo/>
+    {/if}
   {/if}
 </main>
 
