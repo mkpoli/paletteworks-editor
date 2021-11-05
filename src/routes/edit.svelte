@@ -1,38 +1,38 @@
 <script lang="ts" context="module">
   export const ssr = false;
-	export async function load({ page, fetch, session, context }) {
-    // const url = `KING.sus`
-    // const url = `/TellYourWorld_EX.sus`
-    // const url = `/TellYourWorldDiamond.sus`
-    // const url = `/Shoushitsu_MASTER.sus`
-    // const url = `/DoctorFunkBeat_MASTER.sus`
-    // const url = `/SingleAIR.sus`
-    // const url = `/DoctorDiamond.sus`
-    // const url = `/SlideEase.sus`
-    // const url = `MultipleBPM.sus`
-    // const url = `LongSingle.sus`
-    // const url = `SlideTest.sus`
-    // const url = `TwoSlide.sus`
-    // const url = `SuperLongSlide.sus`
-    // const url = '/InvisibleRelayPoint.sus'
-    // const url = `ModNote.sus`
-    // const url = `MetaTest.sus`
-    const url = `EmptyScore.sus`
-		const res = await fetch(url)
+	// export async function load({ page, fetch, session, context }) {
+  //   // const url = `KING.sus`
+  //   // const url = `/TellYourWorld_EX.sus`
+  //   // const url = `/TellYourWorldDiamond.sus`
+  //   // const url = `/Shoushitsu_MASTER.sus`
+  //   // const url = `/DoctorFunkBeat_MASTER.sus`
+  //   // const url = `/SingleAIR.sus`
+  //   // const url = `/DoctorDiamond.sus`
+  //   // const url = `/SlideEase.sus`
+  //   // const url = `MultipleBPM.sus`
+  //   // const url = `LongSingle.sus`
+  //   // const url = `SlideTest.sus`
+  //   // const url = `TwoSlide.sus`
+  //   // const url = `SuperLongSlide.sus`
+  //   // const url = '/InvisibleRelayPoint.sus'
+  //   // const url = `ModNote.sus`
+  //   // const url = `MetaTest.sus`
+  //   // const url = `EmptyScore.sus`
+	// 	const res = await fetch(emptyScore)
 
-		if (res.ok) {
-			return {
-				props: {
-					susText: await res.text()
-				}
-			};
-		}
+	// 	if (res.ok) {
+	// 		return {
+	// 			props: {
+	// 				susText: await res.text()
+	// 			}
+	// 		};
+	// 	}
 
-		return {
-			status: res.status,
-			error: new Error(`Could not load ${url}`)
-		};
-	}
+	// 	return {
+	// 		status: res.status,
+	// 		error: new Error(`Could not load ${emptyScore}`)
+	// 	};
+	// }
 </script>
 
 <script lang="ts">
@@ -112,12 +112,16 @@
   import { download, toBlob } from '$lib/basic/file'
 
   // Score Data
-  export let susText: string
+  // export let susText: string
+  let susText: string = "#00002: 4\n#BPM01: 120\n#00008: 01"
   let metadata: Metadata
   let singles: Single[]
   let slides: SlideType[]
   let bpms: Map<number, number>;
-  $: ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
+
+  $: if (susText) {
+    ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
+  }
 
   console.log({ singles, slides, bpms })
 
