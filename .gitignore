@@ -5,3 +5,6 @@ node_modules
 
 # Static Files
 static/*
+
+.vercel_build_output
+.svelte-kit
