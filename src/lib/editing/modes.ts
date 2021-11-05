@@ -8,7 +8,7 @@ import select from '$assets/select.png'
 import tap from '$assets/notes/noteN.png'
 import slide from '$assets/notes/noteL.png'
 import mid from '$assets/notes/notes_long_among.png'
-import flick from '$assets/notes/noteL.png'
+import flick from '$assets/notes/noteF.png'
 import critical from '$assets/notes/noteC.png'
 type ImageSource = string
 export const MODE_TEXTURES: Record<Mode, ImageSource> = {
