@@ -116,7 +116,7 @@
   let singles: Single[]
   let slides: SlideType[]
   let bpms: Map<number, number>;
-  ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
+  $: ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
 
   console.log({ singles, slides, bpms })
 
@@ -217,9 +217,9 @@
     })
   })
 
-  $: bgmURL = files && files[0] ? URL.createObjectURL(files[0]) : undefined 
+  $: bgmURL = bgmfiles && bgmfiles[0] ? URL.createObjectURL(bgmfiles[0]) : undefined 
 
-  let files: FileList
+  let bgmfiles: FileList
   let paused: boolean = true
   let currentTick: number = 0
   $: dbg('currentTick', currentTick)
@@ -447,11 +447,27 @@
       playSound('stage')
     }
   })
+
+  function onnew() {
+    window.open(window.location.toString())
+  }
+
+  let fileInput: HTMLInputElement
+  let scoreFiles: FileList
+  $: scoreURL = scoreFiles && scoreFiles[0] ? URL.createObjectURL(scoreFiles[0]) : undefined
+  $: if (scoreURL) {
+    fetch(scoreURL).then((res) => res.text()).then((text) => { susText = text })
+  }
+  function onopen() {
+    fileInput.click()
+  }
 </script>
 
 <svelte:head>
   <title>PaletteWorks Editor</title>
 </svelte:head>
+
+<input type="file" bind:files={scoreFiles} style="display: none" bind:this={fileInput} />
 
 <main class="cursor-select" style={`grid-template-columns: auto ${CANVAS_WIDTH}px auto auto;`}>
   {#if app}
@@ -465,6 +481,8 @@
       on:paste={onpaste}
       on:undo={onundo}
       on:redo={onredo}
+      on:new={onnew}
+      on:open={onopen}
     />
     <Canvas
       bind:app
@@ -620,7 +638,7 @@
       }}
       bind:paused
       bind:metadata
-      bind:files
+      bind:files={bgmfiles}
       bind:scrollMode
       bind:visibility
       {history}

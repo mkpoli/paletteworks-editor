@@ -34,6 +34,8 @@
     'paste': void,
     'undo': void,
     'redo': void,
+    'new': void,
+    'open': void,
   }>()
 </script>
 
@@ -46,9 +48,9 @@
     </MenuTrigger>
 
     <MenuItem icon="ic:outline-insert-drive-file" text="ファイル (&F)">
-      <MenuItem icon="eos-icons:content-new" text="新規 (&N)" disabled={true}/>
+      <MenuItem icon="eos-icons:content-new" text="新規 (&N)" on:click={() => dispatch('new')}/>
       <MenuDivider/>
-      <MenuItem icon="ic:baseline-folder-open" text="開く (&O)" disabled={true}/>
+      <MenuItem icon="ic:baseline-folder-open" text="開く (&O)" on:click={() => dispatch('open') } />
       <MenuDivider/>
       <MenuItem icon="mdi:file-export-outline" text="譜面保存 (&S)" on:click={() => dispatch('save')}/>
       <MenuDivider/>
