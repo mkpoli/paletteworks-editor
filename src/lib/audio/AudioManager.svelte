@@ -12,6 +12,7 @@
   export let singles: Single[]
   export let slides: Slide[]
   export let bgmURL: string
+  export let volume: number
 
   let scheduler: AudioScheduler
   let audioContext: AudioContext
@@ -27,6 +28,10 @@
   } else {
     // Start -> Pause
     scheduler?.stop()
+  }
+
+  $: if (master) {
+    master.gain.value = volume
   }
 
   function onbgmchange(bgmURL) {

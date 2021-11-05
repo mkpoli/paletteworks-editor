@@ -29,6 +29,7 @@
   export let scrollMode: 'page' | 'smooth'
   export let visibility: Record<string, boolean>
   export let history: Mutation[]
+  export let volume: number
 
   let historyDiv: HTMLDivElement
   
@@ -140,8 +141,8 @@
       />
     </label>
     <label>
-      オフセット
-      <input type="text">
+      音量
+      <input type="range" bind:value={volume} min=0 max=1 step=0.01 />
     </label>
   </div>
 </div>

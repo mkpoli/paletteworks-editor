@@ -127,6 +127,9 @@
 
   // Sound
   let soundQueue: string[] = []
+  let volume: number = 0.5
+
+  $: dbg('volume', volume)
 
   // PIXI.js
   let PIXI: typeof import('pixi.js')
@@ -651,6 +654,7 @@
       bind:scrollMode
       bind:visibility
       {history}
+      bind:volume
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
     <DebugInfo/>
@@ -695,6 +699,7 @@
   {slides}
   {singles}
   {bgmURL}
+  {volume}
   bind:soundQueue
 />
 
