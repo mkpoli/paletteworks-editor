@@ -5,7 +5,7 @@
     // const url = `/TellYourWorld_EX.sus`
     // const url = `/TellYourWorldDiamond.sus`
     // const url = `/Shoushitsu_MASTER.sus`
-    const url = `/DoctorFunkBeat_MASTER.sus`
+    // const url = `/DoctorFunkBeat_MASTER.sus`
     // const url = `/SingleAIR.sus`
     // const url = `/DoctorDiamond.sus`
     // const url = `/SlideEase.sus`
@@ -17,6 +17,7 @@
     // const url = '/InvisibleRelayPoint.sus'
     // const url = `ModNote.sus`
     // const url = `MetaTest.sus`
+    const url = `EmptyScore.sus`
 		const res = await fetch(url)
 
 		if (res.ok) {
