@@ -18,21 +18,6 @@ export abstract class SingleMutation extends Mutation {
 
 // TODO: BPM Mutation...
 
-export class AddSingle extends SingleMutation {
-  newNote: Single
-  constructor(singles: Single[], newNote: Single) {
-    super(singles)
-    this.newNote = newNote
-  }
-
-  exec() {
-    return [...this.singles, this.newNote]
-  }
-
-  undo() {
-    return this.singles.filter((note) => note !== this.newNote)
-  }
-}
 export class AddSingles extends SingleMutation {
   newNotes: Single[]
   constructor(singles: Single[], newNotes: Single[]) {

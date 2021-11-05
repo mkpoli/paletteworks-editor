@@ -389,7 +389,7 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddSingle, AddSlides, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, Mutation, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
+  import { AddSingles, AddSlides, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, Mutation, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
   let history: Mutation[] = []
   let redoHistory: Mutation[] = []
 
@@ -593,7 +593,7 @@
         }
       }}
       on:addsingle={({ detail: { note }}) => {
-        exec(new AddSingle(singles, note))
+        exec(new AddSingles(singles, [note]))
         playSound('stage')
       }}
       on:updatesingle={({ detail: { note, modification }}) => {
