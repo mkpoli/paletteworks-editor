@@ -12,6 +12,7 @@
     --input-border-radius: 10px;
 
     color-scheme: dark;
+    overflow: hidden;
   }
 
   body {
