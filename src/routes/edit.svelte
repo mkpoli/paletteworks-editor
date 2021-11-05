@@ -690,6 +690,10 @@
   bind:scrollTick
   on:undo={onundo}
   on:redo={onredo}
+  on:save={onsave}
+  on:open={onopen}
+  on:new={onnew}
+  on:switch={({ detail: mode }) => { currentMode = mode }}
   on:delete={() => { deleteNotes($selectedNotes) }}
   on:copy={() => { copyNotes($selectedNotes) }}
   on:cut={() => { cutNotes($selectedNotes) }}

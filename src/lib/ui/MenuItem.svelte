@@ -36,7 +36,8 @@
       altPressed = true
     }
 
-    if (shortcutKey && event.altKey && shortcutKey.toLowerCase() === event.key ) {
+    if (shortcutKey && event.altKey && shortcutKey.toLowerCase() === event.key) {
+      event.preventDefault()
       onclick()
     }
   }

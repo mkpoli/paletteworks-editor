@@ -72,8 +72,8 @@
   </Menu>
 
   <div class="tool-container">
-    {#each Object.entries(MODE_TEXTURES) as [ mode, src ]}
-      <button on:click={() => { setMode(mode) }} class:current={ currentMode === mode }>
+    {#each Object.entries(MODE_TEXTURES) as [ mode, src ], index}
+      <button on:click={() => { setMode(mode) }} class:current={ currentMode === mode } title={`Alt + ${index + 1}`}>
         <img src={src} alt={`${mode} Mode`} />
       </button>
     {/each}
