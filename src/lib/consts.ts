@@ -89,7 +89,5 @@ export const EFFECT_SOUNDS = {
   tickCritical,
   connect,
   connectCritical,
-  stage,
-  // bgm: '/tellyourworld.mp3'
-  bgm: '/docterfunkbeat.mp3'
+  stage
 }
