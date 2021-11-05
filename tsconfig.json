@@ -19,13 +19,13 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"baseUrl": ".",
+		"baseUrl": "src",
 		"allowJs": true,
 		"checkJs": true,
 		"paths": {
-			"$lib/*": ["src/lib/*"],
-			"$assets/*": ["src/assets/*"]
+			"$lib/*": ["lib/*"],
+			"$assets/*": ["assets/*"]
 		}
 	},
-	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/**/*.svelte"]
+	"include": ["**/*.d.ts", "**/*.js", "**/*.ts", "**/*.svelte"]
 }
