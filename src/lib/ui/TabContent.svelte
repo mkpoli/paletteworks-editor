@@ -11,6 +11,11 @@
 </div>
 
 <style>
+  .tab-content {
+    flex-grow: 1;
+    min-height: 0;
+  }
+
   .tab-content.hidden {
     display: none;
   }

@@ -10,6 +10,8 @@
     --color-text-main: #eeeeee;
 
     --input-border-radius: 10px;
+
+    color-scheme: dark;
   }
 
   body {

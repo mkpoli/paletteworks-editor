@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte"
   import type { Metadata } from "$lib/score/beatmap"
+  import type { Mutation } from "$lib/editing/mutations"
+
+  import { createEventDispatcher, tick } from "svelte"
   const dispatch = createEventDispatcher()
 
   // UI Components
@@ -10,6 +12,11 @@
   import TextInput from "$lib/ui/TextInput.svelte"
   import Select from '$lib/ui/Select.svelte'
   import FileInput from '$lib/ui/FileInput.svelte'
+
+  import Tabs from '$lib/ui/Tabs.svelte'
+  import TabItem from '$lib//ui/TabItem.svelte'
+  import TabSelect from '$lib/ui/TabSelect.svelte'
+  import TabContent from '$lib//ui/TabContent.svelte'
 
   import filesize from 'filesize'
   import { selectedNotes } from "$lib/editing/selection"
@@ -21,6 +28,16 @@
   export let files: FileList
   export let scrollMode: 'page' | 'smooth'
   export let visibility: Record<string, boolean>
+  export let history: Mutation[]
+
+  let historyDiv: HTMLDivElement
+  
+
+  $: if (history) {
+    tick().then(() => {
+      historyDiv.scrollTo(0, historyDiv.scrollHeight)
+    })
+  }
 </script>
 <div class="panel-container">
   <div class="panel">
@@ -73,28 +90,41 @@
     </label>
   </div>
   <div class="panel">
-    <h2>統計</h2> 
-    <ul class="statistics">
-      {#each Object.entries(statistics) as [ name, value ]}
-        <li>
-          <ClickableIcon
-            icon={visibility[name] ? 'ic:baseline-visibility' : 'ic:baseline-visibility-off'}
-            width="1.5em"
-            on:click={() => {
-              visibility[name] = !visibility[name]
-              if (name === 'Total') {
-                Object.keys(visibility).forEach((key) => {
-                  visibility[key] = visibility[name]
-                })
-              }
-            }}
-          />
-          <span class="title">{name}</span><value>{value}</value>
-        </li>
-      {/each}
-      <li><p>選択されたアイテム数 {$selectedNotes.length}</p></li>
-    </ul>
-
+    <Tabs>
+      <TabSelect>
+        <TabItem><h2>統計</h2></TabItem>
+        <TabItem><h2>履歴</h2></TabItem>
+      </TabSelect>
+      <TabContent>
+        <ul class="statistics">
+          {#each Object.entries(statistics) as [ name, value ]}
+            <li>
+              <ClickableIcon
+                icon={visibility[name] ? 'ic:baseline-visibility' : 'ic:baseline-visibility-off'}
+                width="1.5em"
+                on:click={() => {
+                  visibility[name] = !visibility[name]
+                  if (name === 'Total') {
+                    Object.keys(visibility).forEach((key) => {
+                      visibility[key] = visibility[name]
+                    })
+                  }
+                }}
+              />
+              <span class="title">{name}</span><value>{value}</value>
+            </li>
+          {/each}
+          <li><p>選択されたアイテム数 {$selectedNotes.length}</p></li>
+        </ul>
+      </TabContent>
+      <TabContent>
+        <div class="history" bind:this={historyDiv}>
+          {#each history as mutation, index}
+            <span>{`#${index + 1} - ${mutation}`}</span>
+          {/each}
+        </div>
+      </TabContent>
+    </Tabs>
   </div>  
   <div class="panel">
     <h2>音楽情報</h2>
@@ -123,7 +153,6 @@ ul.statistics {
   padding: 0;
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
 
   list-style-type: none;
 }
@@ -143,7 +172,7 @@ ul .title {
   display: grid;
   grid-template: repeat(2, 1fr) / repeat(2, 1fr);
   height: 100vh;
-  padding: 1em;
+  padding: 0.85em;
   gap: 0.65em 0.85em;
 }
 
@@ -154,9 +183,12 @@ ul .title {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  padding: 1.5em;
+  padding: 1em 1.5em;
   max-width: 100%;
   max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  justify-content: start;
 }
 
 h2 {
@@ -165,5 +197,15 @@ h2 {
 
 label {
   display: grid;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: scroll;
+  height: 100%;
+  max-height: 100%;
+  flex-grow: 1;
 }
 </style>

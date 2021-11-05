@@ -370,8 +370,7 @@
         tick: note.tick
       }]
     ))
-    const batchUpdate = new BatchUpdate(singles, slides, movingTargets, $movingOrigins)
-    history.push(batchUpdate)
+    exec(new BatchUpdate(singles, slides, movingTargets, $movingOrigins, '移動'))
     playSound('stage')
   }
 
@@ -396,6 +395,7 @@
   function onundo() {
     console.log('undo')
     const mutation = history.pop()
+    history = history
     if (!mutation) return
     if (mutation instanceof SingleMutation) {
       singles = mutation.undo()
@@ -424,6 +424,7 @@
       ({ singles, slides } = mutation.exec())
     }
     history.push(mutation)
+    history = history
   }
 
   import { calcResized, resizing, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
@@ -601,7 +602,7 @@
         playSound('stage')
       }}
       on:addslide={({ detail: { slide }}) => {
-        history.push(new AddSlides(slides, [ slide ]))
+        exec(new AddSlides(slides, [ slide ]))
         playSound('stage')
       }}
     />
@@ -622,6 +623,7 @@
       bind:files
       bind:scrollMode
       bind:visibility
+      {history}
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
     <DebugInfo/>
