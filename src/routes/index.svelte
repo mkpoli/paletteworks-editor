@@ -54,6 +54,7 @@
     margin: 0;
     font-family: 'FOT-RodinNTLG Pro';
     overflow-y: auto;
+    height: 100vh;
   }
   
   header {

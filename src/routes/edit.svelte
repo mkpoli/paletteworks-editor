@@ -724,6 +724,7 @@
     color: var(--color-text-main);
     font-family: 'FOT-RodinNTLG Pro';
     user-select: none;
+    overflow: hidden;
   }
 
   /* Main */
