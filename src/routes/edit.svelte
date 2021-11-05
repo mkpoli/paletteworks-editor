@@ -241,7 +241,8 @@
   let bpmDialogValue: number = 120
   let lastPointerTick: number = 0
 
-  function exportSUS() {
+  function onsave() {
+    saved = true
     const sus = dumpSUS(metadata, { singles, slides, bpms })
     download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
   }
@@ -416,6 +417,7 @@
   }
 
   function exec(mutation: Mutation) {
+    saved = false
     if (mutation instanceof SingleMutation) {
       singles = mutation.exec()
     } else if (mutation instanceof SlideMutation) {
@@ -448,6 +450,7 @@
     }
   })
 
+  let saved = true
   function onnew() {
     window.open(window.location.toString())
   }
@@ -459,7 +462,11 @@
     fetch(scoreURL).then((res) => res.text()).then((text) => { susText = text })
   }
   function onopen() {
-    fileInput.click()
+    if (!saved) {
+      alert('ファイルを開くには、現在のファイルを保存するか、新規ウィンドウを開いてください。')
+    } else {
+      fileInput.click()
+    }
   }
 </script>
 
@@ -474,7 +481,7 @@
     <ToolBox
       bind:currentMode
       bind:snapTo
-      on:save={exportSUS}
+      on:save={onsave}
       on:image={() => { imageDialogOpened = true }}
       on:copy={() => { copyNotes($selectedNotes) }}
       on:cut={() => { cutNotes($selectedNotes) }}
