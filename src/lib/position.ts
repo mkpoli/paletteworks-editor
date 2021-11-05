@@ -61,6 +61,11 @@ export class PositionManager {
     const rawTick = (this.containerHeight - y - MARGIN_BOTTOM) / this.measureHeight * TICK_PER_MEASURE
     return Math.max(0, rawTick)
   }
+  
+  calcRawTick2(y: number): number {
+    const rawTick = (this.containerHeight - y - 2 * MARGIN_BOTTOM) / this.measureHeight * TICK_PER_MEASURE
+    return Math.max(0, rawTick)
+  }
 
   calcTick(y: number, scrollTick: number): number {
     return snap(this.calcRawTick(y) + scrollTick, TICK_PER_MEASURE / this.snapTo)
@@ -88,5 +93,5 @@ export type Point = {
   y: number
 }
 
-export const cursor = writable<LaneTick & { laneSide: number }>({ lane: 0, tick: 0, laneSide: 0 })
+export const cursor = writable<LaneTick & { laneSide: number, rawTick: number }>({ lane: 0, tick: 0, laneSide: 0, rawTick: 0 })
 export const pointer = writable<Point>({ x: 0, y: 0 })

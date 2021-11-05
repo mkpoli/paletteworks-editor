@@ -2,8 +2,11 @@
   // Constants
   import { COLORS, LANE_AREA_WIDTH, MARGIN } from "$lib/consts"
 
+  // Stores
+  import { cursor, position } from '$lib/position'
+  import { dragging } from "$lib/editing/playhead"
+
   // Functions
-  import { position } from '$lib/position'
   import { getContext, onMount } from 'svelte'
 
   // Types
@@ -11,6 +14,7 @@
 
   // Props
   export let currentTick: number
+  export let paused: number
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -23,6 +27,20 @@
     PIXI = await import('pixi.js')
     graphics = new PIXI.Graphics()
     graphics.zIndex = -1
+    graphics.interactive = true
+    graphics.addListener('pointerdown', () => {
+      if (paused) {
+        $dragging = true
+      }
+    })
+    graphics.addListener('pointermove', () => {
+      if ($dragging) {
+        currentTick = $cursor.rawTick
+      }
+    })
+    app.renderer.view.addEventListener('pointerup', () => {
+      if ($dragging) $dragging = false
+    })
     app.stage.addChild(graphics)
   })
 

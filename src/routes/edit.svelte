@@ -496,7 +496,8 @@
       bind:app
       {PIXI}
       {maxMeasure}
-      {currentTick}
+      bind:currentTick
+      bind:paused
       {measureHeight}
       {scrollTick}
       {snapTo}

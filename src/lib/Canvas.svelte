@@ -40,6 +40,7 @@
   export let imageDialogOpened: boolean
   export let visibility: Record<string, boolean>
   export let shiftKey: boolean
+  export let paused: boolean
 
   setContext('app', app)
 
@@ -54,7 +55,8 @@
   $: $cursor = {
     lane: $position.calcLane($pointer.x),
     tick: $position.calcTick($pointer.y, scrollTick),
-    laneSide: $position.calcLaneSide($pointer.x)
+    laneSide: $position.calcLaneSide($pointer.x),
+    rawTick: $position.calcRawTick2($pointer.y) + scrollTick
   }
   $: dbg('pointer', formatPoint($pointer.x, $pointer.y))
   $: dbg('cursor', formatPoint($cursor.lane, $cursor.tick))
@@ -167,6 +169,7 @@
       if (event.data.button == 2) return
       if ($moving) return
       if ($resizing) return
+      if ($playheadDragging) return
       app.renderer.view.setPointerCapture(event.data.pointerId)
       switch (currentMode) {
         case 'select': {
@@ -296,6 +299,8 @@
     }
   }
 
+  import { dragging as playheadDragging } from '$lib/editing/playhead'
+
   let currentNote: NoteType
 
   function onchangecurve(type: EaseType) {
@@ -324,7 +329,8 @@
   >
     <!-- PLAYHEAD -->
     <Playhead
-      {currentTick}
+      bind:currentTick
+      bind:paused
     />
 
     <!-- BACKGROUND -->
