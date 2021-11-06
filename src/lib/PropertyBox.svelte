@@ -59,7 +59,7 @@
         </TextInput>
       </div>
       <ClickableIcon
-        icon={paused ? 'ph:play-fill' : 'ph:pause-bold'}
+        icon={paused ? 'ph:play-fill' : 'ph:pause-duotone'}
         width="4.5em"
         on:click={() => { paused = !paused }}
       />
