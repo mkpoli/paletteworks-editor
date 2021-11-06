@@ -380,6 +380,9 @@
         tick: note.tick
       }]
     ))
+    if ($movingNotes.every((note) =>
+      note.lane === $movingOrigins.get(note).lane && note.tick === $movingOrigins.get(note).tick
+    )) return
     exec(new BatchUpdate(singles, slides, movingTargets, $movingOrigins, '移動'))
     playSound('stage')
   }
