@@ -26,8 +26,10 @@
   }
 
   function keyboard(event: KeyboardEvent) {
-    event.preventDefault()
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') return
+
     if (event.key === ' ') {
+      event.preventDefault()
       paused = !paused
     }
     
