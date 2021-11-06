@@ -4,6 +4,12 @@
 
 <slot />
 
+<svelte:head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Jura:wght@500&family=M+PLUS+1p:wght@400;700&display=swap" rel="stylesheet">
+</svelte:head>
+
 <style global>
   :root {
     --color-background-main: #2e3142;
@@ -12,6 +18,7 @@
     --input-border-radius: 10px;
 
     color-scheme: dark;
+    font-family: 'M PLUS 1p', sans-serif;
     overflow: hidden;
   }
 

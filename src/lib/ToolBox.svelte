@@ -43,7 +43,7 @@
   <Menu bind:menu={menu}>
     <MenuTrigger class="menu-trigger" {menu} slot="trigger">
       <Icon icon="custom:logo" width=36 />
-      PaletteWorks
+      <span class="title">PaletteWorks</span>
       <Icon icon="ph:caret-down-fill" width=15 />
     </MenuTrigger>
 
@@ -92,15 +92,24 @@
     grid-template-rows: auto 1fr;
   }
 
+  .title {
+    font-size: 1.5em;
+    font-weight: bold;
+    vertical-align: baseline;
+  }
+
   .toolbox-container :global(.menu-trigger) {
     padding: 1em;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: 'Jura', sans-serif;
     font-weight: 800;
-    gap: 1em;
+    font-size: 1em;
+    gap: 0.5em;
     background: rgba(0, 0, 0, 0.025);
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.45);
+    
   }
 
   .toolbox-container :global(.menu-trigger:hover) {
@@ -118,7 +127,6 @@
   img {
     height: 5em;
   }
-
   
   button {
     box-shadow: none;    
