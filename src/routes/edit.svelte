@@ -46,6 +46,7 @@
   import AudioManager from '$lib/audio/AudioManager.svelte'
   import DebugInfo from '$lib/ui/DebugInfo.svelte'
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte'
+  import UndoToast from '$lib/ui/UndoToast.svelte'
 
   // Toast
   import { toast, SvelteToast } from '@zerodevx/svelte-toast'
@@ -406,20 +407,10 @@
   let redoHistory: Mutation[] = []
 
   function onundo() {
-    console.log('undo')
     const mutation = history.pop()
     history = history
     if (!mutation) return
-    if (mutation instanceof SingleMutation) {
-      singles = mutation.undo()
-    } else if (mutation instanceof SlideMutation) {
-      slides = mutation.undo()
-    } else if (mutation instanceof BatchMutation) {
-      ({ singles, slides } = mutation.undo())
-    } else if (mutation instanceof BPMMutation) {
-      bpms = mutation.undo()
-    }
-    redoHistory.push(mutation)
+    undo(mutation)
     playSound('stage')
   }
 
@@ -443,6 +434,50 @@
     }
     history.push(mutation)
     history = history
+    toast.push({
+      component: {
+        src: UndoToast as any,
+        props: {
+          text: mutation.toString(),
+          button: '元に戻す',
+          undo() { undo(mutation) }
+        },
+        sendIdTo: 'toastID',
+      },
+      theme: {
+        '--toastWidth': '20rem'
+      },
+      duration: 8000
+    })
+  }
+
+  function undo(mutation: Mutation) {
+    if (mutation instanceof SingleMutation) {
+      singles = mutation.undo()
+    } else if (mutation instanceof SlideMutation) {
+      slides = mutation.undo()
+    } else if (mutation instanceof BatchMutation) {
+      ({ singles, slides } = mutation.undo())
+    } else if (mutation instanceof BPMMutation) {
+      bpms = mutation.undo()
+    }
+    history.push(mutation)
+    history = history
+    toast.push({
+      component: {
+        src: UndoToast as any,
+        props: {
+          text: '元に戻しました',
+          button: 'やり直し',
+          undo() { exec(mutation) }
+        },
+        sendIdTo: 'toastID',
+      },
+      theme: {
+        '--toastWidth': '20rem'
+      },
+      duration: 8000
+    })
   }
 
   import { calcResized, resizing, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
@@ -682,6 +717,11 @@
   on:ok={() => {
     if (bpmDialogValue) {
       const last = bpms.get(lastPointerTick)
+      if (isNaN(bpmDialogValue)) {
+        toast.push('正しい数字ではありません')
+        return
+      }
+
       if (last !== bpmDialogValue) {
         const Mutation = last === undefined ? AddBPM : SetBPM
         exec(new Mutation(bpms, lastPointerTick, bpmDialogValue))
@@ -690,7 +730,6 @@
   }}
   on:delete={() => {
     exec(new RemoveBPM(bpms, lastPointerTick))
-    toast.push('BPMを削除しました')
   }}
 />
 
