@@ -12,7 +12,69 @@ export abstract class Mutation {
   abstract exec()
   abstract undo()
   toString(): string {
-    return `${this.size}${this.type}を${this.name}`
+    return `${this.size} ${this.type}を${this.name}`
+  }
+}
+
+export abstract class BPMMutation extends Mutation {
+  bpms: Map<number, number>
+  tick: number
+  constructor(bpms: Map<number, number>, tick: number) {
+    super()
+    this.name = '更新'
+    this.size = 1
+    this.type = 'BPM'
+    this.bpms = bpms
+    this.tick = tick
+  }  
+}
+
+export class AddBPM extends BPMMutation {
+  newValue: number
+  constructor(bpms: Map<number, number>, tick: number, value: number) {
+    super(bpms, tick)
+    this.name = '追加'
+    this.newValue = value
+  }
+  exec(): Map<number, number>  {
+    return this.bpms.set(this.tick, this.newValue)
+  }
+  undo(): Map<number, number> {
+    this.bpms.delete(this.tick)
+    return this.bpms
+  }
+}
+
+export class SetBPM extends BPMMutation {
+  oldValue: number
+  newValue: number
+  constructor(bpms: Map<number, number>, tick: number, value: number) {
+    super(bpms, tick)
+    this.name = '設定'
+    this.oldValue = bpms.get(tick)
+    this.newValue = value
+  }
+  exec(): Map<number, number> {
+    return this.bpms.set(this.tick, this.newValue)
+  }
+  undo(): Map<number, number> {
+    return this.bpms.set(this.tick, this.oldValue)
+  }
+}
+
+export class RemoveBPM extends BPMMutation {
+  oldValue: number
+  constructor(bpms: Map<number, number>, tick: number) {
+    super(bpms, tick)
+    this.name = '削除'
+    this.oldValue = bpms.get(tick)
+  }
+  exec(): Map<number, number> {
+    this.bpms.delete(this.tick)
+    return this.bpms
+  }
+  undo(): Map<number, number> {
+    return this.bpms.set(this.tick, this.oldValue)
   }
 }
 
@@ -26,8 +88,6 @@ export abstract class SingleMutation extends Mutation {
   abstract exec(): Single[]
   abstract undo(): Single[]
 }
-
-// TODO: BPM Mutation...
 
 export class AddSingles extends SingleMutation {
   newNotes: Single[]

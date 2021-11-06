@@ -401,7 +401,7 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddSingles, AddSlides, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, Mutation, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
+  import { AddBPM, AddSingles, AddSlides, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, BPMMutation, Mutation, RemoveBPM, SetBPM, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
   let history: Mutation[] = []
   let redoHistory: Mutation[] = []
 
@@ -416,6 +416,8 @@
       slides = mutation.undo()
     } else if (mutation instanceof BatchMutation) {
       ({ singles, slides } = mutation.undo())
+    } else if (mutation instanceof BPMMutation) {
+      bpms = mutation.undo()
     }
     redoHistory.push(mutation)
     playSound('stage')
@@ -436,6 +438,8 @@
       slides = mutation.exec()
     } else if (mutation instanceof BatchMutation) {
       ({ singles, slides } = mutation.exec())
+    } else if (mutation instanceof BPMMutation) {
+      bpms = mutation.exec()
     }
     history.push(mutation)
     history = history
@@ -677,15 +681,15 @@
   exist={bpms.has(lastPointerTick)}
   on:ok={() => {
     if (bpmDialogValue) {
-      const exist = bpms.has(lastPointerTick)
-      bpms.set(lastPointerTick, bpmDialogValue)
-      bpms = bpms
-      toast.push(!exist ? 'BPMを追加しました' : 'BPMを変更しました')
+      const last = bpms.get(lastPointerTick)
+      if (last !== bpmDialogValue) {
+        const Mutation = last === undefined ? AddBPM : SetBPM
+        exec(new Mutation(bpms, lastPointerTick, bpmDialogValue))
+      }
     }
   }}
   on:delete={() => {
-    bpms.delete(lastPointerTick)
-    bpms = bpms
+    exec(new RemoveBPM(bpms, lastPointerTick))
     toast.push('BPMを削除しました')
   }}
 />
