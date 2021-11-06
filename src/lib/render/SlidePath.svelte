@@ -12,7 +12,8 @@
   export let critical: boolean 
 
   const dispatch = createEventDispatcher<{
-    'click': void
+    'click': void,
+    'dblclick': void,
   }>()
 
   const EASE_RATIOS = {
@@ -30,6 +31,9 @@
     graphics.interactive = true
     graphics.addListener('click', () => {
       dispatch('click')
+    })
+    graphics.addListener('dblclick', () => {
+      dispatch('dblclick')
     })
     app.stage.addChild(graphics)
   })

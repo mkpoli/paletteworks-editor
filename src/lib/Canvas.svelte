@@ -3,6 +3,8 @@
   import type { Mode } from '$lib/editing/modes'
   import type { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType } from '$lib/score/beatmap'
 
+  import '$lib/basic/dblclick'
+
   import { createEventDispatcher, onMount, setContext, tick } from 'svelte'
   import { ZOOM_MIN, ZOOM_MAX, LANE_MAX } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'

@@ -4,7 +4,6 @@
 
   // Functions
   import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
-  import '$lib/basic/dblclick'
 
   // Types
   import type PIXI from 'pixi.js'
