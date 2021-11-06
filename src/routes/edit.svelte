@@ -158,6 +158,7 @@
   // Measure (Bar)
   $: measureHeight = MEASURE_HEIGHT * zoom
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
+  $: if (isNaN(currentMeasure)) currentMeasure = 0
   $: maxMeasure = Math.ceil(
       (
         max(
