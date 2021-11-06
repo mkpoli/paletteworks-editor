@@ -16,6 +16,7 @@
     --color-text-main: #eeeeee;
 
     --input-border-radius: 10px;
+    --input-padding: 0.75em 1em;
 
     color-scheme: dark;
     font-family: 'M PLUS 1p', sans-serif;
@@ -43,7 +44,7 @@
     border: none;
     border-radius: var(--input-border-radius);
     color: inherit;
-    padding: 0.5em 1em;
+    padding: var(--input-padding);
     box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.6);
     background: rgba(255, 255, 255, 0.1);
   }

@@ -20,7 +20,7 @@
     border: none;
     border-radius: var(--input-border-radius);
     color: inherit;
-    padding: 0.5em 1em;
+    padding: var(--input-padding);
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
     background: #153982;
 
