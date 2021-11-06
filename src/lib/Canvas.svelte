@@ -165,6 +165,13 @@
       }
     })
 
+    app.renderer.plugins.interaction.addListener('dblclick', async (event: PointerEvent) => {
+      await tick()
+      if (!$selectedNotes.length) {
+        currentTick = $cursor.rawTick
+      }
+    })
+
     app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
       if (event.button === 2) return
       if ($moving) return
