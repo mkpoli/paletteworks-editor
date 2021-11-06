@@ -165,12 +165,13 @@
       }
     })
 
-    app.renderer.plugins.interaction.addListener('pointerdown', (event: PIXI.InteractionEvent) => {
-      if (event.data.button == 2) return
+    app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
+      if (event.button === 2) return
+      if ($moving) return
       if ($moving) return
       if ($resizing) return
       if ($playheadDragging) return
-      app.renderer.view.setPointerCapture(event.data.pointerId)
+      app.renderer.view.setPointerCapture(event.pointerId)
       switch (currentMode) {
         case 'select': {
           dragging = true
