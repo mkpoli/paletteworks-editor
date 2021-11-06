@@ -290,6 +290,10 @@ export function exportScoreData(score: Score): SusScore {
     bpmNotes.push({ tick, value })
   })
 
+  if (bpmNotes.length === 0) {
+    bpmNotes.push({ tick: 0, value: 120 })
+  }
+
   const sortKey = ({ tick: a }: Note | Timing, { tick: b }: Note | Timing) => a - b
 
   tapNotes.sort(sortKey)

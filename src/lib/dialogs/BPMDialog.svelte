@@ -12,14 +12,10 @@
   export let value: number
   export let exist: boolean
 
-  let valueString: string
-  $: if (valueString) value = Number.parseFloat(valueString)
-
   let inputElement: HTMLInputElement
 </script>
 
 <Modal bind:opened on:open={async () => {
-  valueString = `${value}`
   await tick()
   inputElement.focus()
   inputElement.select()
@@ -50,7 +46,7 @@
         }
       }}
       bind:inputElement
-      bind:value={valueString}
+      bind:value={value}
     >
       <div slot="head">
         <Icon icon="jam:music-f" height="1.5em" />

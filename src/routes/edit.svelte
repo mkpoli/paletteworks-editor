@@ -239,7 +239,7 @@
   $: dbg('scrollTick', scrollTick)
 
   
-  $: currentBPM = bpms.get(closest([...bpms.keys()], currentTick, true))
+  $: currentBPM = bpms.get(closest([...bpms.keys()], currentTick, true)) ?? 120
   $: dbg('closestTick', currentBPM)
   $: dbg('currentBPM', currentBPM)
 
