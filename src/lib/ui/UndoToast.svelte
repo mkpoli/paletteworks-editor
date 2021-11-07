@@ -1,16 +1,22 @@
 <script lang="ts">
+  import type { Mutation } from '$lib/editing/mutations'
+  import type { Writable } from 'svelte/store'
+
   import Button from '$lib/ui/Button.svelte'
 
   export let text: string
   export let button: string
   export let undo: () => void
-
-  let clicked: boolean = false
+  export let toastID: number
+  export let history: Writable<Mutation[]>
+  export let mutation: Mutation
+  
+  $: done = $history.includes(mutation)
 </script>
 
-<div class:clicked={clicked}>
+<div class:clicked={done}>
   {text}
-  <Button on:click={() => { undo(); clicked = true}} class="text" disabled={clicked}>
+  <Button on:click={undo} class="text" disabled={done}>
     {button}
   </Button>
 </div>

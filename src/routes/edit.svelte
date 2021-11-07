@@ -402,9 +402,16 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddBPM, AddSingles, AddSlides, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, BPMMutation, Mutation, RemoveBPM, SetBPM, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
+  import { AddBPM, AddSingles, AddSlides, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, BPMMutation, Mutation, Mutation, RemoveBPM, SetBPM, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
+
   let history: Mutation[] = []
   let redoHistory: Mutation[] = []
+  import { writable } from 'svelte/store'
+
+  const historyStore = writable(history)
+  $: $historyStore = history
+  const redoHistoryStore = writable(redoHistory)
+  $: $redoHistoryStore = redoHistory
 
   function onundo() {
     const mutation = history.pop()
@@ -416,6 +423,7 @@
 
   function onredo() {
     const mutation = redoHistory.pop()
+    redoHistory = redoHistory
     if (!mutation) return
     exec(mutation)
     playSound('stage')
@@ -440,7 +448,9 @@
         props: {
           text: mutation.toString(),
           button: '元に戻す',
-          undo() { undo(mutation) }
+          undo() { undo(mutation); history = history.filter((mut) => mut !== mutation) },
+          mutation,
+          history: redoHistoryStore,
         },
         sendIdTo: 'toastID',
       },
@@ -469,7 +479,9 @@
         props: {
           text: '元に戻しました',
           button: 'やり直し',
-          undo() { exec(mutation) }
+          undo() { exec(mutation); redoHistory = redoHistory.filter((mut) => mut !== mutation) },
+          mutation,
+          history: historyStore,
         },
         sendIdTo: 'toastID',
       },
