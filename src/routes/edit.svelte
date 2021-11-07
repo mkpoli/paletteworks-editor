@@ -618,7 +618,18 @@
             break
           }
           case 'mid': {
-            if ($cursor.tick === slide.head.tick || $cursor.tick === slide.tail.tick) break
+            if ($cursor.tick === slide.tail.tick) break
+
+            if ($cursor.tick === slide.head.tick) {
+              if (shiftKey) {
+                exec(new UpdateSlideNote(slides, slide.head, {
+                  easeType: rotateNext(slide.head.easeType, EASE_TYPES)
+                }))
+                playSound('stage')
+              }
+              break
+            }
+
             if (!slide.steps.some(({ tick }) => tick === $cursor.tick)) {
               const step = {
                 lane: $cursor.lane,
