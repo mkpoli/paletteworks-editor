@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import type { Mode } from '$lib/editing/modes'
+  import { Mode, MODES, MODE_SHORTCUTS } from '$lib/editing/modes'
   const dispatch = createEventDispatcher<{
     delete: void,
     copy: void,
@@ -78,33 +78,11 @@
       event.preventDefault()
     }
 
-    if (event.key == '1' || event.key == 'v') {
-      dispatch('switch', 'select')
-      event.preventDefault()
-    }
-    if (event.key == '2' || event.key == 't') {
-      dispatch('switch', 'tap')
-      event.preventDefault()
-    }
-    if (event.key == '3' || event.key == 's') {
-      dispatch('switch', 'slide')
-      event.preventDefault()
-    }
-    if (event.key == '4' || event.key == 'r') {
-      dispatch('switch', 'mid')
-      event.preventDefault()
-    }
-    if (event.key == '5' || event.key == 'f') {
-      dispatch('switch', 'flick')
-      event.preventDefault()
-    }
-    if (event.key == '6' || event.key == 'c') {
-      dispatch('switch', 'critical')
-      event.preventDefault()
-    }
-    if (event.key == '7' || event.key == 'b') {
-      dispatch('switch', 'bpm')
-      event.preventDefault()
+    for (let mode of MODES) {
+      if (event.key === MODE_SHORTCUTS[mode] || event.key === 'SHORTCUTS') {
+        dispatch('switch', mode)
+        event.preventDefault()
+      }
     }
   }
 </script>
