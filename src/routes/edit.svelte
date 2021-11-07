@@ -334,6 +334,7 @@
       }
     })
 
+    if (pastedSingles.length === 0 && pastedSlides.length === 0) return
     exec(new BatchAdd(singles, slides, pastedSingles, pastedSlides))
 
     $selectedNotes = [
