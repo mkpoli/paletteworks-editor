@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BEAT_IN_MEASURE, COLORS, LANE_AREA_WIDTH, LANE_WIDTH, MARGIN, MARGIN_BOTTOM, MEASURE_HEIGHT, TEXT_MARGIN, TICK_PER_MEASURE } from "$lib/consts";
+  import { BEAT_IN_MEASURE, COLORS, FONT_FAMILY, LANE_AREA_WIDTH, LANE_WIDTH, MARGIN, MARGIN_BOTTOM, MEASURE_HEIGHT, TEXT_MARGIN, TICK_PER_MEASURE } from "$lib/consts";
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -59,7 +59,8 @@
 
         const number = i / BEAT_IN_MEASURE
         const text = new PIXI.Text(`#${number + 1}`, {
-          fill: 'white'
+          fill: 'white',
+          fontFamily: FONT_FAMILY
         })
         text.x = MARGIN - TEXT_MARGIN
         text.y = y

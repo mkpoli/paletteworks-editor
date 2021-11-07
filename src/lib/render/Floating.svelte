@@ -5,7 +5,7 @@
 
   // Types
   import type PIXI from 'pixi.js' 
-  import { Mode, MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
+  import type { Mode } from '$lib/editing/modes'
 
   // Consts
   import COLORS from '$lib/colors'
@@ -15,8 +15,9 @@
     MARGIN,
     LANE_WIDTH,
     LANE_MAX,
+    FONT_FAMILY,
   } from '$lib/consts'
-  import { MODE_TEXTURES } from '$lib/editing/modes'
+  import { MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
   import { drawDashedLine } from './renderer';
 
   // Props
@@ -126,7 +127,8 @@
     if (currentMode == 'bpm') {
       const text = new PIXI.Text(hasBPM ? `↑ BPM` : `+ BPM`, {
         fill: COLORS.COLOR_BPM,
-        fontSize: 20
+        fontSize: 20,
+        fontFamily: FONT_FAMILY
       })
       text.anchor.set(0.5, 0.5)
       text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)

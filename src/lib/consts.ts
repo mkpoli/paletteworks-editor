@@ -68,7 +68,7 @@ export const TEXTURE_NAMES = [
   'notes_long_among_crtcl.png'
 ]
 
-export const FONT_FAMILY = 'Montserrat'
+export const FONT_FAMILY = 'M PLUS 1p'
 
 import tapPerfect from '$assets/sound/perfect.mp3'
 import tapCritical from '$assets/sound/critical_tap.mp3'
