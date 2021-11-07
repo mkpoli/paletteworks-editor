@@ -78,31 +78,31 @@
       event.preventDefault()
     }
 
-    if (event.altKey && event.key == '1') {
+    if (event.key == '1' || event.key == 'v') {
       dispatch('switch', 'select')
       event.preventDefault()
     }
-    if (event.altKey && event.key == '2') {
+    if (event.key == '2' || event.key == 't') {
       dispatch('switch', 'tap')
       event.preventDefault()
     }
-    if (event.altKey && event.key == '3') {
+    if (event.key == '3' || event.key == 's') {
       dispatch('switch', 'slide')
       event.preventDefault()
     }
-    if (event.altKey && event.key == '4') {
+    if (event.key == '4' || event.key == 'r') {
       dispatch('switch', 'mid')
       event.preventDefault()
     }
-    if (event.altKey && event.key == '5') {
+    if (event.key == '5' || event.key == 'f') {
       dispatch('switch', 'flick')
       event.preventDefault()
     }
-    if (event.altKey && event.key == '6') {
+    if (event.key == '6' || event.key == 'c') {
       dispatch('switch', 'critical')
       event.preventDefault()
     }
-    if (event.altKey && event.key == '7') {
+    if (event.key == '7' || event.key == 'b') {
       dispatch('switch', 'bpm')
       event.preventDefault()
     }
