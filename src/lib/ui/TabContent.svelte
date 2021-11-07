@@ -6,7 +6,7 @@
   const tabIndex = registerContent()
 </script>
 
-<div class="tab-content" class:hidden={$currentTab !== tabIndex}>
+<div class={`tab-content ${$$props.class}`} class:hidden={$currentTab !== tabIndex}>
   <slot></slot>
 </div>
 

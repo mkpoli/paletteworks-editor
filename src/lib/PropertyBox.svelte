@@ -3,7 +3,11 @@
   import type { Mutation } from "$lib/editing/mutations"
 
   import { createEventDispatcher, tick } from "svelte"
-  const dispatch = createEventDispatcher()
+  const dispatch = createEventDispatcher<{
+    goto: void,
+    undo: void,
+    redo: void,
+  }>()
 
   // UI Components
   import Icon from '@iconify/svelte'
@@ -118,7 +122,11 @@
           <li><p>選択されたアイテム数 {$selectedNotes.length}</p></li>
         </ul>
       </TabContent>
-      <TabContent>
+      <TabContent class="history-tab">
+        <div class="actions">
+          <Button icon="ic:round-undo" on:click={() => dispatch('undo')} class="history-button">元に戻す</Button>
+          <Button icon="ic:round-redo" on:click={() => dispatch('redo')} class="history-button">やり直し</Button>
+        </div>
         <div class="history" bind:this={historyDiv}>
           {#each $mutationHistory as mutation, index}
             <span>{`#${index + 1} - ${mutation}`}</span>
@@ -209,4 +217,22 @@ label {
   max-height: 100%;
   flex-grow: 1;
 }
+
+:global(.history-tab) {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1em;
+}
+
+:global(.history-tab) > .actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  font-size: 0.75em;
+}
+
+:global(.history-tab) :global(.history-button) {
+  border-radius: 0.5em;
+}
+
 </style>

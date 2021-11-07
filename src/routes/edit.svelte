@@ -424,6 +424,7 @@
 
   function exec(mutation: Mutation) {
     saved = false
+    $undoneHistory = $undoneHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
       singles = mutation.exec()
     } else if (mutation instanceof SlideMutation) {
@@ -441,7 +442,7 @@
         props: {
           text: mutation.toString(),
           button: '元に戻す',
-          undo() { undo(mutation); $mutationHistory = $mutationHistory.filter((mut) => mut !== mutation) },
+          undo() { undo(mutation) },
           mutation,
           history: undoneHistory,
         },
@@ -455,6 +456,7 @@
   }
 
   function undo(mutation: Mutation) {
+    $mutationHistory = $mutationHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
       singles = mutation.undo()
     } else if (mutation instanceof SlideMutation) {
@@ -472,7 +474,7 @@
         props: {
           text: '元に戻しました',
           button: 'やり直し',
-          undo() { exec(mutation); $undoneHistory = $undoneHistory.filter((mut) => mut !== mutation) },
+          undo() { exec(mutation) },
           mutation,
           history: mutationHistory,
         },
@@ -705,6 +707,8 @@
       on:goto={() => {
         scrollTick = (clamp(1, currentMeasure, maxMeasure + 1) - 1) * TICK_PER_MEASURE
       }}
+      on:undo={onundo}
+      on:redo={onredo}
       statistics={{
         'Taps': singles.filter((x) => x.flick === 'no').length,
         'Flicks': singles.filter((x) => x.flick !== 'no').length,
