@@ -402,28 +402,21 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddBPM, AddSingles, AddSlides, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, BPMMutation, Mutation, Mutation, RemoveBPM, SetBPM, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
+  import { AddBPM, AddSingles, AddSlides, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, BPMMutation, Mutation, RemoveBPM, SetBPM, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
 
-  let history: Mutation[] = []
-  let redoHistory: Mutation[] = []
-  import { writable } from 'svelte/store'
-
-  const historyStore = writable(history)
-  $: $historyStore = history
-  const redoHistoryStore = writable(redoHistory)
-  $: $redoHistoryStore = redoHistory
+  import { mutationHistory, undoneHistory } from '$lib/editing/history';
 
   function onundo() {
-    const mutation = history.pop()
-    history = history
+    const mutation = $mutationHistory.pop()
+    $mutationHistory = $mutationHistory
     if (!mutation) return
     undo(mutation)
     playSound('stage')
   }
 
   function onredo() {
-    const mutation = redoHistory.pop()
-    redoHistory = redoHistory
+    const mutation = $undoneHistory.pop()
+    $undoneHistory = $undoneHistory
     if (!mutation) return
     exec(mutation)
     playSound('stage')
@@ -440,17 +433,17 @@
     } else if (mutation instanceof BPMMutation) {
       bpms = mutation.exec()
     }
-    history.push(mutation)
-    history = history
+    $mutationHistory.push(mutation)
+    $mutationHistory = $mutationHistory
     toast.push({
       component: {
         src: UndoToast as any,
         props: {
           text: mutation.toString(),
           button: '元に戻す',
-          undo() { undo(mutation); history = history.filter((mut) => mut !== mutation) },
+          undo() { undo(mutation); $mutationHistory = $mutationHistory.filter((mut) => mut !== mutation) },
           mutation,
-          history: redoHistoryStore,
+          history: undoneHistory,
         },
         sendIdTo: 'toastID',
       },
@@ -471,17 +464,17 @@
     } else if (mutation instanceof BPMMutation) {
       bpms = mutation.undo()
     }
-    redoHistory.push(mutation)
-    redoHistory = redoHistory
+    $undoneHistory.push(mutation)
+    $undoneHistory = $undoneHistory
     toast.push({
       component: {
         src: UndoToast as any,
         props: {
           text: '元に戻しました',
           button: 'やり直し',
-          undo() { exec(mutation); redoHistory = redoHistory.filter((mut) => mut !== mutation) },
+          undo() { exec(mutation); $undoneHistory = $undoneHistory.filter((mut) => mut !== mutation) },
           mutation,
-          history: historyStore,
+          history: mutationHistory,
         },
         sendIdTo: 'toastID',
       },
@@ -724,7 +717,6 @@
       bind:files={bgmfiles}
       bind:scrollMode
       bind:visibility
-      {history}
       bind:volume
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->

@@ -20,6 +20,7 @@
 
   import filesize from 'filesize'
   import { selectedNotes } from "$lib/editing/selection"
+  import { mutationHistory } from "$lib//editing/history"
 
   export let currentMeasure: number
   export let statistics: Record<string, number>
@@ -28,13 +29,12 @@
   export let files: FileList
   export let scrollMode: 'page' | 'smooth'
   export let visibility: Record<string, boolean>
-  export let history: Mutation[]
   export let volume: number
 
   let historyDiv: HTMLDivElement
   
 
-  $: if (history) {
+  $: if ($mutationHistory) {
     tick().then(() => {
       historyDiv.scrollTo(0, historyDiv.scrollHeight)
     })
@@ -120,7 +120,7 @@
       </TabContent>
       <TabContent>
         <div class="history" bind:this={historyDiv}>
-          {#each history as mutation, index}
+          {#each $mutationHistory as mutation, index}
             <span>{`#${index + 1} - ${mutation}`}</span>
           {/each}
         </div>
