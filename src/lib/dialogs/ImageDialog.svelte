@@ -129,6 +129,7 @@
 
   [slot=presentation] .canvas-container {
     grid-area: t;
+    max-height: 50vh;
   }
 
   .close {
