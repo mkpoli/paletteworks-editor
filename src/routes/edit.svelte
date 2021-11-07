@@ -461,8 +461,8 @@
     } else if (mutation instanceof BPMMutation) {
       bpms = mutation.undo()
     }
-    history.push(mutation)
-    history = history
+    redoHistory.push(mutation)
+    redoHistory = redoHistory
     toast.push({
       component: {
         src: UndoToast as any,
