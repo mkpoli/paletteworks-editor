@@ -131,7 +131,7 @@
   import resizeCursor from '$assets/resize-cursor.png'
   import selectCursor from '$assets/select-cursor.png'
 
-  import { clipboardSingles } from './editing/clipboard'
+  import { clipboardSingles, clipboardSlides } from './editing/clipboard'
   import { resizing } from './editing/resizing'
 
   const myCursorStyle = {
@@ -443,7 +443,7 @@
     <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy', { notes: [currentNote] })} />
   {/if}
   <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')}
-    disabled={!$clipboardSingles.length && !$clipboardSingles.length}
+    disabled={!$clipboardSingles.length && !$clipboardSlides.length}
   />
   {#if !$selectedNotes.length && currentNote && 'easeType' in currentNote}
     <MenuDivider/>
