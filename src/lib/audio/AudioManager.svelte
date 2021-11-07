@@ -13,11 +13,11 @@
   export let slides: Slide[]
   export let bgmURL: string
   export let volume: number
+  export let sfxVolume: number
 
   let scheduler: AudioScheduler
   let audioContext: AudioContext
   let effectBuffers: Record<string, AudioBuffer>
-  let master: GainNode
   
   const audioNodes: Array<AudioBufferSourceNode> = []
 
@@ -30,9 +30,11 @@
     scheduler?.stop()
   }
 
-  $: if (master) {
-    master.gain.value = volume
-  }
+  let master: GainNode
+  $: if (master) { master.gain.value = volume }
+
+  let sfxGain: GainNode
+  $: if (sfxGain) { sfxGain.gain.value = sfxVolume }
 
   function onbgmchange(bgmURL) {
     paused = true
@@ -83,9 +85,9 @@
     // Initialise Audio
     audioContext = new AudioContext()
     master = audioContext.createGain();
-    master.gain.value = 0.15
     master.connect(audioContext.destination)
-  
+    sfxGain = audioContext.createGain();
+    sfxGain.connect(master)
     effectBuffers = Object.fromEntries(await Promise.all(Object.entries(EFFECT_SOUNDS).map(async ([name, path]) => {
       const response = await fetch(path)
       const arrayBuffer = await response.arrayBuffer()
@@ -101,58 +103,62 @@
       startFrom: tick2secs(currentTick)
     }
 
-    const singleEvents: AudioEvent[] = singles
-      .filter(({ tick }) => tick >= currentTick)
-      .map(({ tick, critical, flick }) => ({
-        time: tick2secs(tick - currentTick),
-        sound: flick !== 'no'
-                ? (critical ? 'flickCritical' : 'flick')
-                : (critical ? 'tapCritical' : 'tapPerfect' ) 
-      }))
+    let events: Array<AudioEvent> = [bgmEvent]
 
-    const slideEvents = slides
-      .filter(({ tail: { tick } }) => tick >= currentTick)
-      .reduce((acc, { critical, head, tail, steps }) => {
-        const startEvent: AudioEvent = head.tick >= currentTick
-          ? {
-              time: tick2secs(head.tick - currentTick),
-              sound: !critical ? 'tick' : 'tickCritical'
-            }
-          : null
-
-        const connectEvent: AudioEvent = 
-          {
-            time: tick2secs(Math.max(head.tick, currentTick) - currentTick),
-            sound: !critical ? 'connect' : 'connectCritical',
-            loopTo: tick2secs(tail.tick - currentTick)
-          }
+    if (sfxVolume !== 0) {
+      const singleEvents: AudioEvent[] = singles
+        .filter(({ tick }) => tick >= currentTick)
+        .map(({ tick, critical, flick }) => ({
+          time: tick2secs(tick - currentTick),
+          sound: flick !== 'no'
+                  ? (critical ? 'flickCritical' : 'flick')
+                  : (critical ? 'tapCritical' : 'tapPerfect' ) 
+        }))
   
-        const endEvent: AudioEvent = 
-          {
-            time: tick2secs(tail.tick - currentTick),
-            sound: tail.flick !== 'no'
-                ? (critical ? 'flickCritical' : 'flick')
-                : (critical ? 'tapCritical' : 'tapPerfect' ) 
-          }
-
-        const stepEvents = steps
-          .filter(({ tick }) => tick >= currentTick)
-          .reduce((a, { tick, diamond }) => {
-            if (diamond) {
-              a.push({
-                time: tick2secs(tick - currentTick),
+      const slideEvents = slides
+        .filter(({ tail: { tick } }) => tick >= currentTick)
+        .reduce((acc, { critical, head, tail, steps }) => {
+          const startEvent: AudioEvent = head.tick >= currentTick
+            ? {
+                time: tick2secs(head.tick - currentTick),
                 sound: !critical ? 'tick' : 'tickCritical'
-              })
+              }
+            : null
+  
+          const connectEvent: AudioEvent = 
+            {
+              time: tick2secs(Math.max(head.tick, currentTick) - currentTick),
+              sound: !critical ? 'connect' : 'connectCritical',
+              loopTo: tick2secs(tail.tick - currentTick)
             }
-            return a
-          }, [] as AudioEvent[])
-
-        return [...acc, connectEvent, startEvent, endEvent, ...stepEvents]
-      }, [] as AudioEvent[])
-
-    const events: Array<AudioEvent> = [bgmEvent, ...singleEvents, ...slideEvents]
-      .filter((event) => event)
-      .sort(({ time: a }, { time: b }) => a - b)
+    
+          const endEvent: AudioEvent = 
+            {
+              time: tick2secs(tail.tick - currentTick),
+              sound: tail.flick !== 'no'
+                  ? (critical ? 'flickCritical' : 'flick')
+                  : (critical ? 'tapCritical' : 'tapPerfect' ) 
+            }
+  
+          const stepEvents = steps
+            .filter(({ tick }) => tick >= currentTick)
+            .reduce((a, { tick, diamond }) => {
+              if (diamond) {
+                a.push({
+                  time: tick2secs(tick - currentTick),
+                  sound: !critical ? 'tick' : 'tickCritical'
+                })
+              }
+              return a
+            }, [] as AudioEvent[])
+  
+          return [...acc, connectEvent, startEvent, endEvent, ...stepEvents]
+        }, [] as AudioEvent[])
+  
+        events = [...events, ...singleEvents, ...slideEvents]
+          .filter((event) => event)
+          .sort(({ time: a }, { time: b }) => a - b)
+    }
 
     return new AudioScheduler(audioContext, audioNodes, {
       events,
@@ -163,7 +169,7 @@
           soundSource.loop = true
         }
         audioNodes.push(soundSource)
-        soundSource.connect(master)
+        soundSource.connect(event.sound === 'bgm' ? master : sfxGain)
         const startTime = event.time + offset
         soundSource.start(startTime, event.startFrom ? tick2secs(currentTick) : null)
         if (event.loopTo) {

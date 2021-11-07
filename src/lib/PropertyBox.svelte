@@ -34,6 +34,7 @@
   export let scrollMode: 'page' | 'smooth'
   export let visibility: Record<string, boolean>
   export let volume: number
+  export let sfxVolume: number
 
   let historyDiv: HTMLDivElement
   
@@ -149,8 +150,12 @@
       />
     </label>
     <label>
-      音量
+      マスター音量
       <input type="range" bind:value={volume} min=0 max=1 step=0.01 />
+    </label>
+    <label>
+      SE
+      <input type="range" bind:value={sfxVolume} min=0 max=1 step=0.01 />
     </label>
   </div>
 </div>

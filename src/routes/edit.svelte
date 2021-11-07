@@ -133,8 +133,9 @@
   // Sound
   let soundQueue: string[] = []
   let volume: number = 0.5
-
+  let sfxVolume: number = 1
   $: dbg('volume', volume)
+  $: dbg('sfxVolume', sfxVolume)
 
   // PIXI.js
   let PIXI: typeof import('pixi.js')
@@ -723,6 +724,7 @@
       bind:scrollMode
       bind:visibility
       bind:volume
+      bind:sfxVolume
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
     {#if import.meta.env.DEV}
@@ -778,6 +780,7 @@
   {singles}
   {bgmURL}
   {volume}
+  {sfxVolume}
   bind:soundQueue
 />
 
