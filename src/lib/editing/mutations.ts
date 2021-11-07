@@ -190,6 +190,7 @@ export class RemoveSlideSteps extends SlideMutation {
     super(slides)
     this.type = 'スライドステップ'
     this.name = '削除'
+    this.size = oldSteps.length
     this.slideStepsLocation = new Map<SlideStep, Slide>()
     oldSteps.forEach((oldStep) => {
       this.slideStepsLocation.set(oldStep, this.slides.find(({ steps }) => steps.includes(oldStep)))
@@ -217,6 +218,7 @@ export class RemoveSlides extends SlideMutation {
     super(slides)
     this.type = 'スライド'
     this.name = '削除'
+    this.size = oldSlides.length
     this.targetSlides = oldSlides
   }
 
@@ -304,6 +306,7 @@ export class BatchRemove extends BatchMutation {
     super(singles, slides)
 
     this.name = '削除'
+    this.size = notes.length
 
     const selectedSingles = this.singles.filter((note) => notes.includes(note))
     this.removeSingles = new RemoveSingles(singles, selectedSingles)

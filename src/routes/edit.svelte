@@ -425,6 +425,7 @@
   }
 
   function exec(mutation: Mutation) {
+    if (mutation.size === 0) return
     saved = false
     $undoneHistory = $undoneHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
