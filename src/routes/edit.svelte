@@ -263,7 +263,7 @@
     'Taps': true,
     'Flicks': true, 
     'Slides': true,
-    'SlideSteps': false,
+    'SlideSteps': true,
     'Total': true
   }
 
