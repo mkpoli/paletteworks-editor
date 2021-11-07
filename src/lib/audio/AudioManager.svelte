@@ -42,10 +42,19 @@
 
   $: onbgmchange(bgmURL)
 
-  // $: if (bgmURL && scheduler) {
-  //   scheduler.stop()
-  //   currentTick = 0
-  // }
+  $: if (currentBPM) restartSchedular()
+  // $: if (currentTick) restartSchedular()
+
+  function restartSchedular() {
+    if (!audioContext) return
+    if (scheduler) {
+      scheduler.stop()
+    }
+    scheduler = newSchedular()
+    if (!paused) {
+      scheduler.start()
+    }
+  }
 
   $: if (soundQueue) {
     soundQueue.forEach((sound) => {
@@ -61,7 +70,6 @@
     const arrayBuffer = await response.arrayBuffer()
     return await audioContext.decodeAudioData(arrayBuffer)
   }
-
 
   $: createAudioBuffer(bgmURL).then((buffer) => {
     bgmBuffer = buffer

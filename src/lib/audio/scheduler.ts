@@ -2,7 +2,7 @@ import type { EFFECT_SOUNDS } from '$lib/consts'
 export type Sound = keyof typeof EFFECT_SOUNDS
 export type AudioEvent = {
   time: number,
-  sound: Sound,
+  sound: Sound | 'bgm',
   loopTo?: number,
   startFrom?: number
 }
