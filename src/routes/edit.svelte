@@ -532,6 +532,14 @@
       fileInput.click()
     }
   }
+
+  function onskipstart() {
+    gotoTick(0)
+  }
+
+  function onskipback() {
+    gotoTick(lastTick)
+  }
 </script>
 
 <svelte:head>
@@ -714,6 +722,8 @@
       }}
       on:undo={onundo}
       on:redo={onredo}
+      on:skipstart={onskipstart}
+      on:skipback={onskipback}
       statistics={{
         'Taps': singles.filter((x) => x.flick === 'no').length,
         'Flicks': singles.filter((x) => x.flick !== 'no').length,
@@ -773,9 +783,7 @@
   on:copy={() => { copyNotes($selectedNotes) }}
   on:cut={() => { cutNotes($selectedNotes) }}
   on:paste={onpaste}
-  on:back={() => {
-    gotoTick(lastTick)
-  }}
+  on:back={onskipback}
 />
 
 <AudioManager

@@ -6,6 +6,8 @@
     goto: void,
     undo: void,
     redo: void,
+    skipstart: void,
+    skipback: void,
   }>()
 
   // UI Components
@@ -62,11 +64,23 @@
           ></Button>
         </TextInput>
       </div>
-      <ClickableIcon
-        icon={paused ? 'ph:play-fill' : 'ph:pause-duotone'}
-        width="4.5em"
-        on:click={() => { paused = !paused }}
-      />
+      <div class="control-buttons">
+        <ClickableIcon
+          icon="fluent:previous-16-filled"
+          width="2.5em"
+          on:click={() => { dispatch('skipstart') }}
+        />
+        <ClickableIcon
+          icon={paused ? 'carbon:play-filled-alt' : 'ph:pause-duotone'}
+          width="4.5em"
+          on:click={() => { paused = !paused }}
+        />
+        <ClickableIcon
+          icon="ph:arrow-counter-clockwise-bold"
+          width="2.5em"
+          on:click={() => { dispatch('skipback') }}
+        />
+      </div>
       <label for="scroll">
         スクロール方式
         <Select
@@ -239,4 +253,10 @@ label {
   border-radius: 0.5em;
 }
 
+.control-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+}
 </style>
