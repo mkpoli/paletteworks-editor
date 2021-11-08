@@ -24,7 +24,6 @@
 
 
   export let zoom: number
-  export let paused: boolean
   export let scrollTick: number
   function mousewheel(event: WheelEvent) {
     if (event.ctrlKey) { 
@@ -34,14 +33,9 @@
     }
   }
 
-  function onkeypress(event: KeyboardEvent) {
+  function onkeydown(event: KeyboardEvent) {
     if (document.activeElement && document.activeElement.tagName === 'INPUT') return
 
-    if (event.key === ' ') {
-      event.preventDefault()
-      paused = !paused
-    }
-    
     if (event.key == 'Delete') {
       dispatch('delete')
       event.preventDefault()
@@ -94,11 +88,6 @@
       }
     }
 
-    if (event.key === 'Backspace' || event.key === '`') {
-      dispatch('back')
-      event.preventDefault()
-    }
-
     Object.entries(KEYBOARD_SHORTCUTS).forEach(([action, keyCombinations]) => {
       keyCombinations.forEach((keyCombination: string | readonly string[]) => {
         if (keyCombination instanceof Array) {
@@ -122,6 +111,7 @@
           const key = keyCombination
           if (event.key !== key) return
         }
+        event.preventDefault()
         dispatch(action as KeyboardAction)
       })
     })
@@ -130,5 +120,5 @@
 
 <svelte:window
   on:wheel|preventDefault|nonpassive={mousewheel}
-  on:keypress={onkeypress}
+  on:keydown={onkeydown}
 />

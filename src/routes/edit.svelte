@@ -234,6 +234,10 @@
 
   let bgmfiles: FileList
   let paused: boolean = true
+  function onplaypause() {
+    paused = !paused
+  }
+
   let currentTick: number = 0
   $: dbg('currentTick', currentTick)
 
@@ -783,7 +787,9 @@
   on:copy={() => { copyNotes($selectedNotes) }}
   on:cut={() => { cutNotes($selectedNotes) }}
   on:paste={onpaste}
-  on:back={onskipback}
+  on:skipback={onskipback}
+  on:skipstart={onskipstart}
+  on:playpause={onplaypause}
 />
 
 <AudioManager
