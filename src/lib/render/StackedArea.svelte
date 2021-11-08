@@ -65,8 +65,6 @@
         }
       })
 
-    console.log(tickTable)
-
     graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED)
     ;[...tickTable.entries()].forEach(([tick, notes]) => {
       const area: Map<number, number> = new Map()
@@ -101,8 +99,6 @@
 
           return acc
         }, [])
-
-        console.log(n)
 
         n.forEach(([lane, laneR]) => {
           graphics.drawRoundedRect(
