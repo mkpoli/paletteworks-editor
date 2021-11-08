@@ -189,6 +189,9 @@
     }
   }
 
+  let lastTick: number = 0
+  let gotoTick: (tick: number) => void
+
   // Textures
   import spritesheet from '$assets/spritesheet.json'
   import spritesheetImage from '$assets/spritesheet.png'
@@ -770,17 +773,22 @@
   on:copy={() => { copyNotes($selectedNotes) }}
   on:cut={() => { cutNotes($selectedNotes) }}
   on:paste={onpaste}
+  on:back={() => {
+    gotoTick(lastTick)
+  }}
 />
 
 <AudioManager
   bind:paused
   bind:currentTick
+  bind:lastTick
   {currentBPM}
   {slides}
   {singles}
   {bgmURL}
   {volume}
   {sfxVolume}
+  bind:gotoTick
   bind:soundQueue
 />
 

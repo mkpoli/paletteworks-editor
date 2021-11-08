@@ -14,6 +14,8 @@
   export let bgmURL: string
   export let volume: number
   export let sfxVolume: number
+  export let gotoTick: (tick: number) => void
+  export let lastTick: number
 
   let scheduler: AudioScheduler
   let audioContext: AudioContext
@@ -22,12 +24,17 @@
   const audioNodes: Array<AudioBufferSourceNode> = []
 
   $: if (!paused) {
-    // Pause -> Start
+    // Pause -> Start (Resuming)
+    lastTick = getCurrentTick()
     scheduler = newSchedular()
     scheduler.start()
   } else {
-    // Start -> Pause
+    // Start -> Pause (Pausing)
     scheduler?.stop()
+  }
+
+  function getCurrentTick() {
+    return currentTick
   }
 
   let master: GainNode
@@ -44,13 +51,17 @@
 
   $: if (bgmURL) { onbgmchange() } 
 
-  $: if (currentBPM) restartSchedular()
-  // $: if (currentTick) restartSchedular()
+  gotoTick = (tick) => { restartScheduler(tick) }
 
-  function restartSchedular() {
+  $: if (currentBPM) restartScheduler()
+
+  function restartScheduler(from?: number) {
     if (!audioContext) return
     if (scheduler) {
       scheduler.stop()
+    }
+    if (from !== undefined) {
+      currentTick = from
     }
     scheduler = newSchedular()
     if (!paused) {

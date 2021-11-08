@@ -11,7 +11,8 @@
     save: void,
     open: void,
     new: void,
-    switch: Mode
+    switch: Mode,
+    back: void,
   }>()
 
   export let zoom: number
@@ -83,6 +84,11 @@
         dispatch('switch', mode)
         event.preventDefault()
       }
+    }
+
+    if (event.key === 'Backspace' || event.key === '`') {
+      dispatch('back')
+      event.preventDefault()
     }
   }
 </script>
