@@ -1,35 +1,30 @@
 <script lang="ts">
-  import tippy from 'tippy.js'
-  import { onMount } from 'svelte'
+  // Types
+  import type { Mode } from '$lib/editing/modes'
 
-  export let current: boolean
+  // UI Components
+  import Tooltip from '$lib/ui/Tooltip.svelte'
+  import KeyboardShortcut from '$lib/ui/KeyboardShortcut.svelte'
 
-  let button: HTMLButtonElement
-  let tooltip: HTMLDivElement
-  onMount(() => {
-    const instance = tippy(button, {
-      content: tooltip,
-      placement: 'right',
-      arrow: true,
-      allowHTML: true,
-      offset: [0, -15],
-      delay: [500, 0],
-      animation: 'fade',
-      theme: 'tool',
-    })
-    return () => {
-      instance.destroy()
-    }
-  })
+  // Constants
+  import { MODE_DESCRIPTIONS, MODE_SHORTCUTS, MODE_SHORTCUTS_NUMERAL, MODE_TEXTURES } from '$lib/editing/modes'
 
+  // Props
+  export let mode: Mode
+  export let currentMode: Mode
 </script>
 
-<button on:click class:current bind:this={button}>
-  <slot/>
-</button>
-<div bind:this={tooltip}>
-  <slot name="tooltip"/>
-</div>
+<Tooltip
+  placement="right"
+  offset={[0, -15]}
+  description={MODE_DESCRIPTIONS[mode]}
+  class="tool-button"
+>
+  <button on:click={() => { currentMode = mode}} class:current={currentMode === mode}>
+    <img src={MODE_TEXTURES[mode]} alt={`${MODE_DESCRIPTIONS[mode]} Mode`} />
+  </button>
+  <KeyboardShortcut slot="keys" keys={[MODE_SHORTCUTS_NUMERAL[mode], MODE_SHORTCUTS[mode]]}/>
+</Tooltip>
 
 <style>
   button {
@@ -39,10 +34,8 @@
     height: 5em;
     border-radius: 0;
     border: none;
-    /* margin: 0; */
     padding: 0;
     border-bottom: 1px solid #fff3;
-    /* border: 1px solid #fffa; */
   }
 
   button > :global(img) {
@@ -59,15 +52,14 @@
     transform: scale(1.25);
   }
 
-  :global(.tippy-box[data-theme~='tool']) {
+  img {
+    height: 5em;
+  }
+
+  :global(.tool-button) {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(122deg, rgba(116, 80, 244, 0.65) 0%, rgba(255, 65, 169, 0.65) 100%);
-    box-shadow: 0 3px 12px #402860;
-    font-weight: bold;
-    padding: 0.4em 0.5em;
-    border-radius: 0.5em;
-    backdrop-filter: blur(4px);
+    width: 100%;
   }
 </style>

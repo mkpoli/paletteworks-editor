@@ -22,10 +22,6 @@
   export let currentMode: Mode
   export let snapTo: SnapTo
 
-  function setMode(mode: string) {
-    currentMode = mode as Mode
-  }
-
   let menu: HTMLDivElement
 
   const dispatch = createEventDispatcher<{
@@ -75,17 +71,7 @@
 
   <div class="tool-container">
     {#each MODES as mode}
-      <ToolButton on:click={() => { setMode(mode) }} current={currentMode === mode}>
-        <img src={MODE_TEXTURES[mode]} alt={`${MODE_DESCRIPTIONS[mode]} Mode`} />
-        <div slot="tooltip">
-          <span class="description">{MODE_DESCRIPTIONS[mode]}</span>
-          <span class="keys">
-            <kbd>{MODE_SHORTCUTS_NUMERAL[mode]}</kbd>
-            <span>|</span>
-            <kbd>{MODE_SHORTCUTS[mode].toUpperCase()}</kbd>
-          </span>
-        </div>
-      </ToolButton>
+      <ToolButton {mode} bind:currentMode />
     {/each}
     <select bind:value={snapTo}>
       {#each ALLOWED_SNAPPINGS as snap}
@@ -96,10 +82,6 @@
 </div>
 
 <style>
-  :global(.mode-tooltip) {
-    background-color: #fff;
-  }
-
   .toolbox-container {
     display: grid;
     width: 15em;
@@ -123,7 +105,6 @@
     gap: 0.5em;
     background: rgba(0, 0, 0, 0.025);
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.45);
-    
   }
 
   .toolbox-container :global(.menu-trigger:hover) {
@@ -138,41 +119,10 @@
     /* gap: 1em; */
   }
 
-  img {
-    height: 5em;
-  }
-
   select {
     font-size: 1.125em;
     padding: 0.25em 0.5em;
     border-radius: 1em;
     margin: 1em;
-  }
-
-  div[slot="tooltip"] {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.65em;
-    font-weight: normal;
-  }
-
-  kbd {
-    display: block;
-    padding: 0.25em 0.5em;
-    background: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.45);
-    border-radius: 0.25em;
-  }
-
-  div[slot="tooltip"] .description {
-    font-weight: bold;
-  }
-  div[slot="tooltip"] .keys {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.2em;
-    font-weight: normal;
   }
 </style>
