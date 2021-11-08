@@ -68,5 +68,6 @@
     font-weight: bold;
     padding: 0.4em 0.5em;
     border-radius: 0.5em;
+    backdrop-filter: blur(4px);
   }
 </style>

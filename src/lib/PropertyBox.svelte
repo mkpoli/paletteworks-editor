@@ -17,7 +17,7 @@
   import TextInput from "$lib/ui/TextInput.svelte"
   import Select from '$lib/ui/Select.svelte'
   import FileInput from '$lib/ui/FileInput.svelte'
-
+  import Tooltip from '$lib/ui/Tooltip.svelte'
   import Tabs from '$lib/ui/Tabs.svelte'
   import TabItem from '$lib//ui/TabItem.svelte'
   import TabSelect from '$lib/ui/TabSelect.svelte'
@@ -25,7 +25,10 @@
 
   import filesize from 'filesize'
   import { selectedNotes } from "$lib/editing/selection"
-  import { mutationHistory } from "$lib//editing/history"
+  import { mutationHistory } from "$lib/editing/history"
+
+  import KeyboardShortcut from "$lib/ui/KeyboardShortcut.svelte"
+  import { KEYBOARD_SHORTCUTS } from "$lib/consts"
 
   export let currentMeasure: number
   export let statistics: Record<string, number>
@@ -65,21 +68,39 @@
         </TextInput>
       </div>
       <div class="control-buttons">
-        <ClickableIcon
-          icon="fluent:previous-16-filled"
-          width="2.5em"
-          on:click={() => { dispatch('skipstart') }}
-        />
-        <ClickableIcon
-          icon={paused ? 'carbon:play-filled-alt' : 'ph:pause-duotone'}
-          width="4.5em"
-          on:click={() => { paused = !paused }}
-        />
-        <ClickableIcon
-          icon="ph:arrow-counter-clockwise-bold"
-          width="2.5em"
-          on:click={() => { dispatch('skipback') }}
-        />
+        <Tooltip
+          placement="bottom"
+          description="頭出し"
+        >
+          <ClickableIcon
+            icon="fluent:previous-16-filled"
+            width="2.5em"
+            on:click={() => { dispatch('skipstart') }}
+          />
+          <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.skipstart}/>
+        </Tooltip>
+        <Tooltip
+          placement="bottom"
+          description="再生／一時停止"
+        >
+          <ClickableIcon
+            icon={paused ? 'carbon:play-filled-alt' : 'ph:pause-duotone'}
+            width="4.5em"
+            on:click={() => { paused = !paused }}
+          />
+          <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.playpause}/>
+        </Tooltip>
+        <Tooltip
+          placement="bottom"
+          description="戻る"
+        >
+          <ClickableIcon
+            icon="ph:arrow-counter-clockwise-bold"
+            width="2.5em"
+            on:click={() => { dispatch('skipback') }}
+          />
+          <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.skipback}/>
+        </Tooltip>
       </div>
       <label for="scroll">
         スクロール方式
