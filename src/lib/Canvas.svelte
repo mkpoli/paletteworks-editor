@@ -20,6 +20,7 @@
   import Slide from '$lib/render/Slide.svelte'
   import Selection from '$lib/render/Selection.svelte'
   import Floating from './render/Floating.svelte'
+  import StackedArea from './render/StackedArea.svelte'
 
   // UI Components
   import Menu from '$lib/ui/Menu.svelte'
@@ -408,6 +409,12 @@
     <Floating
       {bpms}
       {currentMode}
+    />
+
+    <!-- STACKED AREAS -->
+    <StackedArea
+      {singles}
+      {slides}
     />
 
     <Selection

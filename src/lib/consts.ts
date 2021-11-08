@@ -27,6 +27,8 @@ export const NOTE_PIVOT = [0.14971751412, 0.5]
 export const NOTE_WIDTH = 43
 export const NOTE_HEIGHT = 55
 
+export const NOTE_HEIGHT_REAL = NOTE_HEIGHT * 0.5
+
 export const DIAMOND_PIVOT = [0.15189873417, 0.5]
 export const DIAMOND_WIDTH = 30
 export const DIAMOND_HEIGHT = 30 / 158 * 160
