@@ -97,7 +97,9 @@ export const EFFECT_SOUNDS = {
 export const KEYBOARD_SHORTCUTS  = {
   skipstart: ['Backspace', ['Shift', 'Backquote']],
   skipback: ['`', '\\'],
-  playpause: [' ']
+  playpause: [' '],
+  duplicate: [['Control', 'KeyD']],
+  flip: [['Control', 'KeyH']],
 } as const
 
 export type KeyboardAction = keyof typeof KEYBOARD_SHORTCUTS

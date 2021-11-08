@@ -116,7 +116,13 @@
     },
     addslide: {
       slide: SlideType
-    }
+    },
+    duplicate: {
+      notes: NoteType[]
+    },
+    flip: {
+      notes: NoteType[]
+    },
   }>()
   let dragging: boolean = false
   let draggingSlide: SlideType = null
@@ -452,6 +458,16 @@
   <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')}
     disabled={!$clipboardSingles.length && !$clipboardSlides.length}
   />
+  {#if $selectedNotes.length}
+    <MenuDivider/>
+    <MenuItem icon="mdi:content-duplicate" text="複製 (&D)" on:click={() => dispatch('duplicate', { notes: $selectedNotes })} />
+  {:else if currentNote}
+    <MenuDivider/>
+    <MenuItem icon="mdi:content-duplicate" text="複製 (&D)" on:click={() => dispatch('duplicate', { notes: [currentNote] })} />
+  {/if}
+  {#if $selectedNotes.length}
+    <MenuItem icon="mdi:flip-horizontal" text="左右ミラー (&H)" on:click={() => dispatch('flip', { notes: $selectedNotes })} />
+  {/if}
   {#if !$selectedNotes.length && currentNote && 'easeType' in currentNote}
     <MenuDivider/>
     <MenuItem icon="custom:straight" text="直線" on:click={() => { onchangecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>

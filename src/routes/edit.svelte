@@ -101,6 +101,7 @@
     SNAPTO_DEFAULT,
     ZOOM_DEFAULT,
     ZOOM_MIN,
+    LANE_MAX,
   } from '$lib/consts'
 
   // Functions
@@ -544,6 +545,46 @@
   function onskipback() {
     gotoTick(lastTick)
   }
+
+  function flipNotes(notes: NoteType[]) {
+    const flipTargets = new Map(notes.map((note) => 
+      [note, {
+        lane: LANE_MAX + 1 - note.lane,
+      }]
+    ))
+    const flipOrigins = new Map(notes.map((note) =>
+      [note, {
+        lane: note.lane,
+      }]
+    ))
+    exec(new BatchUpdate(singles, slides, flipTargets, flipOrigins, 'ミラー'))
+    playSound('stage')
+  }
+
+  function duplicateNotes(notes: NoteType[]) {
+    if (!notes) {
+      notes = $selectedNotes
+    }
+    const newSingles = singles
+      .filter((single) => notes.includes(single))
+      .map((single) => ({...single}))
+
+    const newSlides = slides
+      .filter(({ head, tail, steps }) => (
+        notes.includes(head) || notes.includes(tail)
+        || steps.some((step) => notes.includes(step))
+      ))
+      .map(({ head, tail, steps, critical }) => ({
+          head: { ...head },
+          tail: { ...tail },
+          steps: steps.map((step) => ({...step})),
+          critical
+        }
+      ))
+
+    exec(new BatchAdd(singles, slides, newSingles, newSlides))
+    playSound('stage')
+  }
 </script>
 
 <svelte:head>
@@ -718,6 +759,8 @@
         exec(new AddSlides(slides, [ slide ]))
         playSound('stage')
       }}
+      on:flip={({ detail: { notes }}) => flipNotes(notes)}
+      on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
     />
     <PropertyBox
       bind:currentMeasure
@@ -775,7 +818,6 @@
 
 <ControlHandler
   bind:zoom
-  bind:paused
   bind:scrollTick
   on:undo={onundo}
   on:redo={onredo}
@@ -790,6 +832,8 @@
   on:skipback={onskipback}
   on:skipstart={onskipstart}
   on:playpause={onplaypause}
+  on:duplicate={() => { duplicateNotes($selectedNotes) }}
+  on:flip={() => { flipNotes($selectedNotes) }}
 />
 
 <AudioManager
