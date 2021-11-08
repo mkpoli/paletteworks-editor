@@ -25,7 +25,7 @@
     app.stage.addChild(graphics)
   })
 
-  $: graphics && drawBackground($position, maxMeasure)
+  $: graphics && drawBackground($position, maxMeasure + 2)
 
   function drawBackground(
     position: PositionManager,
