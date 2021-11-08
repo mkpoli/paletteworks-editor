@@ -26,11 +26,10 @@
   $: if (!paused) {
     // Pause -> Start (Resuming)
     lastTick = getCurrentTick()
-    scheduler = newSchedular()
-    scheduler.start()
+    startScheduler()
   } else {
     // Start -> Pause (Pausing)
-    scheduler?.stop()
+    stopScheduler()
   }
 
   function getCurrentTick() {
@@ -43,31 +42,38 @@
   let sfxGain: GainNode
   $: if (sfxGain) { sfxGain.gain.value = sfxVolume }
 
-  function onbgmchange() {
+  $: if (bgmURL) { 
     paused = true
-    scheduler?.stop()
+    stopScheduler()
     currentTick = 0
-  }
-
-  $: if (bgmURL) { onbgmchange() } 
-
-  gotoTick = (tick) => { restartScheduler(tick) }
+   } 
 
   $: if (currentBPM) restartScheduler()
+
+  function stopScheduler() {
+    scheduler?.stop()
+    scheduler = null
+  }
+
+  function startScheduler() {
+    scheduler = newSchedular()
+    scheduler.start()
+  }
 
   function restartScheduler(from?: number) {
     if (!audioContext) return
     if (scheduler) {
-      scheduler.stop()
+      stopScheduler()
     }
     if (from !== undefined) {
       currentTick = from
     }
-    scheduler = newSchedular()
     if (!paused) {
-      scheduler.start()
+      startScheduler()
     }
   }
+
+  gotoTick = (tick) => { restartScheduler(tick) }
 
   $: if (soundQueue) {
     soundQueue.forEach((sound) => {
