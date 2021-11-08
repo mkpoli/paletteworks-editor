@@ -93,3 +93,11 @@ export const EFFECT_SOUNDS = {
   connectCritical,
   stage
 }
+
+export const KEYBOARD_SHORTCUTS  = {
+  skipstart: ['Backspace', ['Shift', 'Backquote']],
+  skipback: ['`', '\\'],
+  playpause: [' ']
+} as const
+
+export type KeyboardAction = keyof typeof KEYBOARD_SHORTCUTS

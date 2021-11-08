@@ -1,6 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { Mode, MODES, MODE_SHORTCUTS } from '$lib/editing/modes'
+  import { KEYBOARD_SHORTCUTS } from './consts'
+  import type { KeyboardAction } from '$lib/consts'
+
+  type KeyboardEvents = {
+    [K in KeyboardAction]: void
+  }
+
   const dispatch = createEventDispatcher<{
     delete: void,
     copy: void,
@@ -13,7 +20,8 @@
     new: void,
     switch: Mode,
     back: void,
-  }>()
+  } & KeyboardEvents>()
+
 
   export let zoom: number
   export let paused: boolean
@@ -26,7 +34,7 @@
     }
   }
 
-  function keyboard(event: KeyboardEvent) {
+  function onkeypress(event: KeyboardEvent) {
     if (document.activeElement && document.activeElement.tagName === 'INPUT') return
 
     if (event.key === ' ') {
@@ -90,10 +98,37 @@
       dispatch('back')
       event.preventDefault()
     }
+
+    Object.entries(KEYBOARD_SHORTCUTS).forEach(([action, keyCombinations]) => {
+      keyCombinations.forEach((keyCombination: string | readonly string[]) => {
+        if (keyCombination instanceof Array) {
+          for (let key of keyCombination) {
+            switch (key) {
+              case 'Control':
+                if (!event.ctrlKey) return
+                break
+              case 'Shift':
+                if (!event.shiftKey) return
+                break
+              case 'Alt':
+                if (!event.altKey) return
+                break
+              default:
+                if (event.code !== key) return
+                break
+            }
+          }
+        } else {
+          const key = keyCombination
+          if (event.key !== key) return
+        }
+        dispatch(action as KeyboardAction)
+      })
+    })
   }
 </script>
 
 <svelte:window
   on:wheel|preventDefault|nonpassive={mousewheel}
-  on:keydown={keyboard}
+  on:keypress={onkeypress}
 />
