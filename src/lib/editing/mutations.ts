@@ -302,10 +302,10 @@ export class BatchRemove extends BatchMutation {
   removeSingles: RemoveSingles
   removeSlides: RemoveSlides
   removeSlideSteps: RemoveSlideSteps
-  constructor(singles: Single[], slides: Slide[], notes: Note[]) {
+  constructor(singles: Single[], slides: Slide[], notes: Note[], name: string) {
     super(singles, slides)
 
-    this.name = '削除'
+    this.name = name
     this.size = notes.length
 
     const selectedSingles = this.singles.filter((note) => notes.includes(note))

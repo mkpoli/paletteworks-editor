@@ -275,8 +275,8 @@
     'Total': true
   }
 
-  function deleteNotes(notes: NoteType[]) {
-    exec(new BatchRemove(singles, slides, notes))
+  function deleteNotes(notes: NoteType[], cut = false) {
+    exec(new BatchRemove(singles, slides, notes, !cut ? '削除' : 'カット'))
     playSound('stage')
   }
 
@@ -304,7 +304,7 @@
 
   function cutNotes(notes: NoteType[]) {
     copyNotes(notes)
-    deleteNotes(notes)
+    deleteNotes(notes, true)
   }
   
   function onpaste() {
