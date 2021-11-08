@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Metadata } from "$lib/score/beatmap"
-  import type { Mutation } from "$lib/editing/mutations"
 
   import { createEventDispatcher, tick } from "svelte"
   const dispatch = createEventDispatcher<{

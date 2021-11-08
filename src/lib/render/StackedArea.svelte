@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { COLORS, LANE_MAX, LANE_MIN, LANE_WIDTH, NOTE_HEIGHT, NOTE_HEIGHT_REAL } from '$lib/consts'
+  import { COLORS, LANE_MAX, LANE_MIN, LANE_WIDTH, NOTE_HEIGHT_REAL } from '$lib/consts'
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -46,7 +46,7 @@
 
   function drawStackedArea(
     position: PositionManager,
-    singles: Single[], slides: Slides[]
+    singles: Single[], slides: Slide[]
   ) {
     if (!graphics) return
 

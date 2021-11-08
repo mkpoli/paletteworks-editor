@@ -27,5 +27,6 @@
 			"$assets/*": ["assets/*"]
 		}
 	},
-	"include": ["**/*.d.ts", "**/*.js", "**/*.ts", "**/*.svelte"]
+	"include": ["**/*.d.ts", "**/*.js", "**/*.ts", "**/*.svelte"],
+	"exclude": ["lib/basic/dblclick.js"]
 }

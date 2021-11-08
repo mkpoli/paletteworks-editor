@@ -1,6 +1,6 @@
 <script lang="ts">
   // Constants
-  import { COLORS, DIAMOND_HEIGHT, DIAMOND_WIDTH, LANE_WIDTH, NOTE_HEIGHT, NOTE_WIDTH } from '$lib/consts'
+  import { COLORS, DIAMOND_HEIGHT, DIAMOND_WIDTH, LANE_WIDTH, NOTE_HEIGHT } from '$lib/consts'
 
   // Functions
   import { position, PositionManager } from '$lib/position'

@@ -36,13 +36,13 @@
   let sfxGain: GainNode
   $: if (sfxGain) { sfxGain.gain.value = sfxVolume }
 
-  function onbgmchange(bgmURL) {
+  function onbgmchange() {
     paused = true
     scheduler?.stop()
     currentTick = 0
   }
 
-  $: onbgmchange(bgmURL)
+  $: if (bgmURL) { onbgmchange() } 
 
   $: if (currentBPM) restartSchedular()
   // $: if (currentTick) restartSchedular()

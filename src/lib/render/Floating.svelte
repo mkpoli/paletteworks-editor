@@ -108,15 +108,14 @@
   // Draw BPM
   $: if (graphics) {
     drawFloatingBPM(
-      currentMode,
-      $position.calcX($cursor.lane) + LANE_WIDTH, $position.calcY($cursor.tick),
+      currentMode, $position.calcY($cursor.tick),
       bpms.has($cursor.tick)
     )
   }
 
   let lastText: PIXI.Text
   function drawFloatingBPM(
-    currentMode: Mode, x:number, y: number, hasBPM: boolean
+    currentMode: Mode, y: number, hasBPM: boolean
   ) {
     graphics.clear()
     if (lastText && !lastText.destroyed) {

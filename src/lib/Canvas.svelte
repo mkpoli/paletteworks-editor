@@ -168,7 +168,7 @@
       }
     })
 
-    app.renderer.plugins.interaction.addListener('dblclick', async (event: PointerEvent) => {
+    app.renderer.plugins.interaction.addListener('dblclick', async () => {
       await tick()
       if (!$selectedNotes.length) {
         currentTick = $cursor.rawTick

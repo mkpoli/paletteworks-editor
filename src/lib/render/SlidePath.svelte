@@ -46,7 +46,7 @@
   export function drawSlidePath(slideNotes: SlideNote[]) {
     graphics.clear()
     slideNotes
-    .reduce((acc: [SlideNote, SlideNote][], ele: SlideNote, ind: number, arr: SlideNote[]) => {
+    .reduce((acc: [SlideNote, SlideNote][], _: SlideNote, ind: number, arr: SlideNote[]) => {
         if (ind < arr.length - 1) {
           acc.push([arr[ind], arr[ind + 1]])
         }

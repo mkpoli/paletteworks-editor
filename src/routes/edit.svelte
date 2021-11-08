@@ -100,7 +100,6 @@
     RESOLUTION,
     SNAPTO_DEFAULT,
     ZOOM_DEFAULT,
-    ZOOM_MAX,
     ZOOM_MIN,
   } from '$lib/consts'
 

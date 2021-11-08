@@ -14,7 +14,7 @@
 
   // Props
   export let currentTick: number
-  export let paused: number
+  export let paused: boolean
 
   // Contexts
   const app = getContext<PIXI.Application>('app')

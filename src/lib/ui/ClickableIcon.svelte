@@ -2,7 +2,6 @@
   import Icon from '@iconify/svelte'
 
   import { createEventDispatcher } from 'svelte'
-  const dispatch = createEventDispatcher()
 
   export let icon: string
   export let height: string = undefined
