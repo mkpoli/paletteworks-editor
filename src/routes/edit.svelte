@@ -535,7 +535,7 @@
   <title>PaletteWorks Editor</title>
 </svelte:head>
 
-<input type="file" bind:files={scoreFiles} style="display: none" bind:this={fileInput} />
+<input type="file" bind:files={scoreFiles} style="display: none" bind:this={fileInput} accept=".sus" />
 
 <main class="cursor-select" style={`grid-template-columns: auto ${CANVAS_WIDTH}px auto auto;`}>
   {#if app}
