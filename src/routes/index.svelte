@@ -17,7 +17,7 @@
 <section class="description">
   <div class="container">
     <h2>PaletteWorks Editor とは</h2>
-    <p>PaletteWorks Editor とは創作譜面ファンの中から生まれた新世代の譜面エディター。使いやすさを第一の目標として職人が手掛けたツール。編集を自由自在に行えることツールで、スムーズで一流な譜面制作体験を提供します。</p>
+    <p>PaletteWorks Editor とは創作譜面ファンの中から生まれた新世代の譜面エディター。使いやすさを第一の目標として職人が手掛けたツール。編集を自由自在に行えるこのツールで、スムーズで一流な譜面制作体験を提供します。</p>
     <a class="button" href="/edit">今すぐ始める</a>
     <img src={screenshot} alt="screenshot"/>
   </div>
