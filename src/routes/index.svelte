@@ -1,5 +1,7 @@
 <script lang="ts">
   import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
+  import Icon from '@iconify/svelte'
+
   import screenshot from '$assets/homepage/screenshot.png'
   import editing from '$assets/homepage/editing.png'
   import soundeffects from '$assets/homepage/soundeffects.png'
@@ -8,9 +10,9 @@
 <header>
   <h1><img src="/favicon.png" alt="Logo" class="logo"/>PaletteWorks Editor</h1>
   <nav>
-    <a href="#">DOWNLOAD</a>
+    <a href="/edit">CREATE NOW</a>
     <a href="#functionality">FEATURES</a>
-    <a href="#">COMMUNITY</a>
+    <a href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks">COMMUNITY</a>
   </nav>
 </header>
 <main>
@@ -25,15 +27,15 @@
 
 <section id="functionality">
   <div class="container">
-    <h2>編集機能</h2>
+    <h2><Icon icon="mdi:draw"/>編集機能</h2>
     <img src={editing} alt="editing"/>
     <p>基本な編集機能を直感的にリニューアル！多種多様なノーツをシンプルに配置・削除・変更できるのみならず、コピーペースト機能・選択機能・ミラー機能などの便利機能も備えており、効率を倍増できます。</p>
 
-    <h2>SUS譜面の入出力</h2>
+    <h2><Icon icon="mdi:file-chart"/>SUS譜面の入出力</h2>
     <img src={filesupport} alt="filesupport"/>
     <p>SUS (Sliding Universal Score) ファイルの入出力を最初からファーストクラスとし、そのまま Sonolus などでプレイ可能。更に譜面を画像として出力することもでき、譜面制作者コミュニティで簡単にシェアや交流が可能。</p>
 
-    <h2>音声の同時視聴</h2>
+    <h2><Icon icon="mdi:headphones"/>音声の同時視聴</h2>
     <img src={soundeffects} alt="soundeffects"/>
     <p>BGMの音楽を聞きながら編集することができるだけではなく、SE付きの音声によってまるでゲームをプレイしながらの制作が可能。</p>
   </div>
@@ -46,11 +48,13 @@
 
 
 <footer>
-  <div class="copyright">
-    🄫 mkpoli
-  </div>
-  <div class="social">
-    <ClickableIcon icon="logos:twitter" href="https://twitter.com/_mkpoli/"/>
+  <div class="container">
+    <div class="copyright">
+      🄫 mkpoli
+    </div>
+    <div class="social">
+      <ClickableIcon icon="logos:twitter" href="https://twitter.com/_mkpoli/"/>
+    </div>
   </div>
 </footer>
 
@@ -120,10 +124,10 @@
     padding: 1em 0;
   }
 
-  section .container {
+  section .container,
+  footer .container {
     margin: 0 auto;
     grid-column: 2 / -2;
-    
   }
 
   section.description {
@@ -175,7 +179,7 @@
 
   a.button:hover {
     box-shadow: 0px 0px 10px #2980d7;
-    text-shadow: 1px 1px 15px #8603ab;
+    text-shadow: 1px 1px 6px #8603ab;
   }
 
   a:visited {
@@ -202,16 +206,48 @@
     transform: scale(1.1);
   }
 
+  section#functionality h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
+  }
+
+  section#functionality h2 > :global(svg) {
+    font-size: 1.5em;
+  }
+
+  section#functionality h2:nth-of-type(1) > :global(svg) {
+    color: #ff6a75;
+    filter: drop-shadow(0 0 2px #ff6a75);
+  }
+  section#functionality h2:nth-of-type(2) > :global(svg) {
+    color: #00a7fa;
+    filter: drop-shadow(0 0 2px #00a7fa);
+  }
+  section#functionality h2:nth-of-type(3) > :global(svg) {
+    color: #d880e5;
+    filter: drop-shadow(0 0 2px #d880e5);
+  }
+
   footer {
-    margin: 0 auto;
-    max-width: 1024px;
-    
     padding: 2em 0;
-
     gap: 1em;
+    width: 100%;
+  }
 
+  footer > .container {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5em;
+  }
+
+  footer :global(a) {
+    transition: .2s;
+  }
+
+  footer :global(a:hover) {
+    filter: drop-shadow(0 0 3px #55acee);
+    transform: scale(1.25);
   }
 </style>
