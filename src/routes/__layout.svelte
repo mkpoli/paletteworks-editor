@@ -14,6 +14,8 @@
   :root {
     --color-background-main: #2e3142;
     --color-text-main: #eeeeee;
+    --color-text-darker: #aaaaaa;
+    --color-text-lighter: #ffffff;
 
     --input-border-radius: 10px;
     --input-padding: 0.75em 1em;
