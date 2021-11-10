@@ -51,7 +51,8 @@
       $resizingNotes.forEach((note) => {
         const reference = right ? note.lane : note.lane + note.width
         const mutating = right ? note.lane + note.width : note.lane
-        $resizingOffsets.set(note, { reference, mutating, offset: $cursor.laneSide - mutating })
+        const offset = $cursor.laneSide - mutating
+        $resizingOffsets.set(note, { reference, mutating, offset })
       })
     }
   }

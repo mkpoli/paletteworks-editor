@@ -167,7 +167,7 @@
   import selectCursor from '$assets/select-cursor.png'
 
   import { clipboardSingles, clipboardSlides } from './editing/clipboard'
-  import { resizing } from './editing/resizing'
+  import { resizing, resizingLastWidth } from './editing/resizing'
 
   const myCursorStyle = {
     move: `url(${moveCursor}) 16 16, move`,
@@ -203,14 +203,14 @@
             head: {
               tick: $cursor.tick,
               lane: $cursor.lane,
-              width: 2,
+              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
               easeType: false
             },
             tail: {
               tick: $cursor.tick,
               lane: $cursor.lane,
               flick: 'no',
-              width: 2
+              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1)
             },
             critical: false,
             steps: []
@@ -261,7 +261,7 @@
             note : {
               lane: $cursor.lane,
               tick: $cursor.tick,
-              width: Math.min(2, LANE_MAX - $cursor.lane + 1),
+              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
               critical: false,
               flick: 'no'
             }
@@ -282,7 +282,7 @@
             note : {
               lane: $cursor.lane,
               tick: $cursor.tick,
-              width: Math.min(2, LANE_MAX - $cursor.lane + 1),
+              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
               critical: false,
               flick: 'middle'
             }
@@ -295,7 +295,7 @@
             note : {
               lane: $cursor.lane,
               tick: $cursor.tick,
-              width: Math.min(2, LANE_MAX - $cursor.lane + 1),
+              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
               critical: true,
               flick: 'no'
             }

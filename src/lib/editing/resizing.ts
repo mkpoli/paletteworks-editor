@@ -1,13 +1,14 @@
 import type { Note } from '$lib/score/beatmap'
 
 import { writable } from 'svelte/store'
-import { minmax } from '$lib/basic/math'
+import { clamp, minmax } from '$lib/basic/math'
 
 export const resizing = writable<boolean>(false)
 export const resizingNotes = writable<Note[]>([])
 export const resizingOffsets = writable(new Map<Note, { reference: number, offset: number, mutating: number }>())
-
+export const resizingLastWidth = writable<number>(2)
 export function calcResized(a: number, b: number): [number, number] {
   const [left, right] = minmax(a, b)
-  return [left, right - left]
+  const width = right - left
+  return [left, clamp(1, width, 12)]
 }

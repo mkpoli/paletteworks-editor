@@ -449,7 +449,7 @@
     })
   }
 
-  import { calcResized, resizing, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
+  import { calcResized, resizing, resizingLastWidth, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
   resizing.subscribe((value) => {
     if (!$resizingNotes.length) return
     if (!value) {
@@ -464,6 +464,8 @@
         const [ lane, width ] = calcResized(reference, mutating)
         return [note, { lane, width }]
       }))
+
+      $resizingLastWidth = modifications.get($resizingNotes[0]).width
 
       exec(new BatchUpdate(singles, slides, modifications, originalDatas, 'リサイズ'))
       playSound('stage')
