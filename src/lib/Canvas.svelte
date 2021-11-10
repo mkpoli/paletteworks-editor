@@ -330,6 +330,8 @@
             draggingSlide.head.lane = draggingSlide.tail.lane
             draggingSlide.tail.tick = tick
             draggingSlide.tail.lane = lane
+          } else if (draggingSlide.head.tick == draggingSlide.tail.tick) {
+            draggingSlide.tail.tick += TICK_PER_MEASURE / snapTo
           }
           slides = slides
           dispatch('addslide', { slide: draggingSlide })
