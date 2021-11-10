@@ -94,4 +94,5 @@ export type Point = {
 }
 
 export const cursor = writable<LaneTick & { laneSide: number, rawTick: number }>({ lane: 0, tick: 0, laneSide: 0, rawTick: 0 })
+export const inside = writable<boolean>(false)
 export const pointer = writable<Point>({ x: 0, y: 0 })

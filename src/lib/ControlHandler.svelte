@@ -4,6 +4,9 @@
   import { KEYBOARD_SHORTCUTS } from './consts'
   import type { KeyboardAction } from '$lib/consts'
 
+  // Stores
+  import { inside } from '$lib/position'
+
   type KeyboardEvents = {
     [K in KeyboardAction]: void
   }
@@ -15,6 +18,8 @@
   export let zoom: number
   export let scrollTick: number
   function mousewheel(event: WheelEvent) {
+    if (!$inside) return
+    event.preventDefault()
     if (event.ctrlKey) { 
       zoom -= (event.deltaY > 0 ? 0.1 : -0.1) * (event.shiftKey ? 10 : 1)
     } else {
@@ -63,6 +68,6 @@
 </script>
 
 <svelte:window
-  on:wheel|preventDefault|nonpassive={mousewheel}
+  on:wheel|nonpassive={mousewheel}
   on:keydown={onkeydown}
 />

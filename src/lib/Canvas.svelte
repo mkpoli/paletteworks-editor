@@ -18,6 +18,7 @@
   import { closest, rotateNext } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/editing/selection'
+  import { inside } from '$lib/position'
 
   // Score Components
   import Background from '$lib/render/Background.svelte'
@@ -348,6 +349,13 @@
       if (!pointerOnNote) {
         currentTick = $cursor.rawTick
       }
+    })
+
+    app.renderer.view.addEventListener('pointerenter', async () => {
+      $inside = true
+    })
+    app.renderer.view.addEventListener('pointerleave', async () => {
+      $inside = false
     })
 
     canvasContainer.appendChild(app.view)

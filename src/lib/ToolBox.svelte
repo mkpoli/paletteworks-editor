@@ -126,6 +126,7 @@
     display: grid;
     width: 15em;
     grid-template-rows: auto 1fr;
+    height: 100vh;
   }
 
   .title {
@@ -156,7 +157,13 @@
     flex-direction: column;
     align-items: center;
     padding: 1em;
-    /* gap: 1em; */
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .tool-container::-webkit-scrollbar {
+    display: none;
   }
 
   select {

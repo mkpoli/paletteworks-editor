@@ -836,8 +836,8 @@
   /* Main */
   main {
     display: grid;
-    /* grid-template-columns: auto 1fr 1fr; */
-  }  
+    height: 100vh;
+  }
 
   :global(canvas) {
     display: block;
