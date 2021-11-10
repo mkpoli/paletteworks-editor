@@ -843,9 +843,9 @@
 <svelte:window
   bind:innerHeight
   on:beforeunload={(event) => { if (!saved) {
-    event.preventDefault()
-    event.returnValue = '未保存のデータがあります'
-    return '未保存のデータがあります'
+    // event.preventDefault()
+    // event.returnValue = '未保存のデータがあります'
+    // return '未保存のデータがあります'
   }}}
 />
 
