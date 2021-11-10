@@ -35,6 +35,7 @@ export const DIAMOND_HEIGHT = 30 / 158 * 160
 
 export const ZOOM_MIN = 0.1
 export const ZOOM_MAX = 10.0
+export const ZOOM_STEP = 0.1
 export const ZOOM_DEFAULT = 1
 
 export const TEXTURE_NAMES = [

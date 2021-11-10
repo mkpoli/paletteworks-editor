@@ -10,7 +10,7 @@
 
   // Constants
   import { createEventDispatcher, onMount, setContext, tick } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'
 
   // Functions
@@ -452,7 +452,7 @@
     />
   </div>
   <div class="zoom-indicator-container">
-    <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={0.1} />
+    <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP}/>
   </div>
 </div>
 
@@ -508,6 +508,7 @@
 <!-- EXPORT IMAGE DIALOG -->
 <ImageDialog
   bind:opened={imageDialogOpened}
+  bind:zoom
   {maxMeasure}
 />
 

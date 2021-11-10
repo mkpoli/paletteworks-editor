@@ -1,18 +1,22 @@
 <script lang="ts">
   // UI Components
-  import Modal from "$lib/ui/Modal.svelte"
-  import Button from "$lib/ui/Button.svelte"
-  import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
+  import Modal from '$lib/ui/Modal.svelte'
+  import Button from '$lib/ui/Button.svelte'
+  import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
+  import ZoomIndicator from '$lib/ZoomIndicator.svelte'
 
   // Types
   import type PIXI from 'pixi.js'
 
+  // Constants
+  import { MARGIN_BOTTOM, RESOLUTION, ZOOM_MIN, ZOOM_MAX, ZOOM_STEP } from '$lib/consts'
+
   // Functions
-  import { getContext, onMount } from "svelte";
-  import { download } from "$lib/basic/file"
-  import { snap } from "$lib/basic/math"
-  import { MARGIN_BOTTOM, RESOLUTION } from "$lib/consts"
-  import { position } from "$lib/position"
+  import { getContext, onMount } from 'svelte'
+  import { download } from '$lib/basic/file'
+  import { clamp, snap } from '$lib/basic/math'
+  import { position } from '$lib/position'
+  import { dbg } from '$lib/basic/debug'
 
   // PIXI
   let PIXI: typeof import('pixi.js')
@@ -27,12 +31,19 @@
 
   export let opened: boolean
   export let maxMeasure: number
+  export let zoom: number
 
   function generateCanvas(resolution: number): HTMLCanvasElement {
     const measureHeight = $position.measureHeight
-    const fullHeight = MARGIN_BOTTOM + maxMeasure * measureHeight + measureHeight 
+    const fullHeight = MARGIN_BOTTOM + maxMeasure * measureHeight + measureHeight
+    // const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION)
     const COLUMN_HEIGHT = clamp(8192, snap(measureHeight * RESOLUTION, 8192), Infinity)
+    // const COLUMN_HEIGHT = 8192
     const columns = Math.ceil(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
+    dbg('columns', columns)
+    dbg('measureHeight * RESOLUTION', measureHeight * RESOLUTION)
+    dbg('fullHeight * RESOLUTION', fullHeight)
+    dbg('COLUMN_HEIGHT', COLUMN_HEIGHT)
     const COLUMN_WIDTH = app.renderer.width * 0.9
     const renderTexture = PIXI.RenderTexture.create({
       width: COLUMN_WIDTH * columns, height: COLUMN_HEIGHT,
@@ -55,12 +66,12 @@
   let preview: HTMLCanvasElement = null
 
   function generatePreview() {
-    const canvas = generateCanvas(0.05)
+    const canvas = generateCanvas(0.1)
     preview = canvas
     container.appendChild(canvas)
   }
 
-  $: if (preview && $position) {
+  $: if (opened && preview && $position) {
     container.removeChild(preview)
     generatePreview()
   }
@@ -87,6 +98,14 @@
       />
     </div>
     <div class="canvas-container" bind:this={container}></div>
+    <div class="zoom-container">
+      <ZoomIndicator
+        bind:zoom
+        min={ZOOM_MIN}
+        max={ZOOM_MAX}
+        step={ZOOM_STEP}
+      />
+    </div>
     <Button
       class="ok"
       icon='ic:baseline-photo-camera'
@@ -102,12 +121,12 @@
     padding: 1em;
     display: grid;
     gap: 2em;
-    grid-template-columns: repeat(5, 3em);
+    grid-template-columns: repeat(7, 3em);
     grid-template-areas:
-      "h h . . x"
-      "t t t t t"
-      "t t t t t"
-      ". o o o ."
+      "h h . . . . x"
+      "t t t t t t z"
+      "t t t t t t z"
+      ". o o o o o ."
   }
 
   .close {
@@ -129,7 +148,22 @@
 
   [slot=presentation] .canvas-container {
     grid-area: t;
-    max-height: 50vh;
+    height: 50vh;
+    overflow-x: auto;
+  }
+
+  .canvas-container :global(canvas) {
+    height: 100%;
+    width: auto;
+  }
+
+  .zoom-container {
+    grid-area: z;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    flex-grow: 0;
   }
 
   .close {
