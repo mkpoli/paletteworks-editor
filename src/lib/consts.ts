@@ -109,6 +109,7 @@ export const KEYBOARD_SHORTCUTS  = {
   save: [['Control', 'KeyS']],
   open: [['Control', 'KeyO']],
   new: [['Control', 'KeyN']],
+  selectall: [['Control', 'KeyA']],
   delete: ['Delete'],
 } as const
 

@@ -25,15 +25,16 @@
   let menu: HTMLDivElement
 
   const dispatch = createEventDispatcher<{
-    'save': void,
-    'image': void,
-    'copy': void,
-    'cut': void,
-    'paste': void,
-    'undo': void,
-    'redo': void,
-    'new': void,
-    'open': void,
+    save: void,
+    image: void,
+    copy: void,
+    cut: void,
+    paste: void,
+    undo: void,
+    redo: void,
+    new: void,
+    open: void,
+    selectall: void
   }>()
 
   import CustomSnappingDialog from './dialogs/CustomSnappingDialog.svelte'
@@ -65,6 +66,8 @@
       <MenuItem icon="ic:sharp-edit" text="編集 (&E)">
         <MenuItem icon="ic:round-undo" text="元に戻す (&U)" on:click={() => dispatch('undo')} />
         <MenuItem icon="ic:round-redo" text="やり直し (&R)" on:click={() => dispatch('redo')} />
+        <MenuDivider/>
+        <MenuItem icon="ic:baseline-select-all" text="すべて選択 (&A)" on:click={() => dispatch('selectall')}/>
         <MenuDivider/>
         <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut')} />
         <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy')} />

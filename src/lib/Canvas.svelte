@@ -132,6 +132,7 @@
     selectsingle: {
       note: NoteType
     },
+    selectall: void,
     slideclick: {
       slide: SlideType
     },
@@ -513,6 +514,8 @@
   <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')}
     disabled={!$clipboardSingles.length && !$clipboardSlides.length}
   />
+  <MenuDivider/>
+  <MenuItem icon="ic:baseline-select-all" text="すべて選択" on:click={() => dispatch('selectall')}/>
   {#if $selectedNotes.length}
     <MenuDivider/>
     <MenuItem icon="mdi:content-duplicate" text="複製 (&D)" on:click={() => dispatch('duplicate', { notes: $selectedNotes })} />

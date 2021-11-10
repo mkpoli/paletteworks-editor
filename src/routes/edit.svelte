@@ -539,6 +539,10 @@
     exec(new BatchAdd(singles, slides, newSingles, newSlides))
     playSound('stage')
   }
+
+  function onselectall() {
+    $selectedNotes = [...singles, ...slides.flatMap((slide) => [slide.head, slide.tail, ...slide.steps])]
+  }
 </script>
 
 <svelte:head>
@@ -561,6 +565,7 @@
       on:redo={onredo}
       on:new={onnew}
       on:open={onopen}
+      on:selectall={onselectall}
     />
     <Canvas
       {PIXI}
@@ -619,6 +624,7 @@
         console.log(slide)
         $selectedNotes = slide ?? [event.detail.note]
       }}
+      on:selectall={onselectall}
       on:slideclick={(event) => {
         const { slide } = event.detail
         switch (currentMode) {
@@ -789,6 +795,7 @@
   on:playpause={onplaypause}
   on:duplicate={() => { duplicateNotes($selectedNotes) }}
   on:flip={() => { flipNotes($selectedNotes) }}
+  on:selectall={onselectall}
 />
 
 <AudioManager
