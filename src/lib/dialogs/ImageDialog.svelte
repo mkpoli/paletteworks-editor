@@ -31,7 +31,7 @@
   function generateCanvas(resolution: number): HTMLCanvasElement {
     const measureHeight = $position.measureHeight
     const fullHeight = MARGIN_BOTTOM + maxMeasure * measureHeight + measureHeight 
-    const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION)
+    const COLUMN_HEIGHT = clamp(8192, snap(measureHeight * RESOLUTION, 8192), Infinity)
     const columns = Math.ceil(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
     const COLUMN_WIDTH = app.renderer.width * 0.9
     const renderTexture = PIXI.RenderTexture.create({
