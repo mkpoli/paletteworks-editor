@@ -82,16 +82,45 @@
 
   // Score Data
   // export let susText: string
-  let susText: string = "#00002: 4\n#BPM01: 120\n#00008: 01"
-  let metadata: Metadata
-  let singles: Single[]
-  let slides: SlideType[]
-  let bpms: Map<number, number>;
+  import { writable } from 'svelte-local-storage-store'
+
+  const emptySUS = "#00002: 4\n#BPM01: 120\n#00008: 01"
+  const emptySUSData = loadSUS(emptySUS)
+
+  let susText: string
+
+  const metadataStore = writable<Metadata>('metadata', null)
+  const singlesStore = writable<Single[]>('singles', null)
+  const slidesStore = writable<SlideType[]>('slides', null)
+  const bpmsStore = writable<[number, number][]>('bpms', null)
+
+  console.log({ emptySUSData })
+
+  let metadata: Metadata = $metadataStore ?? emptySUSData.metadata
+  let singles: Single[] = $singlesStore ?? emptySUSData.score.singles
+  let slides: SlideType[] = $slidesStore ?? emptySUSData.score.slides
+  let bpms: Map<number, number> = $bpmsStore ? new Map($bpmsStore) : emptySUSData.score.bpms
+
+  onMount(() => {
+    if (!empty) {
+      saved = false
+    }
+  })
+
+  let empty: boolean = true
+  $: empty = singles.length === 0 && slides.length === 0 && (bpms.size === 0 || bpms.size === 1 && bpms.get(0) === 120)
+
+  $: if (empty) { saved = true }
 
   $: if (susText) {
     ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
   }
 
+  $: if (metadata) $metadataStore = metadata
+  $: if (singles) $singlesStore = singles
+  $: if (slides) $slidesStore = slides
+  $: if (bpms) $bpmsStore = [...bpms]
+ 
   console.log({ singles, slides, bpms })
 
   // Stores
@@ -475,7 +504,8 @@
   let saved = true
   $: dbg('saved', saved)
   function onnew() {
-    window.open(window.location.toString())
+    if (!saved && !confirm('新しいファイルを作成すると、保存されていない変更は失われます。よろしいですか？')) return
+    ({ metadata, score: { singles, slides, bpms }} = emptySUSData)
   }
 
   let fileInput: HTMLInputElement
@@ -485,11 +515,8 @@
     fetch(scoreURL).then((res) => res.text()).then((text) => { susText = text })
   }
   function onopen() {
-    if (!saved) {
-      alert('ファイルを開くには、現在のファイルを保存するか、新規ウィンドウを開いてください。')
-    } else {
-      fileInput.click()
-    }
+    if (!saved && !confirm('ファイルを開くと、保存されていない変更は失われます。よろしいですか？')) return
+    fileInput.click()
   }
 
   function onskipstart() {

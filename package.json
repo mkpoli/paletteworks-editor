@@ -23,6 +23,7 @@
     "sus-analyzer": "^2.2.4",
     "svelte": "^3.43.0",
     "svelte-check": "^2.0.0",
+    "svelte-local-storage-store": "^0.2.6",
     "svelte-preprocess": "^4.0.0",
     "tippy.js": "^6.3.2",
     "tslib": "^2.0.0",

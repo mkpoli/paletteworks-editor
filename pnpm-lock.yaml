@@ -15,6 +15,7 @@ specifiers:
   sus-analyzer: ^2.2.4
   svelte: ^3.43.0
   svelte-check: ^2.0.0
+  svelte-local-storage-store: ^0.2.6
   svelte-preprocess: ^4.0.0
   tippy.js: ^6.3.2
   tslib: ^2.0.0
@@ -35,6 +36,7 @@ devDependencies:
   sus-analyzer: 2.2.4
   svelte: 3.43.0
   svelte-check: 2.2.6_svelte@3.43.0
+  svelte-local-storage-store: 0.2.6_svelte@3.43.0
   svelte-preprocess: 4.9.5_svelte@3.43.0+typescript@4.4.3
   tippy.js: 6.3.2
   tslib: 2.3.1
@@ -2047,6 +2049,15 @@ packages:
     resolution: {integrity: sha512-pDrzgcWSoMaK6AJkBWkmgIsecW0GChxYZSZieIYfCP0v2oPyx2CYU/zm7TBIcjLVUPP714WxmViE9Thht4etog==}
     peerDependencies:
       svelte: '>=3.19.0'
+    dependencies:
+      svelte: 3.43.0
+    dev: true
+
+  /svelte-local-storage-store/0.2.6_svelte@3.43.0:
+    resolution: {integrity: sha512-7QLCZ4V/0ydvZRyVChNYx7gVkprzrkACD63PpZINy5oFv9nE+5CAP94QN3NBI2awPeDB+cpUzNCB4Q0Yjr9CYQ==}
+    engines: {node: '>=0.14'}
+    peerDependencies:
+      svelte: ^3.44.1
     dependencies:
       svelte: 3.43.0
     dev: true
