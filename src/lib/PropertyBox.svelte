@@ -191,7 +191,7 @@
         name="music"
         openIcon="mdi:folder-music"
         fileIcon="mdi:file-music-outline"
-        text="音楽ファイルを開く"
+        text="開く"
         loading={bgmLoading}
       />
     </label>
@@ -233,6 +233,14 @@ ul .title {
   height: 100vh;
   padding: 0.85em;
   gap: 0.65em 0.85em;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+@media (max-width: 1280px) {
+  .panel-container {
+    grid-template: repeat(4, 1fr) / repeat(1, 1fr);
+  }
 }
 
 .panel {
@@ -243,10 +251,6 @@ ul .title {
   flex-direction: column;
   gap: 1em;
   padding: 1em 1.5em;
-  max-width: 100%;
-  max-height: 100%;
-  min-width: 0;
-  min-height: 0;
   justify-content: start;
 }
 

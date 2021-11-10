@@ -36,6 +36,10 @@
     border: none;
     padding: 0;
     border-bottom: 1px solid #fff3;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   button > :global(img) {

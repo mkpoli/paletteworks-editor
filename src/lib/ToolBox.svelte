@@ -124,7 +124,7 @@
 <style>
   .toolbox-container {
     display: grid;
-    width: 15em;
+    /* width: 15em; */
     grid-template-rows: auto 1fr;
     height: 100vh;
   }
