@@ -1,11 +1,11 @@
 <script lang="ts">
   export let keys: readonly (string | readonly string[])[]
 
-  const KEYBOARD_DISPLAY_NAMES: Record<string, string> = {
+  const KEYBOARD_KEY_DISPLAY_NAMES: Record<string, string> = {
     'Backspace': '← Backspace',
     'Shift': '⇧ Shift',
+    'Control': 'Ctrl',
     '`': '`',
-    'Backquote': '`',
     ' ': '␣ Space',
     '\\': '\\',
     'a': 'A',
@@ -45,6 +45,43 @@
     '9': '9',
     '0': '0',
   }
+
+  // TODO: Show real key from Keymap layout
+  const KEYBOARD_CODE_DISPLAY_NAMES = {
+    'Backquote': '`',
+    'KeyA': 'A',
+    'KeyB': 'B',
+    'KeyC': 'C',
+    'KeyD': 'D',
+    'KeyE': 'E',
+    'KeyF': 'F',
+    'KeyG': 'G',
+    'KeyH': 'H',
+    'KeyI': 'I',
+    'KeyJ': 'J',
+    'KeyK': 'K',
+    'KeyL': 'L',
+    'KeyM': 'M',
+    'KeyN': 'N',
+    'KeyO': 'O',
+    'KeyP': 'P',
+    'KeyQ': 'Q',
+    'KeyR': 'R',
+    'KeyS': 'S',
+    'KeyT': 'T',
+    'KeyU': 'U',
+    'KeyV': 'V',
+    'KeyW': 'W',
+    'KeyX': 'X',
+    'KeyY': 'Y',
+    'KeyZ': 'Z',
+  }
+
+  const KEYBOARD_DISPLAY_NAMES = {
+    ...KEYBOARD_KEY_DISPLAY_NAMES,
+    ...KEYBOARD_CODE_DISPLAY_NAMES
+  }
+
 </script>
 
 <span>

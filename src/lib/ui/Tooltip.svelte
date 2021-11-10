@@ -6,7 +6,7 @@
 
   export let placement: Placement
   export let offset: [number, number] = [0, 0]
-  export let description: string
+  export let description: string = undefined
 
   let target: HTMLDivElement
   let tooltip: HTMLDivElement
@@ -31,7 +31,9 @@
   <slot/>
 </div>
 <div class="tooltip-container" bind:this={tooltip}>
-  <span>{description}</span>
+  {#if description !== undefined}
+    <span>{description}</span>
+  {/if}
   <slot name="keys"/>
 </div>
 

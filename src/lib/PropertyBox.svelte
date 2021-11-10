@@ -160,8 +160,18 @@
       </TabContent>
       <TabContent class="history-tab">
         <div class="actions">
-          <Button icon="ic:round-undo" on:click={() => dispatch('undo')} class="history-button">元に戻す</Button>
-          <Button icon="ic:round-redo" on:click={() => dispatch('redo')} class="history-button">やり直し</Button>
+          <Tooltip
+            placement="bottom"
+          > 
+            <Button icon="ic:round-undo" on:click={() => dispatch('undo')} class="history-button">元に戻す</Button>
+            <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.undo}/>
+          </Tooltip>
+          <Tooltip
+            placement="bottom"
+          >
+            <Button icon="ic:round-redo" on:click={() => dispatch('redo')} class="history-button">やり直し</Button>
+            <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.redo}/>
+          </Tooltip>
         </div>
         <div class="history" bind:this={historyDiv}>
           {#each $mutationHistory as mutation, index}
