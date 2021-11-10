@@ -180,14 +180,8 @@
 
     app.stage.sortableChildren = true
 
-    app.renderer.plugins.interaction.addListener('dblclick', async () => {
-      await tick()
-      if (!$selectedNotes.length) {
-        currentTick = $cursor.rawTick
-      }
-    })
-
     app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
+      pointerOnNote = false
       if (event.button === 2) return
       if ($moving || $resizing || $playheadDragging) return
       app.renderer.view.setPointerCapture(event.pointerId)
@@ -282,6 +276,32 @@
           })
           return
         }
+
+        if (!pointerOnNote && currentMode === 'flick') {
+          dispatch('addsingle', { 
+            note : {
+              lane: $cursor.lane,
+              tick: $cursor.tick,
+              width: Math.min(2, LANE_MAX - $cursor.lane + 1),
+              critical: false,
+              flick: 'middle'
+            }
+          })
+          return
+        }
+
+        if (!pointerOnNote && currentMode === 'critical') {
+          dispatch('addsingle', { 
+            note : {
+              lane: $cursor.lane,
+              tick: $cursor.tick,
+              width: Math.min(2, LANE_MAX - $cursor.lane + 1),
+              critical: true,
+              flick: 'no'
+            }
+          })
+          return
+        }
       }
 
       if ($moving) {
@@ -319,6 +339,12 @@
       }
       dragging = false
       
+    })
+
+    app.renderer.view.addEventListener('dblclick', async () => {
+      if (!pointerOnNote) {
+        currentTick = $cursor.rawTick
+      }
     })
 
     canvasContainer.appendChild(app.view)
@@ -359,6 +385,9 @@
     const _note = note as SlideStep
     return toDiamondType(_note.diamond, _note.ignored)
   }
+
+  let pointerOnNote: boolean = false
+  $: dbg('pointerOnNote', pointerOnNote)
 </script>
 
 <div
@@ -389,6 +418,7 @@
         <Note
           bind:note
           on:click={() => {
+            pointerOnNote = true
             switch (currentMode) {
               case 'flick': {
                 dispatch('updatesingle', {
@@ -424,7 +454,7 @@
           bind:slide
           stepsVisible={visibility.SlideSteps}
           on:stepclick
-          on:click={(event) => { dispatch('slideclick', event.detail) }}
+          on:click={(event) => { pointerOnNote = true; dispatch('slideclick', event.detail) }}
           on:move
           on:movestart
           on:moveend
