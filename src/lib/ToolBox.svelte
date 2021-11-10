@@ -35,6 +35,13 @@
     'new': void,
     'open': void,
   }>()
+
+  import CustomSnappingDialog from './dialogs/CustomSnappingDialog.svelte'
+  import { toast } from '@zerodevx/svelte-toast'
+  let customSnappingDialogOpened: boolean = false
+  let customSnappingDialogValue: number = 0
+  $: customSnappingDialogValue = snapTo
+  let snappingSelect: HTMLSelectElement
 </script>
 
 <div class="toolbox-container">
@@ -73,14 +80,44 @@
     {#each MODES as mode}
       <ToolButton {mode} bind:currentMode />
     {/each}
-    <select bind:value={snapTo}>
+    <select bind:value={snapTo} on:change={() => {
+      if (snappingSelect.selectedIndex === snappingSelect.options.length - 1) {
+        customSnappingDialogOpened = true
+        customSnappingDialogValue = snapTo
+        return
+      }
+    }} bind:this={snappingSelect} on:blur={(event) => {
+      if (snappingSelect.selectedIndex === snappingSelect.options.length - 1) {
+        customSnappingDialogOpened = true
+        customSnappingDialogValue = snapTo
+        return
+      }
+    }}>
       {#each ALLOWED_SNAPPINGS as snap}
         <option value={snap}>{snap}分音符</option>
       {/each}
+      <option value={snapTo} on:click={() => { customSnappingDialogOpened = true }}>カスタム {customSnappingDialogValue}</option>
     </select>
   </div>
 </div>
 
+<CustomSnappingDialog
+  bind:opened={customSnappingDialogOpened}
+  bind:value={customSnappingDialogValue}
+  on:ok={() => {
+    if (isNaN(customSnappingDialogValue)) {
+      toast.push('数値を入力してください')
+      return
+    }
+
+    if (customSnappingDialogValue < 1 || customSnappingDialogValue > 1920) {
+      toast.push('1から1920までの数値を入力してください')
+      return
+    }
+
+    snapTo = customSnappingDialogValue
+  }}
+/>
 <style>
   .toolbox-container {
     display: grid;
