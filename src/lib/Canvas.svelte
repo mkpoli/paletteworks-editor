@@ -1,13 +1,20 @@
 <script lang="ts">
+  // Types
   import type PIXI from 'pixi.js'
   import type { Mode } from '$lib/editing/modes'
-  import type { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType } from '$lib/score/beatmap'
+  import type { ScrollMode } from '$lib/editing/scrolling'
+
+  import { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType, toDiamondType } from '$lib/score/beatmap'
 
   import '$lib/basic/dblclick'
 
+  // Constants
   import { createEventDispatcher, onMount, setContext, tick } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'
+
+  // Functions
+  import { snap } from '$lib/basic/math'
   import { closest, rotateNext } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/editing/selection'
@@ -30,28 +37,30 @@
   import ZoomIndicator from '$lib/ZoomIndicator.svelte'
   import ImageDialog from '$lib/dialogs/ImageDialog.svelte'
 
+  // Props
   export let app: PIXI.Application
   export let PIXI: typeof import('pixi.js')
-  export let measureHeight: number
   export let currentTick: number
   export let maxMeasure: number
   export let snapTo: number
   export let scrollTick: number
+  export let scrollMode: ScrollMode
   export let currentMode: Mode
   export let innerHeight: number
-  export let zoom: number
   export let imageDialogOpened: boolean
   export let visibility: Record<string, boolean>
   export let shiftKey: boolean
   export let paused: boolean
+  export let zoom: number
+
+  // Score Data
+  export let singles: Single[]
+  export let slides: SlideType[]
+  export let bpms: Map<number, number>
 
   setContext('app', app)
 
-  let pointA: PIXI.Point = new PIXI.Point(300, 800)
-  let pointB: PIXI.Point = new PIXI.Point(400, 500)
-
-  $: pointA && dbg('selectA', formatPoint(pointA.x, pointA.y))
-  $: pointB && dbg('selectB', formatPoint(pointB.x, pointB.y))
+  $: measureHeight = MEASURE_HEIGHT * zoom
 
   import { PositionManager, position, pointer, cursor } from '$lib/position'
   $: $position = new PositionManager(measureHeight, scrollTick, snapTo, innerHeight)
@@ -64,6 +73,30 @@
   $: dbg('pointer', formatPoint($pointer.x, $pointer.y))
   $: dbg('cursor', formatPoint($cursor.lane, $cursor.tick))
   
+  // -- SCROLLING & ZOOMING --
+
+  // Camera follow scroll position
+  $: app.stage.pivot.y = MARGIN_BOTTOM - scrollTick / TICK_PER_MEASURE * measureHeight
+
+  // Auto scroll when playing music
+  $: if (!paused) {
+    if (scrollMode == 'page') {
+      scrollTick = snap(currentTick + MARGIN_BOTTOM / MEASURE_HEIGHT * TICK_PER_MEASURE, innerHeight / measureHeight * TICK_PER_MEASURE * 0.76)
+    } else if (scrollMode == 'smooth') {
+      scrollTick = currentTick - innerHeight / measureHeight * TICK_PER_MEASURE * 0.5 + MARGIN_BOTTOM / MEASURE_HEIGHT * TICK_PER_MEASURE
+    }
+  }
+
+  // --
+
+  // -- SELECTING --
+  let pointA: PIXI.Point
+  let pointB: PIXI.Point
+  let selectRect: PIXI.Rectangle
+  $: if (pointA && pointB) {
+    selectRect = point2rect(pointA, pointB)
+    dbg('selectRect', formatPoint(selectRect.x, selectRect.y) + '\n' + formatPoint(selectRect.right, selectRect.bottom))
+  }
   function point2rect(pointA: PIXI.Point, pointB: PIXI.Point) {
     const 左 = Math.min(pointA.x, pointB.x)
     const 右 = Math.max(pointA.x, pointB.x)
@@ -74,12 +107,7 @@
       左, 上, 右 - 左, 下 - 上
     )
   }
-
-  $: selectRect = point2rect(pointA, pointB)
-
-  export let singles: Single[]
-  export let slides: SlideType[]
-  export let bpms: Map<number, number>
+  // --
 
   const dispatch = createEventDispatcher<{
     changeBPM: { tick: number, bpm: number },
@@ -329,11 +357,7 @@
 
   function calcDiamondType(note: NoteType): DiamondType {
     const _note = note as SlideStep
-    return _note.ignored
-      ? 'ignored'
-      : _note.diamond
-        ? 'visible'
-        : 'invisible'
+    return toDiamondType(_note.diamond, _note.ignored)
   }
 </script>
 

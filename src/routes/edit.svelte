@@ -1,38 +1,5 @@
 <script lang="ts" context="module">
-  export const ssr = false;
-	// export async function load({ page, fetch, session, context }) {
-  //   // const url = `KING.sus`
-  //   // const url = `/TellYourWorld_EX.sus`
-  //   // const url = `/TellYourWorldDiamond.sus`
-  //   // const url = `/Shoushitsu_MASTER.sus`
-  //   // const url = `/DoctorFunkBeat_MASTER.sus`
-  //   // const url = `/SingleAIR.sus`
-  //   // const url = `/DoctorDiamond.sus`
-  //   // const url = `/SlideEase.sus`
-  //   // const url = `MultipleBPM.sus`
-  //   // const url = `LongSingle.sus`
-  //   // const url = `SlideTest.sus`
-  //   // const url = `TwoSlide.sus`
-  //   // const url = `SuperLongSlide.sus`
-  //   // const url = '/InvisibleRelayPoint.sus'
-  //   // const url = `ModNote.sus`
-  //   // const url = `MetaTest.sus`
-  //   // const url = `EmptyScore.sus`
-	// 	const res = await fetch(emptyScore)
-
-	// 	if (res.ok) {
-	// 		return {
-	// 			props: {
-	// 				susText: await res.text()
-	// 			}
-	// 		};
-	// 	}
-
-	// 	return {
-	// 		status: res.status,
-	// 		error: new Error(`Could not load ${emptyScore}`)
-	// 	};
-	// }
+  export const ssr = false
 </script>
 
 <script lang="ts">
@@ -54,8 +21,10 @@
   // Types
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
-  import { Metadata, Single, Slide as SlideType, Note as NoteType, FLICK_TYPES, toDiamondType, fromDiamondType, DIAMOND_TYPES, EASE_TYPES } from '$lib/score/beatmap'
+  import type { ScrollMode } from '$lib/editing/scrolling'
+  import type { Metadata, Single, Slide as SlideType, Note as NoteType,  } from '$lib/score/beatmap'
 
+  // Icons
   import { addIcon } from '@iconify/svelte'
   addIcon('custom:curve-in', {
     body: '<path d="M28.5 2C29.0523 2 29.5 2.44772 29.5 3C29.5 20.1387 14.9617 30 3.5 30C2.94772 30 2.5 29.5523 2.5 29C2.5 28.4477 2.94772 28 3.5 28C14.0383 28 27.5 18.8613 27.5 3C27.5 2.44772 27.9477 2 28.5 2Z" fill="currentColor"/>',
@@ -89,11 +58,8 @@
     height: 32
   })
 
-
   // Constants
   import {
-    MARGIN_BOTTOM,
-    MEASURE_HEIGHT,
     CANVAS_WIDTH,
     TICK_PER_MEASURE,
     TICK_PER_BEAT,
@@ -103,14 +69,16 @@
     ZOOM_MIN,
     LANE_MAX,
   } from '$lib/consts'
+  import { FLICK_TYPES, DIAMOND_TYPES, EASE_TYPES } from '$lib/score/beatmap'
 
   // Functions
   import { onMount, setContext, tick } from 'svelte'
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
-  import { clamp, snap } from '$lib/basic/math'
+  import { clamp } from '$lib/basic/math'
   import { closest, max, rotateNext } from '$lib/basic/collections'
   import { download, toBlob } from '$lib/basic/file'
+  import { toDiamondType, fromDiamondType } from '$lib/score/beatmap'
 
   // Score Data
   // export let susText: string
@@ -152,13 +120,7 @@
   // Resize on window resize
   $: app?.renderer.resize(CANVAS_WIDTH, innerHeight)
   
-  // Camera follow scroll position
-  $: if (app) {
-    app.stage.pivot.y = MARGIN_BOTTOM - scrollTick / TICK_PER_MEASURE * measureHeight
-  }
-  
   // Measure (Bar)
-  $: measureHeight = MEASURE_HEIGHT * zoom
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
   $: if (isNaN(currentMeasure)) currentMeasure = 1
   $: maxMeasure = Math.ceil(
@@ -179,16 +141,7 @@
   $: if (scrollTick < 0) scrollTick = 0
   $: if (scrollTick >= maxTick) scrollTick = maxTick
 
-  type ScrollMode = 'page' | 'smooth'
   let scrollMode: ScrollMode = 'page'
-
-  $: if (!paused) {
-    if (scrollMode == 'page') {
-      scrollTick = snap(currentTick + MARGIN_BOTTOM / MEASURE_HEIGHT * TICK_PER_MEASURE, innerHeight / measureHeight * TICK_PER_MEASURE * 0.76)
-    } else if (scrollMode == 'smooth') {
-      scrollTick = currentTick - innerHeight / measureHeight * TICK_PER_MEASURE * 0.5 + MARGIN_BOTTOM / MEASURE_HEIGHT * TICK_PER_MEASURE
-    }
-  }
 
   let lastTick: number = 0
   let gotoTick: (tick: number) => void
@@ -608,18 +561,18 @@
       on:open={onopen}
     />
     <Canvas
-      bind:app
       {PIXI}
       {maxMeasure}
-      bind:currentTick
-      bind:paused
-      {measureHeight}
+      {scrollMode}
       {scrollTick}
       {snapTo}
       {currentMode}
       {innerHeight}
       {visibility}
       {shiftKey}
+      bind:app
+      bind:currentTick
+      bind:paused
       bind:singles
       bind:slides
       bind:bpms
