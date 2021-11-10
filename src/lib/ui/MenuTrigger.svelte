@@ -25,7 +25,8 @@
         interactive: true,
         role: 'menu',
         placement: !sub ? 'top' : 'right-start',
-        offset: [-4, 5]
+        offset: [-4, 5],
+        delay: [0, 0]
       })
     }
   })
@@ -41,6 +42,7 @@
       trigger: 'manual',
       interactive: true,
       offset: [0, 0],
+      delay: [0, 0],
       onHide() {
         dispatch('hidden')
       }
