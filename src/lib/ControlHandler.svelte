@@ -9,19 +9,8 @@
   }
 
   const dispatch = createEventDispatcher<{
-    delete: void,
-    copy: void,
-    cut: void,
-    paste: void,
-    undo: void,
-    redo: void,
-    save: void,
-    open: void,
-    new: void,
     switch: Mode,
-    back: void,
   } & KeyboardEvents>()
-
 
   export let zoom: number
   export let scrollTick: number
@@ -35,51 +24,6 @@
 
   function onkeydown(event: KeyboardEvent) {
     if (document.activeElement && document.activeElement.tagName === 'INPUT') return
-
-    if (event.key == 'Delete') {
-      dispatch('delete')
-      event.preventDefault()
-    }
-
-    if (event.ctrlKey && event.key == 'c') {
-      dispatch('copy')
-      event.preventDefault()
-    }
-
-    if (event.ctrlKey && event.key == 'x') {
-      dispatch('cut')
-      event.preventDefault()
-    }
-
-    if (event.ctrlKey && event.key == 'v') {
-      dispatch('paste')
-      event.preventDefault()
-    }
-
-    if (event.ctrlKey && event.key == 'z') {
-      dispatch('undo')
-      event.preventDefault()
-    }
-
-    if (event.ctrlKey && event.key == 'y' || event.ctrlKey && event.shiftKey && event.key == 'z') {
-      dispatch('redo')
-      event.preventDefault()
-    }
-    
-    if (event.ctrlKey && event.key == 's') {
-      dispatch('save')
-      event.preventDefault()
-    }
-
-    if (event.ctrlKey && event.key == 'o') {
-      dispatch('open')
-      event.preventDefault()
-    }
-
-    if (event.ctrlKey && event.key == 'n') {
-      dispatch('new')
-      event.preventDefault()
-    }
 
     for (let mode of MODES) {
       if (event.key === MODE_SHORTCUTS[mode] || event.key === MODE_SHORTCUTS_NUMERAL[mode]) {
