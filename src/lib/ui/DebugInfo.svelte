@@ -1,17 +1,10 @@
 <script lang="ts">
-  import type { DebugInfo } from '$lib/basic/debug'
   import { debugInfo } from '$lib/basic/debug'
-
-  let info: DebugInfo
-
-  debugInfo.subscribe((debugInfo) => { info = debugInfo })
-
-  new Map<string, string | number>()
   let hidden: boolean = false
 </script>
 
 <div class="debug-display" class:hidden on:dblclick={() => { hidden = true }}>
-  {#each [...info.entries()] as [title, value] }
+  {#each [...$debugInfo.entries()] as [title, value] }
     <span class="title" title={title}>{title}</span>
     <span class="value">{value}</span>
   {/each}
@@ -34,6 +27,7 @@
     width: 30em;
     gap: 0 1em;
     white-space: pre;
+    z-index: 10000;
   }
 
   .debug-display > .title {
