@@ -210,10 +210,9 @@
 ul.statistics {
   width: auto;
   margin: 0 auto;
-  padding: 0;
+  padding: 0.5em;
   display: flex;
   flex-direction: column;
-
   list-style-type: none;
 }
 
@@ -242,7 +241,7 @@ ul .title {
   border-radius: 0.5em;
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: 1em;
   padding: 1em 1.5em;
   max-width: 100%;
   max-height: 100%;
