@@ -16,6 +16,7 @@
   export let sfxVolume: number
   export let gotoTick: (tick: number) => void
   export let lastTick: number
+  export let bgmLoading: boolean
 
   let scheduler: AudioScheduler
   let audioContext: AudioContext
@@ -90,9 +91,13 @@
     return await audioContext.decodeAudioData(arrayBuffer)
   }
 
-  $: createAudioBuffer(bgmURL).then((buffer) => {
-    bgmBuffer = buffer
-  })
+  $: if (bgmURL) {
+    bgmLoading = true
+    createAudioBuffer(bgmURL).then((buffer) => {
+      bgmBuffer = buffer
+      bgmLoading = false
+    })
+  } 
 
   function tick2secs(tick: number) {
     return tick / (TICK_PER_BEAT * currentBPM / 60)

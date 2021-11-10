@@ -39,6 +39,7 @@
   export let visibility: Record<string, boolean>
   export let volume: number
   export let sfxVolume: number
+  export let bgmLoading: boolean
 
   let historyDiv: HTMLDivElement
   
@@ -181,6 +182,7 @@
         openIcon="mdi:folder-music"
         fileIcon="mdi:file-music-outline"
         text="音楽ファイルを開く"
+        loading={bgmLoading}
       />
     </label>
     <label>

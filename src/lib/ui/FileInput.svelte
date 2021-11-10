@@ -9,6 +9,7 @@
   export let openIcon: string
   export let text: string
   export let fileIcon: string
+  export let loading: boolean
 
   let input: HTMLInputElement
 
@@ -25,12 +26,12 @@
       <div slot="head">
         <Icon icon={fileIcon} />
       </div>
-      <Button class="action" slot="tail" icon={openIcon} on:click={onclick}></Button>
+      <Button {loading} class="action" slot="tail" icon={openIcon} on:click={onclick}></Button>
     </TextInput>
   </div>
   <!-- {files[0]} -->
 {:else}
-  <Button icon={openIcon} on:click={onclick}>{text}</Button>
+  <Button {loading} icon={openIcon} on:click={onclick}>{text}</Button>
 {/if}
 
 <style>

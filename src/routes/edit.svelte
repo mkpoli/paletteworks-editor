@@ -232,6 +232,7 @@
   })
 
   $: bgmURL = bgmfiles && bgmfiles[0] ? URL.createObjectURL(bgmfiles[0]) : undefined 
+  let bgmLoading: boolean = false
 
   let bgmfiles: FileList
   let paused: boolean = true
@@ -785,6 +786,7 @@
       bind:visibility
       bind:volume
       bind:sfxVolume
+      {bgmLoading}
     />
     <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
     {#if import.meta.env.DEV}
@@ -840,6 +842,7 @@
   bind:paused
   bind:currentTick
   bind:lastTick
+  bind:bgmLoading
   {currentBPM}
   {slides}
   {singles}

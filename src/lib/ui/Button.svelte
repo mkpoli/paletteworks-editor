@@ -5,11 +5,16 @@
   export let disabled: boolean = false
   export let height: string = undefined
   export let width: string = undefined
+  export let loading: boolean = false
 </script>
 
 <button on:click class={$$props.class} {disabled}>
   {#if icon}
-    <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
+    {#if loading}
+      <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />
+    {:else}
+      <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
+    {/if}
   {/if}
   <slot/>
 </button>
@@ -51,5 +56,18 @@
 
   button:hover:not([disabled]) {
     filter: brightness(1.2);
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  :global(svg.loading) {
+    /* animation: spin 1s linear infinite; */
   }
 </style>
