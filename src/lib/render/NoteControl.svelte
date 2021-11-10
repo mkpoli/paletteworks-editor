@@ -65,10 +65,6 @@
     }
   }
 
-  function onresizeend() {
-    $resizing = false
-  }
-
   onMount(async () => {
     PIXI = await import('pixi.js')
     
@@ -77,7 +73,6 @@
     controlL.interactive = true
     controlL.addListener('pointerdown', onresizestart(false))
     controlL.addListener('pointermove', onresizing)
-    controlL.addListener('pointerup', onresizeend)
     controlL.cursor = 'ew-resize'
     app.stage.addChild(controlL)
 
@@ -87,7 +82,6 @@
     controlR.interactive = true
     controlR.addListener('pointerdown', onresizestart(true))
     controlR.addListener('pointermove', onresizing)
-    controlR.addListener('pointerup', onresizeend)
     controlR.cursor = 'ew-resize'
     app.stage.addChild(controlR)
 
@@ -100,11 +94,6 @@
     middle.interactive = true
     middle.cursor = 'move'
     middle.addListener('pointerdown', (event: PIXI.InteractionEvent) => {
-      // event.stopPropagation()
-      // if (event.data.button !== 0) {
-      //   return
-      // }
-      app.renderer.view.setPointerCapture(event.data.pointerId)
       dispatch('movestart', {
         lane: $cursor.lane,
         tick: $cursor.tick,
@@ -114,11 +103,6 @@
     middle.addListener('pointermove', () => {
       if (!$moving || $resizing) return
       dispatch('move')
-    })
-    middle.addListener('pointerup', (event: PIXI.InteractionEvent) => {
-      app.renderer.view.releasePointerCapture(event.data.pointerId)
-      if (!$moving || $resizing) return
-      dispatch('moveend')
     })
     middle.addListener('click', () => {
       dispatch('click', { note })

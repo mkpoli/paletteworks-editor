@@ -151,28 +151,6 @@
     app.renderer.plugins.interaction.cursorStyles['ew-resize'] = myCursorStyle.resize
 
     app.stage.sortableChildren = true
-    app.renderer.view.addEventListener('click', () => {
-      if (currentMode === 'bpm') {
-        dispatch('changeBPM', {
-          tick: $cursor.tick,
-          bpm: bpms.get($cursor.tick) || bpms.get(closest([...bpms.keys()], $cursor.tick, true))
-        })
-        return
-      }
-
-      if (currentMode === 'tap') {
-        dispatch('addsingle', { 
-          note : {
-            lane: $cursor.lane,
-            tick: $cursor.tick,
-            width: Math.min(2, LANE_MAX - $cursor.lane + 1),
-            critical: false,
-            flick: 'no'
-          }
-        })
-        return
-      }
-    })
 
     app.renderer.plugins.interaction.addListener('dblclick', async () => {
       await tick()
@@ -183,10 +161,7 @@
 
     app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
       if (event.button === 2) return
-      if ($moving) return
-      if ($moving) return
-      if ($resizing) return
-      if ($playheadDragging) return
+      if ($moving || $resizing || $playheadDragging) return
       app.renderer.view.setPointerCapture(event.pointerId)
       switch (currentMode) {
         case 'select': {
@@ -258,12 +233,36 @@
     }
 
     app.renderer.view.addEventListener('pointerup', (event: PointerEvent) => {
+      if (!$moving && !$resizing) {
+        if (currentMode === 'tap') {
+          dispatch('addsingle', { 
+            note : {
+              lane: $cursor.lane,
+              tick: $cursor.tick,
+              width: Math.min(2, LANE_MAX - $cursor.lane + 1),
+              critical: false,
+              flick: 'no'
+            }
+          })
+          return
+        }
+
+        if (currentMode === 'bpm') {
+          dispatch('changeBPM', {
+            tick: $cursor.tick,
+            bpm: bpms.get($cursor.tick) || bpms.get(closest([...bpms.keys()], $cursor.tick, true))
+          })
+          return
+        }
+      }
+
       if ($moving) {
         dispatch('moveend')
       }
       if ($resizing) {
         $resizing = false
       }
+
       if (!dragging) {
         return
       }
@@ -291,8 +290,8 @@
         }
       }
       dragging = false
+      
     })
-
 
     canvasContainer.appendChild(app.view)
   })

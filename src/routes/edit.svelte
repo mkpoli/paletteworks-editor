@@ -356,8 +356,6 @@
   import { moving, movingNotes, movingOffsets, movingOrigins } from '$lib/editing/moving'
   import type { MoveEvent } from '$lib/editing/moving'
   function onmovestart(origin: MoveEvent) {
-    if (currentMode !== 'select') return
-
     const { lane, tick, note } = origin.detail
     $moving = true
     $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
