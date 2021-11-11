@@ -8,6 +8,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': 5.0.0
   '@zerodevx/svelte-toast': ^0.6.1
+  dexie: ^3.2.0-rc.3
   eslint: ^8.0.0
   eslint-plugin-svelte3: ^3.2.1
   filesize: ^8.0.3
@@ -29,6 +30,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.0.0_23617e02451b63a8997d0f18b2622d8e
   '@typescript-eslint/parser': 5.0.0_eslint@8.0.0+typescript@4.4.3
   '@zerodevx/svelte-toast': 0.6.1
+  dexie: 3.2.0-rc.3
   eslint: 8.0.0
   eslint-plugin-svelte3: 3.2.1_eslint@8.0.0+svelte@3.43.0
   filesize: 8.0.3
@@ -891,6 +893,11 @@ packages:
   /detect-indent/6.1.0:
     resolution: {integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==}
     engines: {node: '>=8'}
+    dev: true
+
+  /dexie/3.2.0-rc.3:
+    resolution: {integrity: sha512-4DdArnU3AWfCWRFz+7lkgZMjTvhPgYvQ5vGA4nHdTWvi+Gh5hLIeF/vGa7MjgeXLae82uquWixihXqyuheQSTA==}
+    engines: {node: '>=6.0'}
     dev: true
 
   /dir-glob/3.0.1:

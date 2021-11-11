@@ -4,7 +4,7 @@
   export let disabled: boolean = false
 </script>
 
-<div class="input-container">
+<div class={[$$props.class, "input-container"].join(' ')}>
   <slot name="head" />
   <input type="text" bind:value={value} bind:this={inputElement} on:keydown {disabled}>
   <slot name="tail"/>

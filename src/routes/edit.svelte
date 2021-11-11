@@ -82,24 +82,26 @@
 
   // Score Data
   // export let susText: string
-  import { writable } from 'svelte-local-storage-store'
+  // import { writable } from 'svelte-local-storage-store'
 
   const emptySUS = "#00002: 4\n#BPM01: 120\n#00008: 01"
   const emptySUSData = loadSUS(emptySUS)
 
-  let susText: string
+  // let susText: string
 
-  const metadataStore = writable<Metadata>('metadata', null)
-  const singlesStore = writable<Single[]>('singles', null)
-  const slidesStore = writable<SlideType[]>('slides', null)
-  const bpmsStore = writable<[number, number][]>('bpms', null)
+  // const metadataStore = writable<Metadata>('metadata', null)
+  // const singlesStore = writable<Single[]>('singles', null)
+  // const slidesStore = writable<SlideType[]>('slides', null)
+  // const bpmsStore = writable<[number, number][]>('bpms', null)
 
   console.log({ emptySUSData })
 
-  let metadata: Metadata = $metadataStore ?? emptySUSData.metadata
-  let singles: Single[] = $singlesStore ?? emptySUSData.score.singles
-  let slides: SlideType[] = $slidesStore ?? emptySUSData.score.slides
-  let bpms: Map<number, number> = $bpmsStore ? new Map($bpmsStore) : emptySUSData.score.bpms
+  // let metadata: Metadata = $metadataStore ?? emptySUSData.metadata
+  // let singles: Single[] = $singlesStore ?? emptySUSData.score.singles
+  // let slides: SlideType[] = $slidesStore ?? emptySUSData.score.slides
+  // let bpms: Map<number, number> = $bpmsStore ? new Map($bpmsStore) : emptySUSData.score.bpms
+
+  let { metadata, score: { singles, slides, bpms }} = emptySUSData
 
   onMount(() => {
     if (!empty) {
@@ -112,14 +114,14 @@
 
   $: if (empty) { saved = true }
 
-  $: if (susText) {
-    ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
-  }
+  // $: if (susText) {
+  //   ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
+  // }
 
-  $: if (metadata) $metadataStore = metadata
-  $: if (singles) $singlesStore = singles
-  $: if (slides) $slidesStore = slides
-  $: if (bpms) $bpmsStore = [...bpms]
+  // $: if (metadata) $metadataStore = metadata
+  // $: if (singles) $singlesStore = singles
+  // $: if (slides) $slidesStore = slides
+  // $: if (bpms) $bpmsStore = [...bpms]
  
   console.log({ singles, slides, bpms })
 
@@ -501,22 +503,81 @@
     }
   })
 
+  async function savecurrent() {
+    db.table('projects').update(currentProject.id, {
+      updated: new Date(),
+      metadata, score: {
+        singles,
+        slides,
+        bpms,
+      },
+      preview: await renderPreview()
+    })
+    updated = false
+    toast.push(`${currentProject.name} として保存されました。`)
+  }
+
   let saved = true
   $: dbg('saved', saved)
-  function onnew() {
+  async function onnew() {
+    // if (empty) {
+    //   console.log('empty')
+    //   return
+    // }
+
+    savecurrent()
     if (!saved && !confirm('新しいファイルを作成すると、保存されていない変更は失われます。よろしいですか？')) return
     ({ metadata, score: { singles, slides, bpms }} = emptySUSData)
+    await tick()
+    const project: Project = {
+      name: 'Untitled',
+      created: new Date(),
+      updated: new Date(),
+      deleted: null,
+      score: {
+        singles,
+        slides,
+        bpms,
+      },
+      metadata,
+      preview: await renderPreview()
+    }
+    db.table('projects').add(project)
   }
 
   let fileInput: HTMLInputElement
   let scoreFiles: FileList
   $: scoreURL = scoreFiles && scoreFiles[0] ? URL.createObjectURL(scoreFiles[0]) : undefined
-  $: if (scoreURL) {
-    fetch(scoreURL).then((res) => res.text()).then((text) => { susText = text })
-  }
-  function onopen() {
+  $: onfileopened(scoreURL)
+
+  function onopenfile() {
     if (!saved && !confirm('ファイルを開くと、保存されていない変更は失われます。よろしいですか？')) return
     fileInput.click()
+  }
+
+  async function onfileopened(url: string) {
+    const res = await fetch(url)
+    const text = await res.text();
+    ({ metadata, score: { singles, slides, bpms }} = loadSUS(text))
+    await tick()
+    const project: Project = {
+      name: metadata.title || 'Untitled',
+      created: new Date(),
+      updated: new Date(),
+      deleted: null,
+      score: {
+        singles,
+        slides,
+        bpms,
+      },
+      metadata,
+      preview: await renderPreview()
+    }
+    db.table('projects').add(project)
+  }
+
+  function onopen() {
+    projectsDialogOpened = true
   }
 
   function onskipstart() {
@@ -570,6 +631,49 @@
   function onselectall() {
     $selectedNotes = [...singles, ...slides.flatMap((slide) => [slide.head, slide.tail, ...slide.steps])]
   }
+
+  import type { Project } from '$lib/projects'
+  import ProjectsDialog from '$lib/dialogs/ProjectsDialog.svelte'
+  let projectsDialogOpened = true
+  let currentProject: Project = null
+  import { projects, db } from '$lib/projects'
+  $: dbg('currentProject.id', currentProject?.id)
+
+  let updated: boolean = false
+  $: dbg('updated', updated)
+  $: if (metadata && slides && singles && bpms) {
+    updated = true
+  }
+
+  async function renderPreview(): Promise<Blob> {
+    if (!PIXI) return
+    const renderTexture = PIXI.RenderTexture.create({
+      width: CANVAS_WIDTH,
+      height: innerHeight,
+      resolution: 0.25
+    })
+    app.renderer.render(app.stage, { renderTexture })
+    const canvas = app.renderer.plugins.extract.canvas(renderTexture)
+    return await new Promise(resolve => canvas.toBlob(resolve))
+  }
+    
+  setInterval(async () => {
+    if (currentProject && updated) {
+      const preview = await renderPreview()
+
+      db.table('projects').update(currentProject.id, {
+        updated: new Date(),
+        metadata, score: {
+          singles,
+          slides,
+          bpms,
+        },
+        preview
+      })
+      updated = false
+      toast.push(`自動保存されました。`)
+    }
+  }, 5000)
 </script>
 
 <svelte:head>
@@ -802,6 +906,16 @@
   on:delete={() => {
     exec(new RemoveBPM(bpms, lastPointerTick))
   }}
+/>
+
+<ProjectsDialog
+  bind:opened={projectsDialogOpened}
+  on:open={({ detail: { project }}) => {
+    ({ metadata, score: { bpms, singles, slides}} = project)
+    currentProject = project
+  }}
+  on:openfile={onopenfile}
+  on:new={onnew}
 />
 
 <ControlHandler
