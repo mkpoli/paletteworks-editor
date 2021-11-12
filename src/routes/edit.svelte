@@ -573,7 +573,8 @@
       metadata,
       preview: await renderPreview()
     }
-    db.table('projects').add(project)
+    const id = await db.table('projects').add(project)
+    currentProject = await db.table('projects').get(id)
   }
 
   function onopen() {
