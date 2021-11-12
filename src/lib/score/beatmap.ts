@@ -53,7 +53,7 @@ export type SlideStep = INote & {
   diamond: boolean,
   ignored: boolean,
 } & IEase
-export type SlideTail = INote & IDirectional
+export type SlideTail = INote & IDirectional & ICritical
 export type SlideNote = SlideHead | SlideStep | SlideTail
 export type Slide = {
   head: SlideHead

@@ -465,6 +465,7 @@
           bind:slide
           stepsVisible={visibility.SlideSteps}
           on:stepclick
+          on:tailclick
           on:click={(event) => { pointerOnNote = true; dispatch('slideclick', event.detail) }}
           on:move
           on:movestart

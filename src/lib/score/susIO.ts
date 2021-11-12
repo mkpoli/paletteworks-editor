@@ -143,7 +143,8 @@ export function convertScoreData(score: SusScore): Score {
             tick,
             lane,
             width,
-            flick
+            flick,
+            critical: critical || criticalMods.has(key)
           }
           break
         }
@@ -282,7 +283,15 @@ export function exportScoreData(score: Score): SusScore {
         width: tail.width,
         type: FLICK_TO_TYPE[tail.flick]
       })
-    }    
+    }
+    if (tail.critical) {
+      tapNotes.push({
+        tick: tail.tick,
+        lane: tail.lane,
+        width: tail.width,
+        type: 2
+      })
+    }
     slideNotes.push(slideNote)
   })
 

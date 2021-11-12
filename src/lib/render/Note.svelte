@@ -17,9 +17,9 @@
   $: ({ lane, tick, width } = note)
   let flick: Flick
   $: flick = 'flick' in note ? note.flick : 'no'
-  $: critical = 'critical' in note ? note.critical : critical
+  $: realCritical = critical || ('critical' in note && note.critical) // critical ==
 
-  $: type = critical
+  $: type = realCritical
                 ? 'noteC.png'
                 : flick !== 'no'
                   ? 'noteF.png'
@@ -76,7 +76,7 @@
 <!-- FLICK ARROW -->
 {#if flick !== 'no'}
   <Arrow
-    {...{ lane, tick, width, critical, flick }}
+    {...{ lane, tick, width, critical: realCritical, flick }}
   />
 {/if}
 

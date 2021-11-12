@@ -312,7 +312,7 @@
         tail: {
           lane: $cursor.lane - $clipboardOffsets.get(tail).lane,
           tick: $cursor.tick - $clipboardOffsets.get(tail).tick,
-          width: tail.width, flick: tail.flick
+          width: tail.width, flick: tail.flick, critical: tail.critical
         },
         steps: steps.map((note) => (
           {
@@ -659,7 +659,7 @@
   }
     
   setInterval(async () => {
-    if (currentProject && updated) {
+    if (currentProject && updated && !empty) {
       const preview = await renderPreview()
 
       db.table('projects').update(currentProject.id, {
@@ -835,6 +835,26 @@
               }))
               playSound('stage')
             }
+            break
+          }
+        }
+      }}
+      on:tailclick={({ detail: { note }}) => {
+        console.log('tailclick')
+        switch (currentMode) {
+          case 'flick': {
+            exec(new UpdateSlideNote(slides, note, {
+              flick: rotateNext(note.flick, FLICK_TYPES)
+            }))
+            playSound('stage')
+            break
+          }
+          case 'critical': {
+            console.log(note.critical, '->', !note.critical)
+            exec(new UpdateSlideNote(slides, note, {
+              critical: !note.critical
+            }))
+            playSound('stage')
             break
           }
         }
