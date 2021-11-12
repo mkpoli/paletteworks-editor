@@ -5,6 +5,7 @@
     'Backspace': '← Backspace',
     'Shift': '⇧ Shift',
     'Control': 'Ctrl',
+    'Home': '↖ Home',
     '`': '`',
     ' ': '␣ Space',
     '\\': '\\',

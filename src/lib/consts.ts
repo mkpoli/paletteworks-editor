@@ -96,7 +96,7 @@ export const EFFECT_SOUNDS = {
 }
 
 export const KEYBOARD_SHORTCUTS  = {
-  skipstart: ['Backspace', ['Shift', 'Backquote']],
+  skipstart: ['Backspace', 'Home', ['Shift', 'Backquote']],
   skipback: ['`', '\\'],
   playpause: [' '],
   duplicate: [['Control', 'KeyD']],
