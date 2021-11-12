@@ -30,40 +30,46 @@
   function onkeydown(event: KeyboardEvent) {
     if (document.activeElement && document.activeElement.tagName === 'INPUT') return
 
-    for (let mode of MODES) {
-      if (event.key === MODE_SHORTCUTS[mode] || event.key === MODE_SHORTCUTS_NUMERAL[mode]) {
-        dispatch('switch', mode)
-        event.preventDefault()
-      }
-    }
-
-    Object.entries(KEYBOARD_SHORTCUTS).forEach(([action, keyCombinations]) => {
-      keyCombinations.forEach((keyCombination: string | readonly string[]) => {
+    let target: KeyboardAction
+    const hasTarget = Object.entries(KEYBOARD_SHORTCUTS).some(([action, keyCombinations]) => {
+      return keyCombinations.some((keyCombination: string | readonly string[]) => {
         if (keyCombination instanceof Array) {
           for (let key of keyCombination) {
             switch (key) {
               case 'Control':
-                if (!event.ctrlKey) return
+                if (!event.ctrlKey) return false
                 break
               case 'Shift':
-                if (!event.shiftKey) return
+                if (!event.shiftKey) return false
                 break
               case 'Alt':
-                if (!event.altKey) return
+                if (!event.altKey) return false
                 break
               default:
-                if (event.code !== key) return
+                if (event.code !== key) return false
                 break
             }
           }
         } else {
           const key = keyCombination
-          if (event.key !== key) return
+          if (event.key !== key || event.altKey || event.ctrlKey || event.shiftKey) return false
         }
-        event.preventDefault()
-        dispatch(action as KeyboardAction)
+        target = action as KeyboardAction
+        return true
       })
     })
+    if (hasTarget) {
+      event.preventDefault()
+      dispatch(target as KeyboardAction)
+      return
+    }
+    
+    for (let mode of MODES) {
+      if (event.key === MODE_SHORTCUTS[mode] || event.key === MODE_SHORTCUTS_NUMERAL[mode]) {
+        dispatch('switch', mode)
+        event.preventDefault()
+      }
+    }      
   }
 </script>
 
