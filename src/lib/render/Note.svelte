@@ -71,6 +71,16 @@
       noteWidth, 0.5 * NOTE_HEIGHT
     )
   }
+
+  $: inscreen = instance && instance.y < $position.containerHeight + app.stage.pivot.y && instance.y > app.stage.pivot.y
+
+  // $: if (instance) {
+  //   if (inscreen) {
+  //     app.stage.addChild(instance)
+  //   } else {
+  //     app.stage.removeChild(instance)
+  //   }
+  // }
 </script>
 
 <!-- FLICK ARROW -->
@@ -80,14 +90,16 @@
   />
 {/if}
 
-<NoteControl
-  on:move
-  on:movestart
-  on:moveend
-  on:click
-  on:rightclick
-  on:dblclick
-  draw={$selectedNotes.includes(note)}
-  rect={currentRect}
-  bind:note
-/>
+{#if inscreen}
+  <NoteControl
+    on:move
+    on:movestart
+    on:moveend
+    on:click
+    on:rightclick
+    on:dblclick
+    draw={$selectedNotes.includes(note)}
+    rect={currentRect}
+    bind:note
+  />
+{/if}
