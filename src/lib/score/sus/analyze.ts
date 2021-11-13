@@ -69,7 +69,7 @@ export function analyze(sus: string, ticksPerBeat: number): Score {
     }
   })
 
-  const slideNotes = [...streams.values()].map(toSlides).flat()
+  const slideNotes = [...streams.values()].flatMap(toSlides)
 
   const bpms: Timing[] = bpmChangeObjects
     .sort((a, b) => a.tick - b.tick)

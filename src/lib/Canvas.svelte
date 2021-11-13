@@ -247,13 +247,8 @@
     })
 
     function calcSelection(): NoteType[] {
-      return [
-        ...singles.filter(({ tick, lane, width }) => $position.intersectRect(lane, width, tick, selectRect)),
-        ...slides
-          .map(({ head, tail, steps }) => [head, tail, ...steps])
-          .flat()
-          .filter(({ lane, width, tick }) => $position.intersectRect(lane, width, tick, selectRect))
-      ]
+      return [...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
+        .filter(({ lane, width, tick }) => $position.intersectRect(lane, width, tick, selectRect))
     }
 
     app.renderer.view.addEventListener('pointerup', (event: PointerEvent) => {

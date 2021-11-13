@@ -157,10 +157,8 @@
   $: maxMeasure = Math.ceil(
       (
         max(
-          slides
-            .map(({ head, tail, steps }) => [head.tick, tail.tick, steps.map(({ tick }) => tick)])
-            .concat(singles.map(({ tick }) => tick))
-            .flat(2) as number[]
+          [...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
+            .map(({ tick }) => tick)
         ) || 0
       ) / TICK_PER_MEASURE
     ) + 1
@@ -277,7 +275,8 @@
         || steps.some((step) => notes.includes(step))
       ))
 
-    $clipboardSlides.map(({ head, tail, steps }) => [head, tail, ...steps]).flat()
+    $clipboardSlides
+      .flatMap(({ head, tail, steps }) => [head, tail, ...steps])
       .concat($clipboardSingles)
       .forEach((note) => {
         $clipboardOffsets.set(note, {
@@ -332,7 +331,7 @@
 
     $selectedNotes = [
       ...pastedSingles,
-      ...pastedSlides.map(({ head, tail, steps }) => [head, tail, ...steps]).flat()
+      ...pastedSlides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])
     ]
   }
 

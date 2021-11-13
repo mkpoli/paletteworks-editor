@@ -55,8 +55,7 @@
 
     let tickTable = new Map<number, Note[]>()
 
-
-    ;[...singles, ...slides.map(({ head, tail, steps }) => [head, tail, ...steps])].flat()
+    ;[...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
       .forEach((note) => {
         if (tickTable.has(note.tick)) {
           tickTable.set(note.tick, tickTable.get(note.tick).concat(note))
