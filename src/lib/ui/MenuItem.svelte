@@ -9,11 +9,9 @@
   export let icon: string
   export let text: string
   export let disabled: boolean = false
-  export let checked: boolean = undefined
-  export let indeterminate: boolean = undefined
+  export let checked: boolean | undefined = undefined
+  export let indeterminate: boolean | undefined = undefined
 
-  let container: HTMLDivElement = null
-  
   const hasSubMenu: boolean = !!$$slots.default
   let subMenu: HTMLDivElement
 
@@ -59,7 +57,6 @@
   <div
     class="menu-item"
     role="menuitem"
-    bind:this={container}
   >
     <Button
       {icon}
