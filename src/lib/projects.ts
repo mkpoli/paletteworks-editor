@@ -4,9 +4,8 @@ export interface Project {
   name: string
   created: Date
   updated: Date
-  deleted: Date
   metadata: Metadata
-  score: Score,
+  score: Score
   preview: Blob
 }
 
@@ -17,7 +16,7 @@ class Database extends Dexie {
   constructor() {
     super('PaletteWorks')
     this.version(1).stores({
-      projects: '++id,name,created,updated,deleted,metadata,score',
+      projects: '++id,name,created,updated,metadata,score',
     })
     this.projects = this.table('projects')
   }

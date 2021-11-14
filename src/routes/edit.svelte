@@ -550,7 +550,6 @@
       name: 'Untitled',
       created: new Date(),
       updated: new Date(),
-      deleted: null,
       score: {
         singles,
         slides,
@@ -581,7 +580,6 @@
       name: metadata.title || 'Untitled',
       created: new Date(),
       updated: new Date(),
-      deleted: null,
       score: {
         singles,
         slides,
