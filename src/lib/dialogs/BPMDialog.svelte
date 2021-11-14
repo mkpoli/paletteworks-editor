@@ -46,7 +46,7 @@
         }
       }}
       bind:inputElement
-      bind:value={value}
+      bind:value
     >
       <div slot="head">
         <Icon icon="jam:music-f" height="1.5em" />

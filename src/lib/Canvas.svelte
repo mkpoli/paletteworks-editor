@@ -263,7 +263,7 @@
         if (currentMode === 'bpm') {
           dispatch('changeBPM', {
             tick: $cursor.tick,
-            bpm: bpms.get($cursor.tick) || bpms.get(closest([...bpms.keys()], $cursor.tick, true))
+            bpm: bpms.get($cursor.tick) ?? bpms.get(closest([...bpms.keys()], $cursor.tick, true)) ?? 120
           })
           return
         }
