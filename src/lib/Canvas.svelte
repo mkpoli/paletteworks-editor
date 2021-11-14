@@ -155,7 +155,7 @@
     },
   }>()
   let dragging: boolean = false
-  let draggingSlide: SlideType = null
+  let draggingSlide: SlideType | null = null
   $: if (currentMode) {
     dragging = false
     draggingSlide = null
@@ -200,7 +200,6 @@
           break
         }
         case 'slide': {
-          dragging = true
           draggingSlide = {
             head: {
               tick: $cursor.tick,
@@ -230,20 +229,14 @@
       const { x, y } = event.data.global
       $pointer = { x, y }
 
-      if (!dragging) {
-        return
+      if (dragging && currentMode === 'select') {
+        pointB = new PIXI.Point(x, y + app.stage.pivot.y)
       }
-      switch (currentMode) {
-        case 'select': {
-          pointB = new PIXI.Point(x, y + app.stage.pivot.y)
-          break
-        }
-        case 'slide': {
-          draggingSlide.tail.lane = $cursor.lane
-          draggingSlide.tail.tick = $cursor.tick
-          slides = slides
-          break
-        }
+
+      if (draggingSlide !== null && currentMode === 'slide') {
+        draggingSlide.tail.lane = $cursor.lane
+        draggingSlide.tail.tick = $cursor.tick
+        slides = slides 
       }
     })
 
@@ -320,36 +313,29 @@
         $resizing = false
       }
 
-      if (!dragging) {
-        return
-      }
       app.renderer.view.releasePointerCapture(event.pointerId)
-      switch (currentMode) {
-        case 'select': {
-          $selectedNotes = $selectedNotes.concat(calcSelection())
-          break
-        }
-        case 'slide': {
-          if (draggingSlide.tail.tick < draggingSlide.head.tick) {
-            // Swap
-            const tick = draggingSlide.head.tick
-            const lane = draggingSlide.head.lane
-            // TODO: width
-            draggingSlide.head.tick = draggingSlide.tail.tick
-            draggingSlide.head.lane = draggingSlide.tail.lane
-            draggingSlide.tail.tick = tick
-            draggingSlide.tail.lane = lane
-          } else if (draggingSlide.head.tick == draggingSlide.tail.tick) {
-            draggingSlide.tail.tick += TICK_PER_MEASURE / snapTo
-          }
-          slides = slides
-          dispatch('addslide', { slide: draggingSlide })
-          draggingSlide = null
-          break
-        }
+
+      if (dragging && currentMode === 'select') {
+        $selectedNotes = $selectedNotes.concat(calcSelection())
+        dragging = false
       }
-      dragging = false
-      
+
+      if (draggingSlide !== null && currentMode === 'slide') {
+        if (draggingSlide.tail.tick < draggingSlide.head.tick) {
+          // Swap
+          const tick = draggingSlide.head.tick
+          const lane = draggingSlide.head.lane
+          draggingSlide.head.tick = draggingSlide.tail.tick
+          draggingSlide.head.lane = draggingSlide.tail.lane
+          draggingSlide.tail.tick = tick
+          draggingSlide.tail.lane = lane
+        } else if (draggingSlide.head.tick == draggingSlide.tail.tick) {
+          draggingSlide.tail.tick += TICK_PER_MEASURE / snapTo
+        }
+        slides = slides
+        dispatch('addslide', { slide: draggingSlide })
+        draggingSlide = null
+      }
     })
 
     app.renderer.view.addEventListener('dblclick', async () => {
