@@ -212,7 +212,8 @@
               tick: $cursor.tick,
               lane: $cursor.lane,
               flick: 'no',
-              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1)
+              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
+              critical: false,
             },
             critical: false,
             steps: []
