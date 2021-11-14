@@ -47,6 +47,14 @@ export interface IEase {
   easeType: EaseType,
 }
 
+export function hasEaseType(note: Note): note is Note & IEase {
+  return 'easeType' in note
+}
+
+export function isSlideStep(note: Note): note is SlideStep {
+  return 'diamond' in note && 'ignored' in note
+}
+
 export type Single = INote & IDirectional & ICritical
 export type SlideHead = INote & IEase
 export type SlideStep = INote & {

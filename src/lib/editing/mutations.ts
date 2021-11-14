@@ -260,6 +260,38 @@ export class UpdateSlideNote extends SlideMutation {
   }
 }
 
+export class UpdateSlideNotes extends SlideMutation {
+  modifications: Map<Note, Partial<Note>>
+  originalDatas: Map<Note, Partial<Note>>
+  constructor(slides: Slide[], modifications: Map<Note, Partial<Note>>) {
+    super(slides)
+    this.type = 'スライドノーツ'
+    this.size = modifications.size
+    this.modifications = modifications
+    this.originalDatas = new Map([...modifications.entries()].map(([target, modification]) => 
+      [target, Object.fromEntries(Object.keys(modification).map((key) => [key, target[key]]))]
+    ))
+  }
+
+  exec() {
+    this.modifications.forEach((modification, target) => {
+      Object.entries(modification).forEach(([key, value]) => {
+        target[key] = value
+      })
+    })
+    return this.slides
+  }
+
+  undo() {
+    this.originalDatas.forEach((originalData, target) => {
+      Object.entries(originalData).forEach(([key, value]) => {
+        target[key] = value
+      })
+    })
+    return this.slides
+  }
+}
+
 export class UpdateSlide extends SlideMutation {
   targetSlide: Slide
   modification: Partial<Slide>
@@ -287,6 +319,7 @@ export class UpdateSlide extends SlideMutation {
     return this.slides
   }
 }
+
 
 export abstract class BatchMutation extends Mutation implements SingleMutation, SlideMutation {
   singles: Single[]

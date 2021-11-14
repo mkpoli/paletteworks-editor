@@ -393,7 +393,25 @@
     shiftKey = event.shiftKey
   })
 
-  import { AddBPM, AddSingles, AddSlides, BatchAdd, BatchMutation, BatchRemove, BatchUpdate, BPMMutation, Mutation, RemoveBPM, SetBPM, SingleMutation, SlideMutation, UpdateSingle, UpdateSlide, UpdateSlideNote } from '$lib/editing/mutations'
+  import {
+    AddBPM,
+    AddSingles,
+    AddSlides,
+    BatchAdd,
+    BatchMutation,
+    BatchRemove,
+    BatchUpdate,
+    BPMMutation,
+    Mutation,
+    RemoveBPM,
+    SetBPM,
+    SingleMutation,
+    SlideMutation,
+    UpdateSingle,
+    UpdateSlide,
+    UpdateSlideNote,
+    UpdateSlideNotes
+  } from '$lib/editing/mutations'
 
   import { mutationHistory, undoneHistory } from '$lib/editing/history';
 
@@ -732,19 +750,14 @@
       on:move={onmove}
       on:movestart={onmovestart}
       on:moveend={onmoveend}
-      on:changecurve={({ detail: { note, type } }) => {
+      on:changecurve={({ detail: { notes, type } }) => {
         // @ts-ignore
-        exec(new UpdateSlideNote(slides, note, {
-          easeType: type
-        }))
+        exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { easeType: type }]))))
         playSound('stage')
       }}
-      on:changediamond={({ detail: { note, type }}) => {
+      on:changediamond={({ detail: { notes, type }}) => {
         const [diamond, ignored] = fromDiamondType(type)
-
-        exec(new UpdateSlideNote(slides, note, {
-          diamond, ignored
-        }))
+        exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { diamond, ignored }]))))
         playSound('stage')
       }}
       on:selectsingle={(event) => {
@@ -774,17 +787,17 @@
             break
           }
           case 'mid': {
-            if ($cursor.tick === slide.tail.tick) break
+            if ($cursor.tick === slide.tail.tick || $cursor.tick === slide.head.tick) break
 
-            if ($cursor.tick === slide.head.tick) {
-              if (shiftKey) {
-                exec(new UpdateSlideNote(slides, slide.head, {
-                  easeType: rotateNext(slide.head.easeType, EASE_TYPES)
-                }))
-                playSound('stage')
-              }
-              break
-            }
+            // if ($cursor.tick === slide.head.tick) {
+            //   if (shiftKey) {
+            //     exec(new UpdateSlideNote(slides, slide.head, {
+            //       easeType: rotateNext(slide.head.easeType, EASE_TYPES)
+            //     }))
+            //     playSound('stage')
+            //   }
+            //   break
+            // }
 
             if (!slide.steps.some(({ tick }) => tick === $cursor.tick)) {
               const step = {
@@ -822,19 +835,19 @@
             break
           }
           case 'mid': {
-            if (!shiftKey) {
-              const [diamond, ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
-              exec(new UpdateSlideNote(slides, note, {
-                diamond, ignored
-              }))
-              playSound('stage')
-            } else {
-              exec(new UpdateSlideNote(slides, note, {
-                easeType: rotateNext(note.easeType, EASE_TYPES)
-              }))
-              playSound('stage')
-            }
-            break
+          //   if (!shiftKey) {
+          //     const [diamond, ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
+          //     exec(new UpdateSlideNote(slides, note, {
+          //       diamond, ignored
+          //     }))
+          //     playSound('stage')
+          //   } else {
+          //     exec(new UpdateSlideNote(slides, note, {
+          //       easeType: rotateNext(note.easeType, EASE_TYPES)
+          //     }))
+          //     playSound('stage')
+          //   }
+          //   break
           }
         }
       }}

@@ -10,7 +10,8 @@
   export let text: string
   export let disabled: boolean = false
   export let checked: boolean = undefined
-  
+  export let indeterminate: boolean = undefined
+
   let container: HTMLDivElement = null
   
   const hasSubMenu: boolean = !!$$slots.default
@@ -74,9 +75,14 @@
         {#if checked}
           <Icon icon="mdi:checkbox-marked-circle" width="1.5em" class="chevron" />
         {:else}
-          <Icon icon="mdi:checkbox-blank-circle-outline" width="1.5em" class="chevron" />
+          {#if indeterminate}
+            <Icon icon="mdi:checkbox-marked-circle-outline" width="1.5em" class="chevron" />
+          {:else}
+            <Icon icon="mdi:checkbox-blank-circle-outline" width="1.5em" class="chevron" />
+          {/if}
         {/if}
       {/if}
+      
     </Button>
   </div>
 </Wrapper>

@@ -1,6 +1,6 @@
 <script lang="ts">
   // Types
-  import type { Slide as SlideType, SlideStep, Note as NoteType, SlideTail } from "$lib/score/beatmap"
+  import type { Slide as SlideType, SlideStep, Note as NoteType, SlideTail, SlideHead } from "$lib/score/beatmap"
 
   // Components
   import Note from '$lib/render/Note.svelte'
@@ -13,7 +13,8 @@
     click: { slide: SlideType }
     stepclick: { note: SlideStep, slide: SlideType },
     dblclick: { note: NoteType },
-    tailclick: { note: SlideTail }
+    tailclick: { note: SlideTail },
+    headclick: { note: SlideHead },
   }>()
 
   // Props
@@ -40,7 +41,7 @@
   bind:note={head}
   slide={true}
   {critical}
-  on:click={() => { dispatch('click', { slide }) }}
+  on:click={() => { dispatch('headclick', { note: head }); dispatch('click', { slide }) }}
   on:rightclick
   on:move
   on:movestart
