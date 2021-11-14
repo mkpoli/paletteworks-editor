@@ -175,7 +175,7 @@
     move: `url(${moveCursor}) 16 16, move`,
     resize: `url(${resizeCursor}) 16 16, ew-resize`,
     select: `url(${selectCursor}) 6 4, default`
-  }
+  } as const
   onMount(() => {
     app.renderer.plugins.interaction.cursorStyles['move'] = myCursorStyle.move
     app.renderer.plugins.interaction.cursorStyles['ew-resize'] = myCursorStyle.resize
@@ -358,7 +358,7 @@
 
   let canvasContainer: HTMLDivElement
 
-  function setCursor(cursor: string) {
+  function setCursor(cursor: keyof typeof myCursorStyle) {
     app.renderer.plugins.interaction.cursorStyles.default =  myCursorStyle[cursor]
     app.renderer.plugins.interaction.setCursorMode(cursor)
   }
@@ -375,7 +375,7 @@
 
   import { dragging as playheadDragging } from '$lib/editing/playhead'
 
-  let currentNote: NoteType
+  let currentNote: NoteType | null = null
 
   function onchangecurve(type: EaseType, notes: NoteType[]) {
     dispatch('changecurve', { notes: notes as IEase[], type })
@@ -524,14 +524,14 @@
   {#if $selectedNotes.length}
     <MenuDivider/>
     <MenuItem icon="mdi:content-duplicate" text="複製 (&D)" on:click={() => dispatch('duplicate', { notes: $selectedNotes })} />
-  {:else if currentNote}
+  {:else if currentNote !== null}
     <MenuDivider/>
     <MenuItem icon="mdi:content-duplicate" text="複製 (&D)" on:click={() => dispatch('duplicate', { notes: [currentNote] })} />
   {/if}
   {#if $selectedNotes.length}
     <MenuItem icon="mdi:flip-horizontal" text="左右ミラー (&H)" on:click={() => dispatch('flip', { notes: $selectedNotes })} />
   {/if}
-  {#if !$selectedNotes.length && currentNote && 'easeType' in currentNote}
+  {#if !$selectedNotes.length && currentNote !== null && 'easeType' in currentNote}
     <MenuDivider/>
     <MenuItem icon="custom:straight" text="直線" on:click={() => { onchangecurve(false, [currentNote]); currentNote = currentNote }} checked={currentNote.easeType === false}/>
     <MenuItem icon="custom:curve-in" text="加速" on:click={() => { onchangecurve('easeOut', [currentNote]); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
