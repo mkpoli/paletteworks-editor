@@ -833,19 +833,20 @@
             break
           }
           case 'mid': {
-          //   if (!shiftKey) {
-          //     const [diamond, ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
-          //     exec(new UpdateSlideNote(slides, note, {
-          //       diamond, ignored
-          //     }))
-          //     playSound('stage')
-          //   } else {
-          //     exec(new UpdateSlideNote(slides, note, {
-          //       easeType: rotateNext(note.easeType, EASE_TYPES)
-          //     }))
-          //     playSound('stage')
-          //   }
-          //   break
+            if ($selectedNotes.length) break
+            if (!shiftKey) {
+              const [diamond, ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
+              exec(new UpdateSlideNote(slides, note, {
+                diamond, ignored
+              }))
+              playSound('stage')
+            } else {
+              exec(new UpdateSlideNote(slides, note, {
+                easeType: rotateNext(note.easeType, EASE_TYPES)
+              }))
+              playSound('stage')
+            }
+            break
           }
         }
       }}
