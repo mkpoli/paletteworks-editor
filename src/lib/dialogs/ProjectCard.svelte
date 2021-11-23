@@ -57,7 +57,9 @@
   bind:this={container}
 >
   <div class="preview" on:dblclick={() => { dispatch('open') }} bind:this={tooltipTarget}>
-    <img src={URL.createObjectURL(project.preview)} alt="Preview" />
+    {#if project.preview}
+      <img src={URL.createObjectURL(project.preview)} alt="Preview" />
+    {/if}
   </div>
   <div bind:this={tooltipContent}>
     <dl>
