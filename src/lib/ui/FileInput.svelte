@@ -3,13 +3,17 @@
   import Button from "./Button.svelte"
   import Icon from '@iconify/svelte'
 
-  export let files: FileList
+  export let file: File | null
   export let accept: string
   export let name: string
   export let openIcon: string
   export let text: string
   export let fileIcon: string
   export let loading: boolean
+
+  let fileList: FileList
+
+  $: file = fileList?.[0] ?? null
 
   let input: HTMLInputElement
 
@@ -18,11 +22,11 @@
   }
 </script>
 
-<input type="file" bind:files {accept} {name} bind:this={input}>
+<input type="file" bind:files={fileList} {accept} {name} bind:this={input}>
 
-{#if files?.length}
+{#if file}
   <div class="file-container">
-    <TextInput value={files?.[0].name} disabled>
+    <TextInput value={file.name} disabled>
       <div slot="head">
         <Icon icon={fileIcon} />
       </div>

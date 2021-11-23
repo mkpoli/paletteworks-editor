@@ -211,10 +211,9 @@
     })
   })
 
-  $: bgmURL = bgmfiles && bgmfiles[0] ? URL.createObjectURL(bgmfiles[0]) : undefined 
+  let music: File | null = null
   let bgmLoading: boolean = false
 
-  let bgmfiles: FileList
   let paused: boolean = true
   function onplaypause() {
     paused = !paused
@@ -651,7 +650,7 @@
 
   let updated: boolean = false
   $: dbg('updated', updated)
-  $: if (metadata && slides && singles && bpms) {
+  $: if (metadata && slides && singles && bpms && music) {
     updated = true
   }
 
@@ -897,7 +896,7 @@
       }}
       bind:paused
       bind:metadata
-      bind:files={bgmfiles}
+      bind:music
       bind:scrollMode
       bind:visibility
       bind:volume
@@ -973,7 +972,7 @@
   {currentBPM}
   {slides}
   {singles}
-  {bgmURL}
+  {music}
   {volume}
   {sfxVolume}
   bind:gotoTick

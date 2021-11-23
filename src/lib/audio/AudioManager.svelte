@@ -11,7 +11,7 @@
   export let soundQueue: string[]
   export let singles: Single[]
   export let slides: Slide[]
-  export let bgmURL: string
+  export let music: File | null
   export let volume: number
   export let sfxVolume: number
   export let gotoTick: (tick: number) => void
@@ -43,11 +43,27 @@
   let sfxGain: GainNode
   $: if (sfxGain) { sfxGain.gain.value = sfxVolume }
 
-  $: if (bgmURL) { 
+  let bgmBuffer: AudioBuffer | null = null
+
+  async function createAudioBuffer(blob: Blob) {
+    const response = await fetch(URL.createObjectURL(blob))
+    const arrayBuffer = await response.arrayBuffer()
+    return await audioContext.decodeAudioData(arrayBuffer)
+  }
+
+  $: if (music) {
     paused = true
     stopScheduler()
     currentTick = 0
-   } 
+
+    bgmLoading = true
+    createAudioBuffer(music).then((buffer) => {
+      bgmBuffer = buffer
+      bgmLoading = false
+    })
+  } else {
+    bgmBuffer = null
+  }
 
   $: if (currentBPM) restartScheduler()
 
@@ -83,21 +99,6 @@
     soundQueue = []
   }
 
-  let bgmBuffer: AudioBuffer
-
-  async function createAudioBuffer(url: string) {
-    const response = await fetch(url)
-    const arrayBuffer = await response.arrayBuffer()
-    return await audioContext.decodeAudioData(arrayBuffer)
-  }
-
-  $: if (bgmURL) {
-    bgmLoading = true
-    createAudioBuffer(bgmURL).then((buffer) => {
-      bgmBuffer = buffer
-      bgmLoading = false
-    })
-  } 
 
   function tick2secs(tick: number) {
     return tick / (TICK_PER_BEAT * currentBPM / 60)
@@ -185,6 +186,7 @@
     return new AudioScheduler(audioContext, audioNodes, {
       events,
       callback(event: AudioEvent, offset: number) {
+        if (event.sound === 'bgm' && !bgmBuffer) return
         const soundSource = audioContext.createBufferSource()
         soundSource.buffer = event.sound === 'bgm' ? bgmBuffer : effectBuffers[event.sound]
         if (event.loopTo) {

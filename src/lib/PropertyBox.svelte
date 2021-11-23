@@ -34,7 +34,7 @@
   export let statistics: Record<string, number>
   export let paused: boolean
   export let metadata: Metadata
-  export let files: FileList
+  export let music: File | null
   export let scrollMode: 'page' | 'smooth'
   export let visibility: Record<string, boolean>
   export let volume: number
@@ -184,9 +184,9 @@
   <div class="panel">
     <h2>音楽情報</h2>
     <label for="music">
-      音楽ファイル {files && files[0] ? filesize(files[0].size) : ''}
+      音楽ファイル {music ? filesize(music.size) : ''}
       <FileInput
-        bind:files
+        bind:file={music}
         accept="audio/*"
         name="music"
         openIcon="mdi:folder-music"
