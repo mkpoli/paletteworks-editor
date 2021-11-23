@@ -51,18 +51,21 @@
     return await audioContext.decodeAudioData(arrayBuffer)
   }
 
-  $: if (music) {
-    paused = true
+  $: onchangemusic(music)
+  function onchangemusic(music: File | null) {
     stopScheduler()
+    paused = true
     currentTick = 0
 
-    bgmLoading = true
-    createAudioBuffer(music).then((buffer) => {
-      bgmBuffer = buffer
-      bgmLoading = false
-    })
-  } else {
-    bgmBuffer = null
+    if (music) {
+      bgmLoading = true
+      createAudioBuffer(music).then((buffer) => {
+        bgmBuffer = buffer
+        bgmLoading = false
+      })
+    } else {
+      bgmBuffer = null
+    }
   }
 
   $: if (currentBPM) restartScheduler()
