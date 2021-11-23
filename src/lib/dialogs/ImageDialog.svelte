@@ -16,7 +16,6 @@
   import { download } from '$lib/basic/file'
   import { clamp, snap } from '$lib/basic/math'
   import { position } from '$lib/position'
-  import { dbg } from '$lib/basic/debug'
 
   // PIXI
   let PIXI: typeof import('pixi.js')
@@ -40,10 +39,6 @@
     const COLUMN_HEIGHT = clamp(8192, snap(measureHeight * RESOLUTION, 8192), Infinity)
     // const COLUMN_HEIGHT = 8192
     const columns = Math.ceil(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
-    dbg('columns', columns)
-    dbg('measureHeight * RESOLUTION', measureHeight * RESOLUTION)
-    dbg('fullHeight * RESOLUTION', fullHeight)
-    dbg('COLUMN_HEIGHT', COLUMN_HEIGHT)
     const COLUMN_WIDTH = app.renderer.width * 0.9
     const renderTexture = PIXI.RenderTexture.create({
       width: COLUMN_WIDTH * columns, height: COLUMN_HEIGHT,

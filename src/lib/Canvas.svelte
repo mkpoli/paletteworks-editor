@@ -162,7 +162,6 @@
   }
 
   import { moving } from './editing/moving'
-  $: dbg('moving', $moving)
 
   import moveCursor from '$assets/move-cursor.png'
   import resizeCursor from '$assets/resize-cursor.png'
@@ -391,7 +390,6 @@
   }
 
   let pointerOnNote: boolean = false
-  $: dbg('pointerOnNote', pointerOnNote)
 </script>
 
 <div

@@ -133,8 +133,6 @@
   let soundQueue: string[] = []
   let volume: number = 0.5
   let sfxVolume: number = 1
-  $: dbg('volume', volume)
-  $: dbg('sfxVolume', sfxVolume)
 
   // PIXI.js
   let PIXI: typeof import('pixi.js')
@@ -232,10 +230,6 @@
 
   
   $: currentBPM = bpms.get(closest([...bpms.keys()], currentTick, true)) ?? 120
-  $: dbg('closestTick', currentBPM)
-  $: dbg('currentBPM', currentBPM)
-
-  $: dbg('bpms', [...bpms.entries()].map((e) => `[${e[0]}]=${e[1]}bpm`).join('\n'))
 
   // BPM
   let bpmDialogOpened: boolean = false
@@ -385,7 +379,6 @@
   }
 
   let shiftKey: boolean = false
-  $: dbg('shiftKey', shiftKey)
   document.addEventListener('keydown', (event: KeyboardEvent) => {
     shiftKey = event.shiftKey
   })
