@@ -18,7 +18,7 @@
   export let lastTick: number
   export let bgmLoading: boolean
 
-  let scheduler: AudioScheduler
+  let scheduler: AudioScheduler | null = null
   let audioContext: AudioContext
   let effectBuffers: Record<string, AudioBuffer>
   
@@ -144,21 +144,21 @@
       const slideEvents = slides
         .filter(({ tail: { tick } }) => tick >= currentTick)
         .reduce((acc, { critical, head, tail, steps }) => {
-          const startEvent: AudioEvent = head.tick >= currentTick
+          const startEvent = head.tick >= currentTick
             ? {
                 time: tick2secs(head.tick - currentTick),
                 sound: !critical ? 'tick' : 'tickCritical'
               }
             : null
   
-          const connectEvent: AudioEvent = 
+          const connectEvent = 
             {
               time: tick2secs(Math.max(head.tick, currentTick) - currentTick),
               sound: !critical ? 'connect' : 'connectCritical',
               loopTo: tick2secs(tail.tick - currentTick)
             }
     
-          const endEvent: AudioEvent = 
+          const endEvent = 
             {
               time: tick2secs(tail.tick - currentTick),
               sound: tail.flick !== 'no'
@@ -179,6 +179,7 @@
             }, [] as AudioEvent[])
   
           return [...acc, connectEvent, startEvent, endEvent, ...stepEvents]
+            .filter(x => x !== null) as Array<AudioEvent>
         }, [] as AudioEvent[])
   
         events = [...events, ...singleEvents, ...slideEvents]
@@ -198,7 +199,7 @@
         audioNodes.push(soundSource)
         soundSource.connect(event.sound === 'bgm' ? master : sfxGain)
         const startTime = event.time + offset
-        soundSource.start(startTime, event.startFrom ? tick2secs(currentTick) : null)
+        soundSource.start(startTime, event.startFrom ? tick2secs(currentTick) : undefined)
         if (event.loopTo) {
           soundSource.loop = true
           soundSource.stop(event.loopTo)

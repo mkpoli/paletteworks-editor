@@ -103,16 +103,8 @@
 
   let { metadata, score: { singles, slides, bpms }} = emptySUSData
 
-  onMount(() => {
-    if (!empty) {
-      saved = false
-    }
-  })
-
   let empty: boolean = true
   $: empty = singles.length === 0 && slides.length === 0 && (bpms.size === 0 || bpms.size === 1 && bpms.get(0) === 120)
-
-  $: if (empty) { saved = true }
 
   // $: if (susText) {
   //   ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
@@ -198,8 +190,8 @@
     const baseTexture = new PIXI.BaseTexture(spritesheetImage, null);
     const spritesheetObj = new PIXI.Spritesheet(baseTexture, spritesheet)
 
-    spritesheetObj.parse((textures: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>) => {
-      Object.entries(textures).forEach(([name, texture]) => {
+    spritesheetObj.parse((textures?: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>) => {
+      Object.entries(textures!).forEach(([name, texture]) => {
         TEXTURES[name] = texture
       })
     });
@@ -425,7 +417,6 @@
 
   function exec(mutation: Mutation) {
     if (mutation.size === 0) return
-    saved = false
     $undoneHistory = $undoneHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
       singles = mutation.exec()
@@ -512,8 +503,8 @@
     }
   })
 
-  async function savecurrent() {
-    db.table('projects').update(currentProject.id, {
+  async function savecurrent(message: string) {
+    db.projects.update(currentProject!.id!, {
       updated: new Date(),
       metadata, score: {
         singles,
@@ -523,20 +514,22 @@
       preview: await renderPreview()
     })
     updated = false
-    toast.push(`${currentProject.name} として保存されました。`)
+    toast.push(message)
   }
 
-  let saved = true
-  $: dbg('saved', saved)
-  async function onnew() {
-    // if (empty) {
-    //   console.log('empty')
-    //   return
-    // }
+  import type { Project } from '$lib/projects'
+  import ProjectsDialog from '$lib/dialogs/ProjectsDialog.svelte'
+  let projectsDialogOpened = true
+  let currentProject: Project | null = null
+  import { db } from '$lib/projects'
+  $: dbg('currentProject.id', currentProject?.id)
 
-    savecurrent()
-    if (!saved && !confirm('新しいファイルを作成すると、保存されていない変更は失われます。よろしいですか？')) return
+  async function onnewproject() {
+    if (currentProject) {
+      savecurrent(`${currentProject.name} として保存されました。`)
+    }
     ({ metadata, score: { singles, slides, bpms }} = emptySUSData)
+    music = null
     await tick()
     const project: Project = {
       name: 'Untitled',
@@ -550,8 +543,17 @@
       metadata,
       preview: await renderPreview()
     }
-    const id = await db.table('projects').add(project)
-    currentProject = await db.table('projects').get(id)
+    const id = await db.projects.add(project)
+    currentProject = await db.projects.get(id) ?? null
+  }
+
+  function onopenproject({ detail: { project }}: CustomEvent<{ project: Project }>) {
+    if (currentProject) {
+      savecurrent(`${currentProject.name} として保存されました。`)
+    }
+    ({ metadata, score: { bpms, singles, slides} } = project)
+    music = null
+    currentProject = project
   }
 
   let fileInput: HTMLInputElement
@@ -560,11 +562,11 @@
   $: onfileopened(scoreURL)
 
   function onopenfile() {
-    if (!saved && !confirm('ファイルを開くと、保存されていない変更は失われます。よろしいですか？')) return
     fileInput.click()
   }
 
   async function onfileopened(url: string) {
+    if (!url) return
     const res = await fetch(url)
     const text = await res.text();
     ({ metadata, score: { singles, slides, bpms }} = loadSUS(text))
@@ -581,8 +583,8 @@
       metadata,
       preview: await renderPreview()
     }
-    const id = await db.table('projects').add(project)
-    currentProject = await db.table('projects').get(id)
+    const id = await db.projects.add(project)
+    currentProject = await db.projects.get(id) ?? null
   }
 
   function onopen() {
@@ -641,13 +643,6 @@
     $selectedNotes = [...singles, ...slides.flatMap((slide) => [slide.head, slide.tail, ...slide.steps])]
   }
 
-  import type { Project } from '$lib/projects'
-  import ProjectsDialog from '$lib/dialogs/ProjectsDialog.svelte'
-  let projectsDialogOpened = true
-  let currentProject: Project = null
-  import { projects, db } from '$lib/projects'
-  $: dbg('currentProject.id', currentProject?.id)
-
   let updated: boolean = false
   $: dbg('updated', updated)
   $: if (metadata && slides && singles && bpms && music) {
@@ -655,7 +650,6 @@
   }
 
   async function renderPreview(): Promise<Blob> {
-    if (!PIXI) return
     const renderTexture = PIXI.RenderTexture.create({
       width: CANVAS_WIDTH,
       height: innerHeight,
@@ -665,22 +659,10 @@
     const canvas = app.renderer.plugins.extract.canvas(renderTexture)
     return await new Promise(resolve => canvas.toBlob(resolve))
   }
-    
-  setInterval(async () => {
-    if (currentProject && updated && !empty) {
-      const preview = await renderPreview()
 
-      db.table('projects').update(currentProject.id, {
-        updated: new Date(),
-        metadata, score: {
-          singles,
-          slides,
-          bpms,
-        },
-        preview
-      })
-      updated = false
-      toast.push(`自動保存されました。`)
+  setInterval(async () => {
+    if (currentProject && updated) {
+      savecurrent(`自動保存されました。`)
     }
   }, 5000)
 </script>
@@ -703,7 +685,7 @@
       on:paste={onpaste}
       on:undo={onundo}
       on:redo={onredo}
-      on:new={onnew}
+      on:new={onnewproject}
       on:open={onopen}
       on:selectall={onselectall}
     />
@@ -935,12 +917,9 @@
 
 <ProjectsDialog
   bind:opened={projectsDialogOpened}
-  on:open={({ detail: { project }}) => {
-    ({ metadata, score: { bpms, singles, slides}} = project)
-    currentProject = project
-  }}
+  on:open={onopenproject}
   on:openfile={onopenfile}
-  on:new={onnew}
+  on:new={onnewproject}
 />
 
 <ControlHandler
@@ -950,7 +929,7 @@
   on:redo={onredo}
   on:save={onsave}
   on:open={onopen}
-  on:new={onnew}
+  on:new={onnewproject}
   on:switch={({ detail: mode }) => { currentMode = mode }}
   on:delete={() => { deleteNotes($selectedNotes) }}
   on:copy={() => { copyNotes($selectedNotes) }}
@@ -981,10 +960,10 @@
 
 <svelte:window
   bind:innerHeight
-  on:beforeunload={(event) => { if (!saved) {
-    // event.preventDefault()
-    // event.returnValue = '未保存のデータがあります'
-    // return '未保存のデータがあります'
+  on:beforeunload={(event) => { if (updated) {
+    event.preventDefault()
+    event.returnValue = '本当にエディターを閉じますか'
+    return '本当にエディターを閉じますか'
   }}}
 />
 

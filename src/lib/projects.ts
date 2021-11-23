@@ -16,7 +16,7 @@ class Database extends Dexie {
   constructor() {
     super('PaletteWorks')
     this.version(1).stores({
-      projects: '++id,name,created,updated,metadata,score',
+      projects: '++id,name,created,updated,metadata,score,preview',
     })
     this.projects = this.table('projects')
   }
