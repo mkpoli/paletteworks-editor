@@ -17,6 +17,10 @@
 
   let input: HTMLInputElement
 
+  $: if (input && file !== fileList?.[0]) {
+    input.value = ''
+  }
+
   function onclick() {
     input.click()
   }
