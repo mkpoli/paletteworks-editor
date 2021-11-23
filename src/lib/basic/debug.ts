@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store'
 
-type Value = string | number | boolean
+type Value = string | number | boolean | null | undefined
 
 export type DebugInfo = Map<string, Value>
 export const debugInfo = writable(new Map<string, Value>())
