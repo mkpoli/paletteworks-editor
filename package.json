@@ -1,5 +1,6 @@
 {
   "name": "palette-works",
+  "private": true,
   "version": "0.1.3",
   "scripts": {
     "dev": "svelte-kit dev",
@@ -8,6 +9,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json --diagnostic-sources js,svelte",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch"
   },
+  "license": "MIT",
   "devDependencies": {
     "@iconify/svelte": "^2.0.0",
     "@mszu/pixi-ssr-shim": "^1.0.1",
