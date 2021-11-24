@@ -4,7 +4,7 @@
   import type { Mode } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
 
-  import { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType, toDiamondType, EASE_TYPES, hasEaseType, DIAMOND_TYPES, isSlideStep, SlideNote } from '$lib/score/beatmap'
+  import { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType, toDiamondType, EASE_TYPES, hasEaseType, DIAMOND_TYPES, isSlideStep, SlideNote, fromDiamondType } from '$lib/score/beatmap'
 
   import '$lib/basic/dblclick'
 
@@ -473,8 +473,64 @@
         <Slide
           bind:slide
           stepsVisible={visibility.SlideSteps}
-          on:stepclick
-          on:tailclick
+          on:stepclick={({ detail: { note, slide } }) => {
+            switch (currentMode) {
+              case 'flick': {
+                dispatch('updateslidenote', {
+                  note: slide.tail, modification: {
+                    flick: rotateNext(slide.tail.flick, FLICK_TYPES)
+                  }
+                })
+                break
+              }
+              case 'critical': {
+                dispatch('updateslide', {
+                  slide, modification: {
+                    critical: !slide.critical
+                  }
+                })
+                break
+              }
+              case 'mid': {
+                if ($selectedNotes.length) break
+                if (!shiftKey) {
+                  const [diamond, ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
+                  dispatch('updateslidenote', {
+                    note, modification: {
+                      diamond, ignored
+                    }
+                  })
+                } else {
+                  dispatch('updateslidenote', {
+                    note, modification: {
+                      easeType: rotateNext(note.easeType, EASE_TYPES)
+                    }
+                  })
+                }
+                break
+              }
+            }
+          }}
+          on:tailclick={({ detail: { note } }) => {
+            switch (currentMode) {
+              case 'flick': {
+                dispatch('updateslidenote', {
+                  note, modification: {
+                    flick: rotateNext(note.flick, FLICK_TYPES)
+                  }
+                })
+                break
+              }
+              case 'critical': {
+                dispatch('updateslidenote', {
+                  note, modification: {
+                    critical: !note.critical
+                  }
+                })
+                break
+              }
+            }
+          }}
           on:click={({ detail: { slide }}) => {
             pointerOnNote = true;
             switch (currentMode) {

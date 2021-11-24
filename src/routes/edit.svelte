@@ -742,61 +742,6 @@
         $selectedNotes = slide ?? [event.detail.note]
       }}
       on:selectall={onselectall}
-      on:stepclick={(event) => {
-        const { note, slide } = event.detail
-        switch (currentMode) {
-          case 'flick': {
-            exec(new UpdateSlideNote(slides, slide.tail, {
-              flick: rotateNext(slide.tail.flick, FLICK_TYPES)
-            }))
-            playSound('stage')
-            break
-          }
-          case 'critical': {
-            exec(new UpdateSlide(slides, slide, {
-              critical: !slide.critical
-            }))
-            playSound('stage')
-            break
-          }
-          case 'mid': {
-            if ($selectedNotes.length) break
-            if (!shiftKey) {
-              const [diamond, ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
-              exec(new UpdateSlideNote(slides, note, {
-                diamond, ignored
-              }))
-              playSound('stage')
-            } else {
-              exec(new UpdateSlideNote(slides, note, {
-                easeType: rotateNext(note.easeType, EASE_TYPES)
-              }))
-              playSound('stage')
-            }
-            break
-          }
-        }
-      }}
-      on:tailclick={({ detail: { note }}) => {
-        console.log('tailclick')
-        switch (currentMode) {
-          case 'flick': {
-            exec(new UpdateSlideNote(slides, note, {
-              flick: rotateNext(note.flick, FLICK_TYPES)
-            }))
-            playSound('stage')
-            break
-          }
-          case 'critical': {
-            console.log(note.critical, '->', !note.critical)
-            exec(new UpdateSlideNote(slides, note, {
-              critical: !note.critical
-            }))
-            playSound('stage')
-            break
-          }
-        }
-      }}
       on:addsingle={({ detail: { note }}) => {
         exec(new AddSingles(singles, [note]))
         playSound('stage')
