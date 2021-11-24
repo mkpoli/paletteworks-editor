@@ -81,7 +81,7 @@ export class PositionManager {
   }
 }
 
-export const position = writable<PositionManager>(null)
+export const position = writable<PositionManager>()
 
 export type LaneTick = {
   lane: number,

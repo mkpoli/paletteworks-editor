@@ -9,8 +9,8 @@ export abstract class Mutation {
     this.size = 0
     this.type = 'ノーツ'
   }
-  abstract exec()
-  abstract undo()
+  abstract exec(): any
+  abstract undo(): any
   toString(): string {
     return `${this.size} ${this.type}を${this.name}`
   }
@@ -51,7 +51,7 @@ export class SetBPM extends BPMMutation {
   constructor(bpms: Map<number, number>, tick: number, value: number) {
     super(bpms, tick)
     this.name = '設定'
-    this.oldValue = bpms.get(tick)
+    this.oldValue = bpms.get(tick)!
     this.newValue = value
   }
   exec(): Map<number, number> {
@@ -67,7 +67,7 @@ export class RemoveBPM extends BPMMutation {
   constructor(bpms: Map<number, number>, tick: number) {
     super(bpms, tick)
     this.name = '削除'
-    this.oldValue = bpms.get(tick)
+    this.oldValue = bpms.get(tick)!
   }
   exec(): Map<number, number> {
     this.bpms.delete(this.tick)
@@ -116,21 +116,17 @@ export class UpdateSingle extends SingleMutation {
     this.size = 1
     this.note = note
     this.modification = modification
-    this.oldNote = Object.fromEntries(Object.keys(modification).map((key) => [key, this.note[key]]))
+    this.oldNote = Object.fromEntries(Object.keys(modification).map((key) => [key, this.note[key as keyof Single]]))
     console.log(this.oldNote)
   }
 
   exec() {
-    Object.entries(this.modification).forEach(([key, value]) => {
-      this.note[key] = value
-    })
+    Object.assign(this.note, this.modification)
     return this.singles
   }
 
   undo() {
-    Object.entries(this.oldNote).forEach(([key, value]) => {
-      this.note[key] = value
-    })
+    Object.assign(this.note, this.oldNote)
     return this.singles
   }
 }
@@ -193,7 +189,7 @@ export class RemoveSlideSteps extends SlideMutation {
     this.size = oldSteps.length
     this.slideStepsLocation = new Map<SlideStep, Slide>()
     oldSteps.forEach((oldStep) => {
-      this.slideStepsLocation.set(oldStep, this.slides.find(({ steps }) => steps.includes(oldStep)))
+      this.slideStepsLocation.set(oldStep, this.slides.find(({ steps }) => steps.includes(oldStep))!)
     })
   }
   
@@ -242,51 +238,43 @@ export class UpdateSlideNote extends SlideMutation {
     this.modification = modification
     this.type = 'スライド'
     this.size = 1
-    this.originalData = Object.fromEntries(Object.keys(modification).map((key) => [key, this.targetNote[key]]))
+    this.originalData = Object.fromEntries(Object.keys(modification).map((key) => [key, this.targetNote[key as keyof SlideNote]]))
   }
 
   exec() {
-    Object.entries(this.modification).forEach(([key, value]) => {
-      this.targetNote[key] = value
-    })
+    Object.assign(this.targetNote, this.modification)
     return this.slides
   }
   
   undo() {
-    Object.entries(this.originalData).forEach(([key, value]) => {
-      this.targetNote[key] = value
-    })
+    Object.assign(this.targetNote, this.originalData)
     return this.slides
   }
 }
 
 export class UpdateSlideNotes extends SlideMutation {
-  modifications: Map<Note, Partial<Note>>
-  originalDatas: Map<Note, Partial<Note>>
-  constructor(slides: Slide[], modifications: Map<Note, Partial<Note>>) {
+  modifications: Map<SlideNote, Partial<SlideNote>>
+  originalDatas: Map<SlideNote, Partial<SlideNote>>
+  constructor(slides: Slide[], modifications: Map<SlideNote, Partial<SlideNote>>) {
     super(slides)
     this.type = 'スライドノーツ'
     this.size = modifications.size
     this.modifications = modifications
     this.originalDatas = new Map([...modifications.entries()].map(([target, modification]) => 
-      [target, Object.fromEntries(Object.keys(modification).map((key) => [key, target[key]]))]
+      [target, Object.fromEntries(Object.keys(modification).map((key) => [key, target[key as keyof SlideNote]]))]
     ))
   }
 
   exec() {
     this.modifications.forEach((modification, target) => {
-      Object.entries(modification).forEach(([key, value]) => {
-        target[key] = value
-      })
+      Object.assign(target, modification)
     })
     return this.slides
   }
 
   undo() {
     this.originalDatas.forEach((originalData, target) => {
-      Object.entries(originalData).forEach(([key, value]) => {
-        target[key] = value
-      })
+      Object.assign(target, originalData)
     })
     return this.slides
   }
@@ -302,20 +290,16 @@ export class UpdateSlide extends SlideMutation {
     this.size = 1
     this.targetSlide = targetSlide
     this.modification = modification
-    this.originalData = Object.fromEntries(Object.keys(modification).map((key) => [key, this.targetSlide[key]]))
+    this.originalData = Object.fromEntries(Object.keys(modification).map((key) => [key, this.targetSlide[key as keyof Slide]]))
   }
   
   exec() {
-    Object.entries(this.modification).forEach(([key, value]) => {
-      this.targetSlide[key] = value
-    })
+    Object.assign(this.targetSlide, this.modification)
     return this.slides
   }
   
   undo() {
-    Object.entries(this.originalData).forEach(([key, value]) => {
-      this.targetSlide[key] = value
-    })
+    Object.assign(this.targetSlide, this.originalData)
     return this.slides
   }
 }
@@ -353,9 +337,9 @@ export class BatchRemove extends BatchMutation {
 
       notes
         .filter(note => steps.includes(note as SlideStep))
-        .forEach(note => slideSteps.push(note))
+        .forEach(note => slideSteps.push(note as SlideStep))
       return { markedSlides, slideSteps }
-    }, { markedSlides: [], slideSteps: [] })
+    }, { markedSlides: [], slideSteps: [] } as { markedSlides: Slide[], slideSteps: SlideStep[] })
     this.removeSlideSteps = new RemoveSlideSteps(slides, slideSteps)
     this.removeSlides = new RemoveSlides(slides, markedSlides)
   }
@@ -416,18 +400,14 @@ export class BatchUpdate extends BatchMutation {
 
   exec() {
     this.modifications.forEach((modification, note) => {
-      Object.entries(modification).forEach(([key, value]) => {
-        note[key] = value
-      })
+      Object.assign(note, modification)
     })
     return { singles: this.singles, slides: this.slides }
   }
 
   undo() {
     this.originalDatas.forEach((originalData, note) => {
-      Object.entries(originalData).forEach(([key, value]) => {
-        note[key] = value
-      })
+      Object.assign(note, originalData)
     })
     return { singles: this.singles, slides: this.slides }
   }

@@ -4,6 +4,8 @@
 		"module": "es2020",
 		"lib": ["es2020"],
 		"target": "es2019",
+		"strict": true,
+		"importHelpers": true,
 		/**
 			svelte-preprocess cannot figure out whether you have a value or a type, so tell TypeScript
 			to enforce using \`import type\` instead of \`import\` for Types.
@@ -20,8 +22,8 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": "src",
-		"allowJs": true,
-		"checkJs": true,
+		"allowJs": false,
+		"checkJs": false,
 		"paths": {
 			"$lib/*": ["lib/*"],
 			"$assets/*": ["assets/*"]

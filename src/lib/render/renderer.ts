@@ -40,7 +40,7 @@ export function drawDashedLine(graphics: PIXI.Graphics, fromX: number, fromY: nu
 
 export function createGradientCanvas(width: number, height: number, colors: string[]) {
   const canvas = document.createElement('canvas')  
-  const ctx = canvas.getContext('2d')
+  const ctx = canvas.getContext('2d')!
   const gradient = ctx.createLinearGradient(0, 0, 0, height)
 
   canvas.setAttribute('width', `${width}px`)

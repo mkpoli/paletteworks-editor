@@ -59,7 +59,7 @@
 
   function onresizing() {
     if ($resizing && $resizingNotes.includes(note)) {
-      const { reference, offset } = $resizingOffsets.get(note)
+      const { reference, offset } = $resizingOffsets.get(note)!
       if ($cursor.laneSide - offset === reference) return
       [note.lane, note.width] = calcResized(reference, $cursor.laneSide - offset)
       note = note
@@ -94,7 +94,7 @@
     middle.zIndex = 5
     middle.interactive = true
     middle.cursor = 'move'
-    middle.addListener('pointerdown', (event: PIXI.InteractionEvent) => {
+    middle.addListener('pointerdown', () => {
       dispatch('movestart', {
         lane: $cursor.lane,
         tick: $cursor.tick,

@@ -57,11 +57,7 @@
 
     ;[...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
       .forEach((note) => {
-        if (tickTable.has(note.tick)) {
-          tickTable.set(note.tick, tickTable.get(note.tick).concat(note))
-        } else {
-          tickTable.set(note.tick, [note])
-        }
+        tickTable.set(note.tick, [...(tickTable.get(note.tick) ?? []), note])
       })
 
     graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED)
@@ -97,7 +93,7 @@
           }
 
           return acc
-        }, [])
+        }, [] as number[][])
 
         n.forEach(([lane, laneR]) => {
           graphics.drawRoundedRect(

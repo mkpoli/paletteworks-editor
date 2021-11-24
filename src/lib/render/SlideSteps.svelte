@@ -77,7 +77,7 @@
         const originX = position.calcMidX(origin.lane, origin.width)
         const originY = position.calcY(origin.tick)
 
-        const target = arr.pop()
+        const target = arr.pop()!
         const targetX = position.calcMidX(target.lane, target.width)
         const targetY = position.calcY(target.tick)
 
@@ -86,7 +86,7 @@
         }
 
         arr
-          .filter((current: SlideStep) => current.diamond)
+          .filter((current) => (current as SlideStep).diamond)
           .forEach((current) => {
             const currentY = position.calcY(current.tick)
 

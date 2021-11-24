@@ -19,12 +19,12 @@ export type SchedulerOption = {
 export class AudioScheduler {
   audioContext: AudioContext
   audioNodes: AudioBufferSourceNode[]
-  scheduleInterval: number   // schedule new events at this interval
-  scheduleLookahead: number // schedule new events this far into the future
-  events: AudioEvent[]                       // an events object that must at least contain the time property for each event
-  callback: EventCallback             // a function used to play the events
-  eventsIndexNeedle: number // a needle used to go through the events index by index
-  timerID: number                               // used by clearTimeout() to identify the setTimeout timer
+  scheduleInterval: number
+  scheduleLookahead: number
+  events: AudioEvent[]
+  callback: EventCallback
+  eventsIndexNeedle: number
+  timerID: number
   startTimeOffset: number
 
   constructor(audioContext: AudioContext, audioNodes: AudioBufferSourceNode[], {
@@ -39,9 +39,10 @@ export class AudioScheduler {
     this.scheduleLookahead = scheduleLookahead // schedule new events this far into the future
     this.events = events                       // an events object that must at least contain the time property for each event
     this.callback = callback                   // a function used to play the events
-    this.eventsIndexNeedle                     // a needle used to go through the events index by index
-    this.timerID                               // used by clearTimeout() to identify the setTimeout timer
-    this.startTimeOffset                       // the offset between the time at audioContext creation and audioContext.currentTime
+  
+    this.eventsIndexNeedle = 0                  // a needle used to go through the events index by index
+    this.timerID = -1                 // used by clearTimeout() to identify the setTimeout timer
+    this.startTimeOffset = 0 // the offset between the time at audioContext creation and audioContext.currentTime
   }
 
   private _stopAllAudioNodes() {
@@ -63,7 +64,7 @@ export class AudioScheduler {
       this.audioContext.resume()
     }
     this.eventsIndexNeedle = 0
-    this.timerID = null
+    this.timerID = -1
     this.startTimeOffset = this.audioContext.currentTime
   }
 

@@ -36,6 +36,9 @@ class ChannelProvider {
     const channel = this.#channelMap.find(([, [start, end]]) => 
       start === 0 && end === 0 || endTick < start || end < startTick
     )
+    if (!channel) {
+      throw new Error('No more channel available.')
+    }
     channel[1] = [startTick, endTick]
     return channel[0]
   }
@@ -100,7 +103,7 @@ export function dump(metadata: Meta, score: Score, comment: string) {
     const values: string[] = []
     for (let i = 0; i * gcd < TICK_PER_MEASURE; i++) {
       const tick = i * gcd
-      values.push(data.has(tick) ? data.get(tick) : `00`)
+      values.push(data.get(tick) ?? `00`)
     }
     lines.push(`#${tag}:${values.join('')}`)
   }) 

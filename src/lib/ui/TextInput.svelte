@@ -1,6 +1,6 @@
 <script lang="ts">
   export let value: string | number
-  export let inputElement: HTMLInputElement = null
+  export let inputElement: HTMLInputElement | undefined = undefined
   export let disabled: boolean = false
 </script>
 

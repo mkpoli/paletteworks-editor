@@ -7,7 +7,7 @@
   export let text: string
   export let button: string
   export let undo: () => void
-  export let toastID: number
+  // export let toastID: number
   export let history: Writable<Mutation[]>
   export let mutation: Mutation
   

@@ -165,8 +165,8 @@ export function convertScoreData(score: SusScore): Score {
     })
 
     slides.push({
-      head: head,
-      tail: tail,
+      head: head!,
+      tail: tail!,
       steps,
       critical
     })

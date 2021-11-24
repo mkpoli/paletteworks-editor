@@ -1,12 +1,10 @@
 <script type="ts">
   import Icon from '@iconify/svelte'
 
-  import { createEventDispatcher } from 'svelte'
-
   export let icon: string
-  export let height: string = undefined
-  export let width: string = undefined
-  export let href: string = null
+  export let height: string | undefined = undefined
+  export let width: string | undefined = undefined
+  export let href: string | undefined = undefined
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === ' ') {

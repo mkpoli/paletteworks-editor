@@ -9,7 +9,7 @@
   import ProjectCard from '$lib/dialogs/ProjectCard.svelte'
 
   // Events
-  import { createEventDispatcher, onMount, tick } from "svelte"
+  import { createEventDispatcher, tick } from "svelte"
   const dispatch = createEventDispatcher<{
     open: { project: Project },
     new: void,
@@ -32,14 +32,15 @@
     }
   }
 
-  onMount(() => {
-    window['db'] = db
-  })
-
-
-  let selected: Project = null
+  let selected: Project | null = null
 
   let searchKeyword: string
+
+  function ondelete() {
+    if (selected && confirm('本当に削除しますか？')) {
+      db.projects.delete(selected.id!)
+    }
+  }
 </script>
 
 <Modal bind:opened on:open={async () => {
@@ -76,11 +77,7 @@
             dispatch('open', { project })
             opened = false
           }}
-          on:delete={() => {
-            if (confirm('本当に削除しますか？')) {
-              db.projects.delete(selected.id)
-            }
-          }}
+          on:delete={ondelete}
           on:select={() => {
             selected = project
           }}

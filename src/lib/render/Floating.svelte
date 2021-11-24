@@ -13,7 +13,6 @@
     LANE_AREA_WIDTH,
     TEXT_MARGIN,
     MARGIN,
-    LANE_WIDTH,
     LANE_MAX,
     FONT_FAMILY,
   } from '$lib/consts'

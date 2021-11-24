@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let menu: HTMLDivElement = null
+  export let menu: HTMLDivElement
 </script>
 
 <slot name="trigger"></slot>

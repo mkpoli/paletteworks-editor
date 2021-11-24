@@ -58,7 +58,7 @@
     return canvas
   }
 
-  let preview: HTMLCanvasElement = null
+  let preview: HTMLCanvasElement
 
   function generatePreview() {
     const canvas = generateCanvas(0.1)
@@ -73,8 +73,8 @@
 
   function downloadImage() {
     const canvas = generateCanvas(0.35)
-    canvas.toBlob((blob: Blob) => {
-      download(blob, `${new Date().toISOString().replace(':', '-')}.png`)
+    canvas.toBlob((blob: Blob | null) => {
+      download(blob!, `${new Date().toISOString().replace(':', '-')}.png`)
     })
   }
 </script>

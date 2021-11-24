@@ -48,7 +48,7 @@
   }
 
   // TODO: Show real key from Keymap layout
-  const KEYBOARD_CODE_DISPLAY_NAMES = {
+  const KEYBOARD_CODE_DISPLAY_NAMES: Record<string, string> = {
     'Backquote': '`',
     'KeyA': 'A',
     'KeyB': 'B',
@@ -82,7 +82,6 @@
     ...KEYBOARD_KEY_DISPLAY_NAMES,
     ...KEYBOARD_CODE_DISPLAY_NAMES
   }
-
 </script>
 
 <span>

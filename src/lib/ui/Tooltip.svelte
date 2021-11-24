@@ -6,7 +6,7 @@
 
   export let placement: Placement
   export let offset: [number, number] = [0, 0]
-  export let description: string = undefined
+  export let description: string | undefined = undefined
 
   let target: HTMLDivElement
   let tooltip: HTMLDivElement

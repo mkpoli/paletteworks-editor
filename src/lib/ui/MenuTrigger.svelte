@@ -8,7 +8,7 @@
 
   let instance: TippyInstance
 
-  export let contextArea: HTMLElement = null
+  export let contextArea: HTMLElement | undefined = undefined
   export let sub: boolean = false
 
   const dispatch = createEventDispatcher<{

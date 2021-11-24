@@ -60,7 +60,7 @@
     })
     if (hasTarget) {
       event.preventDefault()
-      dispatch(target as KeyboardAction)
+      dispatch(target! as KeyboardAction)
       return
     }
     

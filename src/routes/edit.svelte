@@ -22,7 +22,7 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Metadata, Single, Slide as SlideType, Note as NoteType,  } from '$lib/score/beatmap'
+  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -103,8 +103,8 @@
 
   let { metadata, score: { singles, slides, bpms }} = emptySUSData
 
-  let empty: boolean = true
-  $: empty = singles.length === 0 && slides.length === 0 && (bpms.size === 0 || bpms.size === 1 && bpms.get(0) === 120)
+  // let empty: boolean = true
+  // $: empty = singles.length === 0 && slides.length === 0 && (bpms.size === 0 || bpms.size === 1 && bpms.get(0) === 120)
 
   // $: if (susText) {
   //   ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
@@ -186,8 +186,7 @@
 
     app.stage.interactive = true
 
-    // app.stage.addChild(new PIXI.Sprite.from(createGradientCanvas(CANVAS_WIDTH, innerHeight, ['#503c9f', '#48375b'])))
-    const baseTexture = new PIXI.BaseTexture(spritesheetImage, null);
+    const baseTexture = new PIXI.BaseTexture(spritesheetImage, {})
     const spritesheetObj = new PIXI.Spritesheet(baseTexture, spritesheet)
 
     spritesheetObj.parse((textures?: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>) => {
@@ -220,7 +219,7 @@
   $: dbg('scrollTick', scrollTick)
 
   
-  $: currentBPM = bpms.get(closest([...bpms.keys()], currentTick, true)) ?? 120
+  $: currentBPM = bpms.get(closest([...bpms.keys()], currentTick, true) ?? NaN) ?? 120
 
   // BPM
   let bpmDialogOpened: boolean = false
@@ -228,7 +227,6 @@
   let lastPointerTick: number = 0
 
   function onsave() {
-    saved = true
     const sus = dumpSUS(metadata, { singles, slides, bpms })
     download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
   }
@@ -280,8 +278,8 @@
     const pastedSingles = $clipboardSingles.map((note) => {
       const { width, critical, flick } = note
       return {
-        lane: $cursor.lane - $clipboardOffsets.get(note).lane,
-        tick: $cursor.tick - $clipboardOffsets.get(note).tick,
+        lane: $cursor.lane - $clipboardOffsets.get(note)!.lane,
+        tick: $cursor.tick - $clipboardOffsets.get(note)!.tick,
         width, critical, flick
       }
     })
@@ -289,19 +287,19 @@
       const { head, tail, steps, critical } = slide
       return {
         head: {
-          lane: $cursor.lane - $clipboardOffsets.get(head).lane,
-          tick: $cursor.tick - $clipboardOffsets.get(head).tick,
+          lane: $cursor.lane - $clipboardOffsets.get(head)!.lane,
+          tick: $cursor.tick - $clipboardOffsets.get(head)!.tick,
           width: head.width, easeType: head.easeType
         },
         tail: {
-          lane: $cursor.lane - $clipboardOffsets.get(tail).lane,
-          tick: $cursor.tick - $clipboardOffsets.get(tail).tick,
+          lane: $cursor.lane - $clipboardOffsets.get(tail)!.lane,
+          tick: $cursor.tick - $clipboardOffsets.get(tail)!.tick,
           width: tail.width, flick: tail.flick, critical: tail.critical
         },
         steps: steps.map((note) => (
           {
-            lane: $cursor.lane - $clipboardOffsets.get(note).lane,
-            tick: $cursor.tick - $clipboardOffsets.get(note).tick,
+            lane: $cursor.lane - $clipboardOffsets.get(note)!.lane,
+            tick: $cursor.tick - $clipboardOffsets.get(note)!.tick,
             width: note.width,
             diamond: note.diamond,
             easeType: note.easeType,
@@ -341,8 +339,8 @@
 
   function onmove() {
     $movingNotes.forEach((note) => {
-      note.lane = $cursor.lane - $movingOffsets.get(note).lane
-      note.tick = $cursor.tick - $movingOffsets.get(note).tick
+      note.lane = $cursor.lane - $movingOffsets.get(note)!.lane
+      note.tick = $cursor.tick - $movingOffsets.get(note)!.tick
     })
     singles = singles
     slides = slides
@@ -358,7 +356,7 @@
       }]
     ))
     if ($movingNotes.every((note) =>
-      note.lane === $movingOrigins.get(note).lane && note.tick === $movingOrigins.get(note).tick
+      note.lane === $movingOrigins.get(note)!.lane && note.tick === $movingOrigins.get(note)!.tick
     )) return
     exec(new BatchUpdate(singles, slides, movingTargets, $movingOrigins, '移動'))
     playSound('stage')
@@ -485,23 +483,34 @@
     if (!$resizingNotes.length) return
     if (!value) {
       const modifications = new Map($resizingNotes.map((note) => {
-        const { reference, offset } = $resizingOffsets.get(note)
+        const { reference, offset } = $resizingOffsets.get(note)!
         const [ lane, width ] = calcResized(reference, $cursor.laneSide - offset)
         return [note, { lane, width }]
       }))
 
       const originalDatas = new Map($resizingNotes.map((note) => {
-        const { reference, mutating } = $resizingOffsets.get(note)
+        const { reference, mutating } = $resizingOffsets.get(note)!
         const [ lane, width ] = calcResized(reference, mutating)
         return [note, { lane, width }]
       }))
 
-      $resizingLastWidth = modifications.get($resizingNotes[0]).width
+      $resizingLastWidth = modifications.get($resizingNotes[0])!.width
 
       exec(new BatchUpdate(singles, slides, modifications, originalDatas, 'リサイズ'))
       playSound('stage')
     }
   })
+
+  function onchangecurve({ detail: { notes, type } }: CustomEvent<{ notes: (SlideNote & IEase)[], type: EaseType }>) {
+    exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { easeType: type }]))))
+    playSound('stage')
+  }
+
+  function onchangediamond({ detail: { notes, type } }: CustomEvent<{ notes: SlideStep[], type: DiamondType }>) {
+    const [diamond, ignored] = fromDiamondType(type)
+    exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { diamond, ignored }]))))
+    playSound('stage')
+  }
 
   async function savecurrent(message: string) {
     db.projects.update(currentProject!.id!, {
@@ -559,14 +568,13 @@
   let fileInput: HTMLInputElement
   let scoreFiles: FileList
   $: scoreURL = scoreFiles && scoreFiles[0] ? URL.createObjectURL(scoreFiles[0]) : undefined
-  $: onfileopened(scoreURL)
+  $: if (scoreURL) onfileopened(scoreURL)
 
   function onopenfile() {
     fileInput.click()
   }
 
   async function onfileopened(url: string) {
-    if (!url) return
     const res = await fetch(url)
     const text = await res.text();
     ({ metadata, score: { singles, slides, bpms }} = loadSUS(text))
@@ -723,16 +731,8 @@
       on:move={onmove}
       on:movestart={onmovestart}
       on:moveend={onmoveend}
-      on:changecurve={({ detail: { notes, type } }) => {
-        // @ts-ignore
-        exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { easeType: type }]))))
-        playSound('stage')
-      }}
-      on:changediamond={({ detail: { notes, type }}) => {
-        const [diamond, ignored] = fromDiamondType(type)
-        exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { diamond, ignored }]))))
-        playSound('stage')
-      }}
+      on:changecurve={onchangecurve}
+      on:changediamond={onchangediamond}
       on:selectsingle={(event) => {
         if (currentMode !== 'select') return
         const slide = slides

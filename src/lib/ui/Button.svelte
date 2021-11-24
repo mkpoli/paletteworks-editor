@@ -1,10 +1,10 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
 
-  export let icon: string = null
+  export let icon: string | undefined = undefined
   export let disabled: boolean = false
-  export let height: string = undefined
-  export let width: string = undefined
+  export let height: string | undefined = undefined
+  export let width: string | undefined = undefined
   export let loading: boolean = false
 </script>
 
@@ -65,9 +65,5 @@
     to {
       transform: rotate(360deg);
     }
-  }
-
-  :global(svg.loading) {
-    /* animation: spin 1s linear infinite; */
   }
 </style>

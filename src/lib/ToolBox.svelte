@@ -8,7 +8,7 @@
 
   import ToolButton from '$lib/ui/ToolButton.svelte'
 
-  import { ALLOWED_SNAPPINGS, MODES, MODE_DESCRIPTIONS, MODE_SHORTCUTS, MODE_SHORTCUTS_NUMERAL, MODE_TEXTURES } from '$lib/editing/modes'
+  import { ALLOWED_SNAPPINGS, MODES } from '$lib/editing/modes'
   import type { Mode, SnapTo } from '$lib/editing/modes'
 
   import { createEventDispatcher } from 'svelte'
@@ -89,7 +89,7 @@
         customSnappingDialogValue = snapTo
         return
       }
-    }} bind:this={snappingSelect} on:blur={(event) => {
+    }} bind:this={snappingSelect} on:blur={() => {
       if (snappingSelect.selectedIndex === snappingSelect.options.length - 1) {
         customSnappingDialogOpened = true
         customSnappingDialogValue = snapTo
