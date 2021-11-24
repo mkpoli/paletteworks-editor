@@ -20,9 +20,7 @@
     --input-border-radius: 10px;
     --input-padding: 0.75em 1em;
 
-    /*Ωignore_startΩ*/
     color-scheme: dark;
-    /*Ωignore_endΩ*/
     font-family: 'M PLUS 1p', sans-serif;
     overflow: hidden;
   }
