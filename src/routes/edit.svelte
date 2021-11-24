@@ -22,7 +22,7 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType } from '$lib/score/beatmap'
+  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType, Flick } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -607,15 +607,26 @@
     gotoTick(lastTick)
   }
 
+  function flipFlick(flickType: Flick): Flick {
+    switch (flickType) {
+      case 'left': return 'right'
+      case 'right': return 'left'
+      case 'middle': return 'middle'
+      case 'no': return 'no'
+    }
+  }
+
   function flipNotes(notes: NoteType[]) {
     const flipTargets = new Map(notes.map((note) => 
       [note, {
         lane: LANE_MAX + 1 - note.lane,
+        ...('flick' in note ? { flick: flipFlick(note.flick) } : {})
       }]
     ))
     const flipOrigins = new Map(notes.map((note) =>
       [note, {
         lane: note.lane,
+        ...('flick' in note ? { flick: note.flick } : {})
       }]
     ))
     exec(new BatchUpdate(singles, slides, flipTargets, flipOrigins, 'ミラー'))
