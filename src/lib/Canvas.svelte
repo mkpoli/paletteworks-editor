@@ -559,7 +559,7 @@
                     tick: $cursor.tick,
                     diamond: true,
                     easeType: false,
-                    ignored: false
+                    ignored: shiftKey
                   }
                   dispatch('updateslide', {
                     slide, modification: {
