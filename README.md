@@ -12,3 +12,19 @@ This is a score editor for *Project Sekai: Colorful Stage feat. Hatsune Miku*. I
 pnpm install
 pnpm dev -- --open
 ```
+
+### Commit Message Naming Convention
+
+```
+(F|R|D|S|V): <Verb Phrase>
+```
+
+- **F** for **F**eature (Additions, Ajustments of functionalities, etc.)
+- **D** for **D**ebug (Debuging, Fixes, etc.)
+- **R** for **R**efactor (Adjustments of code structure, naming, typing, comments, etc.)
+- **S** for **S**tyle (Styling, Visual Design Adjustments, etc.)
+- **V** for **V**ersion (Versioning, Dependency Change, etc.)
+
+## LICENSE / ライセンス / 授權
+
+MIT © 2021 mkpoli
