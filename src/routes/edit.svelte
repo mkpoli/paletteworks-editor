@@ -742,54 +742,6 @@
         $selectedNotes = slide ?? [event.detail.note]
       }}
       on:selectall={onselectall}
-      on:slideclick={(event) => {
-        const { slide } = event.detail
-        switch (currentMode) {
-          case 'flick': {
-            exec(new UpdateSlideNote(slides, slide.tail, {
-              flick: rotateNext(slide.tail.flick, FLICK_TYPES)
-            }))
-            playSound('stage')
-            break
-          }
-          case 'critical': {
-            exec(new UpdateSlide(slides, slide, {
-              critical: !slide.critical
-            }))
-            playSound('stage')
-            break
-          }
-          case 'mid': {
-            if ($cursor.tick === slide.tail.tick || $cursor.tick === slide.head.tick) break
-
-            // if ($cursor.tick === slide.head.tick) {
-            //   if (shiftKey) {
-            //     exec(new UpdateSlideNote(slides, slide.head, {
-            //       easeType: rotateNext(slide.head.easeType, EASE_TYPES)
-            //     }))
-            //     playSound('stage')
-            //   }
-            //   break
-            // }
-
-            if (!slide.steps.some(({ tick }) => tick === $cursor.tick)) {
-              const step = {
-                lane: $cursor.lane,
-                width: slide.head.width,
-                tick: $cursor.tick,
-                diamond: true,
-                easeType: false,
-                ignored: false
-              }
-              exec(new UpdateSlide(slides, slide, {
-                steps: [...slide.steps, step].sort(({ tick: a }, { tick: b }) => a - b)
-              }))
-              playSound('stage')
-            }
-            break
-          }
-        }
-      }}
       on:stepclick={(event) => {
         const { note, slide } = event.detail
         switch (currentMode) {
@@ -855,6 +807,14 @@
       }}
       on:addslide={({ detail: { slide }}) => {
         exec(new AddSlides(slides, [ slide ]))
+        playSound('stage')
+      }}
+      on:updateslidenote={({ detail: { note, modification }}) => {
+        exec(new UpdateSlideNote(slides, note, modification))
+        playSound('stage')
+      }}
+      on:updateslide={({ detail: { slide, modification }}) => {
+        exec(new UpdateSlide(slides, slide, modification))
         playSound('stage')
       }}
       on:flip={({ detail: { notes }}) => flipNotes(notes)}

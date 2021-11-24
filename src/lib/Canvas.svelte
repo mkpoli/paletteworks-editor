@@ -4,7 +4,7 @@
   import type { Mode } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
 
-  import { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType, toDiamondType, EASE_TYPES, hasEaseType, DIAMOND_TYPES, isSlideStep } from '$lib/score/beatmap'
+  import { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType, toDiamondType, EASE_TYPES, hasEaseType, DIAMOND_TYPES, isSlideStep, SlideNote } from '$lib/score/beatmap'
 
   import '$lib/basic/dblclick'
 
@@ -134,9 +134,6 @@
       note: NoteType
     },
     selectall: void,
-    slideclick: {
-      slide: SlideType
-    },
     addsingle: {
       note: Single
     },
@@ -146,6 +143,14 @@
     },
     addslide: {
       slide: SlideType
+    },
+    updateslide: {
+      slide: SlideType,
+      modification: Partial<SlideType>
+    },
+    updateslidenote: {
+      note: SlideNote,
+      modification: Partial<SlideNote>
     },
     duplicate: {
       notes: NoteType[]
@@ -470,7 +475,46 @@
           stepsVisible={visibility.SlideSteps}
           on:stepclick
           on:tailclick
-          on:click={(event) => { pointerOnNote = true; dispatch('slideclick', event.detail) }}
+          on:click={({ detail: { slide }}) => {
+            pointerOnNote = true;
+            switch (currentMode) {
+              case 'flick': {
+                dispatch('updateslidenote', {
+                  note: slide.tail, modification: {
+                    flick: rotateNext(slide.tail.flick, FLICK_TYPES)
+                  }
+                })
+                break
+              }
+              case 'critical': {
+                dispatch('updateslide', {
+                  slide, modification: {
+                    critical: !slide.critical
+                  }
+                })
+                break
+              }
+              case 'mid': {
+                if ($cursor.tick === slide.tail.tick || $cursor.tick === slide.head.tick) break
+                if (!slide.steps.some(({ tick }) => tick === $cursor.tick)) {
+                  const step = {
+                    lane: $cursor.lane,
+                    width: slide.head.width,
+                    tick: $cursor.tick,
+                    diamond: true,
+                    easeType: false,
+                    ignored: false
+                  }
+                  dispatch('updateslide', {
+                    slide, modification: {
+                      steps: [...slide.steps, step].sort(({ tick: a }, { tick: b }) => a - b)
+                    }
+                  })
+                }
+                break
+              }
+            }
+          }}
           on:move
           on:movestart
           on:moveend
