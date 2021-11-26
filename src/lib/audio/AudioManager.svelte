@@ -162,8 +162,8 @@
             {
               time: tick2secs(tail.tick - currentTick),
               sound: tail.flick !== 'no'
-                  ? (critical || tail.flick ? 'flickCritical' : 'flick')
-                  : (critical || tail.flick ? 'tapCritical' : 'tapPerfect' ) 
+                  ? (critical || tail.critical ? 'flickCritical' : 'flick')
+                  : (critical || tail.critical ? 'tapCritical' : 'tapPerfect' ) 
             }
   
           const stepEvents = steps
