@@ -15,6 +15,7 @@
     new: void,
     openfile: void,
     cancel: void,
+    delete: number
   }>()
 
   export let opened: boolean
@@ -36,18 +37,21 @@
   let selected: Project | null = null
 
   let searchKeyword: string
-
-  function ondelete() {
-    if (selected && confirm('本当に削除しますか？')) {
-      db.projects.delete(selected.id!)
-    }
-  }
 </script>
 
-<Modal bind:opened on:open={async () => {
-  await tick()
-  selected = projects.find(project => project.id === currentProject?.id) ?? null
-}}>
+<Modal
+  bind:opened
+  on:open={async () => {
+    await tick()
+    selected = projects.find(project => project.id === currentProject?.id) ?? null
+  }}
+  on:close={async () => {
+    if (currentProject === null) {
+      await tick()
+      opened = true
+    }
+  }}
+>
   <template slot="activator">
     
   </template>
@@ -78,7 +82,11 @@
             dispatch('open', { project })
             opened = false
           }}
-          on:delete={ondelete}
+          on:delete={() => {
+            if (selected && confirm('本当に削除しますか？')) {
+              dispatch('delete', selected.id)
+            }
+          }}
           on:select={() => {
             selected = project
           }}

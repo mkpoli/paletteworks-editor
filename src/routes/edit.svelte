@@ -22,7 +22,7 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType, Flick } from '$lib/score/beatmap'
+  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType, Flick, Metadata, Single, Fever, Slide } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -80,41 +80,16 @@
   import { fromDiamondType } from '$lib/score/beatmap'
 
   // Score Data
-  // export let susText: string
-  // import { writable } from 'svelte-local-storage-store'
+  const emptySUSData = loadSUS("#00002: 4\n#BPM01: 120\n#00008: 01")
 
-  const emptySUS = "#00002: 4\n#BPM01: 120\n#00008: 01"
-  const emptySUSData = loadSUS(emptySUS)
-
-  // let susText: string
-
-  // const metadataStore = writable<Metadata>('metadata', null)
-  // const singlesStore = writable<Single[]>('singles', null)
-  // const slidesStore = writable<SlideType[]>('slides', null)
-  // const bpmsStore = writable<[number, number][]>('bpms', null)
-
-  console.log({ emptySUSData })
-
-  // let metadata: Metadata = $metadataStore ?? emptySUSData.metadata
-  // let singles: Single[] = $singlesStore ?? emptySUSData.score.singles
-  // let slides: SlideType[] = $slidesStore ?? emptySUSData.score.slides
-  // let bpms: Map<number, number> = $bpmsStore ? new Map($bpmsStore) : emptySUSData.score.bpms
-
-  let { metadata, score: { singles, slides, bpms, fever }} = emptySUSData
+  let metadata: Metadata
+  let singles: Single[]
+  let slides: Slide[]
+  let bpms: Map<number, number>
+  let fever: Fever
 
   // let empty: boolean = true
   // $: empty = singles.length === 0 && slides.length === 0 && (bpms.size === 0 || bpms.size === 1 && bpms.get(0) === 120)
-
-  // $: if (susText) {
-  //   ({ metadata, score: { singles, slides, bpms }} = loadSUS(susText))
-  // }
-
-  // $: if (metadata) $metadataStore = metadata
-  // $: if (singles) $singlesStore = singles
-  // $: if (slides) $slidesStore = slides
-  // $: if (bpms) $bpmsStore = [...bpms]
- 
-  console.log({ singles, slides, bpms, fever })
 
   // Stores
   import { selectedNotes } from '$lib/editing/selection'
@@ -526,6 +501,13 @@
     toast.push(message)
   }
 
+  initScore()
+
+  function initScore() {
+    ({ metadata, score: { singles, slides, bpms, fever }} = emptySUSData)
+    music = null
+  }
+
   import type { Project } from '$lib/projects'
   import ProjectsDialog from '$lib/dialogs/ProjectsDialog.svelte'
   let projectsDialogOpened = true
@@ -537,8 +519,7 @@
     if (currentProject) {
       savecurrent(`${currentProject.name} として保存されました。`)
     }
-    ({ metadata, score: { singles, slides, bpms, fever }} = emptySUSData)
-    music = null
+    initScore()
     await tick()
     const project: Project = {
       name: 'Untitled',
@@ -852,6 +833,13 @@
   on:open={onopenproject}
   on:openfile={onopenfile}
   on:new={onnewproject}
+  on:delete={({ detail }) => {
+    db.projects.delete(detail)
+    if (currentProject && currentProject.id === detail) {
+      currentProject = null
+      initScore()
+    }
+  }}
 />
 
 <ControlHandler
