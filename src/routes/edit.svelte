@@ -69,16 +69,15 @@
     ZOOM_MIN,
     LANE_MAX,
   } from '$lib/consts'
-  import { FLICK_TYPES, DIAMOND_TYPES, EASE_TYPES } from '$lib/score/beatmap'
 
   // Functions
   import { onMount, setContext, tick } from 'svelte'
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { clamp } from '$lib/basic/math'
-  import { closest, max, rotateNext } from '$lib/basic/collections'
+  import { closest, max } from '$lib/basic/collections'
   import { download, toBlob } from '$lib/basic/file'
-  import { toDiamondType, fromDiamondType } from '$lib/score/beatmap'
+  import { fromDiamondType } from '$lib/score/beatmap'
 
   // Score Data
   // export let susText: string
