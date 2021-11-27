@@ -4,8 +4,22 @@
   import type { Mode } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
 
-  import { Single, Slide as SlideType, Note as NoteType, SlideStep, EaseType, IEase, DiamondType, toDiamondType, EASE_TYPES, hasEaseType, DIAMOND_TYPES, isSlideStep, SlideNote, fromDiamondType } from '$lib/score/beatmap'
-
+  import type {
+    Single,
+    Slide as SlideType,
+    Note as NoteType,
+    SlideStep,
+    SlideNote,
+    EaseType,
+    IEase,
+    DiamondType,
+    Fever as FeverType,
+  } from '$lib/score/beatmap'
+    
+  import {
+    toDiamondType, EASE_TYPES, hasEaseType, DIAMOND_TYPES, isSlideStep, fromDiamondType 
+  } from '$lib/score/beatmap'
+  
   import '$lib/basic/dblclick'
 
   // Constants
@@ -27,8 +41,9 @@
   import Note from '$lib/render/Note.svelte'
   import Slide from '$lib/render/Slide.svelte'
   import Selection from '$lib/render/Selection.svelte'
-  import Floating from './render/Floating.svelte'
-  import StackedArea from './render/StackedArea.svelte'
+  import Floating from '$lib/render/Floating.svelte'
+  import StackedArea from '$lib/render/StackedArea.svelte'
+  import Fever from '$lib/render/Fever.svelte'
 
   // UI Components
   import Menu from '$lib/ui/Menu.svelte'
@@ -58,6 +73,7 @@
   export let singles: Single[]
   export let slides: SlideType[]
   export let bpms: Map<number, number>
+  export let fever: FeverType
 
   setContext('app', app)
 
@@ -432,6 +448,9 @@
       {bpms}
     />
 
+    <!-- FEVER -->
+    <Fever {fever} />
+  
     <!-- SINGLE NOTES -->
     {#each singles as note (note)}
       {#if visibility.Flicks && note.flick !== 'no' || visibility.Taps && note.flick === 'no' }

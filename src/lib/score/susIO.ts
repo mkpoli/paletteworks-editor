@@ -3,6 +3,7 @@ import type { Flick, Single, Slide, SlideTail, SlideStep, SlideHead, Metadata, S
 
 import { analyze, getMetaData } from '$lib/score/sus/analyze'
 import { dump } from '$lib/score/sus/generate'
+import { LANE_FEVER } from '$lib/consts'
 
 export function getScoreData(sus: string): SusScore {
   const TICKS_PER_BIT = 480
@@ -76,8 +77,24 @@ export function convertScoreData(score: SusScore): Score {
 
   const tapKeys = new Set<string>()
   const singles: Single[] = []
+
+  let feverStartTick: number | null = null
+  let feverEndTick: number | null = null
+
   score.tapNotes
-    // .filter((note) => note.lane > 1 && note.lane < 14)
+    .filter((note) => {
+      if (note.lane === LANE_FEVER && note.width === 1) {
+        if (note.type === 1) {
+          feverStartTick = note.tick
+        } if (note.type === 2) {
+          feverEndTick = note.tick
+        }
+        return false
+      } else {
+        return true
+      }
+      // note.lane >= LANE_MIN && note.lane <= LANE_MAX
+    })
     .forEach((note) => {
       const key = getKey(note)
       if (slideKeys.has(key)) return
@@ -174,7 +191,7 @@ export function convertScoreData(score: SusScore): Score {
 
   const bpms = new Map<number, number>(score.bpms.map(({ tick, value }) => [tick, value]))
 
-  return { singles, slides, bpms }
+  return { singles, slides, bpms, fever: feverStartTick !== null && feverEndTick !== null ? [feverStartTick, feverEndTick] : null }
 }
 
 
@@ -195,7 +212,13 @@ export function exportScoreData(score: Score): SusScore {
   const slideNotes: Note[][] = []
   const bpmNotes: Timing[] = []
   
-  const { singles, slides, bpms } = score
+  const { singles, slides, bpms, fever } = score
+
+  if (fever) {
+    const [start, end] = fever
+    tapNotes.push({ tick: start, width: 1, lane: LANE_FEVER, type: 1 })
+    tapNotes.push({ tick: end, width: 1, lane: LANE_FEVER, type: 2 })
+  }
 
   singles.forEach(({ tick, lane, width, critical, flick }) => {
     tapNotes.push({ tick, lane, width, type: critical ? 2 : 1 })

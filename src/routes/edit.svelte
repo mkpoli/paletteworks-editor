@@ -100,7 +100,7 @@
   // let slides: SlideType[] = $slidesStore ?? emptySUSData.score.slides
   // let bpms: Map<number, number> = $bpmsStore ? new Map($bpmsStore) : emptySUSData.score.bpms
 
-  let { metadata, score: { singles, slides, bpms }} = emptySUSData
+  let { metadata, score: { singles, slides, bpms, fever }} = emptySUSData
 
   // let empty: boolean = true
   // $: empty = singles.length === 0 && slides.length === 0 && (bpms.size === 0 || bpms.size === 1 && bpms.get(0) === 120)
@@ -114,7 +114,7 @@
   // $: if (slides) $slidesStore = slides
   // $: if (bpms) $bpmsStore = [...bpms]
  
-  console.log({ singles, slides, bpms })
+  console.log({ singles, slides, bpms, fever })
 
   // Stores
   import { selectedNotes } from '$lib/editing/selection'
@@ -226,7 +226,7 @@
   let lastPointerTick: number = 0
 
   function onsave() {
-    const sus = dumpSUS(metadata, { singles, slides, bpms })
+    const sus = dumpSUS(metadata, { singles, slides, bpms, fever })
     download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
   }
 
@@ -518,6 +518,7 @@
         singles,
         slides,
         bpms,
+        fever,
       },
       preview: await renderPreview()
     })
@@ -536,7 +537,7 @@
     if (currentProject) {
       savecurrent(`${currentProject.name} として保存されました。`)
     }
-    ({ metadata, score: { singles, slides, bpms }} = emptySUSData)
+    ({ metadata, score: { singles, slides, bpms, fever }} = emptySUSData)
     music = null
     await tick()
     const project: Project = {
@@ -547,6 +548,7 @@
         singles,
         slides,
         bpms,
+        fever,
       },
       metadata,
       preview: await renderPreview()
@@ -559,7 +561,7 @@
     if (currentProject) {
       savecurrent(`${currentProject.name} として保存されました。`)
     }
-    ({ metadata, score: { bpms, singles, slides} } = project)
+    ({ metadata, score: { bpms, singles, slides, fever } } = project)
     music = null
     currentProject = project
   }
@@ -576,7 +578,7 @@
   async function onfileopened(url: string) {
     const res = await fetch(url)
     const text = await res.text();
-    ({ metadata, score: { singles, slides, bpms }} = loadSUS(text))
+    ({ metadata, score: { singles, slides, bpms, fever }} = loadSUS(text))
     await tick()
     const project: Project = {
       name: metadata.title || 'Untitled',
@@ -586,6 +588,7 @@
         singles,
         slides,
         bpms,
+        fever
       },
       metadata,
       preview: await renderPreview()
@@ -724,6 +727,7 @@
       bind:slides
       bind:bpms
       bind:zoom
+      bind:fever
       bind:imageDialogOpened
       on:changeBPM={async (event) => {
         ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)

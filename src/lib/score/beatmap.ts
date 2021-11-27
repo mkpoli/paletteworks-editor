@@ -69,10 +69,13 @@ export type Slide = {
   steps: SlideStep[]
 } & ICritical
 
+export type Fever = [startTick: number, endTick: number] | null
+
 export type Score = {
   singles: Single[]
   slides: Slide[]
   bpms: Map<number, number>
+  fever: Fever
 }
 
 export type Beatmap = {
