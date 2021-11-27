@@ -843,6 +843,7 @@
 />
 
 <ProjectsDialog
+  {currentProject}
   bind:opened={projectsDialogOpened}
   on:open={onopenproject}
   on:openfile={onopenfile}

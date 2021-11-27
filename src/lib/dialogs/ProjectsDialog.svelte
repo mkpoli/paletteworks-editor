@@ -18,6 +18,7 @@
   }>()
 
   export let opened: boolean
+  export let currentProject: Project | null
 
   import { db, projects as projectObservable } from '$lib/projects'
   import type { Project } from '$lib/projects'
@@ -45,7 +46,7 @@
 
 <Modal bind:opened on:open={async () => {
   await tick()
-  selected = projects.length ? projects[0] : null
+  selected = projects.find(project => project.id === currentProject?.id) ?? null
 }}>
   <template slot="activator">
     
