@@ -799,8 +799,20 @@
       bind:volume
       bind:sfxVolume
       {bgmLoading}
+      totalCombo={
+        singles.length +
+        slides.reduce((sum, { head, tail, steps }) => {
+          const TICK_PER_HALF_BEAT = TICK_PER_BEAT / 2
+          // head + tail
+          sum += 2
+          // steps
+          sum += steps.filter((step) => step.diamond).length
+          // hidden combo
+          sum += Math.floor((tail.tick - head.tick) / TICK_PER_HALF_BEAT - 0.5)
+          return sum
+        }, 0)
+      }
     />
-    <!-- <li>Combos: {singleNotes.length + slides.reduce((acc, ele) => acc + ele.steps.length + 2, 0) }</li> -->
     {#if import.meta.env.DEV}
       <DebugInfo/>
     {/if}

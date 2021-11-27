@@ -37,6 +37,7 @@
   export let music: File | null
   export let scrollMode: 'page' | 'smooth'
   export let visibility: Record<string, boolean>
+  export let totalCombo: number
   export let volume: number
   export let sfxVolume: number
   export let bgmLoading: boolean
@@ -155,6 +156,7 @@
               <span class="title">{name}</span><value>{value}</value>
             </li>
           {/each}
+          <li><p>総コンボ数 {totalCombo}</p></li>
           <li><p>選択されたアイテム数 {$selectedNotes.length}</p></li>
         </ul>
       </TabContent>
