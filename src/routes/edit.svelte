@@ -647,7 +647,14 @@
 
   let updated: boolean = false
   $: dbg('updated', updated)
-  $: if (metadata && slides && singles && bpms && music) {
+
+  $: {
+    metadata
+    slides
+    singles
+    bpms
+    fever
+    music
     updated = true
   }
 
