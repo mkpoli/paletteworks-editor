@@ -36,6 +36,8 @@
     graphics.removeChildren()
     graphics.clear()
 
+    drawSnappingLine(position)
+
     // Draw lanes
     for (let i = 1; i < 14; i++) {
       const x = MARGIN + i * LANE_WIDTH
@@ -72,6 +74,20 @@
         graphics.moveTo(MARGIN + LANE_WIDTH, y)
         graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
       }
+    }
+  }
+
+  function drawSnappingLine(position: PositionManager) {
+    const { snapTo } = position
+    if (snapTo > 192) return
+
+    for (let i = 0; i < (maxMeasure * BEAT_IN_MEASURE + 1) * snapTo; i++) {
+      const tick = TICK_PER_MEASURE / snapTo * i
+      if (tick % 480 === 0) continue
+      const y = position.calcY(tick)
+      graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
+      graphics.moveTo(MARGIN + LANE_WIDTH, y)
+      graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
     }
   }
 </script>
