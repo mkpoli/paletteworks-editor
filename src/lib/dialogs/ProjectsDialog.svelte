@@ -58,11 +58,13 @@
   <div slot="presentation">
     <h2>譜面一覧</h2>
     <div class="close">
-      <ClickableIcon
-        icon="gridicons:cross"
-        height="1.5em"
-        on:click={() => { dispatch('cancel'); opened = false }}
-      />
+      {#if currentProject !== null}
+        <ClickableIcon
+          icon="gridicons:cross"
+          height="1.5em"
+          on:click={() => { dispatch('cancel'); opened = false }}
+        />
+      {/if}
     </div>
     <TextInput
       class="search"
