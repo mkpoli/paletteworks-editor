@@ -19,6 +19,7 @@ export const LANE_MAX = 13
 export const LANE_COUNT = LANE_COUNT_REAL + 2
 export const LANE_AREA_WIDTH = LANE_WIDTH * LANE_COUNT
 export const LANE_FEVER = 15
+export const LANE_SKILL = 0
 export const MEASURE_HEIGHT = 300
 export const CANVAS_WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
 

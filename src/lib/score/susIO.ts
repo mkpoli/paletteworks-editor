@@ -3,7 +3,7 @@ import type { Flick, Single, Slide, SlideTail, SlideStep, SlideHead, Metadata, S
 
 import { analyze, getMetaData } from '$lib/score/sus/analyze'
 import { dump } from '$lib/score/sus/generate'
-import { LANE_FEVER } from '$lib/consts'
+import { LANE_FEVER, LANE_SKILL } from '$lib/consts'
 
 export function getScoreData(sus: string): SusScore {
   const TICKS_PER_BIT = 480
@@ -26,6 +26,7 @@ export function convertScoreData(score: SusScore): Score {
   const stepRemoveMods = new Set<string>()
   const easeInMods = new Set<string>()
   const easeOutMods = new Set<string>()
+  const skills = new Set<number>()
 
   const slideKeys = new Set<string>()
   score.slideNotes.forEach((slide) => {
@@ -89,6 +90,9 @@ export function convertScoreData(score: SusScore): Score {
         } if (note.type === 2) {
           feverEndTick = note.tick
         }
+        return false
+      } else if (note.lane === LANE_SKILL && note.width === 1 && note.type === 4) {
+        skills.add(note.tick)
         return false
       } else {
         return true
@@ -191,7 +195,10 @@ export function convertScoreData(score: SusScore): Score {
 
   const bpms = new Map<number, number>(score.bpms.map(({ tick, value }) => [tick, value]))
 
-  return { singles, slides, bpms, fever: feverStartTick !== null && feverEndTick !== null ? [feverStartTick, feverEndTick] : null }
+  return {
+    singles, slides, bpms, skills,
+    fever: feverStartTick !== null && feverEndTick !== null ? [feverStartTick, feverEndTick] : null
+  }
 }
 
 
@@ -212,13 +219,17 @@ export function exportScoreData(score: Score): SusScore {
   const slideNotes: Note[][] = []
   const bpmNotes: Timing[] = []
   
-  const { singles, slides, bpms, fever } = score
+  const { singles, slides, bpms, fever, skills } = score
 
   if (fever) {
     const [start, end] = fever
     tapNotes.push({ tick: start, width: 1, lane: LANE_FEVER, type: 1 })
     tapNotes.push({ tick: end, width: 1, lane: LANE_FEVER, type: 2 })
   }
+
+  skills.forEach((skill) => {
+    tapNotes.push({ tick: skill, width: 1, lane: LANE_SKILL, type: 4 })
+  })
 
   singles.forEach(({ tick, lane, width, critical, flick }) => {
     tapNotes.push({ tick, lane, width, type: critical ? 2 : 1 })

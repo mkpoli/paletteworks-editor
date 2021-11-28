@@ -44,6 +44,7 @@
   import Floating from '$lib/render/Floating.svelte'
   import StackedArea from '$lib/render/StackedArea.svelte'
   import Fever from '$lib/render/Fever.svelte'
+  import Skill from '$lib/render/Skill.svelte'
 
   // UI Components
   import Menu from '$lib/ui/Menu.svelte'
@@ -74,8 +75,10 @@
   export let slides: SlideType[]
   export let bpms: Map<number, number>
   export let fever: FeverType
+  export let skills: Set<number>
 
   setContext('app', app)
+  setContext('PIXI', PIXI)
 
   $: measureHeight = MEASURE_HEIGHT * zoom
 
@@ -450,6 +453,9 @@
 
     <!-- FEVER -->
     <Fever {fever} />
+
+    <!-- SKILL -->
+    <Skill {skills} />
   
     <!-- SINGLE NOTES -->
     {#each singles as note (note)}

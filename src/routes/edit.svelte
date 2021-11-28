@@ -87,6 +87,7 @@
   let slides: Slide[]
   let bpms: Map<number, number>
   let fever: Fever
+  let skills: Set<number>
 
   // let empty: boolean = true
   // $: empty = singles.length === 0 && slides.length === 0 && (bpms.size === 0 || bpms.size === 1 && bpms.get(0) === 120)
@@ -201,7 +202,7 @@
   let lastPointerTick: number = 0
 
   function onsave() {
-    const sus = dumpSUS(metadata, { singles, slides, bpms, fever })
+    const sus = dumpSUS(metadata, { singles, slides, bpms, fever, skills })
     download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
   }
 
@@ -494,6 +495,7 @@
         slides,
         bpms,
         fever,
+        skills,
       },
       preview: await renderPreview()
     })
@@ -504,7 +506,7 @@
   initScore()
 
   function initScore() {
-    ({ metadata, score: { singles, slides, bpms, fever }} = emptySUSData)
+    ({ metadata, score: { singles, slides, bpms, fever, skills }} = emptySUSData)
     music = null
   }
 
@@ -530,6 +532,7 @@
         slides,
         bpms,
         fever,
+        skills,
       },
       metadata,
       preview: await renderPreview()
@@ -542,7 +545,7 @@
     if (currentProject) {
       savecurrent(`${currentProject.name} として保存されました。`)
     }
-    ({ metadata, score: { bpms, singles, slides, fever } } = project)
+    ({ metadata, score: { bpms, singles, slides, fever, skills } } = project)
     music = null
     currentProject = project
   }
@@ -559,7 +562,7 @@
   async function onfileopened(url: string) {
     const res = await fetch(url)
     const text = await res.text();
-    ({ metadata, score: { singles, slides, bpms, fever }} = loadSUS(text))
+    ({ metadata, score: { singles, slides, bpms, fever, skills } } = loadSUS(text))
     await tick()
     const project: Project = {
       name: metadata.title || 'Untitled',
@@ -569,7 +572,8 @@
         singles,
         slides,
         bpms,
-        fever
+        fever,
+        skills,
       },
       metadata,
       preview: await renderPreview()
@@ -654,6 +658,7 @@
     singles
     bpms
     fever
+    skills
     music
     updated = true
   }
@@ -716,6 +721,7 @@
       bind:bpms
       bind:zoom
       bind:fever
+      bind:skills
       bind:imageDialogOpened
       on:changeBPM={async (event) => {
         ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)
