@@ -562,8 +562,15 @@
 
   async function onfileopened(url: string) {
     const res = await fetch(url)
-    const text = await res.text();
-    ({ metadata, score: { singles, slides, bpms, fever, skills } } = loadSUS(text))
+    const text = await res.text()
+    try {
+      ({ metadata, score: { singles, slides, bpms, fever, skills } } = loadSUS(text))
+    } catch (e) {
+      toast.push(`SUSファイルを読み込む際にエラーが発生しました`)
+      console.error(e)
+      initScore()
+      return
+    }
     await tick()
     const project: Project = {
       name: metadata.title || 'Untitled',

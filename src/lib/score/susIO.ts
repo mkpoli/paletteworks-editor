@@ -130,8 +130,8 @@ export function convertScoreData(score: SusScore): Score {
 
     const critical = criticalMods.has(getKey(startNote))
 
-    let head: SlideHead
-    let tail: SlideTail
+    let head: SlideHead | undefined = undefined
+    let tail: SlideTail | undefined = undefined
     const steps: SlideStep[] = []
 
     slide.forEach((note) => {
@@ -185,9 +185,12 @@ export function convertScoreData(score: SusScore): Score {
       }
     })
 
+    if (head === undefined) throw new Error(`Invalid SlideHead in slide ${JSON.stringify(slide)}`)
+    if (tail === undefined) throw new Error(`Invalid SlideTail in slide ${JSON.stringify(slide)}`)
+
     slides.push({
-      head: head!,
-      tail: tail!,
+      head,
+      tail,
       steps,
       critical
     })
