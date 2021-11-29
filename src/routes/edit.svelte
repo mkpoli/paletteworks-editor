@@ -580,6 +580,9 @@
     }
     const id = await db.projects.add(project)
     currentProject = await db.projects.get(id) ?? null
+
+    await tick()
+    projectsDialogOpened = false
   }
 
   function onopen() {
@@ -898,6 +901,16 @@
     event.returnValue = '本当にエディターを閉じますか'
     return '本当にエディターを閉じますか'
   }}}
+  on:dragover|preventDefault
+  on:drop|preventDefault={(event) => {
+    console.log(event)
+    if (!event.dataTransfer || event.dataTransfer.items.length === 0) return
+    const item = event.dataTransfer.items[0]
+    if (item.kind !== 'file') return
+    let file = item.getAsFile()
+    if (!file || !file.name.endsWith('.sus')) return
+    onfileopened(URL.createObjectURL(file))
+  }}
 />
 
 <SvelteToast/>
