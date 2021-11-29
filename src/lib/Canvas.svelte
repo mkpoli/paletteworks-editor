@@ -14,6 +14,7 @@
     IEase,
     DiamondType,
     Fever as FeverType,
+    Flick,
   } from '$lib/score/beatmap'
     
   import {
@@ -427,6 +428,19 @@
   }
 
   let pointerOnNote: boolean = false
+
+  function rotateFlick(flick: Flick): Flick {
+    if (!shiftKey) {
+      return rotateNext(flick, FLICK_TYPES)
+    } else {
+      return ({
+        'left': 'right',
+        'right': 'left',
+        'middle': 'no',
+        'no': 'middle'
+      } as const)[flick]
+    }
+  }
 </script>
 
 <div
@@ -468,7 +482,7 @@
               case 'flick': {
                 dispatch('updatesingle', {
                   note, modification: {
-                    flick: rotateNext(note.flick, FLICK_TYPES)
+                    flick: rotateFlick(note.flick)
                   }
                 })
                 break
@@ -503,7 +517,7 @@
               case 'flick': {
                 dispatch('updateslidenote', {
                   note: slide.tail, modification: {
-                    flick: rotateNext(slide.tail.flick, FLICK_TYPES)
+                    flick: rotateFlick(slide.tail.flick)
                   }
                 })
                 break
@@ -541,7 +555,7 @@
               case 'flick': {
                 dispatch('updateslidenote', {
                   note, modification: {
-                    flick: rotateNext(note.flick, FLICK_TYPES)
+                    flick: rotateFlick(note.flick)
                   }
                 })
                 break
