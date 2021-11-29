@@ -180,6 +180,9 @@
       notes: NoteType[],
       flip: boolean
     },
+    updatecriticals: {
+      notes: NoteType[]
+    }
   }
   const dispatch = createEventDispatcher<Events>()
 
@@ -476,10 +479,8 @@
                 break
               }
               case 'critical': {
-                dispatch('updatesingle', {
-                  note, modification: {
-                    critical: !note.critical
-                  }
+                dispatch('updatecriticals', {
+                  notes: $selectedNotes.length ? $selectedNotes : [note],
                 })
                 return
               }
@@ -510,11 +511,17 @@
                 break
               }
               case 'critical': {
-                dispatch('updateslide', {
-                  slide, modification: {
-                    critical: !slide.critical
-                  }
-                })
+                if ($selectedNotes.length) {
+                  dispatch('updatecriticals', {
+                    notes: $selectedNotes,
+                  })
+                } else {
+                  dispatch('updateslide', {
+                    slide, modification: {
+                      critical: !slide.critical
+                    }
+                  })
+                }
                 break
               }
               case 'mid': {
@@ -547,11 +554,9 @@
                 break
               }
               case 'critical': {
-                dispatch('updateslidenote', {
-                  note, modification: {
-                    critical: !note.critical
-                  }
-                })
+                dispatch('updatecriticals', {
+                  notes: $selectedNotes.length ? $selectedNotes : [note],
+                })            
                 break
               }
             }
@@ -567,11 +572,17 @@
                 break
               }
               case 'critical': {
-                dispatch('updateslide', {
-                  slide, modification: {
-                    critical: !slide.critical
-                  }
-                })
+                if ($selectedNotes.length) {
+                  dispatch('updatecriticals', {
+                    notes: $selectedNotes,
+                  })
+                } else {
+                  dispatch('updateslide', {
+                    slide, modification: {
+                      critical: !slide.critical
+                    }
+                  })
+                }
                 break
               }
               case 'mid': {

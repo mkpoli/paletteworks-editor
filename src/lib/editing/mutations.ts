@@ -304,6 +304,32 @@ export class UpdateSlide extends SlideMutation {
   }
 }
 
+export class UpdateSlides extends SlideMutation {
+  modifications: Map<Slide, Partial<Slide>>
+  originalDatas: Map<Slide, Partial<Slide>>
+  constructor(slides: Slide[], modifications: Map<Slide, Partial<Slide>>, originalDatas: Map<Slide, Partial<Slide>>) {
+    super(slides)
+    this.type = 'スライド'
+    this.size = modifications.size
+    this.modifications = modifications
+    this.originalDatas = originalDatas
+  }
+
+  exec() {
+    this.modifications.forEach((modification, target) => {
+      Object.assign(target, modification)
+    })
+    return this.slides
+  }
+
+  undo() {
+    this.originalDatas.forEach((originalData, target) => {
+      Object.assign(target, originalData)
+    })
+    return this.slides
+  }
+}
+
 
 export abstract class BatchMutation extends Mutation implements SingleMutation, SlideMutation {
   singles: Single[]
@@ -409,6 +435,34 @@ export class BatchUpdate extends BatchMutation {
     this.originalDatas.forEach((originalData, note) => {
       Object.assign(note, originalData)
     })
+    return { singles: this.singles, slides: this.slides }
+  }
+}
+
+export class BatchUpdateCombinated extends BatchMutation {
+  batchUpdate: BatchUpdate
+  updateSlides: UpdateSlides
+
+  constructor(singles: Single[], slides: Slide[], noteModifications: Map<Note, Partial<Note>>, noteOriginalDatas: Map<Note, Partial<Note>>, slideModifications: Map<Slide, Partial<Slide>>, slideOriginalDatas: Map<Slide, Partial<Slide>>, name: string) {
+    super(singles, slides)
+
+    this.name = name
+    this.size = noteModifications.size + slideModifications.size
+
+    this.batchUpdate = new BatchUpdate(singles, slides, noteModifications, noteOriginalDatas, name)
+    this.updateSlides = new UpdateSlides(slides, slideModifications, slideOriginalDatas)
+  }
+
+  exec() {
+    console.log('execed')
+    this.batchUpdate.exec()
+    this.updateSlides.exec()
+    return { singles: this.singles, slides: this.slides }
+  }
+
+  undo() {
+    this.updateSlides.undo()
+    this.batchUpdate.undo()
     return { singles: this.singles, slides: this.slides }
   }
 }

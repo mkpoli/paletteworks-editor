@@ -22,7 +22,7 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional } from '$lib/score/beatmap'
+  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional, ICritical } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -359,6 +359,7 @@
     BatchMutation,
     BatchRemove,
     BatchUpdate,
+    BatchUpdateCombinated,
     BPMMutation,
     Mutation,
     RemoveBPM,
@@ -368,7 +369,7 @@
     UpdateSingle,
     UpdateSlide,
     UpdateSlideNote,
-    UpdateSlideNotes
+    UpdateSlideNotes,
   } from '$lib/editing/mutations'
 
   import { mutationHistory, undoneHistory } from '$lib/editing/history';
@@ -660,6 +661,32 @@
     playSound('stage')
   }
 
+  function onupdatecriticals({ detail: { notes }}: CustomEvent<{ notes: NoteType[] }>) {
+    const criticalNotes = new Array<NoteType & ICritical>()
+    const criticalSlideSet = new Set<Slide>()
+    notes.forEach((note) => {
+      if ('critical' in note) {
+        criticalNotes.push(note)
+      } else {
+        const slide = slides.find((slide) => slide.head === note || slide.steps.includes(note))
+        if (slide) criticalSlideSet.add(slide)
+      }
+    })
+    const criticalSlides = [...criticalSlideSet]
+    if (criticalNotes.length === 0 && criticalSlides.length === 0) return
+    let oldcritical = criticalNotes.at(0)?.critical ?? criticalSlides[0].critical ?? false
+    console.log('hello')
+    exec(new BatchUpdateCombinated(
+      singles, slides,
+      new Map(criticalNotes.map((note) => [note, { critical: !oldcritical }])),
+      new Map(criticalNotes.map((note) => [note, { critical: note.critical }])),
+      new Map(criticalSlides.map((slide) => [slide, { critical: !oldcritical }])),
+      new Map(criticalSlides.map((slide) => [slide, { critical: slide.critical }])),  
+      '更新'
+    ))
+    playSound('stage')
+  }
+
   function onselectall() {
     $selectedNotes = [...singles, ...slides.flatMap((slide) => [slide.head, slide.tail, ...slide.steps])]
   }
@@ -786,6 +813,7 @@
         playSound('stage')
       }}
       on:updateflicks={onupdateflicks}
+      on:updatecriticals={onupdatecriticals}
       on:flip={({ detail: { notes }}) => flipNotes(notes)}
       on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
     />

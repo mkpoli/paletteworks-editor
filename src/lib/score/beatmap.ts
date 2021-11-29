@@ -17,7 +17,7 @@ export interface IDirectional {
   flick: Flick
 }
 
-interface ICritical {
+export interface ICritical {
   critical: boolean
 }
 
