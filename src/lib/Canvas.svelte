@@ -14,7 +14,6 @@
     IEase,
     DiamondType,
     Fever as FeverType,
-    Flick,
   } from '$lib/score/beatmap'
     
   import {
@@ -26,7 +25,6 @@
   // Constants
   import { createEventDispatcher, onMount, setContext, tick } from 'svelte'
   import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP } from '$lib/consts'
-  import { FLICK_TYPES } from '$lib/score/beatmap'
 
   // Functions
   import { snap } from '$lib/basic/math'
@@ -177,6 +175,10 @@
     },
     flip: {
       notes: NoteType[]
+    },
+    updateflicks: {
+      notes: NoteType[],
+      flip: boolean
     },
   }
   const dispatch = createEventDispatcher<Events>()
@@ -428,19 +430,6 @@
   }
 
   let pointerOnNote: boolean = false
-
-  function rotateFlick(flick: Flick): Flick {
-    if (!shiftKey) {
-      return rotateNext(flick, FLICK_TYPES)
-    } else {
-      return ({
-        'left': 'right',
-        'right': 'left',
-        'middle': 'no',
-        'no': 'middle'
-      } as const)[flick]
-    }
-  }
 </script>
 
 <div
@@ -480,10 +469,9 @@
             pointerOnNote = true
             switch (currentMode) {
               case 'flick': {
-                dispatch('updatesingle', {
-                  note, modification: {
-                    flick: rotateFlick(note.flick)
-                  }
+                dispatch('updateflicks', {
+                  notes: $selectedNotes.length ? $selectedNotes : [note],
+                  flip: shiftKey
                 })
                 break
               }
@@ -515,10 +503,9 @@
           on:stepclick={({ detail: { note, slide } }) => {
             switch (currentMode) {
               case 'flick': {
-                dispatch('updateslidenote', {
-                  note: slide.tail, modification: {
-                    flick: rotateFlick(slide.tail.flick)
-                  }
+                dispatch('updateflicks', {
+                  notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
+                  flip: shiftKey
                 })
                 break
               }
@@ -553,10 +540,9 @@
           on:tailclick={({ detail: { note } }) => {
             switch (currentMode) {
               case 'flick': {
-                dispatch('updateslidenote', {
-                  note, modification: {
-                    flick: rotateFlick(note.flick)
-                  }
+                dispatch('updateflicks', {
+                  notes: $selectedNotes.length ? $selectedNotes : [note],
+                  flip: shiftKey
                 })
                 break
               }
@@ -574,10 +560,9 @@
             pointerOnNote = true;
             switch (currentMode) {
               case 'flick': {
-                dispatch('updateslidenote', {
-                  note: slide.tail, modification: {
-                    flick: rotateNext(slide.tail.flick, FLICK_TYPES)
-                  }
+                dispatch('updateflicks', {
+                  notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
+                  flip: shiftKey
                 })
                 break
               }

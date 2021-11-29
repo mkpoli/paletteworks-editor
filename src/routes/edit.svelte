@@ -22,7 +22,7 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType, Flick, Metadata, Single, Fever, Slide } from '$lib/score/beatmap'
+  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -78,6 +78,7 @@
   import { closest, max } from '$lib/basic/collections'
   import { download, toBlob } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
+  import { flipFlick, rotateFlick } from '$lib/editing/flick'
 
   // Score Data
   const emptySUSData = loadSUS("#00002: 4\n#BPM01: 120\n#00008: 01")
@@ -597,15 +598,6 @@
     gotoTick(lastTick)
   }
 
-  function flipFlick(flickType: Flick): Flick {
-    switch (flickType) {
-      case 'left': return 'right'
-      case 'right': return 'left'
-      case 'middle': return 'middle'
-      case 'no': return 'no'
-    }
-  }
-
   function flipNotes(notes: NoteType[]) {
     const flipTargets = new Map(notes.map((note) => 
       [note, {
@@ -645,6 +637,19 @@
       ))
 
     exec(new BatchAdd(singles, slides, newSingles, newSlides))
+    playSound('stage')
+  }
+
+  function onupdateflicks({ detail: { notes, flip } }: CustomEvent<{ notes: NoteType[], flip: boolean }>) {
+    const flickNotes = notes.filter((note) => 'flick' in note) as (NoteType & IDirectional)[]
+    if (flickNotes.length === 0) return
+    let oldFlick = flickNotes[0].flick
+    exec(new BatchUpdate(
+      singles, slides,
+      new Map(flickNotes.map((note) => [note, { flick: flip ? flipFlick(oldFlick) : rotateFlick(oldFlick) }])),
+      new Map(flickNotes.map((note) => [note, { flick: note.flick }])),
+      '更新'
+    ))
     playSound('stage')
   }
 
@@ -773,6 +778,7 @@
         exec(new UpdateSlide(slides, slide, modification))
         playSound('stage')
       }}
+      on:updateflicks={onupdateflicks}
       on:flip={({ detail: { notes }}) => flipNotes(notes)}
       on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
     />

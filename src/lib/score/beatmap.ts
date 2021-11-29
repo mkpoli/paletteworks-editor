@@ -13,7 +13,7 @@ export interface INote {
 export const FLICK_TYPES = ['no', 'middle', 'left', 'right'] as const
 export type Flick = typeof FLICK_TYPES[number]
 
-interface IDirectional {
+export interface IDirectional {
   flick: Flick
 }
 
