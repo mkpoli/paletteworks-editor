@@ -145,8 +145,8 @@
       type?: EaseType
     },
     changediamond: {
-      notes: SlideStep[],
-      type: DiamondType
+      note: NoteType | null,
+      type?: DiamondType
     },
     selectsingle: {
       note: NoteType
@@ -342,8 +342,9 @@
             return
           }
           
-          if (!shiftKey && $selectedNotes.every(isSlideStep)) {
-            onchangediamond(rotateNext(calcDiamondType($selectedNotes[0]), DIAMOND_TYPES))
+          if (!shiftKey && $selectedNotes.some(isSlideStep)) {
+            changediamond()
+            return
           }
         }
       }
@@ -423,8 +424,8 @@
     dispatch('changecurve', { note: currentNote, type })
   }
 
-  function onchangediamond(type: DiamondType, note: NoteType | null | undefined = undefined) {
-    dispatch('changediamond', { notes: (note ? [note] : $selectedNotes) as SlideStep[], type})
+  function changediamond(type?: DiamondType) {
+    dispatch('changediamond', { note: currentNote, type })
   }
 
   function calcDiamondType(note: NoteType): DiamondType {
@@ -502,7 +503,13 @@
           stepsVisible={visibility.SlideSteps}
           on:headclick={({ detail: { note } }) => {
             currentNote = note
-            if (shiftKey) changecurve()
+            if (currentMode === 'mid') {
+              if (shiftKey) {
+                changecurve()
+              } else {
+                changediamond()
+              }
+            }
           }}
           on:stepclick={({ detail: { note, slide } }) => {
             switch (currentMode) {
@@ -528,20 +535,11 @@
                 break
               }
               case 'mid': {
-                if ($selectedNotes.length) break
-                if (!shiftKey) {
-                  const { diamond, ignored } = fromDiamondType(rotateNext(toDiamondType(note), DIAMOND_TYPES))
-                  dispatch('updateslidenote', {
-                    note, modification: {
-                      diamond, ignored
-                    }
-                  })
+                currentNote = note
+                if (shiftKey) {
+                  changecurve()
                 } else {
-                  dispatch('updateslidenote', {
-                    note, modification: {
-                      easeType: rotateNext(note.easeType, EASE_TYPES)
-                    }
-                  })
+                  changediamond()
                 }
                 break
               }
@@ -677,9 +675,9 @@
   {/if}
   {#if !$selectedNotes.length && currentNote !== null && 'ignored' in currentNote}
     <MenuDivider/>
-    <MenuItem icon="custom:diamond-visible" text="可視" on:click={() => { onchangediamond('visible', currentNote); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'visible'}/>
-    <MenuItem icon="custom:diamond-ignored" text="無視" on:click={() => { onchangediamond('ignored', currentNote); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'ignored'}/>
-    <MenuItem icon="custom:diamond-invisible" text="不可視" on:click={() => { onchangediamond('invisible', currentNote); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'invisible'}/>
+    <MenuItem icon="custom:diamond-visible" text="可視" on:click={() => { changediamond('visible'); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'visible'}/>
+    <MenuItem icon="custom:diamond-ignored" text="無視" on:click={() => { changediamond('ignored'); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'ignored'}/>
+    <MenuItem icon="custom:diamond-invisible" text="不可視" on:click={() => { changediamond('invisible'); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'invisible'}/>
   {/if}
   {#if $selectedNotes.length && $selectedNotes.some(hasEaseType)}
     <MenuDivider/>
@@ -705,26 +703,26 @@
       indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === 'easeIn')}
     />
   {/if}
-  {#if $selectedNotes.length && $selectedNotes.every(isSlideStep)}
+  {#if $selectedNotes.length && $selectedNotes.some(isSlideStep)}
     <MenuDivider/>
     <MenuItem
       icon="custom:diamond-visible"
       text="可視"
-      on:click={() => { onchangediamond('visible'); $selectedNotes = $selectedNotes }}
+      on:click={() => { changediamond('visible'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => calcDiamondType(note) === 'visible')}
       indeterminate={$selectedNotes.some((note) => calcDiamondType(note) === 'visible')}
     />
     <MenuItem
       icon="custom:diamond-ignored"
       text="無視"
-      on:click={() => { onchangediamond('ignored'); $selectedNotes = $selectedNotes }}
+      on:click={() => { changediamond('ignored'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => calcDiamondType(note) === 'ignored')}
       indeterminate={$selectedNotes.some((note) => calcDiamondType(note) === 'ignored')}
     />
     <MenuItem
       icon="custom:diamond-invisible"
       text="不可視"
-      on:click={() => { onchangediamond('invisible'); $selectedNotes = $selectedNotes }}
+      on:click={() => { changediamond('invisible'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => calcDiamondType(note) === 'invisible')}
       indeterminate={$selectedNotes.some((note) => calcDiamondType(note) === 'invisible')}
     />

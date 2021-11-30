@@ -22,9 +22,9 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Slide as SlideType, Note as NoteType, EaseType, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional, ICritical, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
+  import type { Slide as SlideType, Note as NoteType, EaseType, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional, ICritical } from '$lib/score/beatmap'
 
-  import { hasEaseType, isSlideStep, toDiamondType } from '$lib/score/beatmap'
+  import { hasEaseType, isSlideStep, toDiamondType, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -487,9 +487,10 @@
     playSound('stage')
   }
 
-  function onchangediamond({ detail: { notes, type } }: CustomEvent<{ notes: SlideStep[], type: DiamondType }>) {
-    const { diamond, ignored } = fromDiamondType(type)
-    exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { diamond, ignored }]))))
+  function onchangediamond({ detail: { note, type } }: CustomEvent<{ note: NoteType | null, type?: DiamondType }>) {
+    let notes = ($selectedNotes.length ? $selectedNotes : (note ? [note] : [])).filter(isSlideStep)
+    let nextType = type ?? rotateNext((note && isSlideStep(note) ? toDiamondType(note) : undefined) ?? toDiamondType(notes[0]), DIAMOND_TYPES)
+    exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, fromDiamondType(nextType)]))))
     playSound('stage')
   }
 
