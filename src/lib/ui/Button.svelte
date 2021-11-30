@@ -8,7 +8,7 @@
   export let loading: boolean = false
 </script>
 
-<button on:click class={$$props.class} {disabled}>
+<button on:click class={$$props.class} style={$$props.style} {disabled}>
   {#if icon}
     {#if loading}
       <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />

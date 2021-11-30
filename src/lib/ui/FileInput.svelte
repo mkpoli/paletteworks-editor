@@ -21,6 +21,8 @@
     input.value = ''
   }
 
+  $: accepts = accept.split(',').map(a => a.trim())
+
   function onclick() {
     input.click()
   }
@@ -28,19 +30,32 @@
 
 <input type="file" bind:files={fileList} {accept} {name} bind:this={input}>
 
-{#if file}
-  <div class="file-container">
+<div
+  class="file-container"
+  on:dragover|preventDefault|capture={() => {}}
+  on:drop|preventDefault|capture={(event) => {
+    if (!event.dataTransfer || event.dataTransfer.items.length === 0) return
+    const item = event.dataTransfer.items[0]
+    if (item.kind !== 'file') return
+    let droppedFile = item.getAsFile()
+    if (!droppedFile) return
+    event.stopPropagation()
+    if (accepts.some((accept) => droppedFile && (droppedFile.type.match(accept) || droppedFile.name.match(accept)))) {
+      file = droppedFile
+    }
+  }}
+>
+  {#if file}
     <TextInput value={file.name} disabled>
       <div slot="head">
         <Icon icon={fileIcon} />
       </div>
       <Button {loading} class="action" slot="tail" icon={openIcon} on:click={onclick}></Button>
     </TextInput>
-  </div>
-  <!-- {files[0]} -->
-{:else}
-  <Button {loading} icon={openIcon} on:click={onclick}>{text}</Button>
-{/if}
+  {:else}
+    <Button {loading} icon={openIcon} on:click={onclick} style="width: 100%;">{text}</Button>
+  {/if}
+</div>
 
 <style>
   input {
