@@ -7,6 +7,7 @@ export interface Project {
   metadata: Metadata
   score: Score
   preview: Blob
+  music: File | null
 }
 
 import { Dexie, liveQuery } from 'dexie'
@@ -16,7 +17,7 @@ class Database extends Dexie {
   constructor() {
     super('PaletteWorks')
     this.version(1).stores({
-      projects: '++id,name,created,updated,metadata,score,preview',
+      projects: '++id,name,created,updated,metadata,score,music,preview',
     })
     this.projects = this.table('projects')
   }

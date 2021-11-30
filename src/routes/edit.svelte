@@ -504,6 +504,7 @@
         fever,
         skills,
       },
+      music,
       preview: await renderPreview()
     })
     updated = false
@@ -534,6 +535,7 @@
       name: 'Untitled',
       created: new Date(),
       updated: new Date(),
+      metadata,
       score: {
         singles,
         slides,
@@ -541,7 +543,7 @@
         fever,
         skills,
       },
-      metadata,
+      music,
       preview: await renderPreview()
     }
     const id = await db.projects.add(project)
@@ -552,8 +554,7 @@
     if (currentProject) {
       savecurrent(`${currentProject.name} として保存されました。`)
     }
-    ({ metadata, score: { bpms, singles, slides, fever, skills } } = project)
-    music = null
+    ({ metadata, score: { bpms, singles, slides, fever, skills }, music } = project)
     currentProject = project
   }
 
@@ -582,6 +583,7 @@
       name: metadata.title || 'Untitled',
       created: new Date(),
       updated: new Date(),
+      metadata,
       score: {
         singles,
         slides,
@@ -589,7 +591,7 @@
         fever,
         skills,
       },
-      metadata,
+      music: null,
       preview: await renderPreview()
     }
     const id = await db.projects.add(project)
