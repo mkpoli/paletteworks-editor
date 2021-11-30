@@ -141,8 +141,8 @@
     resizestart: void,
     resize: void,
     changecurve: {
-      notes: IEase[],
-      type: EaseType
+      note: NoteType | null,
+      type?: EaseType
     },
     changediamond: {
       notes: SlideStep[],
@@ -337,10 +337,10 @@
         }
 
         if (currentMode === 'mid' && $selectedNotes.length > 0) {
-          if (shiftKey && $selectedNotes.every(hasEaseType)) {
-            console.log(`change selected curveType from ${$selectedNotes[0].easeType} to ${rotateNext($selectedNotes[0].easeType, EASE_TYPES)}`)
-            onchangecurve(rotateNext($selectedNotes[0].easeType, EASE_TYPES))
-          } 
+          if (shiftKey && $selectedNotes.some(hasEaseType)) {
+            changecurve()
+            return
+          }
           
           if (!shiftKey && $selectedNotes.every(isSlideStep)) {
             onchangediamond(rotateNext(calcDiamondType($selectedNotes[0]), DIAMOND_TYPES))
@@ -419,8 +419,8 @@
 
   let currentNote: NoteType | null = null
 
-  function onchangecurve(type: EaseType, note: NoteType | null | undefined = undefined) {
-    dispatch('changecurve', { notes: (note ? [note] : $selectedNotes) as IEase[], type})
+  function changecurve(type?: EaseType) {
+    dispatch('changecurve', { note: currentNote, type })
   }
 
   function onchangediamond(type: DiamondType, note: NoteType | null | undefined = undefined) {
@@ -501,6 +501,10 @@
         <Slide
           bind:slide
           stepsVisible={visibility.SlideSteps}
+          on:headclick={({ detail: { note } }) => {
+            currentNote = note
+            if (shiftKey) changecurve()
+          }}
           on:stepclick={({ detail: { note, slide } }) => {
             switch (currentMode) {
               case 'flick': {
@@ -609,9 +613,6 @@
           on:move
           on:movestart
           on:moveend
-          on:headclick={({ detail: { note } }) => {
-            if (shiftKey) onchangecurve(rotateNext(slide.head.easeType, EASE_TYPES), note)
-          }}
           on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
         />
@@ -671,9 +672,9 @@
   {/if}
   {#if !$selectedNotes.length && currentNote !== null && 'easeType' in currentNote}
     <MenuDivider/>
-    <MenuItem icon="custom:straight" text="直線" on:click={() => { onchangecurve(false, currentNote); currentNote = currentNote }} checked={currentNote.easeType === false}/>
-    <MenuItem icon="custom:curve-in" text="加速" on:click={() => { onchangecurve('easeOut', currentNote); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
-    <MenuItem icon="custom:curve-out" text="減速" on:click={() => { onchangecurve('easeIn', currentNote); currentNote = currentNote }} checked={currentNote.easeType === 'easeIn'}/>
+    <MenuItem icon="custom:straight" text="直線" on:click={() => { changecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>
+    <MenuItem icon="custom:curve-in" text="加速" on:click={() => { changecurve('easeOut'); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
+    <MenuItem icon="custom:curve-out" text="減速" on:click={() => { changecurve('easeIn'); currentNote = currentNote }} checked={currentNote.easeType === 'easeIn'}/>
   {/if}
   {#if !$selectedNotes.length && currentNote !== null && 'ignored' in currentNote}
     <MenuDivider/>
@@ -681,26 +682,26 @@
     <MenuItem icon="custom:diamond-ignored" text="無視" on:click={() => { onchangediamond('ignored', currentNote); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'ignored'}/>
     <MenuItem icon="custom:diamond-invisible" text="不可視" on:click={() => { onchangediamond('invisible', currentNote); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'invisible'}/>
   {/if}
-  {#if $selectedNotes.length && $selectedNotes.every(hasEaseType)}
+  {#if $selectedNotes.length && $selectedNotes.some(hasEaseType)}
     <MenuDivider/>
     <MenuItem
       icon="custom:straight"
       text="直線"
-      on:click={() => { onchangecurve(false); $selectedNotes = $selectedNotes }}
+      on:click={() => { changecurve(false); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => 'easeType' in note && note.easeType === false)}
       indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === false)}
     />
     <MenuItem
       icon="custom:curve-in"
       text="加速"
-      on:click={() => { onchangecurve('easeOut'); $selectedNotes = $selectedNotes }}
+      on:click={() => { changecurve('easeOut'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => 'easeType' in note && note.easeType === 'easeOut')}
       indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === 'easeOut')}
     />
     <MenuItem
       icon="custom:curve-out"
       text="減速"
-      on:click={() => { onchangecurve('easeIn'); $selectedNotes = $selectedNotes }}
+      on:click={() => { changecurve('easeIn'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => 'easeType' in note && note.easeType === 'easeIn')}
       indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === 'easeIn')}
     />

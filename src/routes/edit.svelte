@@ -22,7 +22,7 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Slide as SlideType, Note as NoteType, IEase, EaseType, SlideNote, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional, ICritical } from '$lib/score/beatmap'
+  import { Slide as SlideType, Note as NoteType, EaseType, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional, ICritical, hasEaseType, EASE_TYPES } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -75,7 +75,7 @@
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { clamp } from '$lib/basic/math'
-  import { closest, max } from '$lib/basic/collections'
+  import { closest, max, rotateNext } from '$lib/basic/collections'
   import { download, toBlob } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
@@ -478,8 +478,10 @@
     }
   })
 
-  function onchangecurve({ detail: { notes, type } }: CustomEvent<{ notes: (SlideNote & IEase)[], type: EaseType }>) {
-    exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { easeType: type }]))))
+  function onchangecurve({ detail: { note, type } }: CustomEvent<{ note: NoteType | null, type?: EaseType}>) {
+    let notes = ($selectedNotes.length ? $selectedNotes : (note ? [note] : [])).filter(hasEaseType)
+    let nextType = type ?? rotateNext((note && hasEaseType(note) ? note.easeType : undefined) ?? notes[0].easeType, EASE_TYPES)
+    exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { easeType: nextType }]))))
     playSound('stage')
   }
 
