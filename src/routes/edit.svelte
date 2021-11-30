@@ -22,7 +22,9 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import { Slide as SlideType, Note as NoteType, EaseType, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional, ICritical, hasEaseType, EASE_TYPES } from '$lib/score/beatmap'
+  import type { Slide as SlideType, Note as NoteType, EaseType, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional, ICritical, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
+
+  import { hasEaseType, isSlideStep, toDiamondType } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -486,7 +488,7 @@
   }
 
   function onchangediamond({ detail: { notes, type } }: CustomEvent<{ notes: SlideStep[], type: DiamondType }>) {
-    const [diamond, ignored] = fromDiamondType(type)
+    const { diamond, ignored } = fromDiamondType(type)
     exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { diamond, ignored }]))))
     playSound('stage')
   }

@@ -428,8 +428,7 @@
   }
 
   function calcDiamondType(note: NoteType): DiamondType {
-    const _note = note as SlideStep
-    return toDiamondType(_note.diamond, _note.ignored)
+    return toDiamondType(note as SlideStep)
   }
 
   let pointerOnNote: boolean = false
@@ -531,7 +530,7 @@
               case 'mid': {
                 if ($selectedNotes.length) break
                 if (!shiftKey) {
-                  const [diamond, ignored] = fromDiamondType(rotateNext(toDiamondType(note.diamond, note.ignored), DIAMOND_TYPES))
+                  const { diamond, ignored } = fromDiamondType(rotateNext(toDiamondType(note), DIAMOND_TYPES))
                   dispatch('updateslidenote', {
                     note, modification: {
                       diamond, ignored
