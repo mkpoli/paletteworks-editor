@@ -668,7 +668,7 @@
       if ('critical' in note) {
         criticalNotes.push(note)
       } else {
-        const slide = slides.find((slide) => slide.head === note || slide.steps.includes(note))
+        const slide = slides.find((slide) => slide.head === note || slide.steps.includes(note as SlideStep))
         if (slide) criticalSlideSet.add(slide)
       }
     })
