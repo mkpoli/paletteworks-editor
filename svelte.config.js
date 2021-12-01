@@ -12,6 +12,9 @@ const config = {
     target: '#svelte',
     adapter: vercel(),
     vite: {
+      assetsInclude: [
+        '**/*.fnt',
+      ],
       resolve: {
         alias: {
           '$assets': path.resolve('./src/assets')

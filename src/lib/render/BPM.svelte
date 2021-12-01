@@ -24,7 +24,7 @@
     app.stage.addChild(graphics)
   })
 
-  $: graphics && drawBPMs($position, bpms)
+  $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBPMs($position, bpms)
 
   function drawBPMs(position: PositionManager, bpms: Map<number, number>) {
     graphics.clear()
@@ -40,10 +40,9 @@
       graphics.lineTo(MARGIN + LANE_AREA_WIDTH, newY)
   
       // Draw BPM Texts
-      const text: PIXI.Text = graphics.addChild(new PIXI.Text(`𝅘𝅥=${bpm}`, {
-          fill: COLORS.COLOR_BPM,
-          fontSize: 20,
-          fontFamily: FONT_FAMILY
+      const text = graphics.addChild(new PIXI.BitmapText(`♩=${bpm}`, {
+          tint: COLORS.COLOR_BPM,
+          fontName: 'Font',
         }))
       text.anchor.set(0.5, 0.5)
   

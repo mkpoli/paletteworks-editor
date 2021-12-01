@@ -105,33 +105,27 @@
   }
 
   // Draw BPM
-  $: if (graphics) {
+  $: if (graphics && PIXI && PIXI.BitmapFont.available['Font']) {
     drawFloatingBPM(
       currentMode, $position.calcY($cursor.tick),
       bpms.has($cursor.tick)
     )
   }
 
-  let lastText: PIXI.Text
   function drawFloatingBPM(
     currentMode: Mode, y: number, hasBPM: boolean
   ) {
     graphics.clear()
-    if (lastText && !lastText.destroyed) {
-      lastText.destroy()
-    }
     graphics.removeChildren()
   
     if (currentMode == 'bpm') {
-      const text = new PIXI.Text(hasBPM ? `↑ BPM` : `+ BPM`, {
-        fill: COLORS.COLOR_BPM,
-        fontSize: 20,
-        fontFamily: FONT_FAMILY
+      const text = new PIXI.BitmapText(hasBPM ? `↑ BPM` : `+ BPM`, {
+        fontName: 'Font',
+        tint: COLORS.COLOR_BPM,
       })
       text.anchor.set(0.5, 0.5)
       text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
-      lastText = graphics.addChild(text)
-      
+
       if (!hasBPM) {
         graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
         drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y)

@@ -25,7 +25,7 @@
     app.stage.addChild(graphics)
   })
 
-  $: graphics && drawBackground($position, maxMeasure + 2)
+  $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBackground($position, maxMeasure + 2)
 
   function drawBackground(
     position: PositionManager,
@@ -60,9 +60,9 @@
         graphics.lineTo(MARGIN + LANE_AREA_WIDTH, y)
 
         const number = i / BEAT_IN_MEASURE
-        const text = new PIXI.Text(`#${number + 1}`, {
-          fill: 'white',
-          fontFamily: FONT_FAMILY
+        const text = new PIXI.BitmapText(`#${number + 1}`, {
+          fontName: 'Font',
+          tint: 0xFFFFFF,
         })
         text.x = MARGIN - TEXT_MARGIN
         text.y = y

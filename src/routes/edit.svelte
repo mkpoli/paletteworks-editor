@@ -162,8 +162,9 @@
       backgroundAlpha: 0
     })
 
-    app.stage.interactive = true
+    app.loader.add('font', '/fonts/Font.fnt').load()
 
+    app.stage.interactive = true
     const baseTexture = new PIXI.BaseTexture(spritesheetImage, {})
     const spritesheetObj = new PIXI.Spritesheet(baseTexture, spritesheet)
 

@@ -10,7 +10,7 @@ export const TICK_PER_MEASURE = TICK_PER_BEAT * BEAT_IN_MEASURE
 export const MARGIN = 100
 export const MARGIN_BOTTOM = 30
 
-export const TEXT_MARGIN = 15
+export const TEXT_MARGIN = 20
 
 export const LANE_WIDTH = 30
 export const LANE_COUNT_REAL = 12
