@@ -110,7 +110,6 @@
     filter:
       blur(0.5px)
       brightness(.85);
-    text-decoration: line-through;
   }
 
   .menu-item :global(.chevron) {
