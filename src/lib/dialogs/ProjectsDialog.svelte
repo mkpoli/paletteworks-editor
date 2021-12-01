@@ -37,6 +37,8 @@
   let selected: Project | null = null
 
   let searchKeyword: string
+
+  $: filtered = projects.filter(({ name }) => searchKeyword ? name.toLocaleLowerCase().includes(searchKeyword.toLocaleLowerCase()) : true)
 </script>
 
 <Modal
@@ -71,9 +73,10 @@
       bind:value={searchKeyword}
     >
       <Icon slot="head" icon="ic:outline-search"/>
+      <span slot="tail">{filtered?.length ?? 0}/{projects?.length ?? 0}</span>
     </TextInput>
-    <div class="project-container">
-      {#each projects.filter(({ name }) => searchKeyword ? name.includes(searchKeyword) : true) as project}
+    <div class="project-container"> 
+      {#each filtered as project}
         <ProjectCard
           {project}
           selected={selected === project}
