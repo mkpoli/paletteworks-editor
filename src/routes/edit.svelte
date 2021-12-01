@@ -13,10 +13,10 @@
   import AudioManager from '$lib/audio/AudioManager.svelte'
   import DebugInfo from '$lib/ui/DebugInfo.svelte'
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte'
-  import UndoToast from '$lib/ui/UndoToast.svelte'
 
   // Toast
-  import { toast, SvelteToast } from '@zerodevx/svelte-toast'
+  import toast from '$lib/ui/toast'
+  import { SvelteToast } from '@zerodevx/svelte-toast'
 
   // Types
   import type PIXI from 'pixi.js'
@@ -406,23 +406,7 @@
     }
     $mutationHistory.push(mutation)
     $mutationHistory = $mutationHistory
-    toast.push({
-      component: {
-        src: UndoToast as any,
-        props: {
-          text: mutation.toString(),
-          button: '元に戻す',
-          undo() { undo(mutation) },
-          mutation,
-          history: undoneHistory,
-        },
-        sendIdTo: 'toastID',
-      },
-      theme: {
-        '--toastWidth': '20rem'
-      },
-      duration: 8000
-    })
+    toast.undo(mutation, undoneHistory, '元に戻す', () => { undo(mutation) })
   }
 
   function undo(mutation: Mutation) {
@@ -438,23 +422,7 @@
     }
     $undoneHistory.push(mutation)
     $undoneHistory = $undoneHistory
-    toast.push({
-      component: {
-        src: UndoToast as any,
-        props: {
-          text: '元に戻しました',
-          button: 'やり直し',
-          undo() { exec(mutation) },
-          mutation,
-          history: mutationHistory,
-        },
-        sendIdTo: 'toastID',
-      },
-      theme: {
-        '--toastWidth': '20rem'
-      },
-      duration: 8000
-    })
+    toast.undo(mutation, mutationHistory, 'やり直し', () => { exec(mutation) })
   }
 
   import { calcResized, resizing, resizingLastWidth, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
@@ -508,7 +476,7 @@
       preview: await renderPreview()
     })
     updated = false
-    toast.push(message)
+    toast.success(message)
   }
 
   initScore()
@@ -573,7 +541,7 @@
     try {
       ({ metadata, score: { singles, slides, bpms, fever, skills } } = loadSUS(text))
     } catch (e) {
-      toast.push(`SUSファイルを読み込む際にエラーが発生しました`)
+      toast.error(`SUSファイルを読み込む際にエラーが発生しました`)
       console.error(e)
       initScore()
       return
@@ -876,7 +844,7 @@
     if (bpmDialogValue) {
       const last = bpms.get(lastPointerTick)
       if (isNaN(bpmDialogValue)) {
-        toast.push('正しい数字ではありません')
+        toast.error('正しい数字ではありません')
         return
       }
 
@@ -950,7 +918,7 @@
     return '本当にエディターを閉じますか'
   }}}
   on:dragover|preventDefault
-  on:drop|preventDefault={dropHandler('.sus', (file) => { onfileopened(URL.createObjectURL(file)) })}
+  on:drop|preventDefault={dropHandler('.sus', (file) => { onfileopened(URL.createObjectURL(file)) }, () => { toast.error('未知のファイルタイプ') })}
 />
 
 <SvelteToast/>

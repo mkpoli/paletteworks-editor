@@ -11,6 +11,7 @@
   import { ALLOWED_SNAPPINGS, MODES } from '$lib/editing/modes'
   import type { Mode, SnapTo } from '$lib/editing/modes'
 
+  import toast from '$lib/ui/toast'
   import { createEventDispatcher } from 'svelte'
 
   addIcon('custom:logo', {
@@ -38,7 +39,6 @@
   }>()
 
   import CustomSnappingDialog from './dialogs/CustomSnappingDialog.svelte'
-  import { toast } from '@zerodevx/svelte-toast'
   let customSnappingDialogOpened: boolean = false
   let customSnappingDialogValue: number = 0
   $: customSnappingDialogValue = snapTo
@@ -109,12 +109,12 @@
   bind:value={customSnappingDialogValue}
   on:ok={() => {
     if (isNaN(customSnappingDialogValue)) {
-      toast.push('数値を入力してください')
+      toast.error('数値を入力してください')
       return
     }
 
     if (customSnappingDialogValue < 1 || customSnappingDialogValue > 1920) {
-      toast.push('1から1920までの数値を入力してください')
+      toast.error('1から1920までの数値を入力してください')
       return
     }
 
