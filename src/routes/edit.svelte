@@ -78,7 +78,7 @@
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { clamp } from '$lib/basic/math'
   import { closest, max, rotateNext } from '$lib/basic/collections'
-  import { download, toBlob, dropHandler } from '$lib/basic/file'
+  import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
 
@@ -516,6 +516,8 @@
     }
     const id = await db.projects.add(project)
     currentProject = await db.projects.get(id) ?? null
+    await tick()
+    projectsDialogOpened = false
   }
 
   function onopenproject({ detail: { project }}: CustomEvent<{ project: Project }>) {
@@ -918,7 +920,20 @@
     return '本当にエディターを閉じますか'
   }}}
   on:dragover|preventDefault
-  on:drop|preventDefault={dropHandler('.sus', (file) => { onfileopened(URL.createObjectURL(file)) }, () => { toast.error('未知のファイルタイプ') })}
+  on:drop|preventDefault={dropHandlerMultiple([
+    { accept: '.sus', callback(file) { onfileopened(URL.createObjectURL(file)) } },
+    { accept: 'audio/*', callback(file) {
+      if (currentProject) {
+        music = file
+      } else {
+        onnewproject()
+        tick().then(() => {
+          music = file
+        })
+      }
+    }}],
+    () => { toast.error('未知のファイルタイプ') }
+  )}
 />
 
 <SvelteToast/>

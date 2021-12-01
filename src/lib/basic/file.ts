@@ -28,3 +28,20 @@ export function dropHandler(accept: string, callback: (file: File) => void, oner
     }
   }
 }
+
+export function dropHandlerMultiple(handlers: { accept: string, callback: (file: File) => void }[], onerror: () => void): (event: DragEvent) => void {
+  return (event: DragEvent) => {
+    if (!event.dataTransfer || event.dataTransfer.items.length === 0) return
+    const item = event.dataTransfer.items[0]
+    if (item.kind !== 'file') return
+    const file = item.getAsFile()
+    event.stopPropagation()
+    for (let { accept, callback } of handlers) {
+      if (file && accepted(file, accept)) {
+        callback(file)
+        return
+      }
+    }
+    onerror()
+  }
+}
