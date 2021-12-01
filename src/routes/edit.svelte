@@ -221,7 +221,6 @@
 
   function deleteNotes(notes: NoteType[], cut = false) {
     exec(new BatchRemove(singles, slides, notes, !cut ? '削除' : 'カット'))
-    playSound('stage')
   }
 
   function copyNotes(notes: NoteType[]) {
@@ -337,7 +336,6 @@
       note.lane === $movingOrigins.get(note)!.lane && note.tick === $movingOrigins.get(note)!.tick
     )) return
     exec(new BatchUpdate(singles, slides, movingTargets, $movingOrigins, '移動'))
-    playSound('stage')
   }
 
   function playSound(name: string) {
@@ -381,7 +379,6 @@
     $mutationHistory = $mutationHistory
     if (!mutation) return
     undo(mutation)
-    playSound('stage')
   }
 
   function onredo() {
@@ -389,7 +386,6 @@
     $undoneHistory = $undoneHistory
     if (!mutation) return
     exec(mutation)
-    playSound('stage')
   }
 
   function exec(mutation: Mutation) {
@@ -407,6 +403,7 @@
     $mutationHistory.push(mutation)
     $mutationHistory = $mutationHistory
     toast.undo(mutation, undoneHistory, '元に戻す', () => { undo(mutation) })
+    playSound('stage')
   }
 
   function undo(mutation: Mutation) {
@@ -423,6 +420,7 @@
     $undoneHistory.push(mutation)
     $undoneHistory = $undoneHistory
     toast.undo(mutation, mutationHistory, 'やり直し', () => { exec(mutation) })
+    playSound('stage')
   }
 
   import { calcResized, resizing, resizingLastWidth, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
@@ -444,7 +442,6 @@
       $resizingLastWidth = modifications.get($resizingNotes[0])!.width
 
       exec(new BatchUpdate(singles, slides, modifications, originalDatas, 'リサイズ'))
-      playSound('stage')
     }
   })
 
@@ -452,14 +449,12 @@
     let notes = ($selectedNotes.length ? $selectedNotes : (note ? [note] : [])).filter(hasEaseType)
     let nextType = type ?? rotateNext((note && hasEaseType(note) ? note.easeType : undefined) ?? notes[0].easeType, EASE_TYPES)
     exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { easeType: nextType }]))))
-    playSound('stage')
   }
 
   function onchangediamond({ detail: { note, type } }: CustomEvent<{ note: NoteType | null, type?: DiamondType }>) {
     let notes = ($selectedNotes.length ? $selectedNotes : (note ? [note] : [])).filter(isSlideStep)
     let nextType = type ?? rotateNext((note && isSlideStep(note) ? toDiamondType(note) : undefined) ?? toDiamondType(notes[0]), DIAMOND_TYPES)
     exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, fromDiamondType(nextType)]))))
-    playSound('stage')
   }
 
   async function savecurrent(message: string) {
@@ -597,7 +592,6 @@
       }]
     ))
     exec(new BatchUpdate(singles, slides, flipTargets, flipOrigins, 'ミラー'))
-    playSound('stage')
   }
 
   function duplicateNotes(notes: NoteType[]) {
@@ -622,7 +616,6 @@
       ))
 
     exec(new BatchAdd(singles, slides, newSingles, newSlides))
-    playSound('stage')
   }
 
   function onupdateflicks({ detail: { notes, flip } }: CustomEvent<{ notes: NoteType[], flip: boolean }>) {
@@ -635,7 +628,6 @@
       new Map(flickNotes.map((note) => [note, { flick: note.flick }])),
       '更新'
     ))
-    playSound('stage')
   }
 
   function onupdatecriticals({ detail: { notes }}: CustomEvent<{ notes: NoteType[] }>) {
@@ -661,7 +653,6 @@
       new Map(criticalSlides.map((slide) => [slide, { critical: slide.critical }])),  
       '更新'
     ))
-    playSound('stage')
   }
 
   function onselectall() {
@@ -771,23 +762,18 @@
       on:selectall={onselectall}
       on:addsingle={({ detail: { note }}) => {
         exec(new AddSingles(singles, [note]))
-        playSound('stage')
       }}
       on:updatesingle={({ detail: { note, modification }}) => {
         exec(new UpdateSingle(singles, note, modification))
-        playSound('stage')
       }}
       on:addslide={({ detail: { slide }}) => {
         exec(new AddSlides(slides, [ slide ]))
-        playSound('stage')
       }}
       on:updateslidenote={({ detail: { note, modification }}) => {
         exec(new UpdateSlideNote(slides, note, modification))
-        playSound('stage')
       }}
       on:updateslide={({ detail: { slide, modification }}) => {
         exec(new UpdateSlide(slides, slide, modification))
-        playSound('stage')
       }}
       on:updateflicks={onupdateflicks}
       on:updatecriticals={onupdatecriticals}
