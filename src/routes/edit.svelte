@@ -520,6 +520,7 @@
       savecurrent(`${currentProject.name} として保存されました。`)
     }
     ({ metadata, score: { bpms, singles, slides, fever, skills }, music } = project)
+    if (skills === undefined) skills = new Set()
     currentProject = project
   }
 
