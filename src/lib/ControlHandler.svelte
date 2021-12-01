@@ -23,7 +23,7 @@
     if (event.ctrlKey) { 
       zoom -= (event.deltaY > 0 ? 0.1 : -0.1) * (event.shiftKey ? 10 : 1)
     } else {
-      scrollTick -= event.deltaY * 1.5 * (event.shiftKey ? 5 : 1)
+      scrollTick -= event.deltaY * 1.5 * (event.shiftKey ? 5 : 1) / zoom
     }
   }
 
