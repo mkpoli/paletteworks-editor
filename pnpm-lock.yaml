@@ -8,6 +8,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': 5.0.0
   '@zerodevx/svelte-toast': ^0.6.1
+  attr-accept: ^2.2.2
   dexie: ^3.2.0-rc.3
   eslint: ^8.0.0
   eslint-plugin-svelte3: ^3.2.1
@@ -30,6 +31,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.0.0_23617e02451b63a8997d0f18b2622d8e
   '@typescript-eslint/parser': 5.0.0_eslint@8.0.0+typescript@4.4.3
   '@zerodevx/svelte-toast': 0.6.1
+  attr-accept: 2.2.2
   dexie: 3.2.0-rc.3
   eslint: 8.0.0
   eslint-plugin-svelte3: 3.2.1_eslint@8.0.0+svelte@3.43.0
@@ -788,6 +790,11 @@ packages:
   /array-union/2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
+    dev: true
+
+  /attr-accept/2.2.2:
+    resolution: {integrity: sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg==}
+    engines: {node: '>=4'}
     dev: true
 
   /balanced-match/1.0.2:

@@ -3,6 +3,8 @@
   import Button from "./Button.svelte"
   import Icon from '@iconify/svelte'
 
+  import { dropHandler } from "$lib/basic/file"
+
   export let file: File | null
   export let accept: string
   export let name: string
@@ -21,8 +23,6 @@
     input.value = ''
   }
 
-  $: accepts = accept.split(',').map(a => a.trim())
-
   function onclick() {
     input.click()
   }
@@ -33,17 +33,7 @@
 <div
   class="file-container"
   on:dragover|preventDefault|capture={() => {}}
-  on:drop|preventDefault|capture={(event) => {
-    if (!event.dataTransfer || event.dataTransfer.items.length === 0) return
-    const item = event.dataTransfer.items[0]
-    if (item.kind !== 'file') return
-    let droppedFile = item.getAsFile()
-    if (!droppedFile) return
-    event.stopPropagation()
-    if (accepts.some((accept) => droppedFile && (droppedFile.type.match(accept) || droppedFile.name.match(accept)))) {
-      file = droppedFile
-    }
-  }}
+  on:drop|preventDefault|capture={dropHandler(accept, (dropped) => { file = dropped })}
 >
   {#if file}
     <TextInput value={file.name} disabled>

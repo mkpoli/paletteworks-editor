@@ -78,7 +78,7 @@
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { clamp } from '$lib/basic/math'
   import { closest, max, rotateNext } from '$lib/basic/collections'
-  import { download, toBlob } from '$lib/basic/file'
+  import { download, toBlob, dropHandler } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
 
@@ -950,15 +950,7 @@
     return '本当にエディターを閉じますか'
   }}}
   on:dragover|preventDefault
-  on:drop|preventDefault={(event) => {
-    console.log(event)
-    if (!event.dataTransfer || event.dataTransfer.items.length === 0) return
-    const item = event.dataTransfer.items[0]
-    if (item.kind !== 'file') return
-    let file = item.getAsFile()
-    if (!file || !file.name.endsWith('.sus')) return
-    onfileopened(URL.createObjectURL(file))
-  }}
+  on:drop|preventDefault={dropHandler('.sus', (file) => { onfileopened(URL.createObjectURL(file)) })}
 />
 
 <SvelteToast/>
