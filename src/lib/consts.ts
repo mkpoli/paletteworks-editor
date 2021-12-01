@@ -1,6 +1,6 @@
 export { default as COLORS } from './colors'
 
-export const RESOLUTION = 2
+export const RESOLUTION = 1
 
 export const BEAT_UNIT = 4
 export const BEAT_IN_MEASURE = 4
