@@ -14,15 +14,17 @@ export function toBlob(content: string) {
   return blob
 }
 
-export function dropHandler(accept: string, callback: (file: File) => void): (event: DragEvent) => void {
+export function dropHandler(accept: string, callback: (file: File) => void, onerror: () => void): (event: DragEvent) => void {
   return (event: DragEvent) => {
     if (!event.dataTransfer || event.dataTransfer.items.length === 0) return
     const item = event.dataTransfer.items[0]
     if (item.kind !== 'file') return
     const file = item.getAsFile()
+    event.stopPropagation()
     if (file && accepted(file, accept)) {
-      event.stopPropagation()
       callback(file)
+    } else {
+      onerror()
     }
   }
 }

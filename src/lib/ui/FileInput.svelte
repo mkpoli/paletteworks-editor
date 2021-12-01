@@ -1,9 +1,10 @@
-<script lang="ts">
-  import TextInput from "$lib/ui/TextInput.svelte"
-  import Button from "./Button.svelte"
+<script lang='ts'>
+  import TextInput from '$lib/ui/TextInput.svelte'
+  import Button from './Button.svelte'
   import Icon from '@iconify/svelte'
 
-  import { dropHandler } from "$lib/basic/file"
+  import toast from '$lib/ui/toast'
+  import { dropHandler } from '$lib/basic/file'
 
   export let file: File | null
   export let accept: string
@@ -33,7 +34,7 @@
 <div
   class="file-container"
   on:dragover|preventDefault|capture={() => {}}
-  on:drop|preventDefault|capture={dropHandler(accept, (dropped) => { file = dropped })}
+  on:drop|preventDefault|capture={dropHandler(accept, (dropped) => { file = dropped }, () => { toast.error('未知のファイルタイプ') })}
 >
   {#if file}
     <TextInput value={file.name} disabled>
