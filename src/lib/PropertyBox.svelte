@@ -30,12 +30,15 @@
   import KeyboardShortcut from "$lib/ui/KeyboardShortcut.svelte"
   import { KEYBOARD_SHORTCUTS } from "$lib/consts"
 
+  import { SCROLL_MODES } from '$lib/editing/scrolling'
+  import type { ScrollMode } from '$lib/editing/scrolling'
+
   export let currentMeasure: number
   export let statistics: Record<string, number>
   export let paused: boolean
   export let metadata: Metadata
   export let music: File | null
-  export let scrollMode: 'page' | 'smooth'
+  export let scrollMode: ScrollMode
   export let visibility: Record<string, boolean>
   export let totalCombo: number
   export let volume: number
@@ -108,10 +111,7 @@
         スクロール方式
         <Select
           bind:value={scrollMode}
-          options={[
-            ['page', '上下スクロール'],
-            ['smooth', '固定スクロール']
-          ]}
+          options={SCROLL_MODES}
           name="scroll"
         />
       </label>
