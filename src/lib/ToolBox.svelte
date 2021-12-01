@@ -76,7 +76,7 @@
     <MenuDivider/>
     <MenuItem icon="vaadin:cog" text="設定 (&P)" disabled={true} />
     <MenuDivider/>
-    <MenuItem icon="vaadin:question-circle-o" text="ヘルプ (&H)" disabled={true} />
+    <MenuItem icon="vaadin:question-circle-o" text="ヘルプ (&H)" href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks" />
   </Menu>
 
   <div class="tool-container">

@@ -1,26 +1,40 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
 
+  export let href: string | undefined = undefined
   export let icon: string | undefined = undefined
-  export let disabled: boolean = false
+  export let disabled: boolean | undefined = undefined
   export let height: string | undefined = undefined
   export let width: string | undefined = undefined
   export let loading: boolean = false
 </script>
 
-<button on:click class={$$props.class} style={$$props.style} {disabled}>
-  {#if icon}
-    {#if loading}
-      <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />
-    {:else}
-      <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
+{#if href === undefined}
+  <button on:click class={$$props.class} style={$$props.style} {disabled}>
+    {#if icon}
+      {#if loading}
+        <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />
+      {:else}
+        <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
+      {/if}
     {/if}
-  {/if}
-  <slot/>
-</button>
+    <slot/>
+  </button>
+{:else}
+  <a class={$$props.class} style={$$props.style} {href} class:disabled target="_blank" on:click>
+    {#if icon}
+      {#if loading}
+        <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />
+      {:else}
+        <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
+      {/if}
+    {/if}
+    <slot/>
+  </a>
+{/if}
 
 <style>
-  button {
+  button, a {
     appearance: none;
     border: none;
     border-radius: var(--input-border-radius);
@@ -37,7 +51,11 @@
     font-weight: bold;
   }
 
-  button.text {
+  a {
+    text-decoration: none;
+  }
+
+  button.text, a.text {
     box-shadow: none;
     border: none;
     background: transparent;
@@ -54,7 +72,8 @@
     font-size: 1.5em;
   }
 
-  button:hover:not([disabled]) {
+  button:hover:not([disabled]),
+  a:hover:not(.disabled) {
     filter: brightness(1.2);
   }
 

@@ -8,6 +8,7 @@
   
   export let icon: string
   export let text: string
+  export let href: string | undefined = undefined
   export let disabled: boolean = false
   export let checked: boolean | undefined = undefined
   export let indeterminate: boolean | undefined = undefined
@@ -63,6 +64,7 @@
       {disabled}
       class="text"
       on:click={onclick}
+      {href}
     >
       <div>{@html text.replace(/&([A-Z])/, `<span style="text-decoration: ${altPressed ? 'underline' : 'none'};">$1</span>`)}</div>
       {#if hasSubMenu}
@@ -96,17 +98,20 @@
 />
 
 <style>
-  .menu-item :global(button) {
+  .menu-item :global(button),
+  .menu-item :global(a) {
     width: 100%;
     justify-content: left;
     border-radius: 0;
   }
 
-  .menu-item :global(button:hover:not([disabled])) {
+  .menu-item :global(button:hover:not([disabled])),
+  .menu-item :global(a:hover:not(.disabled)) {
     background-color: rgba(255, 255, 255, 0.25);
   }
 
-  .menu-item :global(button[disabled]) {
+  .menu-item :global(button[disabled]),
+  .menu-item :global(a.disabled) {
     filter:
       blur(0.5px)
       brightness(.85);
