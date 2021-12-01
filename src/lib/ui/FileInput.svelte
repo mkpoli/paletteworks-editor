@@ -2,9 +2,13 @@
   import TextInput from '$lib/ui/TextInput.svelte'
   import Button from './Button.svelte'
   import Icon from '@iconify/svelte'
+  import Menu from './Menu.svelte'
+  import MenuItem from './MenuItem.svelte'
+  import MenuTrigger from './MenuTrigger.svelte'
 
   import toast from '$lib/ui/toast'
-  import { dropHandler } from '$lib/basic/file'
+  import { download, download, dropHandler } from '$lib/basic/file'
+  
 
   export let file: File | null
   export let accept: string
@@ -27,12 +31,16 @@
   function onclick() {
     input.click()
   }
+
+  let container: HTMLDivElement
+  let menu: HTMLDivElement
 </script>
 
 <input type="file" bind:files={fileList} {accept} {name} bind:this={input}>
 
 <div
   class="file-container"
+  bind:this={container}
   on:dragover|preventDefault|capture={() => {}}
   on:drop|preventDefault|capture={dropHandler(accept, (dropped) => { file = dropped }, () => { toast.error('未知のファイルタイプ') })}
 >
@@ -47,6 +55,13 @@
     <Button {loading} icon={openIcon} on:click={onclick} style="width: 100%;">{text}</Button>
   {/if}
 </div>
+
+<Menu bind:menu>
+  <MenuTrigger slot="trigger" contextArea={container} {menu}/>
+  {#if file}
+    <MenuItem text="ダウンロード" icon="mdi:download" on:click={() => { if (file) download(file, file.name) }} />
+  {/if}
+</Menu>
 
 <style>
   input {
