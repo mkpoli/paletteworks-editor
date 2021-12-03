@@ -117,7 +117,6 @@ export class UpdateSingle extends SingleMutation {
     this.note = note
     this.modification = modification
     this.oldNote = Object.fromEntries(Object.keys(modification).map((key) => [key, this.note[key as keyof Single]]))
-    console.log(this.oldNote)
   }
 
   exec() {
@@ -454,7 +453,6 @@ export class BatchUpdateCombinated extends BatchMutation {
   }
 
   exec() {
-    console.log('execed')
     this.batchUpdate.exec()
     this.updateSlides.exec()
     return { singles: this.singles, slides: this.slides }

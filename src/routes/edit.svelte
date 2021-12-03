@@ -79,7 +79,6 @@
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { clamp } from '$lib/basic/math'
-  import { closest } from '$lib/basic/collections'
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
@@ -673,7 +672,6 @@
     const criticalSlides = [...criticalSlideSet]
     if (criticalNotes.length === 0 && criticalSlides.length === 0) return
     let oldcritical = criticalNotes.at(0)?.critical ?? criticalSlides[0].critical ?? false
-    console.log('hello')
     exec(new BatchUpdateCombinated(
       singles, slides,
       new Map(criticalNotes.map((note) => [note, { critical: !oldcritical }])),
@@ -806,7 +804,6 @@
         const slide = slides
           .map(({ head, tail, steps }) => [head, tail, ...steps])
           .find((slideNotes) => slideNotes.includes(event.detail.note))
-        console.log(slide)
         $selectedNotes = slide ?? [event.detail.note]
       }}
       on:selectall={onselectall}

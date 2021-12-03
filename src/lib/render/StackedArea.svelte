@@ -78,7 +78,6 @@
         .filter(([, v]) => v > 1)
         .map(([k, ]) => k)
         .reduce((acc, cur) => {
-          console.log({ acc, cur })
           let lastArray = acc[acc.length - 1]
           if (!lastArray || lastArray[lastArray.length - 1] + 1 !== cur) {
             lastArray = []
@@ -88,7 +87,6 @@
           if (lastArray.length >= 2) {
             lastArray[1] = cur
           } else {
-            console.log(typeof lastArray)
             lastArray.push(cur)
           }
 

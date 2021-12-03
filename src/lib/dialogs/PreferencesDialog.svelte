@@ -18,9 +18,7 @@
   import toast from "$lib/ui/toast"
 
   let preferences: Record<keyof typeof DEFAULT_PREFERENCES, any>
-  $: if (preferences) console.log({preferences})
 </script>
-
 
 <Modal bind:opened
   on:opened={async () => {
