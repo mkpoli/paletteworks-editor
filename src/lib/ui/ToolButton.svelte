@@ -4,7 +4,6 @@
 
   // UI Components
   import Tooltip from '$lib/ui/Tooltip.svelte'
-  import KeyboardShortcut from '$lib/ui/KeyboardShortcut.svelte'
 
   // Constants
   import { MODE_DESCRIPTIONS, MODE_SHORTCUTS, MODE_SHORTCUTS_NUMERAL, MODE_TEXTURES } from '$lib/editing/modes'
@@ -19,11 +18,11 @@
   offset={[0, -15]}
   description={MODE_DESCRIPTIONS[mode]}
   class="tool-button"
+  keys={[...MODE_SHORTCUTS_NUMERAL[mode], ...MODE_SHORTCUTS[mode]].map((key) => [key])}
 >
   <button on:click={() => { currentMode = mode}} class:current={currentMode === mode}>
     <img src={MODE_TEXTURES[mode]} alt={`${MODE_DESCRIPTIONS[mode]} Mode`} />
   </button>
-  <KeyboardShortcut slot="keys" keys={[MODE_SHORTCUTS_NUMERAL[mode], MODE_SHORTCUTS[mode]]}/>
 </Tooltip>
 
 <style>

@@ -1,12 +1,15 @@
 <script lang="ts">
   import type { Placement } from 'tippy.js'
 
+  import KeyboardShortcut from './KeyboardShortcut.svelte'
+
   import { onMount } from 'svelte'
   import tippy from 'tippy.js'
 
   export let placement: Placement
   export let offset: [number, number] = [0, 0]
   export let description: string | undefined = undefined
+  export let keys: Readonly<Readonly<string[]>[]> | undefined = undefined
 
   let target: HTMLDivElement
   let tooltip: HTMLDivElement
@@ -34,7 +37,9 @@
   {#if description !== undefined}
     <span>{description}</span>
   {/if}
-  <slot name="keys"/>
+  {#if keys}
+    <KeyboardShortcut {keys} />
+  {/if}
 </div>
 
 <style>

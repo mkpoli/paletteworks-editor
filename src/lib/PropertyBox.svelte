@@ -27,7 +27,6 @@
   import { selectedNotes } from "$lib/editing/selection"
   import { mutationHistory } from "$lib/editing/history"
 
-  import KeyboardShortcut from "$lib/ui/KeyboardShortcut.svelte"
   import { KEYBOARD_SHORTCUTS } from "$lib/control/keyboard"
 
   import { SCROLL_MODES } from '$lib/editing/scrolling'
@@ -76,35 +75,35 @@
         <Tooltip
           placement="bottom"
           description="頭出し"
+          keys={KEYBOARD_SHORTCUTS.skipstart}
         >
           <ClickableIcon
             icon="fluent:previous-16-filled"
             width="2.5em"
             on:click={() => { dispatch('skipstart') }}
           />
-          <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.skipstart}/>
         </Tooltip>
         <Tooltip
           placement="bottom"
           description="再生／一時停止"
+          keys={KEYBOARD_SHORTCUTS.playpause}
         >
           <ClickableIcon
             icon={paused ? 'carbon:play-filled-alt' : 'ph:pause-duotone'}
             width="4.5em"
             on:click={() => { paused = !paused }}
           />
-          <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.playpause}/>
         </Tooltip>
         <Tooltip
           placement="bottom"
           description="戻る"
+          keys={KEYBOARD_SHORTCUTS.skipback}
         >
           <ClickableIcon
             icon="ph:arrow-counter-clockwise-bold"
             width="2.5em"
             on:click={() => { dispatch('skipback') }}
           />
-          <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.skipback}/>
         </Tooltip>
       </div>
       <label for="scroll">
@@ -164,15 +163,15 @@
         <div class="actions">
           <Tooltip
             placement="bottom"
+            keys={KEYBOARD_SHORTCUTS.undo}
           > 
             <Button icon="ic:round-undo" on:click={() => dispatch('undo')} class="history-button">元に戻す</Button>
-            <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.undo}/>
           </Tooltip>
           <Tooltip
             placement="bottom"
+            keys={KEYBOARD_SHORTCUTS.redo}
           >
             <Button icon="ic:round-redo" on:click={() => dispatch('redo')} class="history-button">やり直し</Button>
-            <KeyboardShortcut slot="keys" keys={KEYBOARD_SHORTCUTS.redo}/>
           </Tooltip>
         </div>
         <div class="history" bind:this={historyDiv}>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let keys: readonly (string | readonly string[])[]
+  export let keys: Readonly<Readonly<string[]>[]>
 
   const KEYBOARD_DISPLAY_NAMES: Record<string, string> = {
     'backspace': '← Backspace',
