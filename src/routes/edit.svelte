@@ -122,14 +122,25 @@
   // Measure (Bar)
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
   $: if (isNaN(currentMeasure)) currentMeasure = 1
-  $: maxMeasure = Math.ceil(
-      (
-        max(
-          [...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
-            .map(({ tick }) => tick)
-        ) || 0
-      ) / TICK_PER_MEASURE
-    ) + 1
+
+  function calcMaxMeasure(bpms: Map<number, number>, duration: number = 3 * 60) {
+    const bpmEntries = [...bpms.entries()]
+      .sort(([tickA,], [tickB,]) => tickA - tickB)
+    const [lastTick, lastBPM] = bpmEntries.at(-1) ?? [0, 120]
+    const durationToLastBPM = bpmEntries
+      .reduce((acc, [tick, bpm], ind, arr) => {
+        const nextElement = arr[ind + 1]
+        if (nextElement) {
+          const [nextTick, ] = nextElement
+          return acc + (nextTick - tick) / TICK_PER_BEAT / bpm * 60
+        }
+        return acc
+      }, 0)
+    const durationFromLastBPM = Math.max(duration - durationToLastBPM, 0)
+    const maxTick = lastTick + durationFromLastBPM / 60 * lastBPM * TICK_PER_BEAT
+    return Math.ceil(maxTick / TICK_PER_MEASURE)
+  }
+  $: maxMeasure = calcMaxMeasure(bpms, musicDuration)
   $: dbg('maxMeasure', maxMeasure)
   $: maxTick = maxMeasure * TICK_PER_MEASURE
 
@@ -183,6 +194,7 @@
 
   let music: File | null = null
   let bgmLoading: boolean = false
+  let musicDuration: number | undefined = undefined
 
   let paused: boolean = true
   function onplaypause() {
@@ -890,6 +902,7 @@
   bind:currentTick
   bind:lastTick
   bind:bgmLoading
+  bind:musicDuration
   {currentBPM}
   {slides}
   {singles}

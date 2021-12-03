@@ -17,6 +17,7 @@
   export let gotoTick: (tick: number) => void
   export let lastTick: number
   export let bgmLoading: boolean
+  export let musicDuration: number | undefined = undefined
 
   let scheduler: AudioScheduler | null = null
   let audioContext: AudioContext
@@ -62,9 +63,11 @@
       createAudioBuffer(music).then((buffer) => {
         bgmBuffer = buffer
         bgmLoading = false
+        musicDuration = buffer.duration
       })
     } else {
       bgmBuffer = null
+      musicDuration = undefined
     }
   }
 
