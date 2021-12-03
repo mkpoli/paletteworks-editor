@@ -200,10 +200,9 @@
         }
         audioNodes.push(soundSource)
         soundSource.connect(event.sound === 'bgm' ? master : sfxGain)
-        const startTime = event.time + offset
-        soundSource.start(startTime, event.startFrom)
+        soundSource.start(event.time + offset, event.startFrom)
         if (event.loopTo) {
-          soundSource.stop(event.loopTo)
+          soundSource.stop(event.loopTo + offset)
         }
       }
     })
