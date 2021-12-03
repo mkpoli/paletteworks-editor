@@ -44,6 +44,7 @@
             break
         }
       }}
+      type="number"
       bind:inputElement
       bind:value
     >

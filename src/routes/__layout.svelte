@@ -41,7 +41,8 @@
     min-width: 0;
   }
 
-  input[type='text'] {
+  input[type='text'],
+  input[type='number'] {
     appearance: none;
     border: none;
     border-radius: var(--input-border-radius);
