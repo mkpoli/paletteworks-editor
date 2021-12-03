@@ -14,7 +14,6 @@
     TEXT_MARGIN,
     MARGIN,
     LANE_MAX,
-    FONT_FAMILY,
   } from '$lib/consts'
   import { MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
   import { drawDashedLine } from './renderer';

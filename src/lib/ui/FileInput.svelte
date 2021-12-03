@@ -7,8 +7,7 @@
   import MenuTrigger from './MenuTrigger.svelte'
 
   import toast from '$lib/ui/toast'
-  import { download, download, dropHandler } from '$lib/basic/file'
-  
+  import { download, dropHandler } from '$lib/basic/file'
 
   export let file: File | null
   export let accept: string

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { COLORS, FONT_FAMILY, LANE_AREA_WIDTH, LANE_WIDTH, MARGIN, TEXT_MARGIN } from "$lib/consts";
+  import { COLORS, LANE_AREA_WIDTH, LANE_WIDTH, MARGIN, TEXT_MARGIN } from "$lib/consts";
 
   // Functions
   import { position, PositionManager } from '$lib/position'

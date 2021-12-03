@@ -11,13 +11,12 @@
     SlideStep,
     SlideNote,
     EaseType,
-    IEase,
     DiamondType,
     Fever as FeverType,
   } from '$lib/score/beatmap'
     
   import {
-    toDiamondType, EASE_TYPES, hasEaseType, DIAMOND_TYPES, isSlideStep, fromDiamondType 
+    toDiamondType, hasEaseType, isSlideStep 
   } from '$lib/score/beatmap'
   
   import '$lib/basic/dblclick'
@@ -28,7 +27,7 @@
 
   // Functions
   import { snap } from '$lib/basic/math'
-  import { closest, rotateNext } from '$lib/basic/collections'
+  import { closest } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/editing/selection'
   import { inside } from '$lib/position'

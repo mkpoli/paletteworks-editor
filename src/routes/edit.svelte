@@ -77,7 +77,7 @@
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { clamp } from '$lib/basic/math'
-  import { closest, max, rotateNext } from '$lib/basic/collections'
+  import { closest, rotateNext } from '$lib/basic/collections'
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
