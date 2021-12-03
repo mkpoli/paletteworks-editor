@@ -188,6 +188,10 @@
     app.ticker.add(() => {
       if (!paused) {
         currentTick += app.ticker.deltaMS * TICK_PER_BEAT * currentBPM / 1000 / 60
+        if (currentTick >= maxTick) {
+          currentTick = maxTick
+          paused = true
+        }
       }
     })
   })
