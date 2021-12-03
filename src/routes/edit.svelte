@@ -162,6 +162,10 @@
   let TEXTURES: Record<string, PIXI.Texture> = {}
   setContext('TEXTURES', TEXTURES)
 
+  import { writable } from 'svelte/store'
+  const fontLoaded = writable(false)
+  setContext('fontLoaded', fontLoaded)
+
   onMount(async () => {
     // Initialise PIXI.js
     PIXI = await import('pixi.js')
@@ -173,7 +177,9 @@
       backgroundAlpha: 0
     })
 
-    app.loader.add('font', '/fonts/Font.fnt').load()
+    app.loader.add('font', '/fonts/Font.fnt').load(() => {
+      $fontLoaded = true
+    })
 
     app.stage.interactive = true
     const baseTexture = new PIXI.BaseTexture(spritesheetImage, {})

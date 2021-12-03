@@ -7,25 +7,28 @@
 
   // Types
   import type PIXI from 'pixi.js'
+  import type { Writable } from 'svelte/store'
 
   // Props
   export let maxMeasure: number
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const fontLoaded = getContext<Writable<boolean>>('fontLoaded')
 
   // Variables
-  let PIXI: typeof import('pixi.js')
   let graphics: PIXI.Graphics
 
   onMount(async () => {
-    PIXI = await import('pixi.js')
     graphics = new PIXI.Graphics()
     graphics.zIndex = -1
     app.stage.addChild(graphics)
   })
 
-  $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBackground($position, maxMeasure)
+  $: if (graphics && $fontLoaded) {
+    drawBackground($position, maxMeasure)
+  }
 
   function drawBackground(
     position: PositionManager,
