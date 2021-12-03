@@ -27,54 +27,26 @@
       scrollTick -= event.deltaY * 1.5 * (event.shiftKey ? 5 : 1) / zoom
     }
   }
+  
+  // Keyboard Handling
+  import hotkeys from 'hotkeys-js'
+  Object.entries(KEYBOARD_SHORTCUTS).forEach(([action, keyCombinations]) => {
+    hotkeys(keyCombinations.map((keyCombination) => keyCombination.join('+')).join(','), (event) => {
+      if (document.activeElement && document.activeElement.tagName === 'INPUT') return
 
-  function onkeydown(event: KeyboardEvent) {
-    if (document.activeElement && document.activeElement.tagName === 'INPUT') return
-
-    let target: KeyboardAction
-    const hasTarget = Object.entries(KEYBOARD_SHORTCUTS).some(([action, keyCombinations]) => {
-      return keyCombinations.some((keyCombination: string | readonly string[]) => {
-        if (keyCombination instanceof Array) {
-          for (let key of keyCombination) {
-            switch (key) {
-              case 'Control':
-                if (!event.ctrlKey) return false
-                break
-              case 'Shift':
-                if (!event.shiftKey) return false
-                break
-              case 'Alt':
-                if (!event.altKey) return false
-                break
-              default:
-                if (event.code !== key) return false
-                break
-            }
-          }
-        } else {
-          const key = keyCombination
-          if (event.key !== key || event.altKey || event.ctrlKey || event.shiftKey) return false
-        }
-        target = action as KeyboardAction
-        return true
-      })
-    })
-    if (hasTarget) {
       event.preventDefault()
-      dispatch(target! as KeyboardAction)
-      return
-    }
-    
-    for (let mode of MODES) {
-      if (event.key === MODE_SHORTCUTS[mode] || event.key === MODE_SHORTCUTS_NUMERAL[mode]) {
-        dispatch('switch', mode)
-        event.preventDefault()
-      }
-    }      
+      dispatch(action as KeyboardAction)
+    })
+  })
+
+  for (let mode of MODES) {
+    hotkeys(`${MODE_SHORTCUTS[mode]},${MODE_SHORTCUTS_NUMERAL}`, (event) => {
+      event.preventDefault()
+      dispatch('switch', mode)
+    })
   }
 </script>
 
 <svelte:window
   on:wheel|nonpassive={mousewheel}
-  on:keydown={onkeydown}
 />

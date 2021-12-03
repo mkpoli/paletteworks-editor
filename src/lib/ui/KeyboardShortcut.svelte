@@ -1,14 +1,12 @@
 <script lang="ts">
   export let keys: readonly (string | readonly string[])[]
 
-  const KEYBOARD_KEY_DISPLAY_NAMES: Record<string, string> = {
-    'Backspace': '← Backspace',
-    'Shift': '⇧ Shift',
-    'Control': 'Ctrl',
-    'Home': '↖ Home',
-    '`': '`',
-    ' ': '␣ Space',
-    '\\': '\\',
+  const KEYBOARD_DISPLAY_NAMES: Record<string, string> = {
+    'backspace': '← Backspace',
+    'shift': '⇧ Shift',
+    'ctrl': 'Ctrl',
+    'home': '↖ Home',
+    'space': '␣ Space',
     'a': 'A',
     'b': 'B',
     'c': 'C',
@@ -35,67 +33,17 @@
     'x': 'X',
     'y': 'Y',
     'z': 'Z',
-    '1': '1',
-    '2': '2',
-    '3': '3',
-    '4': '4',
-    '5': '5',
-    '6': '6',
-    '7': '7',
-    '8': '8',
-    '9': '9',
-    '0': '0',
-  }
-
-  // TODO: Show real key from Keymap layout
-  const KEYBOARD_CODE_DISPLAY_NAMES: Record<string, string> = {
-    'Backquote': '`',
-    'KeyA': 'A',
-    'KeyB': 'B',
-    'KeyC': 'C',
-    'KeyD': 'D',
-    'KeyE': 'E',
-    'KeyF': 'F',
-    'KeyG': 'G',
-    'KeyH': 'H',
-    'KeyI': 'I',
-    'KeyJ': 'J',
-    'KeyK': 'K',
-    'KeyL': 'L',
-    'KeyM': 'M',
-    'KeyN': 'N',
-    'KeyO': 'O',
-    'KeyP': 'P',
-    'KeyQ': 'Q',
-    'KeyR': 'R',
-    'KeyS': 'S',
-    'KeyT': 'T',
-    'KeyU': 'U',
-    'KeyV': 'V',
-    'KeyW': 'W',
-    'KeyX': 'X',
-    'KeyY': 'Y',
-    'KeyZ': 'Z',
-  }
-
-  const KEYBOARD_DISPLAY_NAMES = {
-    ...KEYBOARD_KEY_DISPLAY_NAMES,
-    ...KEYBOARD_CODE_DISPLAY_NAMES
   }
 </script>
 
 <span>
-  {#each keys as key}
+  {#each keys as keyCombination}
     <span class="key">
-      {#if key instanceof Array}
-        {#each key as subKey}
-          <span class="subKey">
-            <kbd>{KEYBOARD_DISPLAY_NAMES[subKey]}</kbd>
-          </span>
-        {/each}
-      {:else}
-        <kbd>{KEYBOARD_DISPLAY_NAMES[key]}</kbd>
-      {/if}
+      {#each keyCombination as subKey}
+        <span class="subKey">
+          <kbd>{KEYBOARD_DISPLAY_NAMES[subKey] ?? subKey}</kbd>
+        </span>
+      {/each}
     </span>
   {/each}
 </span>
