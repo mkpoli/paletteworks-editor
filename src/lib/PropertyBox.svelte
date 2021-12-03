@@ -28,7 +28,7 @@
   import { mutationHistory } from "$lib/editing/history"
 
   import KeyboardShortcut from "$lib/ui/KeyboardShortcut.svelte"
-  import { KEYBOARD_SHORTCUTS } from "$lib/consts"
+  import { KEYBOARD_SHORTCUTS } from "$lib/control/keyboard"
 
   import { SCROLL_MODES } from '$lib/editing/scrolling'
   import type { ScrollMode } from '$lib/editing/scrolling'

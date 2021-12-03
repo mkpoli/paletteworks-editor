@@ -9,7 +9,7 @@
   import PropertyBox from '$lib/PropertyBox.svelte'
   
   // UI Components
-  import ControlHandler from '$lib/ControlHandler.svelte'
+  import ControlHandler from '$lib/control/ControlHandler.svelte'
   import AudioManager from '$lib/audio/AudioManager.svelte'
   import DebugInfo from '$lib/ui/DebugInfo.svelte'
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte'

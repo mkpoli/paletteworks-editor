@@ -1,8 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { Mode, MODES, MODE_SHORTCUTS, MODE_SHORTCUTS_NUMERAL } from '$lib/editing/modes'
-  import { KEYBOARD_SHORTCUTS } from './consts'
-  import type { KeyboardAction } from '$lib/consts'
+  import { KEYBOARD_SHORTCUTS } from '$lib/control/keyboard'
+
+  import type { KeyboardAction } from '$lib/control/keyboard'
 
   // Stores
   import { inside } from '$lib/position'
