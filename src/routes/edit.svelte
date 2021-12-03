@@ -894,6 +894,7 @@
   on:copy={() => { copyNotes($selectedNotes) }}
   on:cut={() => { cutNotes($selectedNotes) }}
   on:paste={onpaste}
+  on:image={() => { imageDialogOpened = true }}
   on:skipback={onskipback}
   on:skipstart={onskipstart}
   on:playpause={onplaypause}
