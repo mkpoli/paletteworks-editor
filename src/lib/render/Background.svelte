@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BEAT_IN_MEASURE, COLORS, FONT_FAMILY, LANE_AREA_WIDTH, LANE_WIDTH, MARGIN, MARGIN_BOTTOM, MEASURE_HEIGHT, TEXT_MARGIN, TICK_PER_MEASURE } from "$lib/consts";
+  import { BEAT_IN_MEASURE, COLORS, LANE_AREA_WIDTH, LANE_WIDTH, MARGIN, MARGIN_BOTTOM, TEXT_MARGIN, TICK_PER_MEASURE } from "$lib/consts";
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -25,29 +25,28 @@
     app.stage.addChild(graphics)
   })
 
-  $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBackground($position, maxMeasure + 2)
+  $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBackground($position, maxMeasure)
 
   function drawBackground(
     position: PositionManager,
     maxMeasure: number,
   ) {
-    const topY = position.calcY(maxMeasure * TICK_PER_MEASURE)
     const innerHeight = position.containerHeight
     graphics.removeChildren()
     graphics.clear()
 
-    drawSnappingLine(position)
-
     // Draw lanes
     for (let i = 1; i < 14; i++) {
       const x = MARGIN + i * LANE_WIDTH
-      if (i % 2 != 0) {
+      const primary = i % 2 !== 0
+
+      if (primary) {
         graphics.lineStyle(2, COLORS.COLOR_LANE_PRIMARY, 1, 0.5)
       } else {
         graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
       }
       graphics.moveTo(x, innerHeight)
-      graphics.lineTo(x, topY - MEASURE_HEIGHT / BEAT_IN_MEASURE)
+      graphics.lineTo(x, position.calcY(maxMeasure * TICK_PER_MEASURE) - MARGIN_BOTTOM)
     }
 
     // Draw bars
@@ -75,13 +74,12 @@
         graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
       }
     }
-  }
 
-  function drawSnappingLine(position: PositionManager) {
+    // DrawSnappingLines
     const { snapTo } = position
     if (snapTo > 192) return
 
-    for (let i = 0; i < (maxMeasure * BEAT_IN_MEASURE + 1) * snapTo; i++) {
+    for (let i = 0; i < maxMeasure * snapTo; i++) {
       const tick = TICK_PER_MEASURE / snapTo * i
       if (tick % 480 === 0) continue
       const y = position.calcY(tick)
