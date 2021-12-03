@@ -1,10 +1,11 @@
 <script lang="ts">  
   import Icon from '@iconify/svelte'
-  
   import Button from '$lib/ui/Button.svelte'
   import Menu from '$lib/ui/Menu.svelte'
   import MenuTrigger from '$lib/ui/MenuTrigger.svelte'  
   import Wrapper from '$lib/ui/Wrapper.svelte'
+
+  import type { Placement } from 'tippy.js'
   
   export let icon: string
   export let text: string
@@ -12,6 +13,12 @@
   export let disabled: boolean = false
   export let checked: boolean | undefined = undefined
   export let indeterminate: boolean | undefined = undefined
+  export let tooltip: {
+    placement: Placement
+    offset?: [number, number]
+    description?: string
+    keys?: Readonly<Readonly<string[]>[]> 
+  } | undefined = undefined
 
   const hasSubMenu: boolean = !!$$slots.default
   let subMenu: HTMLDivElement
@@ -65,6 +72,7 @@
       class="text"
       on:click={onclick}
       {href}
+      {tooltip}
     >
       <div>{@html text.replace(/&([A-Z])/, `<span style="text-decoration: ${altPressed ? 'underline' : 'none'};">$1</span>`)}</div>
       {#if hasSubMenu}
@@ -81,7 +89,6 @@
           {/if}
         {/if}
       {/if}
-      
     </Button>
   </div>
 </Wrapper>

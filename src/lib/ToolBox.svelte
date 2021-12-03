@@ -24,6 +24,7 @@
   export let snapTo: SnapTo
 
   let menu: HTMLDivElement
+  import { KEYBOARD_SHORTCUTS } from './control/keyboard'
 
   const dispatch = createEventDispatcher<{
     export: void,
@@ -54,27 +55,27 @@
     </MenuTrigger>
 
     <MenuItem icon="ic:outline-insert-drive-file" text="ファイル (&F)">
-      <MenuItem icon="eos-icons:content-new" text="新規 (&N)" on:click={() => dispatch('new')}/>
+      <MenuItem icon="eos-icons:content-new" text="新規 (&N)" on:click={() => dispatch('new')} tooltip={{ description: '新規譜面を作成', keys: KEYBOARD_SHORTCUTS.new, placement: 'right'}}/>
       <MenuDivider/>
-      <MenuItem icon="ic:baseline-folder-open" text="開く (&O)" on:click={() => dispatch('open') } />
+      <MenuItem icon="ic:baseline-folder-open" text="開く (&O)" on:click={() => dispatch('open') } tooltip={{ description: 'プロジェクト等を開く', keys: KEYBOARD_SHORTCUTS.open, placement: 'right'}}/>
       <MenuDivider/>
-      <MenuItem icon="mdi:file-export-outline" text="譜面保存 (&S)" on:click={() => dispatch('export')}/>
+      <MenuItem icon="mdi:file-export-outline" text="譜面保存 (&S)" on:click={() => dispatch('export')} tooltip={{ description: 'SUSファイルに出力', keys: KEYBOARD_SHORTCUTS.export, placement: 'right'}}/>
       <MenuDivider/>
-      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" on:click={() => dispatch('image')}/>
+      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" on:click={() => dispatch('image')} tooltip={{ description: '譜面の画像化', keys: KEYBOARD_SHORTCUTS.image, placement: 'right'}}/>
     </MenuItem>
     <MenuDivider/>
       <MenuItem icon="ic:sharp-edit" text="編集 (&E)">
-        <MenuItem icon="ic:round-undo" text="元に戻す (&U)" on:click={() => dispatch('undo')} />
-        <MenuItem icon="ic:round-redo" text="やり直し (&R)" on:click={() => dispatch('redo')} />
+        <MenuItem icon="ic:round-undo" text="元に戻す (&U)" on:click={() => dispatch('undo')} tooltip={{ description: '前の操作を取り消す', keys: KEYBOARD_SHORTCUTS.undo, placement: 'right'}} />
+        <MenuItem icon="ic:round-redo" text="やり直し (&R)" on:click={() => dispatch('redo')} tooltip={{ description: '取り消した操作をやり直す', keys: KEYBOARD_SHORTCUTS.redo, placement: 'right'}}/>
         <MenuDivider/>
-        <MenuItem icon="ic:baseline-select-all" text="すべて選択 (&A)" on:click={() => dispatch('selectall')}/>
+        <MenuItem icon="ic:baseline-select-all" text="すべて選択 (&A)" on:click={() => dispatch('selectall')} tooltip={{ description: 'すべてのノーツを選択', keys: KEYBOARD_SHORTCUTS.selectall, placement: 'right'}}/>
         <MenuDivider/>
         <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut')} />
         <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy')} />
         <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')} />
       </MenuItem>
     <MenuDivider/>
-    <MenuItem icon="vaadin:cog" text="設定 (&P)" disabled={true} />
+    <MenuItem icon="vaadin:cog" text="設定 (&P)" disabled={true}/>
     <MenuDivider/>
     <MenuItem icon="vaadin:question-circle-o" text="ヘルプ (&H)" href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks" />
   </Menu>

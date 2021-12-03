@@ -1,37 +1,54 @@
-<script lang="ts">
+<script lang="ts">  
   import Icon from '@iconify/svelte'
+  import Wrapper from '$lib/ui/Wrapper.svelte'
+  import Tooltip from '$lib/ui/Tooltip.svelte'
 
+  import type { Placement } from 'tippy.js'
+  
   export let href: string | undefined = undefined
   export let icon: string | undefined = undefined
   export let disabled: boolean | undefined = undefined
   export let height: string | undefined = undefined
   export let width: string | undefined = undefined
   export let loading: boolean = false
+  export let tooltip: {
+    placement: Placement
+    offset?: [number, number]
+    description?: string
+    keys?: Readonly<Readonly<string[]>[]> 
+  } | undefined = undefined
 </script>
 
-{#if href === undefined}
-  <button on:click class={$$props.class} style={$$props.style} {disabled}>
-    {#if icon}
-      {#if loading}
-        <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />
-      {:else}
-        <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
+
+<Wrapper
+  component={Tooltip}
+  wrap={tooltip !== undefined}
+  {...tooltip}
+>
+  {#if href === undefined}
+    <button on:click class={$$props.class} style={$$props.style} {disabled}>
+      {#if icon}
+        {#if loading}
+          <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />
+        {:else}
+          <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
+        {/if}
       {/if}
-    {/if}
-    <slot/>
-  </button>
-{:else}
-  <a class={$$props.class} style={$$props.style} {href} class:disabled target="_blank" on:click>
-    {#if icon}
-      {#if loading}
-        <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />
-      {:else}
-        <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
+      <slot/>
+    </button>
+  {:else}
+    <a class={$$props.class} style={$$props.style} {href} class:disabled target="_blank" on:click>
+      {#if icon}
+        {#if loading}
+          <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />
+        {:else}
+          <Icon icon={icon} height={height ?? "1em"} width={width ?? "1em"} />
+        {/if}
       {/if}
-    {/if}
-    <slot/>
-  </a>
-{/if}
+      <slot/>
+    </a>
+  {/if}
+</Wrapper>
 
 <style>
   button, a {
