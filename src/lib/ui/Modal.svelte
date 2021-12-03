@@ -1,15 +1,19 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher, tick } from 'svelte'
   const dispatch = createEventDispatcher<{
-    open: void,
-    close: void,
+    opened: void,
+    closed: void,
   }>()
 
   export let opened: boolean
-  $: if (opened === true) {
-    dispatch('open')
+  $: if (opened) {
+    tick().then(() => {
+      dispatch('opened')
+    })
   } else {
-    dispatch('close')
+    tick().then(() => {
+      dispatch('closed')
+    })
   }
 </script>
 

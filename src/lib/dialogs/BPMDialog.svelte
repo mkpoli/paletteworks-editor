@@ -5,7 +5,7 @@
   import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
   import TextInput from "$lib/ui/TextInput.svelte"
 
-  import { createEventDispatcher, tick } from "svelte"
+  import { createEventDispatcher } from "svelte"
   const dispatch = createEventDispatcher()
 
   export let opened: boolean
@@ -15,8 +15,7 @@
   let inputElement: HTMLInputElement
 </script>
 
-<Modal bind:opened on:open={async () => {
-  await tick()
+<Modal bind:opened on:opened={() => {
   inputElement.focus()
   inputElement.select()
 }}>

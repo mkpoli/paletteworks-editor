@@ -9,7 +9,7 @@
   import ProjectCard from '$lib/dialogs/ProjectCard.svelte'
 
   // Events
-  import { createEventDispatcher, tick } from "svelte"
+  import { createEventDispatcher } from "svelte"
   const dispatch = createEventDispatcher<{
     open: { project: Project },
     new: void,
@@ -43,13 +43,11 @@
 
 <Modal
   bind:opened
-  on:open={async () => {
-    await tick()
+  on:opened={() => {
     selected = projects.find(project => project.id === currentProject?.id) ?? null
   }}
-  on:close={async () => {
+  on:closed={() => {
     if (currentProject === null) {
-      await tick()
       opened = true
     }
   }}
