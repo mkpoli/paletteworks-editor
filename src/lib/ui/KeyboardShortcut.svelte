@@ -3,7 +3,7 @@
 
   const KEYBOARD_DISPLAY_NAMES: Record<string, string> = {
     'backspace': '← Backspace',
-    'shift': '⇧ Shift',
+    'shift': '⇧',
     'ctrl': 'Ctrl',
     'home': '↖ Home',
     'space': '␣ Space',
@@ -62,6 +62,7 @@
     background: rgba(0, 0, 0, 0.5);
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.45);
     border-radius: 0.25em;
+    white-space: nowrap;
   }
 
   .key + .key::before {
