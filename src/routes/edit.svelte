@@ -24,6 +24,7 @@
   import type { ScrollMode } from '$lib/editing/scrolling'
   import type { Slide as SlideType, Note as NoteType, EaseType, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional, ICritical } from '$lib/score/beatmap'
 
+  import { ALLOWED_SNAPPINGS } from '$lib/editing/modes'
   import { hasEaseType, isSlideStep, toDiamondType, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
 
   // Icons
@@ -82,6 +83,8 @@
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
+
+  import '$lib/basic/collections'
 
   // Score Data
   const emptySUSData = loadSUS("#00002: 4\n#BPM01: 120\n#00008: 01")
@@ -934,6 +937,8 @@
   on:duplicate={() => { duplicateNotes($selectedNotes) }}
   on:flip={() => { flipNotes($selectedNotes) }}
   on:selectall={onselectall}
+  on:increaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotateNext(snapTo) ?? SNAPTO_DEFAULT }}
+  on:decreaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotatePrev(snapTo) ?? SNAPTO_DEFAULT }}
 />
 
 <AudioManager
