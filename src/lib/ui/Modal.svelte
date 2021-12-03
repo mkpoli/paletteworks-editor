@@ -16,7 +16,9 @@
 <div class="modal-container" class:hidden={!opened}>
   <div class="modal-overlay" aria-hidden={true} on:click={() => { opened = false }}></div>
   <div class="modal-dialog">
-    <slot name="presentation"></slot>
+    {#if opened}
+      <slot name="presentation"></slot>
+    {/if}
   </div>
 </div>
 

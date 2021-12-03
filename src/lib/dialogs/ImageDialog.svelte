@@ -12,25 +12,23 @@
   import { MARGIN_BOTTOM, RESOLUTION, ZOOM_MIN, ZOOM_MAX, ZOOM_STEP } from '$lib/consts'
 
   // Functions
-  import { getContext, onMount } from 'svelte'
+  import { getContext } from 'svelte'
   import { download } from '$lib/basic/file'
   import { clamp, snap } from '$lib/basic/math'
   import { position } from '$lib/position'
 
-  // PIXI
-  let PIXI: typeof import('pixi.js')
-  onMount(async () => {
-    PIXI = await import('pixi.js')
-    generatePreview()
-  })
-
-  let container: HTMLDivElement
-
-  const app = getContext<PIXI.Application>('app')
-
+  // Props
   export let opened: boolean
   export let maxMeasure: number
   export let zoom: number
+
+
+  // Contexts
+  const app = getContext<PIXI.Application>('app')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+      
+  let container: HTMLDivElement
+  let preview: HTMLCanvasElement
 
   function generateCanvas(resolution: number): HTMLCanvasElement {
     const measureHeight = $position.measureHeight
@@ -58,16 +56,15 @@
     return canvas
   }
 
-  let preview: HTMLCanvasElement
-
   function generatePreview() {
-    const canvas = generateCanvas(0.1)
-    preview = canvas
-    container.appendChild(canvas)
+    preview = generateCanvas(0.1)
+    container.appendChild(preview)
   }
 
-  $: if (opened && preview && $position) {
-    container.removeChild(preview)
+  $: if (opened && container && $position) {
+    if (preview) {
+      container.removeChild(preview)
+    }
     generatePreview()
   }
 
