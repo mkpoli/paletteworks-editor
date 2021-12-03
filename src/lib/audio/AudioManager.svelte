@@ -2,6 +2,7 @@
   import { onMount } from "svelte"
   import { AudioEvent, AudioScheduler, playOnce } from '$lib/audio/scheduler'
   import { EFFECT_SOUNDS, TICK_PER_BEAT } from "$lib/consts"
+  import { accumulateDuration, sortedBPMs, tick2secs } from "$lib/timing"
 
   import type { Single, Slide } from "$lib/score/beatmap"
 
@@ -71,7 +72,10 @@
     }
   }
 
-  $: if (currentBPM) restartScheduler()
+  $: if (currentBPM) {
+    console.log('currentBPM changed to ' + currentBPM)
+    restartScheduler()
+  }
 
   function stopScheduler() {
     scheduler?.stop()
@@ -105,11 +109,6 @@
     soundQueue = []
   }
 
-
-  function tick2secs(tick: number) {
-    return tick / (TICK_PER_BEAT * currentBPM / 60)
-  }
-
   onMount(async () => {
     // Initialise Audio
     audioContext = new AudioContext()
@@ -129,7 +128,7 @@
     const bgmEvent: AudioEvent = {
       time: 0,
       sound: 'bgm',
-      startFrom: tick2secs(currentTick)
+      startFrom: accumulateDuration(currentTick, $sortedBPMs, TICK_PER_BEAT)
     }
 
     let events: Array<AudioEvent> = [bgmEvent]
@@ -138,7 +137,7 @@
       const singleEvents: AudioEvent[] = singles
         .filter(({ tick }) => tick >= currentTick)
         .map(({ tick, critical, flick }) => ({
-          time: tick2secs(tick - currentTick),
+          time: tick2secs(tick - currentTick, TICK_PER_BEAT, currentBPM),
           sound: flick !== 'no'
                   ? (critical ? 'flickCritical' : 'flick')
                   : (critical ? 'tapCritical' : 'tapPerfect' ) 
@@ -149,21 +148,21 @@
         .reduce((acc, { critical, head, tail, steps }) => {
           const startEvent = head.tick >= currentTick
             ? {
-                time: tick2secs(head.tick - currentTick),
+                time: tick2secs(head.tick - currentTick, TICK_PER_BEAT, currentBPM),
                 sound: !critical ? 'tick' : 'tickCritical'
               }
             : null
   
           const connectEvent = 
             {
-              time: tick2secs(Math.max(head.tick, currentTick) - currentTick),
+              time: tick2secs(Math.max(head.tick, currentTick) - currentTick, TICK_PER_BEAT, currentBPM),
               sound: !critical ? 'connect' : 'connectCritical',
-              loopTo: tick2secs(tail.tick - currentTick)
+              loopTo: tick2secs(tail.tick - currentTick, TICK_PER_BEAT, currentBPM)
             }
     
           const endEvent = 
             {
-              time: tick2secs(tail.tick - currentTick),
+              time: tick2secs(tail.tick - currentTick, TICK_PER_BEAT, currentBPM),
               sound: tail.flick !== 'no'
                   ? (critical || tail.critical ? 'flickCritical' : 'flick')
                   : (critical || tail.critical ? 'tapCritical' : 'tapPerfect' ) 
@@ -174,7 +173,7 @@
             .reduce((a, { tick, diamond }) => {
               if (diamond) {
                 a.push({
-                  time: tick2secs(tick - currentTick),
+                  time: tick2secs(tick - currentTick, TICK_PER_BEAT, currentBPM),
                   sound: !critical ? 'tick' : 'tickCritical'
                 })
               }
@@ -202,9 +201,8 @@
         audioNodes.push(soundSource)
         soundSource.connect(event.sound === 'bgm' ? master : sfxGain)
         const startTime = event.time + offset
-        soundSource.start(startTime, event.startFrom ? tick2secs(currentTick) : undefined)
+        soundSource.start(startTime, event.startFrom)
         if (event.loopTo) {
-          soundSource.loop = true
           soundSource.stop(event.loopTo)
         }
       }

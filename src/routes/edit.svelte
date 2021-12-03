@@ -122,7 +122,8 @@
   // Resize on window resize
   $: app?.renderer.resize(CANVAS_WIDTH, innerHeight)
   
-  // Measure (Bar)
+  // Timing (BPM / Measures / Ticks)
+  $: $sortedBPMs = [...bpms].sort(([tickA,], [tickB,]) => tickA - tickB)
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
   $: if (isNaN(currentMeasure)) currentMeasure = 1
 
@@ -222,8 +223,9 @@
 
   $: dbg('scrollTick', scrollTick)
 
-  
-  $: currentBPM = bpms.get([...bpms.keys()].closest(currentTick) ?? NaN) ?? 120
+
+  $: nearestBPMTick = [...bpms.keys()].closest(currentTick)
+  $: currentBPM = bpms.get(nearestBPMTick ?? NaN) ?? 120
 
   // BPM
   let bpmDialogOpened: boolean = false
@@ -735,6 +737,7 @@
   }
 
   import PreferencesDialog from '$lib/dialogs/PreferencesDialog.svelte'
+  import { sortedBPMs } from '$lib/timing'
   let preferencesDialogOpened = false
 </script>
 
