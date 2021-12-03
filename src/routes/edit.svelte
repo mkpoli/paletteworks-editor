@@ -70,6 +70,7 @@
     ZOOM_DEFAULT,
     ZOOM_MIN,
     LANE_MAX,
+    DEFAULT_PREFERENCES,
   } from '$lib/consts'
 
   // Functions
@@ -503,12 +504,13 @@
     ({ metadata, score: { singles, slides, bpms, fever, skills }} = emptySUSData)
     music = null
   }
+  
+  import { db, preferences } from '$lib/database'
 
-  import type { Project } from '$lib/projects'
+  import type { Project } from '$lib/database'
   import ProjectsDialog from '$lib/dialogs/ProjectsDialog.svelte'
   let projectsDialogOpened = true
   let currentProject: Project | null = null
-  import { db } from '$lib/projects'
   $: dbg('currentProject.id', currentProject?.id)
 
   async function onnewproject() {
@@ -708,11 +710,31 @@
     return await new Promise(resolve => canvas.toBlob(resolve))
   }
 
-  setInterval(async () => {
+  let { autosaveInterval } = DEFAULT_PREFERENCES
+  $: if ($preferences) {
+    ({ autosaveInterval } = $preferences)
+  }
+
+  $: dbg('autosaveInterval', autosaveInterval)
+  
+  let autosaveIntervalTimer: number | undefined = undefined
+  $: if (autosaveInterval !== 0) {
+    clearAutosave()
+    autosaveIntervalTimer = window.setInterval(autosave, autosaveInterval * 1000)
+  }
+  function autosave() {
     if (currentProject && updated) {
       savecurrent(`自動保存されました。`)
     }
-  }, 5000)
+  }
+  function clearAutosave() {
+    if (autosaveIntervalTimer) {
+      window.clearInterval(autosaveIntervalTimer)
+    }
+  }
+
+  import PreferencesDialog from '$lib/dialogs/PreferencesDialog.svelte'
+  let preferencesDialogOpened = false
 </script>
 
 <svelte:head>
@@ -736,6 +758,7 @@
       on:new={onnewproject}
       on:open={onopen}
       on:selectall={onselectall}
+      on:preferences={() => { preferencesDialogOpened = true }}
     />
     <Canvas
       {PIXI}
@@ -884,6 +907,10 @@
       initScore()
     }
   }}
+/>
+
+<PreferencesDialog
+  bind:opened={preferencesDialogOpened}
 />
 
 <ControlHandler

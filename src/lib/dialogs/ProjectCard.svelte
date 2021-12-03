@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Project } from '$lib/projects'
+  import type { Project } from '$lib/database'
   import { createEventDispatcher, onMount, tick } from 'svelte'
 
   // UI Components

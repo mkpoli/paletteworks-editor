@@ -36,7 +36,8 @@
     redo: void,
     new: void,
     open: void,
-    selectall: void
+    selectall: void,
+    preferences: void,
   }>()
 
   import CustomSnappingDialog from './dialogs/CustomSnappingDialog.svelte'
@@ -75,7 +76,7 @@
         <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')} />
       </MenuItem>
     <MenuDivider/>
-    <MenuItem icon="vaadin:cog" text="設定 (&P)" disabled={true}/>
+    <MenuItem icon="vaadin:cog" text="設定 (&P)" on:click={() => dispatch('preferences')}/>
     <MenuDivider/>
     <MenuItem icon="vaadin:question-circle-o" text="ヘルプ (&H)" href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks" />
   </Menu>

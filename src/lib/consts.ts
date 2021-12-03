@@ -94,3 +94,7 @@ export const EFFECT_SOUNDS = {
   connectCritical,
   stage
 }
+
+export const DEFAULT_PREFERENCES = {
+  autosaveInterval: 10
+}

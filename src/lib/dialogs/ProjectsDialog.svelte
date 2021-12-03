@@ -21,8 +21,8 @@
   export let opened: boolean
   export let currentProject: Project | null
 
-  import { db, projects as projectObservable } from '$lib/projects'
-  import type { Project } from '$lib/projects'
+  import { db, projects as projectObservable } from '$lib/database'
+  import type { Project } from '$lib/database'
 
   let projects: Project[] = []
   $: projects = ($projectObservable ?? [])
