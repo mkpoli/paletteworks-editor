@@ -26,7 +26,7 @@
   let menu: HTMLDivElement
 
   const dispatch = createEventDispatcher<{
-    save: void,
+    export: void,
     image: void,
     copy: void,
     cut: void,
@@ -58,7 +58,7 @@
       <MenuDivider/>
       <MenuItem icon="ic:baseline-folder-open" text="開く (&O)" on:click={() => dispatch('open') } />
       <MenuDivider/>
-      <MenuItem icon="mdi:file-export-outline" text="譜面保存 (&S)" on:click={() => dispatch('save')}/>
+      <MenuItem icon="mdi:file-export-outline" text="譜面保存 (&S)" on:click={() => dispatch('export')}/>
       <MenuDivider/>
       <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" on:click={() => dispatch('image')}/>
     </MenuItem>

@@ -221,7 +221,7 @@
   let bpmDialogValue: number = 120
   let lastPointerTick: number = 0
 
-  function onsave() {
+  function onexport() {
     const sus = dumpSUS(metadata, { singles, slides, bpms, fever, skills })
     download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
   }
@@ -720,7 +720,7 @@
     <ToolBox
       bind:currentMode
       bind:snapTo
-      on:save={onsave}
+      on:export={onexport}
       on:image={() => { imageDialogOpened = true }}
       on:copy={() => { copyNotes($selectedNotes) }}
       on:cut={() => { cutNotes($selectedNotes) }}
@@ -885,7 +885,8 @@
   bind:scrollTick
   on:undo={onundo}
   on:redo={onredo}
-  on:save={onsave}
+  on:export={onexport}
+  on:save={() => { savecurrent(`保存されました`) }}
   on:open={onopen}
   on:new={onnewproject}
   on:switch={({ detail: mode }) => { currentMode = mode }}

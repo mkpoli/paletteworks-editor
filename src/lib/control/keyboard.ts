@@ -10,6 +10,7 @@ export const KEYBOARD_SHORTCUTS  = {
   undo: [['Control', 'KeyZ']],
   redo: [['Control', 'KeyY'], ['Shift', 'Control', 'KeyZ']],
   save: [['Control', 'KeyS']],
+  export: [['Control', 'KeyE'], ['Shift', 'Control', 'KeyS']],
   open: [['Control', 'KeyO']],
   new: [['Control', 'KeyN']],
   selectall: [['Control', 'KeyA']],
