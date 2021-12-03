@@ -79,7 +79,7 @@
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { clamp } from '$lib/basic/math'
-  import { closest, rotateNext } from '$lib/basic/collections'
+  import { closest } from '$lib/basic/collections'
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
@@ -224,7 +224,7 @@
   $: dbg('scrollTick', scrollTick)
 
   
-  $: currentBPM = bpms.get(closest([...bpms.keys()], currentTick, true) ?? NaN) ?? 120
+  $: currentBPM = bpms.get([...bpms.keys()].closest(currentTick) ?? NaN) ?? 120
 
   // BPM
   let bpmDialogOpened: boolean = false
@@ -474,13 +474,13 @@
 
   function onchangecurve({ detail: { note, type } }: CustomEvent<{ note: NoteType | null, type?: EaseType}>) {
     let notes = ($selectedNotes.length ? $selectedNotes : (note ? [note] : [])).filter(hasEaseType)
-    let nextType = type ?? rotateNext((note && hasEaseType(note) ? note.easeType : undefined) ?? notes[0].easeType, EASE_TYPES)
+    let nextType = type ?? EASE_TYPES.rotateNext((note && hasEaseType(note) ? note.easeType : undefined) ?? notes[0].easeType)
     exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { easeType: nextType }]))))
   }
 
   function onchangediamond({ detail: { note, type } }: CustomEvent<{ note: NoteType | null, type?: DiamondType }>) {
     let notes = ($selectedNotes.length ? $selectedNotes : (note ? [note] : [])).filter(isSlideStep)
-    let nextType = type ?? rotateNext((note && isSlideStep(note) ? toDiamondType(note) : undefined) ?? toDiamondType(notes[0]), DIAMOND_TYPES)
+    let nextType = type ?? DIAMOND_TYPES.rotateNext((note && isSlideStep(note) ? toDiamondType(note) : undefined) ?? toDiamondType(notes[0]))
     exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, fromDiamondType(nextType)]))))
   }
 

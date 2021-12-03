@@ -1,10 +1,10 @@
-import { rotateNext } from '$lib/basic/collections'
+import '$lib/basic/collections'
 import { FLICK_TYPES } from '$lib/score/beatmap'
 
 import type { Flick } from '$lib/score/beatmap'
 
 export function rotateFlick(flick: Flick): Flick {
-  return rotateNext(flick, FLICK_TYPES)
+  return FLICK_TYPES.rotateNext(flick)
 }
 
 export function flipFlick(flick: Flick): Flick {

@@ -19,6 +19,7 @@
     toDiamondType, hasEaseType, isSlideStep 
   } from '$lib/score/beatmap'
   
+  import '$lib/basic/collections'
   import '$lib/basic/dblclick'
 
   // Constants
@@ -27,7 +28,6 @@
 
   // Functions
   import { snap } from '$lib/basic/math'
-  import { closest } from '$lib/basic/collections'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/editing/selection'
   import { inside } from '$lib/position'
@@ -304,7 +304,7 @@
         if (currentMode === 'bpm') {
           dispatch('changeBPM', {
             tick: $cursor.tick,
-            bpm: bpms.get($cursor.tick) ?? bpms.get(closest([...bpms.keys()], $cursor.tick, true) ?? NaN) ?? 120
+            bpm: bpms.get([...bpms.keys()].closest($cursor.tick, true) ?? NaN) ?? 120
           })
           return
         }

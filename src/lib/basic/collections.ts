@@ -1,29 +1,17 @@
-export function rotateNext<T>(cur: T, arr: Readonly<Array<T>>) {
-  return arr[(arr.indexOf(cur) + 1) % arr.length]
-}
-
-export function closest(arr: Array<number>, num: number, smaller = false): number | undefined {
-  let result: number | undefined
-  arr.some((val) => {
-    if (smaller && val > num) {
-      return true   
-    } else if (!smaller && val < num) {
-      return true
-    }
-    result = val
-  })
-  return result
-}
-
-export function max(arr: Array<number>) {
-  if (!arr.length) {
-    return undefined
-  }
-  return Math.max(...arr)
-}
+export {}
 
 declare global {
   interface Array<T> {
+    pairwise(): [T, T][]
+    rotateNext(cur: T): T
+    rotatePrev(cur: T): T
+  }
+
+  interface Array<T = number> {
+    closest(num: number, smaller?: boolean): number | undefined
+  }
+  
+  interface ReadonlyArray<T> {
     pairwise(): [T, T][]
     rotateNext(cur: T): T
     rotatePrev(cur: T): T
@@ -40,4 +28,9 @@ Array.prototype.rotateNext = function rotateNext<T>(cur: T): T {
 
 Array.prototype.rotatePrev = function rotatePrev<T>(cur: T): T {
   return this[(this.indexOf(cur) - 1 + this.length) % this.length]
+}
+
+Array.prototype.closest = function closest<T = number>(num: number, smaller = true): number | undefined {
+  const sorted = [...this].sort()
+  return (smaller ? sorted.reverse() : sorted).find(e => (smaller ? e <= num : e >= num))
 }
