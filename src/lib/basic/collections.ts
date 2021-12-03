@@ -21,3 +21,13 @@ export function max(arr: Array<number>) {
   }
   return Math.max(...arr)
 }
+
+declare global {
+  interface Array<T> {
+    pairwise(): [T, T][]
+  }
+}
+
+Array.prototype.pairwise = function pairwise<T>(): [T, T][] {
+  return this.slice(1).map((val: T, i: number) => [this[i], val])
+}

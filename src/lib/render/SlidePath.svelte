@@ -1,6 +1,8 @@
 <script lang="ts">
+  import '$lib/basic/collections'
+
   import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
-  
+
   import COLORS from '$lib/colors'
   import { LANE_WIDTH } from '$lib/consts';
   import { position } from '$lib/position'
@@ -9,7 +11,7 @@
   import type PIXI from 'pixi.js'
 
   export let notes: SlideNote[]
-  export let critical: boolean 
+  export let critical: boolean
 
   const dispatch = createEventDispatcher<{
     'click': void,
@@ -46,12 +48,7 @@
   export function drawSlidePath(slideNotes: SlideNote[]) {
     graphics.clear()
     slideNotes
-    .reduce((acc: [SlideNote, SlideNote][], _: SlideNote, ind: number, arr: SlideNote[]) => {
-        if (ind < arr.length - 1) {
-          acc.push([arr[ind], arr[ind + 1]])
-        }
-        return acc
-      }, [] as [SlideNote, SlideNote][])
+      .pairwise()
       .forEach(([origin, target]) => {
         const easeInRatio = 'easeType' in origin && origin.easeType === 'easeIn' ? EASE_RATIOS.curved : EASE_RATIOS.straight
         const easeOutRatio = 'easeType' in origin && origin.easeType === 'easeOut' ? EASE_RATIOS.curved : EASE_RATIOS.straight
