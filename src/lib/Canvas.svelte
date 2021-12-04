@@ -452,6 +452,7 @@
     <!-- BACKGROUND -->
     <Background
       {maxMeasure}
+      {snapTo}
     />
 
     <!-- BPM -->

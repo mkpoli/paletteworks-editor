@@ -11,6 +11,7 @@
 
   // Props
   export let maxMeasure: number
+  export let snapTo: number
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -79,7 +80,6 @@
     }
 
     // DrawSnappingLines
-    const { snapTo } = position
     if (snapTo > 192) return
 
     for (let i = 0; i < maxMeasure * snapTo; i++) {
