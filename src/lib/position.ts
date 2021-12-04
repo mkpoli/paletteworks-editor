@@ -22,13 +22,11 @@ interface IRect {
 
 export class PositionManager {
   measureHeight: number
-  scrollTick: number
   snapTo: number
   containerHeight: number
 
-  constructor(measureHeight: number, scrollTick: number, snapTo: number, containerHeight: number) {
+  constructor(measureHeight: number, snapTo: number, containerHeight: number) {
     this.measureHeight = measureHeight
-    this.scrollTick = scrollTick
     this.snapTo = snapTo
     this.containerHeight = containerHeight
   }
