@@ -103,6 +103,8 @@
     } else if (scrollMode == 'smooth') {
       scrollTick = currentTick - innerHeight / measureHeight * TICK_PER_MEASURE * 0.5 + MARGIN_BOTTOM / MEASURE_HEIGHT * TICK_PER_MEASURE
     }
+  } else {
+    dispatch('scroll', scrollTick)
   }
 
   // --
@@ -181,7 +183,8 @@
     },
     updatecriticals: {
       notes: NoteType[]
-    }
+    },
+    scroll: number,
   }
   const dispatch = createEventDispatcher<Events>()
 

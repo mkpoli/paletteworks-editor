@@ -784,6 +784,7 @@
       bind:fever
       bind:skills
       bind:imageDialogOpened
+      on:scroll={({ detail }) => { scrollTick = detail }}
       on:changeBPM={async (event) => {
         ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)
         await tick()
