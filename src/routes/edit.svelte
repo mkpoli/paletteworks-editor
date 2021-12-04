@@ -173,6 +173,10 @@
   onMount(async () => {
     // Initialise PIXI.js
     PIXI = await import('pixi.js')
+    const { EventSystem } = await import('@pixi/events')
+    // @ts-ignore
+    delete PIXI.Renderer.__plugins.interaction
+
     app = new PIXI.Application({
       width: CANVAS_WIDTH,
       height: innerHeight,
@@ -180,6 +184,8 @@
       resolution: RESOLUTION,
       backgroundAlpha: 0
     })
+    // @ts-ignore
+    ;(app.renderer as PIXI.Renderer).addSystem(EventSystem, 'events')
 
     app.loader.add('font', '/fonts/Font.fnt').load(() => {
       $fontLoaded = true

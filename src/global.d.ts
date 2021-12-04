@@ -5,3 +5,16 @@ interface ImportMeta {
     DEV: boolean
   }
 }
+
+import type { EventSystem, FederatedEvent } from '@pixi/events'
+
+declare module 'pixi.js' {
+  export interface Renderer {
+    events: EventSystem
+  }
+  export interface AbstractRenderer {
+    events: EventSystem
+  }
+
+  export * from '@pixi/events'
+}

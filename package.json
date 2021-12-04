@@ -13,6 +13,7 @@
   "devDependencies": {
     "@iconify/svelte": "^2.0.0",
     "@mszu/pixi-ssr-shim": "^1.0.1",
+    "@pixi/events": "6.1.3",
     "@sveltejs/adapter-vercel": "^1.0.0-next.31",
     "@sveltejs/kit": "^1.0.0-next.178",
     "@typescript-eslint/eslint-plugin": "^5.0.0",

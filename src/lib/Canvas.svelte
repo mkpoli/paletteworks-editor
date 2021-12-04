@@ -221,8 +221,8 @@
     select: `url(${selectCursor}) 6 4, default`
   } as const
   onMount(() => {
-    app.renderer.plugins.interaction.cursorStyles['move'] = myCursorStyle.move
-    app.renderer.plugins.interaction.cursorStyles['ew-resize'] = myCursorStyle.resize
+    app.renderer.events.cursorStyles['move'] = myCursorStyle.move
+    app.renderer.events.cursorStyles['ew-resize'] = myCursorStyle.resize
 
     app.stage.sortableChildren = true
 
@@ -404,8 +404,8 @@
   let canvasContainer: HTMLDivElement
 
   function setCursor(cursor: keyof typeof myCursorStyle) {
-    app.renderer.plugins.interaction.cursorStyles.default =  myCursorStyle[cursor]
-    app.renderer.plugins.interaction.setCursorMode(cursor)
+    app.renderer.events.cursorStyles.default =  myCursorStyle[cursor]
+    app.renderer.events.setCursor(cursor)
   }
 
   $: if (app) {

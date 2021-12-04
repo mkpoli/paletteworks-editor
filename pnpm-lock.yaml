@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@iconify/svelte': ^2.0.0
   '@mszu/pixi-ssr-shim': ^1.0.1
+  '@pixi/events': 6.1.3
   '@sveltejs/adapter-vercel': ^1.0.0-next.31
   '@sveltejs/kit': ^1.0.0-next.178
   '@typescript-eslint/eslint-plugin': ^5.0.0
@@ -26,6 +27,7 @@ specifiers:
 devDependencies:
   '@iconify/svelte': 2.0.0
   '@mszu/pixi-ssr-shim': 1.0.1
+  '@pixi/events': 6.1.3
   '@sveltejs/adapter-vercel': 1.0.0-next.31
   '@sveltejs/kit': 1.0.0-next.178_svelte@3.43.0
   '@typescript-eslint/eslint-plugin': 5.0.0_23617e02451b63a8997d0f18b2622d8e
@@ -177,6 +179,14 @@ packages:
       '@pixi/math': 6.1.3
       '@pixi/settings': 6.1.3
       '@pixi/utils': 6.1.3_f311d3c898b5ef30185642844dc20035
+    dev: true
+
+  /@pixi/events/6.1.3:
+    resolution: {integrity: sha512-zbT3cMZ6iWqs7tNiT/YYx+DhfHBPhyhgVUIOxkHopJ9R0GBynckU2FEzN0NrjucNKBPFAaL1EdLeJUoFuQkIeA==}
+    peerDependencies:
+      '@pixi/display': 6.1.3
+      '@pixi/math': 6.1.3
+      '@pixi/utils': 6.1.3
     dev: true
 
   /@pixi/extract/6.1.3_21bf9b5e91b678db90c6b8747a5bd904:
