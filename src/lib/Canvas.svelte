@@ -81,10 +81,10 @@
   $: measureHeight = MEASURE_HEIGHT * zoom
 
   import { PositionManager, position, pointer, cursor } from '$lib/position'
-  $: $position = new PositionManager(measureHeight, snapTo, innerHeight)
+  $: $position = new PositionManager(measureHeight, innerHeight)
   $: $cursor = {
     lane: $position.calcLane($pointer.x),
-    tick: $position.calcTick($pointer.y, scrollTick),
+    tick: $position.calcTick($pointer.y, scrollTick, snapTo),
     laneSide: $position.calcLaneSide($pointer.x),
     rawTick: $position.calcRawTick2($pointer.y) + scrollTick
   }

@@ -22,12 +22,10 @@ interface IRect {
 
 export class PositionManager {
   measureHeight: number
-  snapTo: number
   containerHeight: number
 
-  constructor(measureHeight: number, snapTo: number, containerHeight: number) {
+  constructor(measureHeight: number, containerHeight: number) {
     this.measureHeight = measureHeight
-    this.snapTo = snapTo
     this.containerHeight = containerHeight
   }
 
@@ -65,8 +63,8 @@ export class PositionManager {
     return Math.max(0, rawTick)
   }
 
-  calcTick(y: number, scrollTick: number): number {
-    return snap(this.calcRawTick(y) + scrollTick, TICK_PER_MEASURE / this.snapTo)
+  calcTick(y: number, scrollTick: number, snapTo: number): number {
+    return snap(this.calcRawTick(y) + scrollTick, TICK_PER_MEASURE / snapTo)
   }
 
   intersectRect(lane: number, width: number, tick: number, rect: IRect): boolean {
