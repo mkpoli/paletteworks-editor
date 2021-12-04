@@ -10,7 +10,7 @@
   // Events
   import { createEventDispatcher } from "svelte"
   const dispatch = createEventDispatcher<{
-    click: { slide: SlideType }
+    pathclick: { slide: SlideType }
     stepclick: { note: SlideStep, slide: SlideType },
     dblclick: { note: NoteType },
     tailclick: { note: SlideTail },
@@ -32,7 +32,7 @@
 <SlidePath
   notes={[head, ...steps.filter((x) => !x.ignored), tail]}
   {critical}
-  on:click={() => { dispatch('click', { slide }) }}
+  on:click={() => { dispatch('pathclick', { slide }) }}
   on:dblclick={() => { dispatch('dblclick', { note: slide.head })}}
 />
 

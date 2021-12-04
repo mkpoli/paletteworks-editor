@@ -227,7 +227,7 @@
     app.stage.sortableChildren = true
 
     app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
-      pointerOnNote = false
+      clickedOnNote = false
       if (event.button === 2) return
       if ($moving || $resizing || $playheadDragging) return
       app.renderer.view.setPointerCapture(event.pointerId)
@@ -312,7 +312,7 @@
           return
         }
 
-        if (!pointerOnNote && currentMode === 'flick') {
+        if (!clickedOnNote && currentMode === 'flick') {
           dispatch('addsingle', { 
             note : {
               lane: $cursor.lane,
@@ -325,7 +325,7 @@
           return
         }
 
-        if (!pointerOnNote && currentMode === 'critical') {
+        if (!clickedOnNote && currentMode === 'critical') {
           dispatch('addsingle', { 
             note : {
               lane: $cursor.lane,
@@ -338,7 +338,7 @@
           return
         }
 
-        if (currentMode === 'mid' && $selectedNotes.length > 0) {
+        if (!clickedOnNote && currentMode === 'mid' && $selectedNotes.length > 0) {
           if (shiftKey && $selectedNotes.some(hasEaseType)) {
             changecurve()
             return
@@ -384,7 +384,7 @@
     })
 
     app.renderer.view.addEventListener('dblclick', async () => {
-      if (!pointerOnNote) {
+      if (!clickedOnNote) {
         currentTick = $cursor.rawTick
       }
     })
@@ -434,7 +434,7 @@
     return toDiamondType(note as SlideStep)
   }
 
-  let pointerOnNote: boolean = false
+  let clickedOnNote: boolean = false
 </script>
 
 <div
@@ -471,7 +471,7 @@
         <Note
           bind:note
           on:click={() => {
-            pointerOnNote = true
+            clickedOnNote = true
             switch (currentMode) {
               case 'flick': {
                 dispatch('updateflicks', {
@@ -564,8 +564,8 @@
               }
             }
           }}
-          on:click={({ detail: { slide }}) => {
-            pointerOnNote = true;
+          on:pathclick={({ detail: { slide }}) => {
+            clickedOnNote = true
             switch (currentMode) {
               case 'flick': {
                 dispatch('updateflicks', {
