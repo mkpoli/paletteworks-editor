@@ -506,11 +506,33 @@
           stepsVisible={visibility.SlideSteps}
           on:headclick={({ detail: { note } }) => {
             currentNote = note
-            if (currentMode === 'mid') {
-              if (shiftKey) {
-                changecurve()
-              } else {
-                changediamond()
+            switch(currentMode) {
+              case 'mid': {
+                if (shiftKey) {
+                  changecurve()
+                }
+                break
+              }
+              case 'flick': {
+                dispatch('updateflicks', {
+                  notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
+                  flip: shiftKey
+                })
+                break
+              }
+              case 'critical': {
+                if ($selectedNotes.length) {
+                  dispatch('updatecriticals', {
+                    notes: $selectedNotes,
+                  })
+                } else {
+                  dispatch('updateslide', {
+                    slide, modification: {
+                      critical: !slide.critical
+                    }
+                  })
+                }
+                break
               }
             }
           }}

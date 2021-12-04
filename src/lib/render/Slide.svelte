@@ -41,7 +41,7 @@
   bind:note={head}
   slide={true}
   {critical}
-  on:click={() => { dispatch('headclick', { note: head }); dispatch('click', { slide }) }}
+  on:click={() => { dispatch('headclick', { note: head }) }}
   on:rightclick
   on:move
   on:movestart
