@@ -234,7 +234,7 @@
 
   function onexport() {
     const sus = dumpSUS(metadata, { singles, slides, bpms, fever, skills })
-    download(toBlob(sus), `${new Date().toISOString().replace(':', '-')}.sus`)
+    download(toBlob(sus), `${currentProject?.name}-${new Date().toISOString().replace(':', '-')}.sus`)
   }
 
   let imageDialogOpened: boolean = false
