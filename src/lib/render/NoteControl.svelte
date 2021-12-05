@@ -124,14 +124,15 @@
     middle.cursor = 'move'
     middle.addListener('pointerdown', onmovestart)
     middle.addEventListener('click', (event: PIXI.FederatedPointerEvent) => {
-      if (event.detail === 1) {
-        dispatch('click', { note })
-      } else if (event.detail === 2) {
-        dispatch('dblclick', { note })
+      if (event.button === 0) {
+        if (event.detail === 1) {
+          dispatch('click', { note })
+        } else if (event.detail === 2) {
+          dispatch('dblclick', { note })
+        }
+      } else if (event.button === 2) {
+        dispatch('rightclick', { note })
       }
-    })
-    middle.addListener('rightclick', () => {
-      dispatch('rightclick', { note })
     })
     app.stage.addChild(middle)
 
