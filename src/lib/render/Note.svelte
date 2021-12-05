@@ -39,8 +39,7 @@
     instance.scale.x = 0.25
     instance.scale.y = 1
     instance.zIndex = 1
-    instance.interactive = true
-
+    instance.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
     app.stage.addChild(instance)
 
     return () => {

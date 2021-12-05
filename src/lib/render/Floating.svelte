@@ -55,6 +55,7 @@
     floating = new PIXI.Sprite()
     floating.anchor.set(0.5, 0.5)
     floating.scale.set(0.25, 0.25)
+    floating.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
     container.addChild(floating)
 
     flickArrow = new PIXI.Sprite(TEXTURES['notes_flick_arrow_02.png'])
