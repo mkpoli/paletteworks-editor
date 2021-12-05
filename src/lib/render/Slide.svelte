@@ -49,9 +49,6 @@
   {moving}
   on:click={() => { dispatch('headclick', { note: head }) }}
   on:rightclick
-  on:move
-  on:movestart
-  on:moveend
   on:dblclick
 />
 
@@ -61,9 +58,6 @@
   {stepsVisible}
   {floating}
   {moving}
-  on:movestart
-  on:move
-  on:moveend
   on:rightclick
   on:dblclick
   on:click={(event) => { onstepclick(event) }}
@@ -77,8 +71,5 @@
   {floating}
   {moving}
   on:click={() => { dispatch('tailclick', { note: tail }) }}
-  on:move
-  on:movestart
-  on:moveend
   on:dblclick
 />

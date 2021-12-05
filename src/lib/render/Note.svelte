@@ -92,9 +92,6 @@
 
 {#if !floating}
   <NoteControl
-    on:move
-    on:movestart
-    on:moveend
     on:click
     on:rightclick
     on:dblclick

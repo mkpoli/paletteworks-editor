@@ -297,10 +297,6 @@
         pointB = new PIXI.Point($pointer.x, $pointer.y + app.stage.pivot.y)
       }
 
-      if ($moving) {
-        onmove()
-      }
-
       if (draggingSlide !== null && currentMode === 'slide') {
         draggingSlide.tail.lane = $cursor.lane
         draggingSlide.tail.tick = $cursor.tick
@@ -464,39 +460,10 @@
   let clickedOnNote: boolean = false
 
   // Moving
-  import { moving, movingNotes, movingOffsets, movingOrigins, movingTargets } from '$lib/editing/moving'
-  import type { MoveEvent } from '$lib/editing/moving'
+  import { moving, movingNotes, movingOrigins, movingTargets } from '$lib/editing/moving'
 
   $: if (!$moving) {
     onmoveend()
-  }
-
-  function onmovestart(origin: MoveEvent) {
-    const { lane, tick, note } = origin.detail
-    $moving = true
-    $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
-    $movingNotes.forEach((movingNote) => {
-      $movingOffsets.set(movingNote, {
-        lane: lane - movingNote.lane,
-        tick: tick - movingNote.tick
-      })
-      $movingOrigins.set(movingNote, {
-        lane: movingNote.lane,
-        tick: movingNote.tick
-      })
-      $movingTargets.set(movingNote, {
-        lane: movingNote.lane,
-        tick: movingNote.tick
-      })
-    })
-  }
-
-  function onmove() {
-    $movingTargets.forEach((target, note) => {
-      if (!$movingNotes.includes(note)) return
-      target.lane = $cursor.lane - $movingOffsets.get(note)!.lane
-      target.tick = $cursor.tick - $movingOffsets.get(note)!.tick
-    })
   }
 
   function onmoveend() {
@@ -586,9 +553,6 @@
               }
            }
           }}
-          on:movestart={onmovestart}
-          on:move
-          on:moveend={() => { $moving = false }}
           on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
           moving={isLongPress && $moving && $movingNotes.includes(note)}
@@ -732,9 +696,6 @@
               }
             }
           }}
-          on:move
-          on:movestart={onmovestart}
-          on:moveend={() => { $moving = false }}
           on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
         />

@@ -15,7 +15,7 @@
   export let note: Note
 
   // Stores
-  import { moving } from '$lib/editing/moving'
+  import { moving, movingNotes, movingOffsets, movingOrigins, movingTargets } from '$lib/editing/moving'
   import { cursor } from '$lib/position'
   import { calcResized, resizing, resizingNotes, resizingOffsets, resizingOrigins, resizingTargets, resizingOriginNote } from '$lib/editing/resizing'
   import { selectedNotes } from '$lib/editing/selection'
@@ -26,13 +26,6 @@
 
   // Event
   const dispatch = createEventDispatcher<{
-    move: void,
-    movestart: {
-      lane: number,
-      tick: number,
-      note: Note
-    },
-    moveend: void,
     click: { note: Note },
     rightclick: { note: Note },
     dblclick: { note: Note }
@@ -44,8 +37,41 @@
   let controlL: PIXI.Graphics
   let controlR: PIXI.Graphics
   const SIDE_MARGIN = 10
+
+  // Moving
+  function onmovestart() {
+    if ($resizing) return
+    $moving = true
+    $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
+    $movingNotes.forEach((movingNote) => {
+      $movingOffsets.set(movingNote, {
+        lane: $cursor.lane - movingNote.lane,
+        tick: $cursor.tick - movingNote.tick
+      })
+      $movingOrigins.set(movingNote, {
+        lane: movingNote.lane,
+        tick: movingNote.tick
+      })
+      $movingTargets.set(movingNote, {
+        lane: movingNote.lane,
+        tick: movingNote.tick
+      })
+    })
+  }
+
+  function onmoving() {
+    if ($moving && $movingNotes.includes(note)) {
+      const { lane, tick } = $movingOffsets.get(note)!
+      $movingTargets.set(note, {
+        lane: $cursor.lane - lane,
+        tick: $cursor.tick - tick
+      })
+    }
+  }
+
   function onresizestart(right: boolean) {
     return () => {
+      if ($moving) return
       $resizing = true
       $resizingOriginNote = note
       $resizingNotes = $selectedNotes.length && $selectedNotes.includes(note) ? $selectedNotes : [note]
@@ -62,7 +88,7 @@
 
   function onresizing() {
     if ($resizing && $resizingNotes.includes(note)) {
-      const { reference, mutating, offset } = $resizingOffsets.get(note)!
+      const { reference, offset } = $resizingOffsets.get(note)!
       // if ($cursor.laneSide - offset === reference) return
       const [ lane, width ] = calcResized(reference, $cursor.laneSide - offset)
       console.log({ reference, offset, lane, width, LmO: $cursor.laneSide - offset })
@@ -88,7 +114,6 @@
 
     app.renderer.view.addEventListener('pointermove', onresizing)
 
-
     graphics = new PIXI.Graphics()
     graphics.zIndex = 4
     app.stage.addChild(graphics)
@@ -97,28 +122,20 @@
     middle.zIndex = 5
     middle.interactive = true
     middle.cursor = 'move'
-    middle.addListener('pointerdown', () => {
-      dispatch('movestart', {
-        lane: $cursor.lane,
-        tick: $cursor.tick,
-        note
-      })
-    })
-    middle.addListener('pointermove', () => {
-      if (!$moving || $resizing) return
-      dispatch('move')
-    })
+    middle.addListener('pointerdown', onmovestart)
     middle.addEventListener('click', (event: PIXI.FederatedPointerEvent) => {
       if (event.detail === 1) {
-        dispatch('click', { note })
+      dispatch('click', { note })
       } else if (event.detail === 2) {
-        dispatch('dblclick', { note })
+      dispatch('dblclick', { note })
       }
     })
     middle.addListener('rightclick', () => {
       dispatch('rightclick', { note })
     })
     app.stage.addChild(middle)
+
+    app.renderer.view.addEventListener('pointermove', onmoving)
   })
 
   onDestroy(() => {
