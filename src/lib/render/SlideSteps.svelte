@@ -14,6 +14,8 @@
   // Props
   export let slide: Slide
   export let stepsVisible: boolean
+  export let floating: boolean = false
+  export let moving: boolean = false
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -45,7 +47,7 @@
   })
 
   // Draw
-  function createDiamond(x: number, y: number, critical: boolean): PIXI.Sprite {
+  function createDiamond(x: number, y: number, critical: boolean, moving: boolean): PIXI.Sprite {
     const sprite = new PIXI.Sprite(TEXTURES[`notes_long_among${critical ? '_crtcl' : ''}.png`])
     sprite.x = x
     sprite.y = y
@@ -53,10 +55,12 @@
     sprite.anchor.y = 0.5
     sprite.width = DIAMOND_WIDTH
     sprite.height = DIAMOND_HEIGHT
+    sprite.alpha = floating ? 0.5 : 1
+    sprite.tint = moving ? COLORS.COLOR_MOVING_TINT : 0xFFFFFF
     return sprite
   }
 
-  function drawDiamonds(position: PositionManager, slide: Slide) {
+  function drawDiamonds(position: PositionManager, slide: Slide, moving: boolean) {
     container.removeChildren()
     const { head, tail, critical, steps } = slide
 
@@ -82,7 +86,7 @@
         const targetY = position.calcY(target.tick)
 
         if ('diamond' in origin && origin.diamond) {
-          container.addChild(createDiamond(originX, originY, critical))
+          container.addChild(createDiamond(originX, originY, critical, moving))
         }
 
         arr
@@ -106,7 +110,7 @@
                 currentX = ((currentY - originY) / (targetY - originY)) * (targetX - originX) + originX
                 break
             }
-            container.addChild(createDiamond(currentX, currentY, critical))
+            container.addChild(createDiamond(currentX, currentY, critical, moving))
           })
       })
   }
@@ -210,8 +214,13 @@
     })
   }
   $: if (container) {
-    drawDiamonds($position, slide)
+    drawDiamonds($position, slide, moving)
+  }
+  $: if (graphics) {
     drawSteps($position, slide, stepsVisible)
+  }
+  $: if (graphics) {
+    graphics.tint = moving ? COLORS.COLOR_MOVING_TINT : 0xFFFFFF
   }
 </script>
 

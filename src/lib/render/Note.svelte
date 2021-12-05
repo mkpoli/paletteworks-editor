@@ -13,6 +13,8 @@
   export let note: NoteType
   export let critical: boolean = false
   export let slide: boolean = false
+  export let floating: boolean = false
+  export let moving: boolean = false
 
   $: ({ lane, tick, width } = note)
   let flick: Flick
@@ -33,15 +35,13 @@
   // Contexts
   const app = getContext<PIXI.Application>('app')
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
 
   // Variables
-  let PIXI: typeof import('pixi.js')
   let instance: PIXI.NineSlicePlane
   let currentRect: PIXI.Rectangle
 
   onMount(async () => {
-    PIXI = await import('pixi.js')
-
     const texture = TEXTURES[type]
     instance = new PIXI.NineSlicePlane(
       texture,
@@ -53,8 +53,13 @@
     instance.scale.y = 1
     instance.zIndex = 1
     instance.interactive = true
+    instance.alpha = floating ? 0.5 : 1
     app.stage.addChild(instance)
   })
+
+  $: if (instance) {
+    instance.tint = moving ? 0xb0b0b0 : 0xffffff
+  } 
 
   onDestroy(() => {
     app.stage.removeChild(instance)
@@ -90,7 +95,7 @@
   />
 {/if}
 
-{#if inscreen}
+{#if inscreen && !floating}
   <NoteControl
     on:move
     on:movestart

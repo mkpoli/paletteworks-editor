@@ -12,6 +12,8 @@
 
   export let notes: SlideNote[]
   export let critical: boolean
+  export let floating: boolean = false
+  export let moving: boolean = false
 
   const dispatch = createEventDispatcher<{
     'click': void,
@@ -44,8 +46,8 @@
     app.stage.removeChild(graphics)
   })
 
-  $: graphics && $position && drawSlidePath(notes)
-  export function drawSlidePath(slideNotes: SlideNote[]) {
+  $: graphics && $position && drawSlidePath(notes, moving)
+  export function drawSlidePath(slideNotes: SlideNote[], moving: boolean) {
     graphics.clear()
     slideNotes
       .pairwise()
@@ -61,17 +63,18 @@
         const target_x_right = $position.calcX(target.lane) + target.width * LANE_WIDTH - SHRINK_WIDTH
         const target_y = $position.calcY(target.tick)
 
-        graphics.beginFill(critical ? COLORS.COLOR_SLIDE_PATH : COLORS.COLOR_SLIDE_PATH_CRITICAL, COLORS.ALPHA_SLIDE_PATH)
+        graphics.tint = moving ? COLORS.COLOR_MOVING_TINT : 0xFFFFFF
+        graphics.beginFill(
+          critical ? COLORS.COLOR_SLIDE_PATH_CRITICAL: COLORS.COLOR_SLIDE_PATH,
+          floating ? COLORS.ALPHA_FLOATING : COLORS.ALPHA_SLIDE_PATH
+        )
         graphics.moveTo(origin_x_left, origin_y)
         graphics.bezierCurveTo(origin_x_left, origin_y - (origin_y - target_y) * easeInRatio, target_x_left, target_y + (origin_y - target_y) * easeOutRatio, target_x_left, target_y)
-        // graphics.moveTo(target_x_left, target_y)
         graphics.lineTo(target_x_right, target_y)
         graphics.bezierCurveTo(target_x_right, target_y + (origin_y - target_y) * easeOutRatio, origin_x_right, origin_y - (origin_y - target_y) * easeInRatio, origin_x_right, origin_y)
         graphics.closePath()
         graphics.endFill()
-        // graphics.lineTo(origin_x_right, origin_y)
-        // graphics.moveTo(origin_x_right, origin_y)
-      })    
+      })
   }
 </script>
  

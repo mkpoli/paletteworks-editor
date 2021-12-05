@@ -43,6 +43,7 @@
   import StackedArea from '$lib/render/StackedArea.svelte'
   import Fever from '$lib/render/Fever.svelte'
   import Skill from '$lib/render/Skill.svelte'
+  import MovingNotes from '$lib/render/MovingNotes.svelte'
 
   // UI Components
   import Menu from '$lib/ui/Menu.svelte'
@@ -136,9 +137,6 @@
     copy: { notes: NoteType[] },
     cut: { notes: NoteType[] },
     paste: void,
-    movestart: void,
-    move: void,
-    moveend: void,
     resizestart: void,
     resize: void,
     changecurve: {
@@ -185,6 +183,16 @@
       notes: NoteType[]
     },
     scroll: number,
+    movenotes: {
+      movingTargets: Map<NoteType, {
+        lane: number;
+        tick: number;
+      }>,
+      movingOrigins: Map<NoteType, {
+        lane: number;
+        tick: number;
+      }>
+    }
   }
   const dispatch = createEventDispatcher<Events>()
 
@@ -206,7 +214,7 @@
     }
   }
 
-  import { moving } from './editing/moving'
+  import { moving, movingNotes, movingOffsets, movingOrigins } from './editing/moving'
 
   import moveCursor from '$assets/move-cursor.png'
   import resizeCursor from '$assets/resize-cursor.png'
@@ -269,12 +277,19 @@
       }
     })
 
-    app.stage.addListener('pointermove', (event: PIXI.InteractionEvent) => {
-      const { x, y } = event.data.global
-      $pointer = { x, y }
+    app.renderer.view.addEventListener('pointermove', (event) => {
+      const rect = app.renderer.view.getBoundingClientRect()
+      $pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top}
 
       if (dragging && currentMode === 'select') {
-        pointB = new PIXI.Point(x, y + app.stage.pivot.y)
+        pointB = new PIXI.Point($pointer.x, $pointer.y + app.stage.pivot.y)
+      }
+
+      if ($moving) {
+        $movingNotes.forEach((note) => {
+          note.lane = $cursor.lane - $movingOffsets.get(note)!.lane
+          note.tick = $cursor.tick - $movingOffsets.get(note)!.tick
+        })
       }
 
       if (draggingSlide !== null && currentMode === 'slide') {
@@ -352,7 +367,7 @@
       }
 
       if ($moving) {
-        dispatch('moveend')
+        $moving = false
       }
       if ($resizing) {
         $resizing = false
@@ -435,6 +450,44 @@
   }
 
   let clickedOnNote: boolean = false
+
+  import type { MoveEvent } from '$lib/editing/moving'
+
+  function onmovestart(origin: MoveEvent) {
+    const { lane, tick, note } = origin.detail
+    $moving = true
+    $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
+    $movingNotes.forEach((movingNote) => {
+      $movingOffsets.set(movingNote, {
+        lane: lane - movingNote.lane,
+        tick: tick - movingNote.tick
+      })
+      $movingOrigins.set(movingNote, {
+        lane: movingNote.lane,
+        tick: movingNote.tick
+      })
+    })
+  }
+
+  $: if (!$moving) {
+    onmoveend()
+  }
+
+  function onmoveend() {
+    const movingTargets = new Map($movingNotes.map((note) => 
+      [note, {
+        lane: note.lane,
+        tick: note.tick
+      }]
+    ))
+    if ($movingNotes.every((note) =>
+      note.lane === $movingOrigins.get(note)!.lane && note.tick === $movingOrigins.get(note)!.tick
+    )) return
+    dispatch('movenotes', {
+      movingTargets,
+      movingOrigins: $movingOrigins,
+    })
+  }
 </script>
 
 <div
@@ -489,11 +542,12 @@
               }
            }
           }}
-          on:movestart
+          on:movestart={onmovestart}
           on:move
-          on:moveend
+          on:moveend={() => { $moving = false }}
           on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
+          moving={$moving && $movingNotes.includes(note)}
         />
       {/if}
     {/each}
@@ -504,6 +558,7 @@
         <Slide
           bind:slide
           stepsVisible={visibility.SlideSteps}
+          moving={$moving && ($movingNotes.includes(slide.head) || $movingNotes.includes(slide.tail) || slide.steps.some((step) => $movingNotes.includes(step)))}
           on:headclick={({ detail: { note } }) => {
             currentNote = note
             switch(currentMode) {
@@ -633,8 +688,8 @@
             }
           }}
           on:move
-          on:movestart
-          on:moveend
+          on:movestart={onmovestart}
+          on:moveend={() => { $moving = false }}
           on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
         />
@@ -657,6 +712,8 @@
       dragging={dragging && currentMode === 'select'}
       rect={selectRect}
     />
+    
+    <MovingNotes {singles} {slides} />
   </div>
   <div class="zoom-indicator-container">
     <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP}/>

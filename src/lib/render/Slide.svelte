@@ -20,6 +20,8 @@
   // Props
   export let slide: SlideType
   export let stepsVisible: boolean
+  export let moving: boolean = false
+  export let floating: boolean = false
   
   $: ({ head, tail, critical, steps } = slide)
 
@@ -32,6 +34,8 @@
 <SlidePath
   notes={[head, ...steps.filter((x) => !x.ignored), tail]}
   {critical}
+  {floating}
+  {moving}
   on:click={() => { dispatch('pathclick', { slide }) }}
   on:dblclick={() => { dispatch('dblclick', { note: slide.head })}}
 />
@@ -41,6 +45,8 @@
   bind:note={head}
   slide={true}
   {critical}
+  {floating}
+  {moving}
   on:click={() => { dispatch('headclick', { note: head }) }}
   on:rightclick
   on:move
@@ -53,6 +59,8 @@
 <SlideSteps
   bind:slide
   {stepsVisible}
+  {floating}
+  {moving}
   on:movestart
   on:move
   on:moveend
@@ -66,6 +74,8 @@
   bind:note={tail}
   slide={true}
   {critical}
+  {floating}
+  {moving}
   on:click={() => { dispatch('tailclick', { note: tail }) }}
   on:move
   on:movestart

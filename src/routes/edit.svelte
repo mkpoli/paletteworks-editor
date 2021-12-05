@@ -329,49 +329,6 @@
     ]
   }
 
-  // Moving
-  import { moving, movingNotes, movingOffsets, movingOrigins } from '$lib/editing/moving'
-  import type { MoveEvent } from '$lib/editing/moving'
-  function onmovestart(origin: MoveEvent) {
-    const { lane, tick, note } = origin.detail
-    $moving = true
-    $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
-    $movingNotes.forEach((movingNote) => {
-      $movingOffsets.set(movingNote, {
-        lane: lane - movingNote.lane,
-        tick: tick - movingNote.tick
-      })
-      $movingOrigins.set(movingNote, {
-        lane: movingNote.lane,
-        tick: movingNote.tick
-      })
-    })
-  }
-
-  function onmove() {
-    $movingNotes.forEach((note) => {
-      note.lane = $cursor.lane - $movingOffsets.get(note)!.lane
-      note.tick = $cursor.tick - $movingOffsets.get(note)!.tick
-    })
-    singles = singles
-    slides = slides
-  }
-
-  function onmoveend() {
-    $moving = false
-  
-    const movingTargets = new Map($movingNotes.map((note) => 
-      [note, {
-        lane: note.lane,
-        tick: note.tick
-      }]
-    ))
-    if ($movingNotes.every((note) =>
-      note.lane === $movingOrigins.get(note)!.lane && note.tick === $movingOrigins.get(note)!.tick
-    )) return
-    exec(new BatchUpdate(singles, slides, movingTargets, $movingOrigins, '移動'))
-  }
-
   function playSound(name: string) {
     soundQueue.push(name)
     soundQueue = soundQueue
@@ -804,9 +761,9 @@
       on:copy={(event) => { copyNotes(event.detail.notes) }}
       on:cut={(event) => { cutNotes(event.detail.notes) }}
       on:paste={onpaste}
-      on:move={onmove}
-      on:movestart={onmovestart}
-      on:moveend={onmoveend}
+      on:movenotes={({ detail: { movingTargets, movingOrigins }}) => {
+        exec(new BatchUpdate(singles, slides, movingTargets, movingOrigins, '移動'))
+      }}
       on:changecurve={onchangecurve}
       on:changediamond={onchangediamond}
       on:selectsingle={(event) => {
