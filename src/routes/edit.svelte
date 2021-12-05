@@ -735,6 +735,9 @@
         soundQueue.push(event.detail)
         soundQueue = soundQueue
       }}
+      on:goto={({ detail: { tick }}) => {
+        gotoTick(tick)
+      }}
       on:delete={(event) => { deleteNotes(event.detail.notes) }}
       on:copy={(event) => { copyNotes(event.detail.notes) }}
       on:cut={(event) => { cutNotes(event.detail.notes) }}

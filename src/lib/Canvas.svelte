@@ -202,7 +202,10 @@
         lane: number
         width: number
       }>
-    }
+    },
+    goto: {
+      tick: number
+    },
   }
   const dispatch = createEventDispatcher<Events>()
 
@@ -408,7 +411,7 @@
 
     app.renderer.view.addEventListener('dblclick', async () => {
       if (!clickedOnNote) {
-        currentTick = $cursor.rawTick
+        dispatch('goto', { tick: $cursor.rawTick })
       }
     })
 
