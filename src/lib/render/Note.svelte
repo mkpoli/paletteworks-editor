@@ -76,16 +76,6 @@
       noteWidth, 0.5 * NOTE_HEIGHT
     )
   }
-
-  $: inscreen = instance && instance.y < $position.containerHeight + app.stage.pivot.y && instance.y > app.stage.pivot.y
-
-  // $: if (instance) {
-  //   if (inscreen) {
-  //     app.stage.addChild(instance)
-  //   } else {
-  //     app.stage.removeChild(instance)
-  //   }
-  // }
 </script>
 
 <!-- FLICK ARROW -->
@@ -95,7 +85,7 @@
   />
 {/if}
 
-{#if inscreen && !floating}
+{#if !floating}
   <NoteControl
     on:move
     on:movestart
