@@ -3,7 +3,7 @@
   import type { Slide as SlideType, SlideStep, Note as NoteType, SlideTail, SlideHead } from "$lib/score/beatmap"
 
   // Components
-  import Note from '$lib/render/Note.svelte'
+  import Single from '$lib/render/Single.svelte'
   import SlidePath from '$lib/render/SlidePath.svelte'
   import SlideSteps from '$lib/render/SlideSteps.svelte'
   
@@ -41,7 +41,7 @@
 />
 
 <!-- SLIDE HEAD -->
-<Note
+<Single
   bind:note={head}
   slide={true}
   {critical}
@@ -64,7 +64,7 @@
 />
 
 <!-- SLIDE END -->
-<Note
+<Single
   bind:note={tail}
   slide={true}
   {critical}

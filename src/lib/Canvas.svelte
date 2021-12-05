@@ -5,7 +5,7 @@
   import type { ScrollMode } from '$lib/editing/scrolling'
 
   import type {
-    Single,
+    Single as SingleType,
     Slide as SlideType,
     Note as NoteType,
     SlideStep,
@@ -35,7 +35,7 @@
   import Background from '$lib/render/Background.svelte'
   import BPM from '$lib/render/BPM.svelte'
   import Playhead from '$lib/render/Playhead.svelte'
-  import Note from '$lib/render/Note.svelte'
+  import Single from '$lib/render/Single.svelte'
   import Slide from '$lib/render/Slide.svelte'
   import Selection from '$lib/render/Selection.svelte'
   import Floating from '$lib/render/Floating.svelte'
@@ -70,7 +70,7 @@
   export let zoom: number
 
   // Score Data
-  export let singles: Single[]
+  export let singles: SingleType[]
   export let slides: SlideType[]
   export let bpms: Map<number, number>
   export let fever: FeverType
@@ -152,11 +152,11 @@
     },
     selectall: void,
     addsingle: {
-      note: Single
+      note: SingleType
     },
     updatesingle: {
-      note: Single,
-      modification: Partial<Single>
+      note: SingleType,
+      modification: Partial<SingleType>
     },
     addslide: {
       slide: SlideType
@@ -533,7 +533,7 @@
     <!-- SINGLE NOTES -->
     {#each singles as note (note)}
       {#if visibility.Flicks && note.flick !== 'no' || visibility.Taps && note.flick === 'no' }
-        <Note
+        <Single
           bind:note
           on:click={() => {
             clickedOnNote = true

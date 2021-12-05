@@ -1,15 +1,15 @@
 <script lang="ts">
-  import Note from '$lib/render/Note.svelte'
+  import Single from '$lib/render/Single.svelte'
   import Slide from '$lib/render/Slide.svelte'
 
-  import type { Single, Slide as SlideType } from '$lib/score/beatmap'
+  import type { Single as SingleType, Slide as SlideType } from '$lib/score/beatmap'
 
-  export let singles: Single[]
+  export let singles: SingleType[]
   export let slides: SlideType[]
 </script>
 
 {#each singles as single}
-  <Note
+  <Single
     note={single}
     floating={true}
   />
