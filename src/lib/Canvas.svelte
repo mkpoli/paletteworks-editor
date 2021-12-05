@@ -20,7 +20,6 @@
   } from '$lib/score/beatmap'
   
   import '$lib/basic/collections'
-  import '$lib/basic/dblclick'
 
   // Constants
   import { createEventDispatcher, onMount, setContext, tick } from 'svelte'

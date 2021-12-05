@@ -22,6 +22,7 @@
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
 
   // Event
   const dispatch = createEventDispatcher<{
@@ -38,7 +39,6 @@
   }>()
 
   // Variables
-  let PIXI: typeof import('pixi.js')
   let graphics: PIXI.Graphics
   let middle: PIXI.Container
   let controlL: PIXI.Graphics
@@ -67,8 +67,6 @@
   }
 
   onMount(async () => {
-    PIXI = await import('pixi.js')
-    
     controlL = new PIXI.Graphics()
     controlL.zIndex = 5
     controlL.interactive = true
@@ -105,14 +103,15 @@
       if (!$moving || $resizing) return
       dispatch('move')
     })
-    middle.addListener('click', () => {
-      dispatch('click', { note })
+    middle.addEventListener('click', (event: PIXI.FederatedPointerEvent) => {
+      if (event.detail === 1) {
+        dispatch('click', { note })
+      } else if (event.detail === 2) {
+        dispatch('dblclick', { note })
+      }
     })
     middle.addListener('rightclick', () => {
       dispatch('rightclick', { note })
-    })
-    middle.addListener('dblclick', () => {
-      dispatch('dblclick', { note })
     })
     app.stage.addChild(middle)
   })
@@ -145,7 +144,7 @@
     graphics.endFill()
   }
 
-  $: if (PIXI && rect) {
+  $: if (graphics && controlL && controlR && rect) {
     graphics.clear()
     controlL.clear()
     controlR.clear()

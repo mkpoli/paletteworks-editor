@@ -33,11 +33,12 @@
     PIXI = await import('pixi.js')
     graphics = new PIXI.Graphics()
     graphics.interactive = true
-    graphics.addListener('click', () => {
-      dispatch('click')
-    })
-    graphics.addListener('dblclick', () => {
-      dispatch('dblclick')
+    graphics.addListener('click', (event) => {
+      if (event.detail === 1) {
+        dispatch('click')
+      } else if (event.detail === 2) {
+        dispatch('dblclick')
+      }
     })
     app.stage.addChild(graphics)
   })
