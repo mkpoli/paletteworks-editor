@@ -293,8 +293,10 @@
     })
 
     app.renderer.view.addEventListener('pointermove', (event) => {
-      const rect = app.renderer.view.getBoundingClientRect()
-      $pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top}
+      const point = new PIXI.Point()
+      app.renderer.events.mapPositionToPoint(point, event.clientX, event.clientY)
+      const { x, y } = point
+      $pointer = { x, y }
 
       if (dragging && currentMode === 'select') {
         pointB = new PIXI.Point($pointer.x, $pointer.y + app.stage.pivot.y)
