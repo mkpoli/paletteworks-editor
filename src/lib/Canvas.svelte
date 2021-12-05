@@ -477,6 +477,8 @@
       movingOrigins: new Map($movingOrigins),
     })
     $movingNotes = []
+    $movingTargets = new Map()
+    $movingOrigins = new Map()
   }
 
   // Resizing
@@ -498,6 +500,8 @@
     })
     $resizingNotes = []
     $resizingLastWidth = $resizingTargets.get($resizingOriginNote)!.width
+    $resizingTargets = new Map()
+    $resizingOrigins = new Map()
   }
 </script>
 
