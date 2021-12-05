@@ -223,6 +223,9 @@
   import { clipboardSingles, clipboardSlides } from './editing/clipboard'
   import { resizing, resizingLastWidth } from './editing/resizing'
 
+  let clickTimer: number | undefined
+  let isLongPress = false
+
   const myCursorStyle = {
     move: `url(${moveCursor}) 16 16, move`,
     resize: `url(${resizeCursor}) 16 16, ew-resize`,
@@ -235,6 +238,9 @@
     app.stage.sortableChildren = true
 
     app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
+      clickTimer = window.setTimeout(() => {
+        isLongPress = true
+      }, 150)
       clickedOnNote = false
       if (event.button === 2) return
       if ($moving || $resizing || $playheadDragging) return
@@ -305,6 +311,9 @@
     }
 
     app.renderer.view.addEventListener('pointerup', (event: PointerEvent) => {
+      clearTimeout(clickTimer)
+      isLongPress = false
+
       if (!$moving && !$resizing) {
         if (currentMode === 'tap') {
           dispatch('addsingle', { 
@@ -547,7 +556,7 @@
           on:moveend={() => { $moving = false }}
           on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
-          moving={$moving && $movingNotes.includes(note)}
+          moving={isLongPress && $moving && $movingNotes.includes(note)}
         />
       {/if}
     {/each}
@@ -558,7 +567,7 @@
         <Slide
           bind:slide
           stepsVisible={visibility.SlideSteps}
-          moving={$moving && ($movingNotes.includes(slide.head) || $movingNotes.includes(slide.tail) || slide.steps.some((step) => $movingNotes.includes(step)))}
+          moving={isLongPress && $moving && ($movingNotes.includes(slide.head) || $movingNotes.includes(slide.tail) || slide.steps.some((step) => $movingNotes.includes(step)))}
           on:headclick={({ detail: { note } }) => {
             currentNote = note
             switch(currentMode) {
@@ -713,7 +722,7 @@
       rect={selectRect}
     />
     
-    <MovingNotes {singles} {slides} />
+    <MovingNotes {singles} {slides} moving={isLongPress && $moving} />
   </div>
   <div class="zoom-indicator-container">
     <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP}/>

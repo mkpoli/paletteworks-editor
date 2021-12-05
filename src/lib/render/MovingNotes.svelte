@@ -3,12 +3,12 @@
   import Note from '$lib/render/Note.svelte'
   import Slide from '$lib/render/Slide.svelte'
 
-
-  import { moving, movingNotes } from '$lib/editing/moving'
+  import { movingNotes } from '$lib/editing/moving'
   import type { Single, Slide as SlideType } from '$lib/score/beatmap'
 
   export let singles: Single[]
   export let slides: SlideType[]
+  export let moving: boolean
 
   $: movingSingles = singles.filter((single) => $movingNotes.includes(single))
   $: movingSlides = slides.filter((slide) =>
@@ -18,17 +18,17 @@
   function updateMoving() {
     movingSingles = movingSingles
     movingSlides = movingSlides
-    if ($moving) {
+    if (moving) {
       setTimeout(updateMoving, 50)
     }
   }
 
-  $: if ($moving) {
+  $: if (moving) {
     updateMoving()
   }
 </script>
 
-{#if $moving}
+{#if moving}
   {#each movingSingles as single (single)}
     <Note
       note={single}
