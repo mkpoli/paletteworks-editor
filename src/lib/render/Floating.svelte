@@ -22,8 +22,12 @@
   export let currentMode: Mode
   export let bpms: Map<number, number>
 
+  // Components
+  import Note from '$lib/render/Note.svelte'
+
   // Stores
   import { pointer, cursor } from '$lib/position'
+  import { resizingLastWidth } from '$lib/editing/resizing'
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -72,10 +76,7 @@
       flickArrow.visible = false
     }
 
-    if (
-      currentMode === 'critical' || currentMode === 'flick' ||
-      currentMode === 'tap' || currentMode === 'slide' || currentMode === 'mid'
-    ) {
+    if (currentMode === 'mid') {
       floating.visible = true
     } else {
       floating.visible = false
@@ -133,3 +134,15 @@
     }
   }
 </script>
+
+{#if isMounted}
+  {#if currentMode === 'tap' || currentMode === 'slide' || currentMode === 'flick' || currentMode === 'critical'}
+    <Note
+      x={$position.calcMidX($cursor.lane, 2)}
+      y={$position.calcY($cursor.tick)}
+      width={$resizingLastWidth * 123 + 100}
+      type={currentMode}
+      alpha={0.5}
+    />
+  {/if}
+{/if}

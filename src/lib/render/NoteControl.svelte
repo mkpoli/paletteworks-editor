@@ -125,9 +125,9 @@
     middle.addListener('pointerdown', onmovestart)
     middle.addEventListener('click', (event: PIXI.FederatedPointerEvent) => {
       if (event.detail === 1) {
-      dispatch('click', { note })
+        dispatch('click', { note })
       } else if (event.detail === 2) {
-      dispatch('dblclick', { note })
+        dispatch('dblclick', { note })
       }
     })
     middle.addListener('rightclick', () => {

@@ -33,7 +33,7 @@
     PIXI = await import('pixi.js')
     graphics = new PIXI.Graphics()
     graphics.interactive = true
-    graphics.addListener('click', (event) => {
+    graphics.addEventListener('click', (event) => {
       if (event.detail === 1) {
         dispatch('click')
       } else if (event.detail === 2) {
