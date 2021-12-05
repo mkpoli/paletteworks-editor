@@ -7,6 +7,9 @@ export type MoveEvent = CustomEvent<{
 
 export const moving = writable<boolean>(false)
 export const movingNotes = writable<Note[]>([])
+export const movingTargets = writable(new Map<Note, {
+  lane: number, tick: number
+}>())
 export const movingOrigins = writable(new Map<Note, {
   lane: number, tick: number
 }>())

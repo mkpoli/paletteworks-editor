@@ -47,8 +47,9 @@
     app.stage.removeChild(graphics)
   })
 
-  $: graphics && $position && drawSlidePath(notes, moving)
-  export function drawSlidePath(slideNotes: SlideNote[], moving: boolean) {
+  $: graphics && $position && drawSlidePath(notes)
+  $: if (graphics) graphics.tint = moving ? COLORS.COLOR_MOVING_TINT : 0xFFFFFF
+  export function drawSlidePath(slideNotes: SlideNote[]) {
     graphics.clear()
     slideNotes
       .pairwise()
@@ -64,7 +65,6 @@
         const target_x_right = $position.calcX(target.lane) + target.width * LANE_WIDTH - SHRINK_WIDTH
         const target_y = $position.calcY(target.tick)
 
-        graphics.tint = moving ? COLORS.COLOR_MOVING_TINT : 0xFFFFFF
         graphics.beginFill(
           critical ? COLORS.COLOR_SLIDE_PATH_CRITICAL: COLORS.COLOR_SLIDE_PATH,
           floating ? COLORS.ALPHA_FLOATING : COLORS.ALPHA_SLIDE_PATH

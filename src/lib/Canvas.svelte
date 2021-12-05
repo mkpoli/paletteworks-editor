@@ -213,7 +213,7 @@
     }
   }
 
-  import { moving, movingNotes, movingOffsets, movingOrigins } from './editing/moving'
+  import { moving, movingNotes, movingOffsets, movingOrigins, movingTargets } from './editing/moving'
 
   import moveCursor from '$assets/move-cursor.png'
   import resizeCursor from '$assets/resize-cursor.png'
@@ -291,10 +291,7 @@
       }
 
       if ($moving) {
-        $movingNotes.forEach((note) => {
-          note.lane = $cursor.lane - $movingOffsets.get(note)!.lane
-          note.tick = $cursor.tick - $movingOffsets.get(note)!.tick
-        })
+        onmove()
       }
 
       if (draggingSlide !== null && currentMode === 'slide') {
@@ -461,6 +458,10 @@
 
   import type { MoveEvent } from '$lib/editing/moving'
 
+  $: if (!$moving) {
+    onmoveend()
+  }
+
   function onmovestart(origin: MoveEvent) {
     const { lane, tick, note } = origin.detail
     $moving = true
@@ -474,27 +475,32 @@
         lane: movingNote.lane,
         tick: movingNote.tick
       })
+      $movingTargets.set(movingNote, {
+        lane: movingNote.lane,
+        tick: movingNote.tick
+      })
     })
   }
 
-  $: if (!$moving) {
-    onmoveend()
+  function onmove() {
+    $movingTargets.forEach((target, note) => {
+      if (!$movingNotes.includes(note)) return
+      target.lane = $cursor.lane - $movingOffsets.get(note)!.lane
+      target.tick = $cursor.tick - $movingOffsets.get(note)!.tick
+    })
   }
 
   function onmoveend() {
-    const movingTargets = new Map($movingNotes.map((note) => 
-      [note, {
-        lane: note.lane,
-        tick: note.tick
-      }]
-    ))
-    if ($movingNotes.every((note) =>
-      note.lane === $movingOrigins.get(note)!.lane && note.tick === $movingOrigins.get(note)!.tick
-    )) return
+    if ($movingNotes.every((note) => {
+      const target = $movingTargets.get(note)!
+      const origin = $movingOrigins.get(note)!
+      return target.lane === origin.lane && target.tick === origin.tick
+    })) return
     dispatch('movenotes', {
-      movingTargets,
+      movingTargets: $movingTargets,
       movingOrigins: $movingOrigins,
     })
+    $movingNotes = []
   }
 </script>
 
