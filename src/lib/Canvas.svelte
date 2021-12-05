@@ -23,7 +23,7 @@
 
   // Constants
   import { createEventDispatcher, onMount, setContext, tick } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN } from '$lib/consts'
 
   // Functions
   import { snap } from '$lib/basic/math'
@@ -321,12 +321,14 @@
       isLongPress = false
 
       if (!$moving && !$resizing) {
+        const lane = Math.max(LANE_MIN, Math.floor($cursor.lane - 0.5 * $resizingLastWidth + 1))
+        const width = Math.min($resizingLastWidth, LANE_MAX - lane + 1)
         if (currentMode === 'tap') {
           dispatch('addsingle', { 
             note : {
-              lane: $cursor.lane,
+              lane,
               tick: $cursor.tick,
-              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
+              width,
               critical: false,
               flick: 'no'
             }
@@ -345,9 +347,9 @@
         if (!clickedOnNote && currentMode === 'flick') {
           dispatch('addsingle', { 
             note : {
-              lane: $cursor.lane,
+              lane,
               tick: $cursor.tick,
-              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
+              width,
               critical: false,
               flick: 'middle'
             }
@@ -358,9 +360,9 @@
         if (!clickedOnNote && currentMode === 'critical') {
           dispatch('addsingle', { 
             note : {
-              lane: $cursor.lane,
+              lane,
               tick: $cursor.tick,
-              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
+              width,
               critical: true,
               flick: 'no'
             }
