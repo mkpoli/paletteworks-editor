@@ -473,8 +473,8 @@
       return target.lane === origin.lane && target.tick === origin.tick
     })) return
     dispatch('movenotes', {
-      movingTargets: $movingTargets,
-      movingOrigins: $movingOrigins,
+      movingTargets: new Map($movingTargets),
+      movingOrigins: new Map($movingOrigins),
     })
     $movingNotes = []
   }
@@ -493,8 +493,8 @@
       return target.lane === origin.lane && target.width === origin.width
     })) return
     dispatch('resizenotes', {
-      resizingTargets: $resizingTargets,
-      resizingOrigins: $resizingOrigins,
+      resizingTargets: new Map($resizingTargets),
+      resizingOrigins: new Map($resizingOrigins),
     })
     $resizingNotes = []
     $resizingLastWidth = $resizingTargets.get($resizingOriginNote)!.width
