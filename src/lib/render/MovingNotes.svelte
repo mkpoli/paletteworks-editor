@@ -1,7 +1,6 @@
 <script lang="ts">
   // Score Components
-  import Note from '$lib/render/Note.svelte'
-  import Slide from '$lib/render/Slide.svelte'
+  import FloatingNotes from './FloatingNotes.svelte'
 
   import { movingNotes, movingTargets } from '$lib/editing/moving'
   import type { Single, Slide as SlideType } from '$lib/score/beatmap'
@@ -40,17 +39,8 @@
 </script>
 
 {#if moving}
-  {#each movingSingles as single}
-    <Note
-      note={single}
-      floating={true}
-    />
-  {/each}
-  {#each movingSlides as slide}
-    <Slide
-      slide={slide}
-      floating={true}
-      stepsVisible={false}
-    />
-  {/each}
+  <FloatingNotes
+    singles={movingSingles}
+    slides={movingSlides}
+  />
 {/if}

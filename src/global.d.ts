@@ -7,7 +7,7 @@ interface ImportMeta {
 }
 
 declare module '@pixi/events' {
-  type PointerEvents = 'pointerdown' | 'pointerup' | 'click'
+  type PointerEvents = 'pointerdown' | 'pointerup' | 'pointermove' | 'click'
   export interface FederatedEventTarget {
     addEventListener<T extends PointerEvents>(type: T, listener: (event:  FederatedPointerEvent) => void): void
   }

@@ -15,6 +15,7 @@
   export let slide: boolean = false
   export let floating: boolean = false
   export let moving: boolean = false
+  export let resizing: boolean = false
 
   $: ({ lane, tick, width } = note)
   let flick: Flick
@@ -59,7 +60,11 @@
 
   $: if (instance) {
     instance.tint = moving ? 0xb0b0b0 : 0xffffff
-  } 
+  }
+
+  $: if (instance) {
+    instance.alpha = floating ? 0.5 : (resizing ? 0.5 : 1)
+  }
 
   onDestroy(() => {
     app.stage.removeChild(instance)

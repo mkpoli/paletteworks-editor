@@ -17,7 +17,7 @@
   // Stores
   import { moving } from '$lib/editing/moving'
   import { cursor } from '$lib/position'
-  import { calcResized, resizing, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
+  import { calcResized, resizing, resizingNotes, resizingOffsets, resizingOrigins, resizingTargets, resizingOriginNote } from '$lib/editing/resizing'
   import { selectedNotes } from '$lib/editing/selection'
 
   // Contexts
@@ -47,22 +47,26 @@
   function onresizestart(right: boolean) {
     return () => {
       $resizing = true
+      $resizingOriginNote = note
       $resizingNotes = $selectedNotes.length && $selectedNotes.includes(note) ? $selectedNotes : [note]
       $resizingNotes.forEach((note) => {
         const reference = right ? note.lane : note.lane + note.width
         const mutating = right ? note.lane + note.width : note.lane
         const offset = $cursor.laneSide - mutating
         $resizingOffsets.set(note, { reference, mutating, offset })
+        $resizingOrigins.set(note, { lane: note.lane, width: note.width })
+        $resizingTargets.set(note, { lane: note.lane, width: note.width })
       })
     }
   }
 
   function onresizing() {
     if ($resizing && $resizingNotes.includes(note)) {
-      const { reference, offset } = $resizingOffsets.get(note)!
-      if ($cursor.laneSide - offset === reference) return
-      [note.lane, note.width] = calcResized(reference, $cursor.laneSide - offset)
-      note = note
+      const { reference, mutating, offset } = $resizingOffsets.get(note)!
+      // if ($cursor.laneSide - offset === reference) return
+      const [ lane, width ] = calcResized(reference, $cursor.laneSide - offset)
+      console.log({ reference, offset, lane, width, LmO: $cursor.laneSide - offset })
+      $resizingTargets.set(note, { lane, width })
     }
   }
 
@@ -71,7 +75,6 @@
     controlL.zIndex = 5
     controlL.interactive = true
     controlL.addListener('pointerdown', onresizestart(false))
-    controlL.addListener('pointermove', onresizing)
     controlL.cursor = 'ew-resize'
     app.stage.addChild(controlL)
 
@@ -80,9 +83,11 @@
     controlR.cursor = 'ew-resize'
     controlR.interactive = true
     controlR.addListener('pointerdown', onresizestart(true))
-    controlR.addListener('pointermove', onresizing)
     controlR.cursor = 'ew-resize'
     app.stage.addChild(controlR)
+
+    app.renderer.view.addEventListener('pointermove', onresizing)
+
 
     graphics = new PIXI.Graphics()
     graphics.zIndex = 4

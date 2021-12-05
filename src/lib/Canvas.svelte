@@ -43,6 +43,7 @@
   import Fever from '$lib/render/Fever.svelte'
   import Skill from '$lib/render/Skill.svelte'
   import MovingNotes from '$lib/render/MovingNotes.svelte'
+  import ResizingNotes from '$lib/render/ResizingNotes.svelte'
 
   // UI Components
   import Menu from '$lib/ui/Menu.svelte'
@@ -184,12 +185,22 @@
     scroll: number,
     movenotes: {
       movingTargets: Map<NoteType, {
-        lane: number;
-        tick: number;
+        lane: number
+        tick: number
       }>,
       movingOrigins: Map<NoteType, {
-        lane: number;
-        tick: number;
+        lane: number
+        tick: number
+      }>
+    }
+    resizenotes: {
+      resizingTargets: Map<NoteType, {
+        lane: number
+        width: number
+      }>,
+      resizingOrigins: Map<NoteType, {
+        lane: number
+        width: number
       }>
     }
   }
@@ -213,15 +224,11 @@
     }
   }
 
-  import { moving, movingNotes, movingOffsets, movingOrigins, movingTargets } from './editing/moving'
-
   import moveCursor from '$assets/move-cursor.png'
   import resizeCursor from '$assets/resize-cursor.png'
   import selectCursor from '$assets/select-cursor.png'
 
   import { clipboardSingles, clipboardSlides } from './editing/clipboard'
-  import { resizing, resizingLastWidth } from './editing/resizing'
-
   let clickTimer: number | undefined
   let isLongPress = false
 
@@ -237,13 +244,13 @@
     app.stage.sortableChildren = true
 
     app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
+      app.renderer.view.setPointerCapture(event.pointerId)
       clickTimer = window.setTimeout(() => {
         isLongPress = true
       }, 150)
       clickedOnNote = false
       if (event.button === 2) return
       if ($moving || $resizing || $playheadDragging) return
-      app.renderer.view.setPointerCapture(event.pointerId)
       switch (currentMode) {
         case 'select': {
           dragging = true
@@ -307,6 +314,8 @@
     }
 
     app.renderer.view.addEventListener('pointerup', (event: PointerEvent) => {
+      app.renderer.view.releasePointerCapture(event.pointerId)
+
       clearTimeout(clickTimer)
       isLongPress = false
 
@@ -377,8 +386,6 @@
       if ($resizing) {
         $resizing = false
       }
-
-      app.renderer.view.releasePointerCapture(event.pointerId)
 
       if (dragging && currentMode === 'select') {
         $selectedNotes = $selectedNotes.concat(calcSelection())
@@ -456,6 +463,8 @@
 
   let clickedOnNote: boolean = false
 
+  // Moving
+  import { moving, movingNotes, movingOffsets, movingOrigins, movingTargets } from '$lib/editing/moving'
   import type { MoveEvent } from '$lib/editing/moving'
 
   $: if (!$moving) {
@@ -501,6 +510,27 @@
       movingOrigins: $movingOrigins,
     })
     $movingNotes = []
+  }
+
+  // Resizing
+  import { resizing, resizingNotes, resizingLastWidth, resizingTargets, resizingOrigins, resizingOriginNote } from '$lib/editing/resizing'
+
+  $: if (!$resizing) {
+    onresizeend()
+  }
+
+  function onresizeend() {
+    if ($resizingNotes.every((note) => {
+      const target = $resizingTargets.get(note)!
+      const origin = $resizingOrigins.get(note)!
+      return target.lane === origin.lane && target.width === origin.width
+    })) return
+    dispatch('resizenotes', {
+      resizingTargets: $resizingTargets,
+      resizingOrigins: $resizingOrigins,
+    })
+    $resizingNotes = []
+    $resizingLastWidth = $resizingTargets.get($resizingOriginNote)!.width
   }
 </script>
 
@@ -562,6 +592,7 @@
           on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
           moving={isLongPress && $moving && $movingNotes.includes(note)}
+          resizing={isLongPress && $resizing && $resizingNotes.includes(note)}
         />
       {/if}
     {/each}
@@ -728,6 +759,7 @@
     />
     
     <MovingNotes {singles} {slides} moving={isLongPress && $moving} />
+    <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
   </div>
   <div class="zoom-indicator-container">
     <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP}/>

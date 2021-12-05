@@ -414,28 +414,6 @@
     playSound('stage')
   }
 
-  import { calcResized, resizing, resizingLastWidth, resizingNotes, resizingOffsets } from '$lib/editing/resizing'
-  resizing.subscribe((value) => {
-    if (!$resizingNotes.length) return
-    if (!value) {
-      const modifications = new Map($resizingNotes.map((note) => {
-        const { reference, offset } = $resizingOffsets.get(note)!
-        const [ lane, width ] = calcResized(reference, $cursor.laneSide - offset)
-        return [note, { lane, width }]
-      }))
-
-      const originalDatas = new Map($resizingNotes.map((note) => {
-        const { reference, mutating } = $resizingOffsets.get(note)!
-        const [ lane, width ] = calcResized(reference, mutating)
-        return [note, { lane, width }]
-      }))
-
-      $resizingLastWidth = modifications.get($resizingNotes[0])!.width
-
-      exec(new BatchUpdate(singles, slides, modifications, originalDatas, 'リサイズ'))
-    }
-  })
-
   function onchangecurve({ detail: { note, type } }: CustomEvent<{ note: NoteType | null, type?: EaseType}>) {
     let notes = ($selectedNotes.length ? $selectedNotes : (note ? [note] : [])).filter(hasEaseType)
     let nextType = type ?? EASE_TYPES.rotateNext((note && hasEaseType(note) ? note.easeType : undefined) ?? notes[0].easeType)
@@ -763,6 +741,9 @@
       on:paste={onpaste}
       on:movenotes={({ detail: { movingTargets, movingOrigins }}) => {
         exec(new BatchUpdate(singles, slides, movingTargets, movingOrigins, '移動'))
+      }}
+      on:resizenotes={({ detail: { resizingTargets, resizingOrigins }}) => {
+        exec(new BatchUpdate(singles, slides, resizingTargets, resizingOrigins, 'リサイズ'))
       }}
       on:changecurve={onchangecurve}
       on:changediamond={onchangediamond}
