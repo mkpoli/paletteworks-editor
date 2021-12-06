@@ -146,10 +146,10 @@
       const slideEvents = slides
         .filter(({ tail: { tick } }) => tick >= currentTick)
         .reduce((acc, { critical, head, tail, steps }) => {
-          const startEvent = head.tick >= currentTick
+          const headEvent = head.tick >= currentTick
             ? {
                 time: tick2secs(head.tick - currentTick, TICK_PER_BEAT, currentBPM),
-                sound: !critical ? 'tick' : 'tickCritical'
+                sound: 'tapPerfect'
               }
             : null
   
@@ -160,12 +160,12 @@
               loopTo: tick2secs(tail.tick - currentTick, TICK_PER_BEAT, currentBPM)
             }
     
-          const endEvent = 
+          const tailEvent = 
             {
               time: tick2secs(tail.tick - currentTick, TICK_PER_BEAT, currentBPM),
               sound: tail.flick !== 'no'
                   ? (critical || tail.critical ? 'flickCritical' : 'flick')
-                  : (critical || tail.critical ? 'tapCritical' : 'tapPerfect' ) 
+                  : 'tapPerfect'
             }
   
           const stepEvents = steps
@@ -180,7 +180,7 @@
               return a
             }, [] as AudioEvent[])
   
-          return [...acc, connectEvent, startEvent, endEvent, ...stepEvents]
+          return [...acc, connectEvent, headEvent, tailEvent, ...stepEvents]
             .filter(x => x !== null) as Array<AudioEvent>
         }, [] as AudioEvent[])
   
