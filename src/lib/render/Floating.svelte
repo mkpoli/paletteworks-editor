@@ -15,6 +15,7 @@
     TEXT_MARGIN,
     MARGIN,
     LANE_MAX,
+    NOTE_HEIGHT,
   } from '$lib/consts'
   import { MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
   import { drawDashedLine } from './renderer'
@@ -26,6 +27,7 @@
 
   // Components
   import Note from '$lib/render/Note.svelte'
+  import Arrow from '$lib/render//Arrow.svelte'
 
   // Stores
   import { pointer, cursor } from '$lib/position'
@@ -135,14 +137,28 @@
       return
     }
   }
+
+  $: x = $position.calcMidX(hoveringNote ? hoveringNote.lane : $cursor.lane, (hoveringNote ? hoveringNote.width : $resizingLastWidth))
+  $: y = $position.calcY(hoveringNote ? hoveringNote.tick : $cursor.tick)
+  $: width = (hoveringNote ? hoveringNote.width : $resizingLastWidth)
 </script>
 
 {#if isMounted}
   {#if currentMode === 'tap' || currentMode === 'slide' || currentMode === 'flick' || currentMode === 'critical'}
+    {#if currentMode === 'flick'}
+      <Arrow
+        x={x}
+        y={y - NOTE_HEIGHT + 15}
+        {width}
+        critical={false}
+        flick="middle"
+        alpha={0.5}
+      />
+    {/if}
     <Note
-      x={$position.calcMidX(hoveringNote ? hoveringNote.lane : $cursor.lane, (hoveringNote ? hoveringNote.width : $resizingLastWidth))}
-      y={$position.calcY(hoveringNote ? hoveringNote.tick : $cursor.tick)}
-      width={(hoveringNote ? hoveringNote.width : $resizingLastWidth) * 123 + 100}
+      x={x}
+      y={y}
+      width={width * 123 + 100}
       type={currentMode}
       alpha={0.5}
     />

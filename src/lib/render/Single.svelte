@@ -47,18 +47,23 @@
       width * LANE_WIDTH, 0.5 * NOTE_HEIGHT
     )
 
+  $: x = $position.calcMidX(lane, width)
+  $: y = $position.calcY(tick)
 </script>
 
 <!-- FLICK ARROW -->
 {#if flick !== 'no'}
   <Arrow
-    {...{ lane, tick, width, critical: realCritical, flick }}
+    x={x}
+    y={y - NOTE_HEIGHT + 15}
+    {width}
+    critical={realCritical}
+    {flick}
   />
 {/if}
 
 <Note
-  x={$position.calcMidX(lane, width)}
-  y={$position.calcY(tick)}
+  {x} {y}
   width={width * 123 + 100}
   type={type}
   alpha={resizing || floating ? 0.5 : 1}

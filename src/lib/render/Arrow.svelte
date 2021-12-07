@@ -1,6 +1,6 @@
 <script lang="ts">
   // Constants
-  import { NOTE_HEIGHT } from '$lib/consts';
+  import { NOTE_HEIGHT } from '$lib/consts'
 
   // Types
   import type PIXI from 'pixi.js'
@@ -16,13 +16,11 @@
 
   // Props
   export let critical: boolean
-  export let lane: number
-  export let tick: number
+  export let x: number
+  export let y: number
   export let width: number
   export let flick: Flick
-
-  // Stores
-  import { position } from '$lib/position'
+  export let alpha: number = 1
 
   let sprite: PIXI.Sprite
 
@@ -40,8 +38,9 @@
   })
   
   $: if (sprite) {
-    sprite.x = $position.calcMidX(lane, width)
-    sprite.y = $position.calcY(tick) - NOTE_HEIGHT + 15
+    sprite.x = x
+    sprite.y = y
+    sprite.alpha = alpha
   }
 
   $: if (sprite) {
