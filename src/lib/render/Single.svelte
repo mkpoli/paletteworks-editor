@@ -8,7 +8,6 @@
   import type { Flick, Note as NoteType, Type } from '$lib/score/beatmap'
 
   // Components
-  import Arrow from '$lib/render/Arrow.svelte'
   import Note from '$lib/render/Note.svelte'
   import NoteControl from '$lib/render/NoteControl.svelte'
 
@@ -24,18 +23,6 @@
   $: flick = 'flick' in note ? note.flick : 'no'
   $: realCritical = critical || ('critical' in note && note.critical) // critical ==
 
-  $: type = calcType(realCritical, flick, slide)
-
-  function calcType(critical: boolean, flick: Flick, slide: boolean): Type {
-    return critical
-            ? 'critical'
-            : flick !== 'no'
-              ? 'flick'
-              : slide
-                ? 'slide'
-                : 'tap'
-  }
-
   // Contexts
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
 
@@ -46,26 +33,15 @@
       $position.calcX(lane), $position.calcY(tick) - 0.5 * 0.5 * NOTE_HEIGHT,
       width * LANE_WIDTH, 0.5 * NOTE_HEIGHT
     )
-
-  $: x = $position.calcMidX(lane, width)
-  $: y = $position.calcY(tick)
 </script>
 
-<!-- FLICK ARROW -->
-{#if flick !== 'no'}
-  <Arrow
-    x={x}
-    y={y - NOTE_HEIGHT + 15}
-    {width}
-    critical={realCritical}
-    {flick}
-  />
-{/if}
-
 <Note
-  {x} {y}
-  width={width * 123 + 100}
-  type={type}
+  {lane}
+  {tick}
+  {width}
+  {flick}
+  critical={realCritical}
+  {slide}
   alpha={resizing || floating ? 0.5 : 1}
   tint={moving ? 0xb0b0b0 : 0xffffff}
 />

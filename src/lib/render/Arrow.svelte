@@ -19,6 +19,7 @@
   export let flick: Flick
   export let alpha: number = 1
   export let zIndex: number = 3
+
   let sprite: PIXI.Sprite
 
   onMount(() => {
@@ -34,16 +35,12 @@
     app.stage.removeChild(sprite)
   })
   
-  $: if (sprite) {
-    sprite.x = x
-    sprite.y = y
-    sprite.alpha = alpha
-  }
-
-  $: if (sprite) {
-    sprite.texture = TEXTURES[
+  $: if (sprite) sprite.alpha = alpha
+  $: if (sprite) sprite.x = x
+  $: if (sprite) sprite.y = y
+  $: if (sprite) sprite.visible = flick !== 'no'
+  $: if (sprite) sprite.texture = TEXTURES[
       `notes_flick_arrow${ critical ? '_crtcl' : ''}_0${ Math.min(width, 6) }${(flick === 'left' || flick === 'right') ? '_diagonal': ''}.png`
     ]
-    sprite.scale.x = 0.25 * (flick === 'left' ? 1 : -1)
-  }
+  $: if (sprite) sprite.scale.x = 0.25 * (flick === 'left' ? 1 : -1)
 </script>

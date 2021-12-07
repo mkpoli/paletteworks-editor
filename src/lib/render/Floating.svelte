@@ -14,8 +14,6 @@
     LANE_AREA_WIDTH,
     TEXT_MARGIN,
     MARGIN,
-    LANE_MAX,
-    NOTE_HEIGHT,
   } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
@@ -28,7 +26,6 @@
 
   // Components
   import Note from '$lib/render/Note.svelte'
-  import Arrow from '$lib/render//Arrow.svelte'
 
   // Stores
   import { pointer, cursor } from '$lib/position'
@@ -46,7 +43,6 @@
   let graphics: PIXI.Graphics
   let container: PIXI.Container
   let floating: PIXI.Sprite
-  let flickArrow: PIXI.Sprite
 
   let isMounted: boolean = false
   onMount(() => {
@@ -65,24 +61,12 @@
     floating.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
     container.addChild(floating)
 
-    flickArrow = new PIXI.Sprite(TEXTURES['notes_flick_arrow_02.png'])
-    flickArrow.anchor.set(0.5, 0.5)
-    flickArrow.scale.set(0.25, 0.25)
-    flickArrow.y = -40
-    container.addChild(flickArrow)
-
     isMounted = true
   })
 
   // Update floating texture & visibility
   $: if (isMounted) {
     floating.texture = TEXTURES[MODE_FLOATING_TEXTURES[currentMode]]
-
-    if (currentMode === 'flick') {
-      flickArrow.visible = true
-    } else {
-      flickArrow.visible = false
-    }
 
     if (currentMode === 'mid') {
       floating.visible = true
@@ -94,18 +78,6 @@
   // Update floating position
   $: if (isMounted && $pointer && floating.visible) {
     switch (currentMode) {
-      case 'tap':
-      case 'slide':
-        if ($cursor.lane > LANE_MAX - 1) {
-          floating.scale.x = 0.125
-          container.setTransform($position.calcMidX($cursor.lane, 1), $position.calcY($cursor.tick))
-        } else {
-          floating.scale.x = 0.25
-          container.setTransform($position.calcMidX($cursor.lane, 2), $position.calcY($cursor.tick))
-        }
-        break
-      case 'critical':
-      case 'flick':
       case 'mid':
         container.setTransform($pointer.x, $pointer.y + app.stage.pivot.y)
         break
@@ -142,39 +114,25 @@
     }
   }
 
-  $: x = $position.calcMidX(hoveringNote ? hoveringNote.lane : $cursor.lane, (hoveringNote ? hoveringNote.width : $resizingLastWidth))
-  $: y = $position.calcY(hoveringNote ? hoveringNote.tick : $cursor.tick)
-  $: width = (hoveringNote ? hoveringNote.width : $resizingLastWidth)
+  $: lane = hoveringNote ? hoveringNote.lane : $cursor.lane
+  $: width = hoveringNote ? hoveringNote.width : $resizingLastWidth
+  $: tick = hoveringNote ? hoveringNote.tick : $cursor.tick
+
+  $: hoveringNoteFlick = hoveringNote && hasFlick(hoveringNote) ? hoveringNote.flick : 'no'
+  $: flick = currentMode === 'flick'
+          ? FLICK_TYPES.rotateNext(hoveringNoteFlick)
+          : hoveringNoteFlick
 </script>
 
 {#if isMounted}
   {#if currentMode === 'tap' || currentMode === 'slide' || currentMode === 'flick' || currentMode === 'critical'}
-    {#if currentMode === 'flick'}
-      <Arrow
-        x={x}
-        y={y - NOTE_HEIGHT + 15}
-        {width}
-        critical={false}
-        flick={FLICK_TYPES.rotateNext(hoveringNote && hasFlick(hoveringNote) ? hoveringNote.flick : 'no')}
-        alpha={0.5}
-        zIndex={4}
-      />
-      {:else if currentMode === 'critical' && hoveringNote && 'flick' in hoveringNote && hoveringNote.flick !== 'no'}
-        <Arrow
-          x={x}
-          y={y - NOTE_HEIGHT + 15}
-          {width}
-          critical={true}
-          flick={hoveringNote.flick}
-          alpha={0.5}
-          zIndex={4}
-        />
-    {/if}
     <Note
-      x={x}
-      y={y}
-      width={width * 123 + 100}
-      type={currentMode}
+      {lane}
+      {width}
+      {tick}
+      {flick}
+      slide={currentMode === 'slide'}
+      critical={currentMode === 'critical'}
       alpha={0.5}
       zIndex={2}
     />

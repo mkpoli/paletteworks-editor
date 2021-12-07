@@ -1,17 +1,22 @@
 <script lang="ts">
   import { NOTE_HEIGHT } from '$lib/consts'
   import { getContext, onDestroy, onMount } from "svelte"
+  import { position } from '$lib/position'
 
   import type PIXI from 'pixi.js'
-  import type { Type } from '$lib/score/beatmap'
+  import type { Flick, Type } from '$lib/score/beatmap'
 
-  export let x: number
-  export let y: number
+  export let tick: number
+  export let lane: number
   export let width: number
-  export let type: Type
+  export let critical: boolean
+  export let flick: Flick
+  export let slide: boolean
   export let alpha: number = 1
   export let tint: number = 0xFFFFFF
   export let zIndex: number = 1
+
+  import Arrow from '$lib/render/Arrow.svelte'
 
   const NOTE_TEXTURE: Record<Type, string> = {
     tap: 'noteN.png',
@@ -46,14 +51,38 @@
   onDestroy(() => {
     app.stage.removeChild(instance)
   })
+  
+  $: x = $position.calcMidX(lane, width)
+  $: y = $position.calcY(tick)
+  $: rawWidth = width * 123 + 100
+  $: type = calcType(critical, flick, slide)
 
-  $: if (instance) {
-    instance.tint = tint
-    instance.alpha = alpha
-    instance.texture = TEXTURES[NOTE_TEXTURE[type]]
-    instance.x = x
-    instance.y = y
-    instance.width = width
-    instance.pivot.x = width * 0.5
+  function calcType(critical: boolean, flick: Flick, slide: boolean): Type {
+    return critical
+            ? 'critical'
+            : flick !== 'no'
+              ? 'flick'
+              : slide
+                ? 'slide'
+                : 'tap'
   }
+
+  $: if (instance) instance.x = x
+  $: if (instance) instance.y = y
+  $: if (instance) instance.width = rawWidth
+  $: if (instance) instance.pivot.x = rawWidth * 0.5
+  $: if (instance) instance.texture = TEXTURES[NOTE_TEXTURE[type]]
+  $: if (instance) instance.alpha = alpha
+  $: if (instance) instance.tint = tint
 </script>
+
+<!-- FLICK ARROW -->
+<Arrow
+  x={x}
+  y={y - NOTE_HEIGHT + 15}
+  {width}
+  critical={type === 'critical'}
+  {flick}
+  {alpha}
+  {zIndex}
+/>
