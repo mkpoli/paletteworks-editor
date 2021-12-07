@@ -495,6 +495,8 @@
     onresizeend()
   }
 
+  let hoveringNote: NoteType | null = null
+
   function onresizeend() {
     if ($resizingNotes.every((note) => {
       const target = $resizingTargets.get(note)!
@@ -566,6 +568,8 @@
           }}
           on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
+          on:pointerenter={() => { hoveringNote = note }}
+          on:pointerleave={() => { hoveringNote = null }}
           moving={isLongPress && $moving && $movingNotes.includes(note)}
           resizing={isLongPress && $resizing && $resizingNotes.includes(note)}
         />
@@ -709,6 +713,8 @@
           }}
           on:rightclick={(event) => { currentNote = event.detail.note }}
           on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
+          on:pointerenter={({ detail: { note } }) => { hoveringNote = note}}
+          on:pointerleave={() => { hoveringNote = null}}
         />
       {/each}
     {/if}
@@ -717,6 +723,7 @@
     <Floating
       {bpms}
       {currentMode}
+      {hoveringNote}
     />
 
     <!-- STACKED AREAS -->

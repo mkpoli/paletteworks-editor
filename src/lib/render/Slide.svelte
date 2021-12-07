@@ -15,6 +15,8 @@
     dblclick: { note: NoteType },
     tailclick: { note: SlideTail },
     headclick: { note: SlideHead },
+    pointerenter: { note: NoteType },
+    pointerleave: void,
   }>()
 
   // Props
@@ -50,6 +52,8 @@
   on:click={() => { dispatch('headclick', { note: head }) }}
   on:rightclick
   on:dblclick
+  on:pointerenter={() => { dispatch('pointerenter', { note: head })}}
+  on:pointerleave={() => { dispatch('pointerleave') }}
 />
 
 <!-- SLIDE STEPS -->
@@ -72,4 +76,6 @@
   {moving}
   on:click={() => { dispatch('tailclick', { note: tail }) }}
   on:dblclick
+  on:pointerenter={() => { dispatch('pointerenter', { note: tail })}}
+  on:pointerleave={() => { dispatch('pointerleave') }}
 />

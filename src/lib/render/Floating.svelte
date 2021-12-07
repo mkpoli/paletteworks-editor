@@ -6,6 +6,7 @@
   // Types
   import type PIXI from 'pixi.js' 
   import type { Mode } from '$lib/editing/modes'
+  import type { Note as NoteType } from '$lib/score/beatmap'
 
   // Consts
   import COLORS from '$lib/colors'
@@ -16,11 +17,12 @@
     LANE_MAX,
   } from '$lib/consts'
   import { MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
-  import { drawDashedLine } from './renderer';
+  import { drawDashedLine } from './renderer'
 
   // Props
   export let currentMode: Mode
   export let bpms: Map<number, number>
+  export let hoveringNote: NoteType | null
 
   // Components
   import Note from '$lib/render/Note.svelte'
@@ -138,9 +140,9 @@
 {#if isMounted}
   {#if currentMode === 'tap' || currentMode === 'slide' || currentMode === 'flick' || currentMode === 'critical'}
     <Note
-      x={$position.calcMidX($cursor.lane, 2)}
-      y={$position.calcY($cursor.tick)}
-      width={$resizingLastWidth * 123 + 100}
+      x={$position.calcMidX(hoveringNote ? hoveringNote.lane : $cursor.lane, (hoveringNote ? hoveringNote.width : $resizingLastWidth))}
+      y={$position.calcY(hoveringNote ? hoveringNote.tick : $cursor.tick)}
+      width={(hoveringNote ? hoveringNote.width : $resizingLastWidth) * 123 + 100}
       type={currentMode}
       alpha={0.5}
     />

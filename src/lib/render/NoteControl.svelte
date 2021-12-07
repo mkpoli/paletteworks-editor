@@ -28,7 +28,9 @@
   const dispatch = createEventDispatcher<{
     click: { note: Note },
     rightclick: { note: Note },
-    dblclick: { note: Note }
+    dblclick: { note: Note },
+    pointerenter: void,
+    pointerleave: void,
   }>()
 
   // Variables
@@ -133,6 +135,12 @@
       } else if (event.button === 2) {
         dispatch('rightclick', { note })
       }
+    })
+    middle.addEventListener('pointerenter', () => {
+      dispatch('pointerenter')
+    })
+    middle.addEventListener('pointerleave', () => {
+      dispatch('pointerleave')
     })
     app.stage.addChild(middle)
 

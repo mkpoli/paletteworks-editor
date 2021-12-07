@@ -69,6 +69,8 @@
   on:click
   on:rightclick
   on:dblclick
+  on:pointerenter
+  on:pointerleave
   draw={$selectedNotes.includes(note)}
   rect={currentRect}
   bind:note
