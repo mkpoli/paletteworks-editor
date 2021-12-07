@@ -149,7 +149,7 @@
 
 {#if isMounted}
   {#if currentMode === 'tap' || currentMode === 'slide' || currentMode === 'flick' || currentMode === 'critical'}
-    {#if currentMode === 'flick' || (currentMode === 'critical' && hoveringNote && 'flick' in hoveringNote && hoveringNote.flick !== 'no')}
+    {#if currentMode === 'flick'}
       <Arrow
         x={x}
         y={y - NOTE_HEIGHT + 15}
@@ -159,6 +159,16 @@
         alpha={0.5}
         zIndex={4}
       />
+      {:else if currentMode === 'critical' && hoveringNote && 'flick' in hoveringNote && hoveringNote.flick !== 'no'}
+        <Arrow
+          x={x}
+          y={y - NOTE_HEIGHT + 15}
+          {width}
+          critical={true}
+          flick={hoveringNote.flick}
+          alpha={0.5}
+          zIndex={4}
+        />
     {/if}
     <Note
       x={x}
