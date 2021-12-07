@@ -1,6 +1,6 @@
 <script lang="ts">
   import { NOTE_HEIGHT } from '$lib/consts'
-  import { getContext, onMount } from "svelte"
+  import { getContext, onDestroy, onMount } from "svelte"
 
   import type PIXI from 'pixi.js'
 
@@ -28,7 +28,7 @@
   // Variables
   let instance: PIXI.NineSlicePlane
 
-  onMount(async () => {
+  onMount(() => {
     const texture = TEXTURES[NOTE_TEXTURE[type]]
     instance = new PIXI.NineSlicePlane(
       texture,
@@ -41,10 +41,10 @@
     instance.zIndex = 1
     instance.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
     app.stage.addChild(instance)
+  })
 
-    return () => {
-      app.stage.removeChild(instance)
-    }
+  onDestroy(() => {
+    app.stage.removeChild(instance)
   })
 
   $: if (instance) {
