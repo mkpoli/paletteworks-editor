@@ -28,12 +28,13 @@
   })
 
   $: if (graphics && $fontLoaded) {
-    drawBackground($position, maxMeasure)
+    drawBackground($position, maxMeasure, snapTo)
   }
 
   function drawBackground(
     position: PositionManager,
     maxMeasure: number,
+    snapTo: number
   ) {
     const innerHeight = position.containerHeight
     graphics.removeChildren()
