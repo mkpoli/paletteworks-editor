@@ -415,7 +415,7 @@
 
     app.renderer.view.addEventListener('click', async () => {
       if (!clickedOnNote) {
-        dispatch('goto', { tick: $cursor.rawTick })
+        dispatch('goto', { tick: snap($cursor.rawTick, TICK_PER_MEASURE / snapTo) })
       }
     })
 
