@@ -3,8 +3,7 @@
   import { getContext, onDestroy, onMount } from "svelte"
 
   import type PIXI from 'pixi.js'
-
-  type Type = 'tap' | 'critical' | 'flick' | 'slide'
+  import type { Type } from '$lib/score/beatmap'
 
   export let x: number
   export let y: number

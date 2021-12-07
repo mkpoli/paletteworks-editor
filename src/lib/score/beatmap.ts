@@ -85,4 +85,7 @@ export type Beatmap = {
   metadata: Metadata
   score: Score
 }
+
+export type Type = 'tap' | 'critical' | 'flick' | 'slide'
+
 export type Note = Single | SlideNote
