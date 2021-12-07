@@ -1,7 +1,4 @@
 <script lang="ts">
-  // Constants
-  import { NOTE_HEIGHT } from '$lib/consts'
-
   // Types
   import type PIXI from 'pixi.js'
   import type { Flick } from "$lib/score/beatmap"
@@ -21,7 +18,7 @@
   export let width: number
   export let flick: Flick
   export let alpha: number = 1
-
+  export let zIndex: number = 3
   let sprite: PIXI.Sprite
 
   onMount(() => {
@@ -29,7 +26,7 @@
     sprite.anchor.x = 0.5
     sprite.anchor.y = 0.5
     sprite.scale.y = 0.25
-    sprite.zIndex = 3
+    sprite.zIndex = zIndex
     app.stage.addChild(sprite)
   })
 

@@ -11,6 +11,7 @@
   export let type: Type
   export let alpha: number = 1
   export let tint: number = 0xFFFFFF
+  export let zIndex: number = 1
 
   const NOTE_TEXTURE: Record<Type, string> = {
     tap: 'noteN.png',
@@ -37,7 +38,7 @@
     instance.pivot.y = NOTE_HEIGHT * 0.5
     instance.scale.x = 0.25
     instance.scale.y = 1
-    instance.zIndex = 1
+    instance.zIndex = zIndex
     instance.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
     app.stage.addChild(instance)
   })

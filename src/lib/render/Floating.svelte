@@ -17,6 +17,7 @@
     LANE_MAX,
     NOTE_HEIGHT,
   } from '$lib/consts'
+  import { FLICK_TYPES } from '$lib/score/beatmap'
   import { MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
   import { drawDashedLine } from './renderer'
 
@@ -32,6 +33,9 @@
   // Stores
   import { pointer, cursor } from '$lib/position'
   import { resizingLastWidth } from '$lib/editing/resizing'
+
+  // Functions
+  import { hasFlick } from '$lib/score/beatmap'
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -145,14 +149,15 @@
 
 {#if isMounted}
   {#if currentMode === 'tap' || currentMode === 'slide' || currentMode === 'flick' || currentMode === 'critical'}
-    {#if currentMode === 'flick'}
+    {#if currentMode === 'flick' || (currentMode === 'critical' && hoveringNote && 'flick' in hoveringNote && hoveringNote.flick !== 'no')}
       <Arrow
         x={x}
         y={y - NOTE_HEIGHT + 15}
         {width}
         critical={false}
-        flick="middle"
+        flick={FLICK_TYPES.rotateNext(hoveringNote && hasFlick(hoveringNote) ? hoveringNote.flick : 'no')}
         alpha={0.5}
+        zIndex={4}
       />
     {/if}
     <Note
@@ -161,6 +166,7 @@
       width={width * 123 + 100}
       type={currentMode}
       alpha={0.5}
+      zIndex={2}
     />
   {/if}
 {/if}

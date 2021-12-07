@@ -124,23 +124,24 @@
     middle.zIndex = 5
     middle.interactive = true
     middle.cursor = 'move'
-    middle.addListener('pointerdown', onmovestart)
-    middle.addEventListener('click', (event: PIXI.FederatedPointerEvent) => {
-      if (event.button === 0) {
-        if (event.detail === 1) {
-          dispatch('click', { note })
-        } else if (event.detail === 2) {
-          dispatch('dblclick', { note })
-        }
-      } else if (event.button === 2) {
-        dispatch('rightclick', { note })
-      }
-    })
+    middle.addEventListener('pointerdown', onmovestart)
     middle.addEventListener('pointerenter', () => {
       dispatch('pointerenter')
     })
     middle.addEventListener('pointerleave', () => {
       dispatch('pointerleave')
+    })
+    middle.addEventListener('click', (event: PIXI.FederatedPointerEvent) => {
+      if (event.button === 0) {
+        if (event.detail === 1) {
+          dispatch('click', { note })
+        } else if (event.detail === 2) {
+          dispatch('click', { note })
+          dispatch('dblclick', { note })
+        }
+      } else if (event.button === 2) {
+        dispatch('rightclick', { note })
+      }
     })
     app.stage.addChild(middle)
 
