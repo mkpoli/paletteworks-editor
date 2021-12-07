@@ -18,13 +18,12 @@
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
 
   // Variables
-  let PIXI: typeof import('pixi.js')
   let graphics: PIXI.Graphics
 
   onMount(async () => {
-    PIXI = await import('pixi.js')
     graphics = new PIXI.Graphics()
     graphics.zIndex = -1
     graphics.interactive = true

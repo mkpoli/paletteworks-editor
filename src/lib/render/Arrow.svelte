@@ -11,6 +11,8 @@
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
+  const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
 
   // Props
   export let critical: boolean
@@ -22,13 +24,9 @@
   // Stores
   import { position } from '$lib/position'
 
-  const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
-
   let sprite: PIXI.Sprite
 
-  let PIXI: typeof import('pixi.js')
-  onMount(async () => {
-    PIXI = await import('pixi.js')
+  onMount(() => {
     sprite = new PIXI.Sprite()
     sprite.anchor.x = 0.5
     sprite.anchor.y = 0.5
@@ -36,6 +34,7 @@
     sprite.zIndex = 3
     app.stage.addChild(sprite)
   })
+
   onDestroy(() => {
     app.stage.removeChild(sprite)
   })

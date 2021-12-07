@@ -3,7 +3,7 @@
 
   // Functions
   import { position, PositionManager } from '$lib/position'
-  import { getContext, onMount } from 'svelte'
+  import { getContext, onDestroy, onMount } from 'svelte'
 
   // Types
   import type PIXI from 'pixi.js'
@@ -15,31 +15,28 @@
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
 
   // Variables
-  let PIXI: typeof import('pixi.js')
   let graphics: PIXI.Graphics
+  let time = 0
 
-  onMount(async () => {
-    PIXI = await import('pixi.js')
+  onMount(() => {
     graphics = new PIXI.Graphics()
     graphics.zIndex = 5
     app.stage.addChild(graphics)
-    
-    let time = 0
-
-    const changeAlpha = (deltaT: number) => {
-      time += deltaT * 0.1
-      graphics.alpha = Math.sin(time)
-    }
-
     app.ticker.add(changeAlpha)
-
-    return () => {
-      app.stage.removeChild(graphics)
-      app.ticker.remove(changeAlpha)
-    }
   })
+
+  onDestroy(() => {
+    app.ticker.remove(changeAlpha)
+    app.stage.removeChild(graphics)
+  })
+
+  function changeAlpha(deltaT: number) {
+    time += deltaT * 0.1
+    graphics.alpha = Math.sin(time)
+  }
 
   $: drawStackedArea($position, singles, slides)
 

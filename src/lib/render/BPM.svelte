@@ -3,7 +3,7 @@
 
   // Functions
   import { position, PositionManager } from '$lib/position'
-  import { getContext, onMount } from 'svelte'
+  import { getContext, onDestroy, onMount } from 'svelte'
 
   // Types
   import type PIXI from 'pixi.js'
@@ -13,15 +13,18 @@
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
+  const PIXI = getContext<import('pixi.js').PIXI>('PIXI')
 
   // Variables
-  let PIXI: typeof import('pixi.js')
   let graphics: PIXI.Graphics
 
-  onMount(async () => {
-    PIXI = await import('pixi.js')
+  onMount(() => {
     graphics = new PIXI.Graphics()
     app.stage.addChild(graphics)
+  })
+
+  onDestroy(() => {
+    app.stage.removeChild(graphics)
   })
 
   $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBPMs($position, bpms)

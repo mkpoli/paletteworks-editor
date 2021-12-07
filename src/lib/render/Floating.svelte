@@ -32,17 +32,16 @@
   // Contexts
   const app = getContext<PIXI.Application>('app')
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
 
   // Variables
-  let PIXI: typeof import('pixi.js')
   let graphics: PIXI.Graphics
   let container: PIXI.Container
   let floating: PIXI.Sprite
   let flickArrow: PIXI.Sprite
 
   let isMounted: boolean = false
-  onMount(async () => {
-    PIXI = await import('pixi.js')
+  onMount(() => {
     container = new PIXI.Container
     container.alpha = 0.5
     container.zIndex = 4

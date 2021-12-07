@@ -27,10 +27,12 @@
   const SHRINK_WIDTH = LANE_WIDTH / 8
 
   let graphics: PIXI.Graphics
-  let PIXI: typeof import('pixi.js')
+
+  // Contexts
   const app = getContext<PIXI.Application>('app')
-  onMount(async () => {
-    PIXI = await import('pixi.js')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+
+  onMount(() => {
     graphics = new PIXI.Graphics()
     graphics.interactive = true
     graphics.addEventListener('click', (event) => {
