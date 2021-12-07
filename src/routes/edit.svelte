@@ -72,13 +72,14 @@
     ZOOM_MIN,
     LANE_MAX,
     DEFAULT_PREFERENCES,
+    MEASURE_HEIGHT,
   } from '$lib/consts'
 
   // Functions
   import { onMount, setContext, tick } from 'svelte'
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
-  import { clamp } from '$lib/basic/math'
+  import { clamp, snap } from '$lib/basic/math'
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
@@ -888,6 +889,12 @@
   on:selectall={onselectall}
   on:increaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotateNext(snapTo) ?? SNAPTO_DEFAULT }}
   on:decreaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotatePrev(snapTo) ?? SNAPTO_DEFAULT }}
+  on:pageup={() => { scrollTick += innerHeight / MEASURE_HEIGHT * zoom * TICK_PER_MEASURE }}
+  on:pagedown={() => { scrollTick -= innerHeight / MEASURE_HEIGHT * zoom * TICK_PER_MEASURE }}
+  on:gotoup={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE / snapTo) + TICK_PER_MEASURE / snapTo) }}
+  on:gotodown={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE / snapTo) - TICK_PER_MEASURE / snapTo) }}
+  on:gotoupfast={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE) + TICK_PER_MEASURE) }}
+  on:gotodownfast={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE) - TICK_PER_MEASURE) }}
 />
 
 <AudioManager

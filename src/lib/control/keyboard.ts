@@ -17,7 +17,13 @@ export const KEYBOARD_SHORTCUTS  = {
   selectall: [['ctrl', 'a']],
   delete: [['delete']],
   increaseSnapTo: [['alt', '=']],
-  decreaseSnapTo: [['alt', '-']]
+  decreaseSnapTo: [['alt', '-']],
+  pageup: [['pageup']],
+  pagedown: [['pagedown']],
+  gotoup: [['up']],
+  gotodown: [['down']],
+  gotoupfast: [['shift', 'up']],
+  gotodownfast: [['shift', 'down']],
 } as const
 
 export type KeyboardAction = keyof typeof KEYBOARD_SHORTCUTS

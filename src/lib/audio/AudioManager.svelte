@@ -100,7 +100,7 @@
     }
   }
 
-  gotoTick = (tick) => { restartScheduler(tick) }
+  gotoTick = (tick) => { restartScheduler(Math.max(0, tick)) }
 
   $: if (soundQueue) {
     soundQueue.forEach((sound) => {
