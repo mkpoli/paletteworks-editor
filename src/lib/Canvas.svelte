@@ -413,7 +413,7 @@
       }
     })
 
-    app.renderer.view.addEventListener('dblclick', async () => {
+    app.renderer.view.addEventListener('click', async () => {
       if (!clickedOnNote) {
         dispatch('goto', { tick: $cursor.rawTick })
       }
