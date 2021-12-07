@@ -43,6 +43,7 @@
   export let volume: number
   export let sfxVolume: number
   export let bgmLoading: boolean
+  export let musicDuration: number | undefined
 
   let historyDiv: HTMLDivElement
   
@@ -51,6 +52,13 @@
     tick().then(() => {
       historyDiv.scrollTo(0, historyDiv.scrollHeight)
     })
+  }
+
+  function formatTime(time: number): string {
+    const minutes = Math.floor(time / 60)
+    const seconds = Math.floor(time % 60)
+    const milliseconds = Math.floor((time % 1) * 1000)
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`
   }
 </script>
 <div class="panel-container">
@@ -70,6 +78,9 @@
             on:click={() => {dispatch('goto')}}
           ></Button>
         </TextInput>
+      </div>
+      <div style="text-align: center;">
+        {musicDuration ? formatTime(musicDuration) : '--:--.---'}
       </div>
       <div class="control-buttons">
         <Tooltip

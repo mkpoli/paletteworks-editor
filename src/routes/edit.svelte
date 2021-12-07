@@ -815,6 +815,7 @@
           return sum
         }, 0)
       }
+      {musicDuration}
     />
     {#if import.meta.env.DEV}
       <DebugInfo/>
