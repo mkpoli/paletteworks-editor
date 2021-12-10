@@ -23,6 +23,8 @@ export const LANE_SKILL = 0
 export const MEASURE_HEIGHT = 300
 export const CANVAS_WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
 
+export const WIDTH_DEFAULT = 3
+
 export const SNAPTO_DEFAULT = 8
 
 export const NOTE_PIVOT = [0.14971751412, 0.5]
