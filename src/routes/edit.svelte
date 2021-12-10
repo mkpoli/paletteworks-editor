@@ -681,6 +681,11 @@
   import PreferencesDialog from '$lib/dialogs/PreferencesDialog.svelte'
   import { sortedBPMs } from '$lib/timing'
   let preferencesDialogOpened = false
+
+  function shrinkNotes(notes: NoteType[]) {
+    const [prev, next] = notes
+    exec(new UpdateSlideNotes(slides, new Map([[prev, { tick: next.tick - 1 }]])))
+  }
 </script>
 
 <svelte:head>
@@ -778,6 +783,7 @@
       on:updatecriticals={onupdatecriticals}
       on:flip={({ detail: { notes }}) => flipNotes(notes)}
       on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
+      on:shrink={({ detail: { notes }}) => { shrinkNotes(notes) }}
     />
     <PropertyBox
       bind:currentMeasure

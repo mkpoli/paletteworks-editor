@@ -743,6 +743,7 @@
   on:selectall
   on:duplicate
   on:flip
+  on:shrink
 />
 
 <!-- EXPORT IMAGE DIALOG -->

@@ -33,6 +33,9 @@
     flip: {
       notes: Note[]
     },
+    shrink: {
+      notes: Note[]
+    },
   }
 
   const dispatch = createEventDispatcher<Events>()
@@ -158,6 +161,14 @@
       on:click={() => { changediamond('invisible'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => diamondTypeEquals(note, 'invisible'))}
       indeterminate={$selectedNotes.some((note) => diamondTypeEquals(note, 'invisible'))}
+    />
+  {/if}
+  {#if $selectedNotes.length === 2 && $selectedNotes.every(isSlideStep)}
+    <MenuDivider/>
+    <MenuItem
+      icon="ci:shrink"
+      text="縮める"
+      on:click={() => { dispatch('shrink', { notes: $selectedNotes }) }}
     />
   {/if}
 </Menu>
