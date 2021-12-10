@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { COLORS, LANE_MAX, LANE_MIN, LANE_WIDTH, NOTE_HEIGHT_REAL } from '$lib/consts'
+  import { COLORS, LANE_WIDTH, NOTE_HEIGHT_REAL } from '$lib/consts'
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -38,10 +38,10 @@
     graphics.alpha = Math.sin(time)
   }
 
-  $: drawStackedArea($position, singles, slides)
+  $: drawErrorArea($position, singles, slides)
 
 
-  function drawStackedArea(
+  function drawErrorArea(
     position: PositionManager,
     singles: Single[], slides: Slide[]
   ) {
@@ -59,21 +59,23 @@
 
     graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED)
     ;[...tickTable.entries()].forEach(([tick, notes]) => {
-      const area: Map<number, number> = new Map()
-      notes.forEach(({ lane, width }) => {
-        for (let i = LANE_MIN; i < LANE_MAX + 1; i++) {
-          if (i >= lane && i <= lane + width - 1) {
-            area.set(i, (area.get(i) ?? 0) + 1)
+      const area: number[] = new Array(16).fill(0)
+      area[0] = area[1] = area[14] = area[15] = 1
+      notes.forEach(({ lane: laneL, width }) => {
+        const laneR = laneL + width - 1
+        for (let i = 0; i < 16; i++) {
+          if (i >= laneL && i <= laneR) {
+            area[i] += 1
           }
         }
-      });
+      })
 
       const MARGIN_X = 10
-      const MARGIN_Y = 8;
+      const MARGIN_Y = 8
 
-      const n = [...area.entries()]
-        .filter(([, v]) => v > 1)
-        .map(([k, ]) => k)
+      const n = area
+        .map((v, i) => v > 1 ? i : undefined)
+        .filter((i): i is number => i !== undefined)
         .reduce((acc, cur) => {
           let lastArray = acc[acc.length - 1]
           if (!lastArray || lastArray[lastArray.length - 1] + 1 !== cur) {
@@ -90,15 +92,15 @@
           return acc
         }, [] as number[][])
 
-        n.forEach(([lane, laneR]) => {
-          graphics.drawRoundedRect(
-            position.calcX(lane) - 0.5 * MARGIN_X,
-            position.calcY(tick) - 0.5 * NOTE_HEIGHT_REAL - 0.5 * MARGIN_Y,
-            ((laneR ?? lane) - lane + 1) * LANE_WIDTH + MARGIN_X,
-            NOTE_HEIGHT_REAL + MARGIN_Y,
-            5
-          ) 
-        })
+      n.forEach(([lane, laneR]) => {
+        graphics.drawRoundedRect(
+          position.calcX(lane) - 0.5 * MARGIN_X,
+          position.calcY(tick) - 0.5 * NOTE_HEIGHT_REAL - 0.5 * MARGIN_Y,
+          ((laneR ?? lane) - lane + 1) * LANE_WIDTH + MARGIN_X,
+          NOTE_HEIGHT_REAL + MARGIN_Y,
+          5
+        ) 
+      })
     })
     graphics.endFill()
   }
