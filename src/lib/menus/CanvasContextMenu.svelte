@@ -1,6 +1,6 @@
 <script lang="ts">
   // Type Definitions
-  import { Note, Single, EaseType, DiamondType, Slide, SlideNote, hasEaseType, isSlideStep, toDiamondType } from '$lib/score/beatmap'
+  import { Note, EaseType, DiamondType, hasEaseType, isSlideStep, toDiamondType } from '$lib/score/beatmap'
 
   // Menu Components
   import Menu from '$lib/ui/Menu.svelte'
@@ -18,8 +18,6 @@
     copy: { notes: Note[] },
     cut: { notes: Note[] },
     paste: void,
-    resizestart: void,
-    resize: void,
     changecurve: {
       note: Note | null,
       type?: EaseType
@@ -28,64 +26,12 @@
       note: Note | null,
       type?: DiamondType
     },
-    selectsingle: {
-      note: Note
-    },
     selectall: void,
-    addsingle: {
-      note: Single
-    },
-    updatesingle: {
-      note: Single,
-      modification: Partial<Single>
-    },
-    addslide: {
-      slide: Slide
-    },
-    updateslide: {
-      slide: Slide,
-      modification: Partial<Slide>
-    },
-    updateslidenote: {
-      note: SlideNote,
-      modification: Partial<SlideNote>
-    },
     duplicate: {
       notes: Note[]
     },
     flip: {
       notes: Note[]
-    },
-    updateflicks: {
-      notes: Note[],
-      flip: boolean
-    },
-    updatecriticals: {
-      notes: Note[]
-    },
-    scroll: number,
-    movenotes: {
-      movingTargets: Map<Note, {
-        lane: number
-        tick: number
-      }>,
-      movingOrigins: Map<Note, {
-        lane: number
-        tick: number
-      }>
-    }
-    resizenotes: {
-      resizingTargets: Map<Note, {
-        lane: number
-        width: number
-      }>,
-      resizingOrigins: Map<Note, {
-        lane: number
-        width: number
-      }>
-    },
-    goto: {
-      tick: number
     },
   }
 
