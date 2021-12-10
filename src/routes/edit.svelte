@@ -655,9 +655,9 @@
     return await new Promise(resolve => canvas.toBlob(resolve))
   }
 
-  let { autosaveInterval } = DEFAULT_PREFERENCES
+  let { autosaveInterval, scrollSpeed } = DEFAULT_PREFERENCES
   $: if ($preferences) {
-    ({ autosaveInterval } = $preferences)
+    ({ autosaveInterval, scrollSpeed } = $preferences)
   }
 
   $: dbg('autosaveInterval', autosaveInterval)
@@ -867,6 +867,7 @@
 />
 
 <ControlHandler
+  {scrollSpeed}
   bind:zoom
   bind:scrollTick
   on:undo={onundo}

@@ -99,5 +99,6 @@ export const EFFECT_SOUNDS = {
 }
 
 export const DEFAULT_PREFERENCES = {
-  autosaveInterval: 10
+  autosaveInterval: 10,
+  scrollSpeed: 1,
 }

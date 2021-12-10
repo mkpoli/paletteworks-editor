@@ -44,6 +44,8 @@
       >
         <label for="autosave-interval">自動保存の間隔（秒）</label>
         <input type="number" name="autosave-interval" min=0 bind:value={preferences.autosaveInterval}/>
+        <label for="scroll-speed">スクロールの早さ（倍）</label>
+        <input type="number" name="scroll-speed" min=0.01 bind:value={preferences.scrollSpeed}/>
       </div>
       <Button
         class="ok"
@@ -80,6 +82,9 @@
 
   .form {
     grid-area: t;
+
+    display: flex;
+    flex-direction: column;
   }
 
   .close {
