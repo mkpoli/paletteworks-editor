@@ -41,6 +41,7 @@
   import Skill from '$lib/render/Skill.svelte'
   import MovingNotes from '$lib/render/MovingNotes.svelte'
   import ResizingNotes from '$lib/render/ResizingNotes.svelte'
+  import DraggingSlide from '$lib/render/DraggingSlide.svelte'
 
   // UI Components
   import CanvasContextMenu from '$lib/menus/CanvasContextMenu.svelte'
@@ -276,8 +277,6 @@
             critical: false,
             steps: []
           }
-          slides.push(draggingSlide)
-          slides = slides
           dispatch('playSound', 'stage')
           break
         }
@@ -298,7 +297,7 @@
         draggingSlide.tail.lane = $placing.lane
         draggingSlide.tail.tick = $cursor.tick
         draggingSlide.tail.width = $placing.width
-        slides = slides 
+        draggingSlide = draggingSlide
       }
     })
 
@@ -408,7 +407,6 @@
           draggingSlide.tail.tick += TICK_PER_MEASURE / snapTo
         }
         draggingSlide = draggingSlide
-        slides = slides
         dispatch('addslide', { slide: draggingSlide })
         draggingSlide = null
       }
@@ -734,6 +732,7 @@
     
     <MovingNotes {singles} {slides} moving={isLongPress && $moving} />
     <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
+    <DraggingSlide {draggingSlide} />
   </div>
   <div class="zoom-indicator-container">
     <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP}/>
