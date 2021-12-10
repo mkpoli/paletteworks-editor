@@ -104,6 +104,7 @@
       })
       text.anchor.set(0.5, 0.5)
       text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
+      graphics.addChild(text)
 
       if (!hasBPM) {
         graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
@@ -111,6 +112,7 @@
       }
       return
     }
+    
   }
 
   $: lane = hoveringNote ? hoveringNote.lane : $placing.lane
