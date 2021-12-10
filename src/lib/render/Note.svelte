@@ -84,5 +84,4 @@
   critical={type === 'critical'}
   {flick}
   {alpha}
-  {zIndex}
 />
