@@ -7,7 +7,6 @@ export function tick2secs(tick: number, tpb: number, bpm: number): number {
 }
 
 export function accumulateDuration(targetTick: number, bpms: [tick: number, bpm: number][], tpb: number): number {
-  console.log('filtered', bpms.filter(([tick,]) => tick <= targetTick))
   return bpms
     .filter(([tick,]) => tick <= targetTick)
     .reduce((acc, [tick, bpm], ind, arr) =>
