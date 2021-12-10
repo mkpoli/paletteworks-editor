@@ -8,6 +8,7 @@
   // Types
   import type PIXI from 'pixi.js'
   import type { Note, Single, Slide } from '$lib/score/beatmap'
+  import { clamp } from '$lib/basic/math'
 
   // Props
   export let singles: Single[]
@@ -35,7 +36,7 @@
 
   function changeAlpha(deltaT: number) {
     time += deltaT * 0.1
-    graphics.alpha = Math.sin(time)
+    graphics.alpha = 0.85 * Math.max(0, Math.sin(time) + 0.38196601125)
   }
 
   $: drawErrorArea($position, singles, slides)
