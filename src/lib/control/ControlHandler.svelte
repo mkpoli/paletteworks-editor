@@ -40,7 +40,7 @@
   })
 
   for (let mode of MODES) {
-    hotkeys(`${MODE_SHORTCUTS[mode]},${MODE_SHORTCUTS_NUMERAL}`, (event) => {
+    hotkeys(`${MODE_SHORTCUTS[mode]},${MODE_SHORTCUTS_NUMERAL[mode]}`, (event) => {
       event.preventDefault()
       dispatch('switch', mode)
     })
