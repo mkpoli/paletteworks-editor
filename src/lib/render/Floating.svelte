@@ -1,6 +1,6 @@
 <script lang="ts">
   // Imports
-  import { position } from '$lib/position'
+  import { placing, position } from '$lib/position'
   import { getContext, onMount } from 'svelte'
 
   // Types
@@ -114,8 +114,8 @@
     }
   }
 
-  $: lane = hoveringNote ? hoveringNote.lane : $cursor.lane
-  $: width = hoveringNote ? hoveringNote.width : $resizingLastWidth
+  $: lane = hoveringNote ? hoveringNote.lane : $placing.lane
+  $: width = hoveringNote ? hoveringNote.width : $placing.width
   $: tick = hoveringNote ? hoveringNote.tick : $cursor.tick
 
   $: hoveringNoteFlick = hoveringNote && hasFlick(hoveringNote) ? hoveringNote.flick : 'no'

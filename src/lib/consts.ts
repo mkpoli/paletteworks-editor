@@ -16,6 +16,7 @@ export const LANE_WIDTH = 30
 export const LANE_COUNT_REAL = 12
 export const LANE_MIN = 2
 export const LANE_MAX = 13
+export const LANE_SIDE_MAX = LANE_MAX + 1
 export const LANE_COUNT = LANE_COUNT_REAL + 2
 export const LANE_AREA_WIDTH = LANE_WIDTH * LANE_COUNT
 export const LANE_FEVER = 15

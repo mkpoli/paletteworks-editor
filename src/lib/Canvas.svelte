@@ -23,10 +23,10 @@
 
   // Constants
   import { createEventDispatcher, onMount, setContext, tick } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX } from '$lib/consts'
 
   // Functions
-  import { snap } from '$lib/basic/math'
+  import { clamp, snap } from '$lib/basic/math'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/editing/selection'
   import { inside } from '$lib/position'
@@ -81,16 +81,26 @@
 
   $: measureHeight = MEASURE_HEIGHT * zoom
 
-  import { PositionManager, position, pointer, cursor } from '$lib/position'
+  import { PositionManager, position, pointer, cursor, placing } from '$lib/position'
   $: $position = new PositionManager(measureHeight, innerHeight)
   $: $cursor = {
     lane: $position.calcLane($pointer.x),
     tick: $position.calcTick($pointer.y, scrollTick, snapTo),
     laneSide: $position.calcLaneSide($pointer.x),
-    rawTick: $position.calcRawTick2($pointer.y) + scrollTick
+    rawLane: $position.calcRawLane($pointer.x),
+    rawTick: $position.calcRawTick2($pointer.y) + scrollTick,
+  }
+  $: {
+    const distance = Math.min($cursor.rawLane - LANE_MIN, LANE_SIDE_MAX - $cursor.rawLane)
+    const width = Math.round(clamp(1, 2 * distance, $resizingLastWidth))
+    const lane = Math.round(clamp(LANE_MIN, $cursor.rawLane - width / 2, LANE_MAX))
+    $placing = { lane, width }
   }
   $: dbg('pointer', formatPoint($pointer.x, $pointer.y))
   $: dbg('cursor', formatPoint($cursor.lane, $cursor.tick))
+  $: dbg('shorterDistance', Math.min($cursor.rawLane - LANE_MIN, LANE_SIDE_MAX - $cursor.rawLane))
+  $: dbg('cursor.raw', formatPoint($cursor.rawLane, $cursor.rawTick))
+  $: dbg('placing', formatPoint($placing.lane, $placing.width))
   
   // -- SCROLLING & ZOOMING --
 
@@ -321,8 +331,7 @@
       isLongPress = false
 
       if (!$moving && !$resizing) {
-        const lane = Math.max(LANE_MIN, Math.floor($cursor.lane - 0.5 * $resizingLastWidth + 1))
-        const width = Math.min($resizingLastWidth, LANE_MAX - lane + 1)
+        const { lane, width } = $placing
         if (currentMode === 'tap') {
           dispatch('addsingle', { 
             note : {
