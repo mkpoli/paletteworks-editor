@@ -31,6 +31,6 @@ Array.prototype.rotatePrev = function rotatePrev<T>(cur: T): T {
 }
 
 Array.prototype.closest = function closest(num: number, smaller = true): number | undefined {
-  const sorted = [...this].sort()
+  const sorted = [...this].sort((a, b) => a - b)
   return (smaller ? sorted.reverse() : sorted).find(e => (smaller ? e <= num : e >= num))
 }
