@@ -8,21 +8,18 @@
     Single as SingleType,
     Slide as SlideType,
     Note as NoteType,
-    SlideStep,
     SlideNote,
     EaseType,
     DiamondType,
     Fever as FeverType,
   } from '$lib/score/beatmap'
     
-  import {
-    toDiamondType, hasEaseType, isSlideStep 
-  } from '$lib/score/beatmap'
+  import { hasEaseType, isSlideStep } from '$lib/score/beatmap'
   
   import '$lib/basic/collections'
 
   // Constants
-  import { createEventDispatcher, onMount, setContext, tick } from 'svelte'
+  import { createEventDispatcher, onMount, setContext } from 'svelte'
   import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX } from '$lib/consts'
 
   // Functions
@@ -46,10 +43,7 @@
   import ResizingNotes from '$lib/render/ResizingNotes.svelte'
 
   // UI Components
-  import Menu from '$lib/ui/Menu.svelte'
-  import MenuItem from '$lib/ui/MenuItem.svelte'
-  import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
-  import MenuDivider from './ui/MenuDivider.svelte'
+  import CanvasContextMenu from '$lib/menus/CanvasContextMenu.svelte'
   import ZoomIndicator from '$lib/ZoomIndicator.svelte'
   import ImageDialog from '$lib/dialogs/ImageDialog.svelte'
 
@@ -226,22 +220,10 @@
     draggingSlide = null
   }
 
-  type EventsForNotes = {
-    [K in keyof Events]: Events[K] extends { notes: NoteType[] } ? K : never
-  }[keyof Events]
-  function dispatchNotes(event: EventsForNotes, note: NoteType | null) {
-    if (note) {
-      dispatch(event, { notes: [note] })
-    } else {
-      dispatch(event, { notes: $selectedNotes })
-    }
-  }
-
   import moveCursor from '$assets/move-cursor.png'
   import resizeCursor from '$assets/resize-cursor.png'
   import selectCursor from '$assets/select-cursor.png'
 
-  import { clipboardSingles, clipboardSlides } from './editing/clipboard'
   let clickTimer: number | undefined
   let isLongPress = false
 
@@ -438,8 +420,6 @@
     canvasContainer.appendChild(app.view)
   })
 
-  let menu: HTMLDivElement
-
   let canvasContainer: HTMLDivElement
 
   function setCursor(cursor: keyof typeof myCursorStyle) {
@@ -467,10 +447,6 @@
 
   function changediamond(type?: DiamondType) {
     dispatch('changediamond', { note: currentNote, type })
-  }
-
-  function calcDiamondType(note: NoteType): DiamondType {
-    return toDiamondType(note as SlideStep)
   }
 
   let clickedOnNote: boolean = false
@@ -755,95 +731,19 @@
 </div>
 
 <!-- CONTEXT MENU -->
-<Menu bind:menu>
-  <MenuTrigger
-    contextArea={canvasContainer}
-    {menu}
-    slot="trigger"
-    on:hidden={async () => {
-      await tick()
-      currentNote = null
-    }}
-  ></MenuTrigger>
-  {#if $selectedNotes.length || currentNote}
-    <MenuItem icon="mdi:delete" text={ currentNote ? "削除" : "削除（全部）"} on:click={() => dispatchNotes('delete', currentNote)} />
-    <MenuDivider/>
-    <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatchNotes('cut', currentNote)} />
-    <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatchNotes('copy', currentNote)} />
-  {/if}
-  <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')}
-    disabled={!$clipboardSingles.length && !$clipboardSlides.length}
-  />
-  <MenuDivider/>
-  <MenuItem icon="ic:baseline-select-all" text="すべて選択" on:click={() => dispatch('selectall')}/>
-  {#if $selectedNotes.length || currentNote}
-    <MenuDivider/>
-    <MenuItem icon="mdi:content-duplicate" text="複製 (&D)" on:click={() => dispatchNotes('duplicate', currentNote)} />
-  {/if}
-  {#if $selectedNotes.length}
-    <MenuItem icon="mdi:flip-horizontal" text="左右ミラー (&H)" on:click={() => dispatch('flip', { notes: $selectedNotes })} />
-  {/if}
-  {#if !$selectedNotes.length && currentNote !== null && 'easeType' in currentNote}
-    <MenuDivider/>
-    <MenuItem icon="custom:straight" text="直線" on:click={() => { changecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>
-    <MenuItem icon="custom:curve-in" text="加速" on:click={() => { changecurve('easeOut'); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
-    <MenuItem icon="custom:curve-out" text="減速" on:click={() => { changecurve('easeIn'); currentNote = currentNote }} checked={currentNote.easeType === 'easeIn'}/>
-  {/if}
-  {#if !$selectedNotes.length && currentNote !== null && 'ignored' in currentNote}
-    <MenuDivider/>
-    <MenuItem icon="custom:diamond-visible" text="可視" on:click={() => { changediamond('visible'); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'visible'}/>
-    <MenuItem icon="custom:diamond-ignored" text="無視" on:click={() => { changediamond('ignored'); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'ignored'}/>
-    <MenuItem icon="custom:diamond-invisible" text="不可視" on:click={() => { changediamond('invisible'); currentNote = currentNote }} checked={calcDiamondType(currentNote) === 'invisible'}/>
-  {/if}
-  {#if $selectedNotes.length && $selectedNotes.some(hasEaseType)}
-    <MenuDivider/>
-    <MenuItem
-      icon="custom:straight"
-      text="直線"
-      on:click={() => { changecurve(false); $selectedNotes = $selectedNotes }}
-      checked={$selectedNotes.every((note) => 'easeType' in note && note.easeType === false)}
-      indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === false)}
-    />
-    <MenuItem
-      icon="custom:curve-in"
-      text="加速"
-      on:click={() => { changecurve('easeOut'); $selectedNotes = $selectedNotes }}
-      checked={$selectedNotes.every((note) => 'easeType' in note && note.easeType === 'easeOut')}
-      indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === 'easeOut')}
-    />
-    <MenuItem
-      icon="custom:curve-out"
-      text="減速"
-      on:click={() => { changecurve('easeIn'); $selectedNotes = $selectedNotes }}
-      checked={$selectedNotes.every((note) => 'easeType' in note && note.easeType === 'easeIn')}
-      indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === 'easeIn')}
-    />
-  {/if}
-  {#if $selectedNotes.length && $selectedNotes.some(isSlideStep)}
-    <MenuDivider/>
-    <MenuItem
-      icon="custom:diamond-visible"
-      text="可視"
-      on:click={() => { changediamond('visible'); $selectedNotes = $selectedNotes }}
-      checked={$selectedNotes.every((note) => calcDiamondType(note) === 'visible')}
-      indeterminate={$selectedNotes.some((note) => calcDiamondType(note) === 'visible')}
-    />
-    <MenuItem
-      icon="custom:diamond-ignored"
-      text="無視"
-      on:click={() => { changediamond('ignored'); $selectedNotes = $selectedNotes }}
-      checked={$selectedNotes.every((note) => calcDiamondType(note) === 'ignored')}
-      indeterminate={$selectedNotes.some((note) => calcDiamondType(note) === 'ignored')}
-    />
-    <MenuItem
-      icon="custom:diamond-invisible"
-      text="不可視"
-      on:click={() => { changediamond('invisible'); $selectedNotes = $selectedNotes }}
-      checked={$selectedNotes.every((note) => calcDiamondType(note) === 'invisible')}
-      indeterminate={$selectedNotes.some((note) => calcDiamondType(note) === 'invisible')}
-    />
-  {/if}
-</Menu>
+<CanvasContextMenu
+  {canvasContainer}
+  bind:currentNote
+  on:changecurve
+  on:changediamond
+  on:delete
+  on:cut
+  on:copy
+  on:paste
+  on:selectall
+  on:duplicate
+  on:flip
+/>
 
 <!-- EXPORT IMAGE DIALOG -->
 <ImageDialog
