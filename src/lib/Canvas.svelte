@@ -39,7 +39,7 @@
   import Slide from '$lib/render/Slide.svelte'
   import Selection from '$lib/render/Selection.svelte'
   import Floating from '$lib/render/Floating.svelte'
-  import StackedArea from '$lib/render/StackedArea.svelte'
+  import NoteError from '$lib/render/NoteError.svelte'
   import Fever from '$lib/render/Fever.svelte'
   import Skill from '$lib/render/Skill.svelte'
   import MovingNotes from '$lib/render/MovingNotes.svelte'
@@ -727,7 +727,7 @@
     />
 
     <!-- STACKED AREAS -->
-    <StackedArea
+    <NoteError
       {singles}
       {slides}
     />
