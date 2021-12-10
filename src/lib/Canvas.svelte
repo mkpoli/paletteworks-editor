@@ -262,15 +262,15 @@
           draggingSlide = {
             head: {
               tick: $cursor.tick,
-              lane: $cursor.lane,
-              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
+              lane: $placing.lane,
+              width: $placing.width,
               easeType: false
             },
             tail: {
               tick: $cursor.tick,
-              lane: $cursor.lane,
+              lane: $placing.lane,
               flick: 'no',
-              width: Math.min($resizingLastWidth, LANE_MAX - $cursor.lane + 1),
+              width: $placing.width,
               critical: false,
             },
             critical: false,
@@ -295,8 +295,9 @@
       }
 
       if (draggingSlide !== null && currentMode === 'slide') {
-        draggingSlide.tail.lane = $cursor.lane
+        draggingSlide.tail.lane = $placing.lane
         draggingSlide.tail.tick = $cursor.tick
+        draggingSlide.tail.width = $placing.width
         slides = slides 
       }
     })
@@ -389,15 +390,24 @@
       if (draggingSlide !== null && currentMode === 'slide') {
         if (draggingSlide.tail.tick < draggingSlide.head.tick) {
           // Swap
-          const tick = draggingSlide.head.tick
-          const lane = draggingSlide.head.lane
-          draggingSlide.head.tick = draggingSlide.tail.tick
-          draggingSlide.head.lane = draggingSlide.tail.lane
-          draggingSlide.tail.tick = tick
-          draggingSlide.tail.lane = lane
+          const { tick, lane, width } = draggingSlide.head
+          draggingSlide.head = {
+            tick: draggingSlide.tail.tick,
+            lane: draggingSlide.tail.lane,
+            width: draggingSlide.tail.width,
+            easeType: false
+          }
+          draggingSlide.tail = {
+            tick,
+            lane,
+            width,
+            flick: 'no',
+            critical: false
+          }
         } else if (draggingSlide.head.tick == draggingSlide.tail.tick) {
           draggingSlide.tail.tick += TICK_PER_MEASURE / snapTo
         }
+        draggingSlide = draggingSlide
         slides = slides
         dispatch('addslide', { slide: draggingSlide })
         draggingSlide = null
@@ -679,8 +689,8 @@
                 if ($cursor.tick === slide.tail.tick || $cursor.tick === slide.head.tick) break
                 if (!slide.steps.some(({ tick }) => tick === $cursor.tick)) {
                   const step = {
-                    lane: $cursor.lane,
-                    width: slide.head.width,
+                    lane: $placing.lane,
+                    width: $placing.width,
                     tick: $cursor.tick,
                     diamond: true,
                     easeType: false,
