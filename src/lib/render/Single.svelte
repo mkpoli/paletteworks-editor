@@ -5,7 +5,7 @@
   import { position } from '$lib/position'
 
   import type PIXI from 'pixi.js'
-  import type { Flick, Note as NoteType, Type } from '$lib/score/beatmap'
+  import type { Flick, Note as NoteType } from '$lib/score/beatmap'
 
   // Components
   import Note from '$lib/render/Note.svelte'

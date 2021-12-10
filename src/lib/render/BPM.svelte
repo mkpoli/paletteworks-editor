@@ -13,7 +13,7 @@
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
-  const PIXI = getContext<import('pixi.js').PIXI>('PIXI')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
 
   // Variables
   let graphics: PIXI.Graphics

@@ -29,7 +29,6 @@
 
   // Stores
   import { pointer, cursor } from '$lib/position'
-  import { resizingLastWidth } from '$lib/editing/resizing'
 
   // Functions
   import { hasFlick } from '$lib/score/beatmap'
