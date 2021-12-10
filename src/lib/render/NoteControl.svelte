@@ -15,7 +15,7 @@
   export let note: Note
 
   // Stores
-  import { moving, movingNotes, movingOffsets, movingOrigins, movingTargets } from '$lib/editing/moving'
+  import { moving, movingNotes, movingOrigins, movingTargets, movingOffsets } from '$lib/editing/moving'
   import { cursor } from '$lib/position'
   import { calcResized, resizing, resizingNotes, resizingOffsets, resizingOrigins, resizingTargets, resizingOriginNote } from '$lib/editing/resizing'
   import { selectedNotes } from '$lib/editing/selection'
@@ -45,6 +45,8 @@
     if ($resizing) return
     $moving = true
     $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
+    $movingOrigins = new Map()
+    $movingTargets = new Map()
     $movingNotes.forEach((movingNote) => {
       $movingOffsets.set(movingNote, {
         lane: $cursor.lane - movingNote.lane,
@@ -76,6 +78,8 @@
       if ($moving) return
       $resizing = true
       $resizingOriginNote = note
+      $resizingOrigins = new Map()
+      $resizingTargets = new Map()
       $resizingNotes = $selectedNotes.length && $selectedNotes.includes(note) ? $selectedNotes : [note]
       $resizingNotes.forEach((note) => {
         const reference = right ? note.lane : note.lane + note.width

@@ -477,8 +477,6 @@
       movingOrigins: new Map($movingOrigins),
     })
     $movingNotes = []
-    $movingTargets = new Map()
-    $movingOrigins = new Map()
   }
 
   // Resizing
