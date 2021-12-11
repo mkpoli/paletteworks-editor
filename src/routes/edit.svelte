@@ -910,7 +910,7 @@
   bind:lastTick
   bind:bgmLoading
   bind:musicDuration
-  {currentBPM}
+  {bpms}
   {slides}
   {singles}
   {music}

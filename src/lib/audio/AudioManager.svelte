@@ -8,7 +8,7 @@
 
   export let paused: boolean
   export let currentTick: number
-  export let currentBPM: number
+  export let bpms: Map<number, number>
   export let soundQueue: string[]
   export let singles: Single[]
   export let slides: Slide[]
@@ -53,6 +53,10 @@
     return await audioContext.decodeAudioData(arrayBuffer)
   }
 
+  function getBPM(tick: number) {
+    return bpms.get([...bpms.keys()].closest(tick) ?? NaN) ?? 120
+  }
+
   $: onchangemusic(music)
   function onchangemusic(music: File | null) {
     stopScheduler()
@@ -70,11 +74,6 @@
       bgmBuffer = null
       musicDuration = undefined
     }
-  }
-
-  $: if (currentBPM) {
-    console.log('currentBPM changed to ' + currentBPM)
-    restartScheduler()
   }
 
   function stopScheduler() {
@@ -123,6 +122,37 @@
     })))
   })
 
+  function generateEvents(from: number, to: number, bpm: number, fromTime: number): AudioEvent[] {
+    const tick2time = (tick: number) => fromTime + tick2secs(tick - from, TICK_PER_BEAT, bpm)
+
+    return [
+      ...singles
+        .filter((single) => single.tick >= from && single.tick <= to)
+        .map(({ tick, critical, flick }) => ({
+          time: tick2time(tick),
+          sound: flick !== 'no'
+                  ? (critical ? 'flickCritical' : 'flick')
+                  : (critical ? 'tapCritical' : 'tapPerfect')
+        } as AudioEvent)),
+      ...slides
+        .filter(({ head, tail }) => tail.tick >= from && head.tick <= to)
+        .flatMap(({ head, tail, steps, critical }) => [
+          head.tick >= from ? { time: tick2time(head.tick), sound: 'tapPerfect' } : undefined,
+          ...steps
+            .filter(({ tick, diamond }) => tick >= from && tick <= to && diamond)
+            .map(({ tick }) => ({ time: tick2time(tick), sound: critical ? 'tickCritical' : 'tick' })),
+          tail.tick <= to
+            ? { time: tick2time(tail.tick),
+                sound: tail.flick !== 'no'
+                  ? (critical || tail.critical ? 'flickCritical' : 'flick')
+                  : 'tapPerfect'
+              }
+            : undefined
+        ])
+        .filter((event): event is AudioEvent => event !== undefined)
+    ]
+  }
+
 
   function newSchedular(): AudioScheduler {
     const bgmEvent: AudioEvent = {
@@ -134,59 +164,42 @@
     let events: Array<AudioEvent> = [bgmEvent]
 
     if (sfxVolume !== 0) {
-      const singleEvents: AudioEvent[] = singles
-        .filter(({ tick }) => tick >= currentTick)
-        .map(({ tick, critical, flick }) => ({
-          time: tick2secs(tick - currentTick, TICK_PER_BEAT, currentBPM),
-          sound: flick !== 'no'
-                  ? (critical ? 'flickCritical' : 'flick')
-                  : (critical ? 'tapCritical' : 'tapPerfect' ) 
-        }))
-  
-      const slideEvents = slides
-        .filter(({ tail: { tick } }) => tick >= currentTick)
-        .reduce((acc, { critical, head, tail, steps }) => {
-          const headEvent = head.tick >= currentTick
-            ? {
-                time: tick2secs(head.tick - currentTick, TICK_PER_BEAT, currentBPM),
-                sound: 'tapPerfect'
-              }
-            : null
-  
-          const connectEvent = 
-            {
-              time: tick2secs(Math.max(head.tick, currentTick) - currentTick, TICK_PER_BEAT, currentBPM),
-              sound: !critical ? 'connect' : 'connectCritical',
-              loopTo: tick2secs(tail.tick - currentTick, TICK_PER_BEAT, currentBPM)
-            }
-    
-          const tailEvent = 
-            {
-              time: tick2secs(tail.tick - currentTick, TICK_PER_BEAT, currentBPM),
-              sound: tail.flick !== 'no'
-                  ? (critical || tail.critical ? 'flickCritical' : 'flick')
-                  : 'tapPerfect'
-            }
-  
-          const stepEvents = steps
-            .filter(({ tick }) => tick >= currentTick)
-            .reduce((a, { tick, diamond }) => {
-              if (diamond) {
-                a.push({
-                  time: tick2secs(tick - currentTick, TICK_PER_BEAT, currentBPM),
-                  sound: !critical ? 'tick' : 'tickCritical'
-                })
-              }
-              return a
-            }, [] as AudioEvent[])
-  
-          return [...acc, connectEvent, headEvent, tailEvent, ...stepEvents]
-            .filter(x => x !== null) as Array<AudioEvent>
-        }, [] as AudioEvent[])
-  
-        events = [...events, ...singleEvents, ...slideEvents]
-          .filter((event) => event)
-          .sort(({ time: a }, { time: b }) => a - b)
+      let accumulatedTime = 0
+      const bpmAreas = [
+          [currentTick, getBPM(currentTick)],
+          ...$sortedBPMs.filter(([tick]) => tick > currentTick)
+        ].map(([currTick, bpm], ind, arr) => {
+          const nextTick = ind < arr.length - 1 ? arr[ind + 1][0] : Infinity
+          const result = {
+            fromTick: currTick,
+            toTick: nextTick,
+            bpm,
+            fromTime: accumulatedTime
+          }
+          accumulatedTime += tick2secs(nextTick - currTick, TICK_PER_BEAT, bpm)
+          return result
+        })
+
+      const noteEvents = bpmAreas.flatMap(
+        ({ fromTick, toTick, bpm, fromTime }) => generateEvents(fromTick, toTick, bpm, fromTime)
+      )
+
+      function accumulate(tick: number) {
+        const nearestBPMTick = $sortedBPMs.map(([tick]) => tick).closest(tick) ?? 0
+        const nearestBPMStartFrom = bpmAreas.find(({ fromTick }) => fromTick === nearestBPMTick)?.fromTime ?? 0
+        const lastDuration = tick2secs(tick - Math.max(nearestBPMTick, currentTick), TICK_PER_BEAT, bpms.get(nearestBPMTick) ?? 0)
+        return nearestBPMStartFrom + lastDuration
+      }
+
+      const connectEvents = slides
+        .filter(({ tail }) => tail.tick > currentTick)
+        .map(({ head, tail, critical }) => ({
+          time: accumulate(Math.max(head.tick, currentTick)),
+          sound: !critical ? 'connect' : 'connectCritical',
+          loopTo: accumulate(tail.tick)
+        }) as AudioEvent)
+
+      events = [...events, ...noteEvents, ...connectEvents].sort(({ time: a }, { time: b }) => a - b)
     }
 
     return new AudioScheduler(audioContext, audioNodes, {
