@@ -165,7 +165,7 @@ export function convertScoreData(score: SusScore): Score {
             lane,
             width,
             flick,
-            critical: critical || criticalMods.has(key)
+            critical: criticalMods.has(key)
           }
           break
         }
@@ -251,13 +251,13 @@ export function exportScoreData(score: Score): SusScore {
       width: head.width,
       type: 1
     })
-    tapNotes.push({
-      tick: head.tick,
-      lane: head.lane,
-      width: head.width,
-      type: 1
-    })
     if (head.easeType) {
+      tapNotes.push({
+        tick: head.tick,
+        lane: head.lane,
+        width: head.width,
+        type: 1
+      })
       directionalNotes.push({
         tick: head.tick,
         lane: head.lane,
@@ -291,6 +291,12 @@ export function exportScoreData(score: Score): SusScore {
         })
       }
       if (easeType) {
+        tapNotes.push({
+          tick,
+          lane,
+          width,
+          type: 1
+        })
         directionalNotes.push({
           tick,
           lane,
@@ -306,12 +312,6 @@ export function exportScoreData(score: Score): SusScore {
       lane: tail.lane,
       width: tail.width,
       type: 2
-    })
-    tapNotes.push({
-      tick: tail.tick,
-      lane: tail.lane,
-      width: tail.width,
-      type: 1
     })
     if (tail.flick !== 'no') {
       directionalNotes.push({
