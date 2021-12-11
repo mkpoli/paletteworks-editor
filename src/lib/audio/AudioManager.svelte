@@ -69,6 +69,9 @@
         bgmBuffer = buffer
         bgmLoading = false
         musicDuration = buffer.duration
+        if (!paused) {
+          restartScheduler()
+        }
       })
     } else {
       bgmBuffer = null
