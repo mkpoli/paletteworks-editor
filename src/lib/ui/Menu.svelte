@@ -11,7 +11,8 @@
   .menu-container {
     padding: 0.25em 0;
 
-    background: #434758;
+    background: rgba(67, 71, 88, 0.75);
+    backdrop-filter: blur(19px);
     border-radius: 0.4em;
     box-shadow: 2px 2px 4px 0 #000;
 
