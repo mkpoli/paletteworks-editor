@@ -20,6 +20,9 @@
     --input-border-radius: 10px;
     --input-padding: 0.75em 1em;
 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
     color-scheme: dark;
     font-family: 'M PLUS 1p', sans-serif;
     overflow: hidden;
