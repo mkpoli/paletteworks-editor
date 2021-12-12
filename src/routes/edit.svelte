@@ -893,6 +893,7 @@
   on:playpause={onplaypause}
   on:duplicate={() => { duplicateNotes($selectedNotes) }}
   on:flip={() => { flipNotes($selectedNotes) }}
+  on:flippaste={() => { onpaste(); flipNotes($selectedNotes) }}
   on:selectall={onselectall}
   on:increaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotateNext(snapTo) ?? SNAPTO_DEFAULT }}
   on:decreaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotatePrev(snapTo) ?? SNAPTO_DEFAULT }}

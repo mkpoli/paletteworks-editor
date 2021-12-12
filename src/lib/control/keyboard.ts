@@ -7,6 +7,7 @@ export const KEYBOARD_SHORTCUTS  = {
   copy: [['ctrl', 'c']],
   cut: [['ctrl', 'x']],
   paste: [['ctrl', 'v']],
+  flippaste: [['ctrl', 'alt', 'v']],
   undo: [['ctrl', 'z']],
   redo: [['ctrl', 'y'], ['ctrl', 'shift', 'z']],
   save: [['ctrl', 's']],
