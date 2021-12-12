@@ -20,7 +20,7 @@ specifiers:
   svelte: ^3.43.0
   svelte-check: ^2.0.0
   svelte-preprocess: ^4.0.0
-  tippy.js: ^6.3.2
+  tippy.js: ^6.3.7
   tslib: ^2.0.0
   typescript: ^4.0.0
 
@@ -44,7 +44,7 @@ devDependencies:
   svelte: 3.43.0
   svelte-check: 2.2.6_svelte@3.43.0
   svelte-preprocess: 4.9.5_svelte@3.43.0+typescript@4.4.3
-  tippy.js: 6.3.2
+  tippy.js: 6.3.7
   tslib: 2.3.1
   typescript: 4.4.3
 
@@ -2141,8 +2141,8 @@ packages:
     resolution: {integrity: sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=}
     dev: true
 
-  /tippy.js/6.3.2:
-    resolution: {integrity: sha512-35XVQI7Zl/jHZ51+8eHu/vVRXBjWYGobPm5G9FxOchj4r5dWhghKGS0nm0ARUKZTF96V7pPn7EbXS191NTwldw==}
+  /tippy.js/6.3.7:
+    resolution: {integrity: sha512-E1d3oP2emgJ9dRQZdf3Kkn0qJgI6ZLpyS5z6ZkY1DF3kaQaBsGZsndEpHwx+eC+tYM41HaSNvNtLx8tU57FzTQ==}
     dependencies:
       '@popperjs/core': 2.10.2
     dev: true
