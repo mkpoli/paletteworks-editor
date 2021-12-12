@@ -62,7 +62,7 @@
       <MenuDivider/>
       <MenuItem icon="mdi:file-export-outline" text="譜面保存 (&S)" on:click={() => dispatch('export')} tooltip={{ description: 'SUSファイルに出力', keys: KEYBOARD_SHORTCUTS.export, placement: 'right'}}/>
       <MenuDivider/>
-      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&E)" on:click={() => dispatch('image')} tooltip={{ description: '譜面の画像化', keys: KEYBOARD_SHORTCUTS.image, placement: 'right'}}/>
+      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&I)" on:click={() => dispatch('image')} tooltip={{ description: '譜面の画像化', keys: KEYBOARD_SHORTCUTS.image, placement: 'right'}}/>
     </MenuItem>
     <MenuDivider/>
       <MenuItem icon="ic:sharp-edit" text="編集 (&E)">
