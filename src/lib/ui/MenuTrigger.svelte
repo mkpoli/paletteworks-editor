@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
-
-  import type { Instance as TippyInstance } from 'tippy.js'
+  // Functions
   import tippy from 'tippy.js'
+  import { createEventDispatcher, onMount } from 'svelte'
+
+  // Types
+  import type { Instance as TippyInstance } from 'tippy.js'
 
   export let menu: HTMLDivElement
 
+  // Variables
   let instance: TippyInstance
 
   export let contextArea: HTMLElement | undefined = undefined

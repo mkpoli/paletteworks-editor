@@ -1,12 +1,15 @@
-<script lang="ts">  
+<script lang="ts">
+  // UI Components
   import Icon from '@iconify/svelte'
   import Button from '$lib/ui/Button.svelte'
   import Menu from '$lib/ui/Menu.svelte'
   import MenuTrigger from '$lib/ui/MenuTrigger.svelte'  
   import Wrapper from '$lib/ui/Wrapper.svelte'
 
+  // Types
   import type { Placement } from 'tippy.js'
-  
+
+  // Props
   export let icon: string
   export let text: string
   export let href: string | undefined = undefined
@@ -20,6 +23,7 @@
     keys?: Readonly<Readonly<string[]>[]> 
   } | undefined = undefined
 
+  // Functions
   const hasSubMenu: boolean = !!$$slots.default
   let subMenu: HTMLDivElement
 
@@ -53,7 +57,6 @@
       altPressed = false
     }
   }
-    
 </script>
 
 <Wrapper
