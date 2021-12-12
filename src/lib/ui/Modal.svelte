@@ -29,7 +29,8 @@
   let trap: FocusTrap
   onMount(() => {
     trap = focusTrap.createFocusTrap(container, {
-      fallbackFocus: container
+      fallbackFocus: container,
+      clickOutsideDeactivates: true,
     })
   })
 </script>
