@@ -5,6 +5,9 @@
     closed: void,
   }>()
 
+  import hotkeys from 'hotkeys-js'
+  hotkeys('esc', () => { opened = false })
+ 
   export let opened: boolean
   $: if (opened) {
     tick().then(() => {
