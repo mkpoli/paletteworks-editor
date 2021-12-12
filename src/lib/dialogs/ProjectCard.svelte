@@ -22,7 +22,7 @@
   
   let menu: HTMLDivElement
 
-  let container: HTMLDivElement
+  export let container: HTMLDivElement
 
   function renamed() {
     renaming = false
@@ -51,7 +51,6 @@
 
 <div
   class="project"
-  class:selected
   on:focus={() => { dispatch('select') }}
   tabIndex=0
   bind:this={container}
@@ -129,8 +128,9 @@
   .project:hover {
     color: var(--color-text-main);
   }
-
-  .project.selected {
+  
+  .project:focus {
+    outline: none;
     color: var(--color-selected);
   }
 
@@ -152,7 +152,7 @@
     border: 2px solid var(--color-text-main);
   }
 
-  .project.selected .preview {
+  .project:focus .preview {
     border: 2px solid var(--color-selected);
     box-shadow: 0 0 6px 0 var(--color-selected);
   }

@@ -9,7 +9,7 @@
   import ProjectCard from '$lib/dialogs/ProjectCard.svelte'
 
   // Events
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher, tick } from "svelte"
   const dispatch = createEventDispatcher<{
     open: { project: Project },
     new: void,
@@ -34,18 +34,73 @@
     }
   }
 
+  let container: HTMLDivElement
+
+  import hotkeys from 'hotkeys-js'
+
+  hotkeys('enter', (event) => {
+    if (opened && selected !== null && container.contains(document.activeElement)) {
+      event.preventDefault()
+      dispatch('open', { project: selected })
+      opened = false
+    }
+  })
+
+  hotkeys('left, right, delete', (event, handler) => {
+    event.preventDefault()
+    if (opened && selected !== null && filtered.includes(selected)) {
+      switch (handler.key) {
+        case 'left':
+          elements[projects.indexOf(filtered.rotatePrev(selected))].focus()
+          break
+        case 'right':
+          elements[projects.indexOf(filtered.rotateNext(selected))].focus()
+          break
+        case 'delete':
+          ondelete()
+      }
+    }
+  })
+
+  function ondelete() {
+    if (selected && confirm('本当に削除しますか？')) {
+      dispatch('delete', selected.id)
+    }
+  }
+
   let selected: Project | null = null
 
   let searchKeyword: string
+
+  const elements: HTMLDivElement[] = []
+
+  let firstOpen: boolean = true
+  
+  $: if (elements.length !== 0) {
+    if (firstOpen) {
+      tick().then(() => {
+        console.log('firstOpen', { elements })
+        elements[0].focus()
+      })
+      firstOpen = false
+    }
+  }
+
+  async function ondialogopened() {
+    const project = projects.find(project => project.id === currentProject?.id) ?? null
+    if (project) {
+      elements[projects.indexOf(project)]?.focus()
+    } else {
+      elements[0]?.focus()
+    }
+  }
 
   $: filtered = projects.filter(({ name }) => searchKeyword ? name.toLocaleLowerCase().includes(searchKeyword.toLocaleLowerCase()) : true)
 </script>
 
 <Modal
   bind:opened
-  on:opened={() => {
-    selected = projects.find(project => project.id === currentProject?.id) ?? null
-  }}
+  on:opened={ondialogopened}
   on:closed={() => {
     if (currentProject === null) {
       opened = true
@@ -73,8 +128,8 @@
       <Icon slot="head" icon="ic:outline-search"/>
       <span slot="tail">{filtered?.length ?? 0}/{projects?.length ?? 0}</span>
     </TextInput>
-    <div class="project-container"> 
-      {#each filtered as project}
+    <div class="project-container" bind:this={container}> 
+      {#each filtered as project, index}
         <ProjectCard
           {project}
           selected={selected === project}
@@ -85,14 +140,11 @@
             dispatch('open', { project })
             opened = false
           }}
-          on:delete={() => {
-            if (selected && confirm('本当に削除しますか？')) {
-              dispatch('delete', selected.id)
-            }
-          }}
+          on:delete={ondelete}
           on:select={() => {
             selected = project
           }}
+          bind:container={elements[index]}
         />
       {/each}
     </div>
