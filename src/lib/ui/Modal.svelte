@@ -1,9 +1,13 @@
 <script lang="ts">
-  import { createEventDispatcher, tick } from 'svelte'
+  import { createEventDispatcher, onMount, tick } from 'svelte'
   const dispatch = createEventDispatcher<{
     opened: void,
     closed: void,
   }>()
+
+  import * as focusTrap from 'focus-trap'
+
+  import type { FocusTrap } from 'focus-trap'
 
   import hotkeys from 'hotkeys-js'
   hotkeys('esc', () => { opened = false })
@@ -12,15 +16,26 @@
   $: if (opened) {
     tick().then(() => {
       dispatch('opened')
+      trap.activate()
     })
   } else {
     tick().then(() => {
       dispatch('closed')
+      trap.deactivate()
     })
   }
+
+  let container: HTMLDivElement
+  let trap: FocusTrap
+  onMount(() => {
+    console.log('container', container)
+    trap = focusTrap.createFocusTrap(container, {
+      fallbackFocus: container
+    })
+  })
 </script>
 
-<div class="modal-container" class:hidden={!opened}>
+<div class="modal-container" class:hidden={!opened} bind:this={container} tabindex="-1">
   <div class="modal-overlay" aria-hidden={true} on:click={() => { opened = false }}></div>
   <div class="modal-dialog">
     {#if opened}
