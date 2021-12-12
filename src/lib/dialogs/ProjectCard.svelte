@@ -94,19 +94,19 @@
   <MenuTrigger contextArea={container} menu={menu} />
   <MenuItem
     icon="mdi:open-in-new"
-    text="開く"
+    text="開く (&O)"
     on:click={() => { dispatch('open') }}
   />
   <MenuDivider/>
   <MenuItem
     icon="ic:sharp-edit"
-    text="リネーム"
+    text="リネーム (&R)"
     on:click={async () => { renaming = true; await tick(); renameInput.focus() }}
   />
   <MenuDivider/>
   <MenuItem
     icon="ic:delete"
-    text="削除"
+    text="削除 (&D)"
     on:click={() => { dispatch('delete') }}
   />
 </Menu>

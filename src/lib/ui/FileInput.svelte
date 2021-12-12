@@ -59,9 +59,9 @@
 <Menu bind:menu>
   <MenuTrigger slot="trigger" contextArea={container} {menu}/>
   {#if file}
-    <MenuItem text="ダウンロード" icon="mdi:download" on:click={() => { if (file) download(file, file.name) }} />
+    <MenuItem text="ダウンロード (&S)" icon="mdi:download" on:click={() => { if (file) download(file, file.name) }} />
     <MenuDivider/>
-    <MenuItem text="削除" icon="mdi:delete" on:click={() => { if (confirm('本当に削除しますか？')) { input.value = ''; file = null } }} />
+    <MenuItem text="削除 (&D)" icon="mdi:delete" on:click={() => { if (confirm('本当に削除しますか？')) { input.value = ''; file = null } }} />
   {/if}
 </Menu>
 

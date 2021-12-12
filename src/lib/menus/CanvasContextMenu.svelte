@@ -95,7 +95,7 @@
     disabled={!$clipboardSingles.length && !$clipboardSlides.length}
   />
   <MenuDivider/>
-  <MenuItem icon="ic:baseline-select-all" text="すべて選択" on:click={() => dispatch('selectall')}/>
+  <MenuItem icon="ic:baseline-select-all" text="すべて選択 (&A)" on:click={() => dispatch('selectall')}/>
   {#if $selectedNotes.length || currentNote}
     <MenuDivider/>
     <MenuItem icon="mdi:content-duplicate" text="複製 (&D)" on:click={() => dispatchNotes('duplicate', currentNote)} />
