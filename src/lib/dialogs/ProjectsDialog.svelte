@@ -95,7 +95,7 @@
     }
   }
 
-  $: filtered = projects.filter(({ name }) => searchKeyword ? name.toLocaleLowerCase().includes(searchKeyword.toLocaleLowerCase()) : true)
+  $: filtered = [...projects.filter(({ name }) => searchKeyword ? name.toLocaleLowerCase().includes(searchKeyword.toLocaleLowerCase()) : true)].reverse()
 </script>
 
 <Modal
