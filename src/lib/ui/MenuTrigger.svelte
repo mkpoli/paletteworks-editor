@@ -1,12 +1,17 @@
 <script lang="ts">
   // Functions
   import tippy from 'tippy.js'
-  import { createEventDispatcher, onMount } from 'svelte'
+  import { createEventDispatcher, onMount, getContext } from 'svelte'
 
   // Types
   import type { Instance as TippyInstance } from 'tippy.js'
+  import type { MenuInfo } from './Menu.svelte'
 
+  // Props
   export let menu: HTMLDivElement
+
+  // Contexts
+  const menuInfo = getContext<MenuInfo>('menu-info')
 
   // Variables
   let instance: TippyInstance
@@ -19,6 +24,14 @@
     hidden: void
   }>()
 
+  function onShow() {
+    menuInfo.opened = true
+  }
+
+  function onHidden() {
+    menuInfo.opened = false
+  }
+
   let trigger: HTMLButtonElement
   onMount(() => {
     if (!contextArea) {
@@ -29,7 +42,10 @@
         role: 'menu',
         placement: !sub ? 'top' : 'right-start',
         offset: [-4, 5],
-        delay: [0, 0]
+        delay: [0, 0],
+        onShow,
+        onHidden,
+        appendTo: document.body
       })
     }
   })
@@ -44,8 +60,11 @@
       placement: 'right-start',
       trigger: 'manual',
       interactive: true,
+      role: 'menu',
       offset: [0, 0],
       delay: [0, 0],
+      onShow,
+      onHidden,
       onHide() {
         dispatch('hidden')
       }

@@ -11,6 +11,7 @@
   export let height: string | undefined = undefined
   export let width: string | undefined = undefined
   export let loading: boolean = false
+  export let element: HTMLButtonElement | HTMLAnchorElement | undefined = undefined
   export let tooltip: {
     placement: Placement
     offset?: [number, number]
@@ -26,7 +27,7 @@
   {...tooltip}
 >
   {#if href === undefined}
-    <button on:click class={$$props.class} style={$$props.style} {disabled}>
+    <button on:click class={$$props.class} style={$$props.style} {disabled} bind:this={element}>
       {#if icon}
         {#if loading}
           <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />
@@ -37,7 +38,7 @@
       <slot/>
     </button>
   {:else}
-    <a class={$$props.class} style={$$props.style} {href} class:disabled target="_blank" on:click>
+    <a class={$$props.class} style={$$props.style} {href} class:disabled target="_blank" on:click bind:this={element}>
       {#if icon}
         {#if loading}
           <Icon icon="eos-icons:loading" height={height ?? "1em"} width={width ?? "1em"} class="loading" />

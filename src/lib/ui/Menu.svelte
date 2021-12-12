@@ -1,5 +1,16 @@
+<script lang="ts" context="module">
+  export type MenuInfo = {
+    opened: boolean,
+  }
+</script>
+
 <script lang="ts">
   export let menu: HTMLDivElement
+  import { setContext } from 'svelte'
+  const menuInfo: MenuInfo = {
+    opened: false,
+  }
+  setContext<MenuInfo>('menu-info', menuInfo)
 </script>
 
 <slot name="trigger"></slot>

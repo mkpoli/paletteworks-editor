@@ -2,11 +2,10 @@
   // UI Components
   import Icon from '@iconify/svelte'
   import Button from '$lib/ui/Button.svelte'
-  import Menu from '$lib/ui/Menu.svelte'
-  import MenuTrigger from '$lib/ui/MenuTrigger.svelte'  
-  import Wrapper from '$lib/ui/Wrapper.svelte'
+  import MenuWrapper from '$lib/ui/MenuWrapper.svelte'
 
   // Types
+  import type { MenuInfo } from '$lib/ui/Menu.svelte'
   import type { Placement } from 'tippy.js'
 
   // Props
@@ -24,11 +23,13 @@
   } | undefined = undefined
 
   // Functions
+  import hotkeys from 'hotkeys-js'
+  import { getContext } from 'svelte'
+  const menuInfo = getContext<MenuInfo>('menu-info')
+
   const hasSubMenu: boolean = !!$$slots.default
   let subMenu: HTMLDivElement
 
-  $: shortcutKey = text.match(/&([A-Z])/)?.[1]
-  
   let altPressed: boolean
   
   import { createEventDispatcher } from "svelte"
@@ -42,28 +43,44 @@
     dispatch('click')
   }
 
+  let shortcutKey: string | undefined
+  let lastShortcut: string | undefined
+  const handle = (event: KeyboardEvent) => {
+    console.log('handling', menuInfo)
+    if (menuInfo.opened) {
+      event.preventDefault()
+      element.click()
+    }
+  }
+  function registerShortcut(text: string) {
+    shortcutKey = text.match(/&([A-Z])/)?.[1]
+    if (lastShortcut) hotkeys.unbind(lastShortcut, handle)
+    if (shortcutKey) {
+      lastShortcut = `alt+${shortcutKey.toLowerCase()}`
+      hotkeys(lastShortcut, handle)
+    }
+  }
+
+  $: registerShortcut(text)
+
   function onkeydown(event: KeyboardEvent) {
     if (event.key == 'Alt') {
       altPressed = true
     }
-
-    if (shortcutKey && event.altKey && shortcutKey.toLowerCase() === event.key) {
-      event.preventDefault()
-      onclick()
-    }
   }
+
   function onkeyup(event: KeyboardEvent) {
     if (event.key == 'Alt') {
       altPressed = false
     }
   }
+
+  let element: HTMLButtonElement | HTMLAnchorElement
 </script>
 
-<Wrapper
-  component={MenuTrigger}
+<MenuWrapper
   wrap={hasSubMenu}
   menu={subMenu}
-  sub={true}
 >
   <div
     class="menu-item"
@@ -76,6 +93,7 @@
       on:click={onclick}
       {href}
       {tooltip}
+      bind:element
     >
       <div>{@html text.replace(/&([A-Z])/, `<span style="text-decoration: ${altPressed ? 'underline' : 'none'};">$1</span>`)}</div>
       {#if hasSubMenu}
@@ -94,13 +112,8 @@
       {/if}
     </Button>
   </div>
-</Wrapper>
-
-{#if hasSubMenu}
-  <Menu bind:menu={subMenu}>
-    <slot/>
-  </Menu>
-{/if}
+  <slot slot="menu"/>
+</MenuWrapper>
 
 <svelte:window
   on:keydown={onkeydown}
