@@ -35,7 +35,7 @@ class Database extends Dexie {
 export const db = new Database()
 
 // Projects as Store
-export const projects = liveQuery(async () => await db.projects.toArray())
+export const projects = liveQuery(async () => (await db.projects.toArray()).reverse())
 export const preferences = liveQuery(async () => ({
   ...DEFAULT_PREFERENCES,
   ...Object.fromEntries((await db.preferences.toArray()).map(({ key, value }) => [key, value]))
