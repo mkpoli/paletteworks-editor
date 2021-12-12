@@ -28,7 +28,6 @@
   let container: HTMLDivElement
   let trap: FocusTrap
   onMount(() => {
-    console.log('container', container)
     trap = focusTrap.createFocusTrap(container, {
       fallbackFocus: container
     })

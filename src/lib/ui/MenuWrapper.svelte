@@ -3,6 +3,7 @@
   import MenuTrigger from './MenuTrigger.svelte'
   export let wrap: boolean
   export let menu: HTMLDivElement
+  export let submenuOpened: boolean
 </script>
 
 {#if wrap}
@@ -14,6 +15,7 @@
       <MenuTrigger
         {menu}
         sub={true}
+        bind:opened={submenuOpened}
       >
         <slot />
       </MenuTrigger>

@@ -24,7 +24,7 @@
 
   // Functions
   import hotkeys from 'hotkeys-js'
-  import { getContext } from 'svelte'
+  import { getContext, onMount } from 'svelte'
   const menuInfo = getContext<MenuInfo>('menu-info')
 
   const hasSubMenu: boolean = !!$$slots.default
@@ -35,6 +35,10 @@
   import { createEventDispatcher } from "svelte"
   const dispatch = createEventDispatcher()
   
+  onMount(() => {
+    menuInfo.items.push({ element, hasSubMenu })
+  })
+
   import { hideAll } from 'tippy.js'
   function onclick() {
     if (!hasSubMenu && checked === undefined) {
@@ -81,6 +85,7 @@
 <MenuWrapper
   wrap={hasSubMenu}
   menu={subMenu}
+  bind:submenuOpened={menuInfo.submenuOpened}
 >
   <div
     class="menu-item"
@@ -130,7 +135,19 @@
 
   .menu-item :global(button:hover:not([disabled])),
   .menu-item :global(a:hover:not(.disabled)) {
-    background-color: rgba(255, 255, 255, 0.25);
+    filter:
+      brightness(1.25)
+      drop-shadow(0 0 0.5em rgba(255, 255, 255, 1));
+    }
+    
+  .menu-item :global(button:focus-visible:not([disabled])),
+  .menu-item :global(a:focus-visible:not(.disabled)) {
+    filter:
+      brightness(1.25)
+      drop-shadow(0 0 0.5em rgba(255, 255, 255, 0.85));
+    color: #000;
+    outline: 2px solid #ffffff;
+    background: linear-gradient(122deg, #ffc107, #ff8b00);
   }
 
   .menu-item :global(button[disabled]),

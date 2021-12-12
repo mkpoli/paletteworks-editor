@@ -1,3 +1,11 @@
+<script lang="ts" context="module">
+  declare module 'tippy.js' {
+    interface Props {
+      hideOnPopperBlur: boolean
+    }
+  }
+</script>
+
 <script lang="ts">
   // Functions
   import tippy from 'tippy.js'
@@ -18,26 +26,72 @@
 
   export let contextArea: HTMLElement | undefined = undefined
   export let sub: boolean = false
+  export let opened: boolean = false
 
   const dispatch = createEventDispatcher<{
     contextmenu: void,
     hidden: void
+    right: void
   }>()
 
   function onShow() {
     menuInfo.opened = true
+    opened = true
+    trap.activate()
   }
 
   function onHidden() {
     menuInfo.opened = false
+    opened = false
+    trap.deactivate()
   }
 
-  let trigger: HTMLButtonElement
+  import * as focusTrap from 'focus-trap'
+  import type { FocusTrap } from 'focus-trap'
+
+  let trap: FocusTrap
+
+  $: if (menu) {
+    trap = focusTrap.createFocusTrap(menu, { fallbackFocus: menu })
+  }
+
+  import hotkeys from 'hotkeys-js'
+  hotkeys('esc,left', (event) => {
+    if (instance && opened && !menuInfo.submenuOpened) {
+      event.preventDefault()
+      instance.hide()
+    }
+  })
+  hotkeys('right', (event) => {
+    if (instance && opened && !menuInfo.submenuOpened && document.activeElement && menuInfo.items.some(({ element, hasSubMenu }) => hasSubMenu && element === document.activeElement)) {
+      event.preventDefault()
+      ;(document.activeElement as HTMLButtonElement).click()
+    }
+  })
+  hotkeys('up,down', (event, handler) => {
+    if (instance && opened && !menuInfo.submenuOpened && document.activeElement && menu.contains(document.activeElement)) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      const elements = menuInfo.items.map(({ element }) => element)
+      console.log(elements)
+      switch (handler.key) {
+        case 'up':
+          elements.rotatePrev(document.activeElement as HTMLButtonElement | HTMLAnchorElement).focus()
+          break
+        case 'down':
+          elements.rotateNext(document.activeElement as HTMLButtonElement | HTMLAnchorElement).focus()
+          break
+      }
+    }
+  })
+
+  let trigger: HTMLDivElement
   onMount(() => {
     if (!contextArea) {
       // Normal Menu
       instance = tippy(trigger, {
-        trigger: 'click focus',
+        trigger: 'click',
         interactive: true,
         role: 'menu',
         placement: !sub ? 'top' : 'right-start',
@@ -45,7 +99,7 @@
         delay: [0, 0],
         onShow,
         onHidden,
-        appendTo: document.body
+        appendTo: document.body,
       })
     }
   })
@@ -90,18 +144,13 @@
 </script>
 
 {#if !contextArea}
-  <button bind:this={trigger} class={$$props.class}>
+  <div bind:this={trigger} class={$$props.class}>
     <slot/>
-  </button>
+  </div>
 {/if}
 
 <style>
-  button {
-    appearance: none;
-    background: none;
-    border: none;
-    color: inherit;
-    padding: 0;
+  div {
     width: 100%;
   }
 </style>

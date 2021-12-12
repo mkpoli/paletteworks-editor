@@ -49,10 +49,12 @@
 
 <div class="toolbox-container">
   <Menu bind:menu={menu}>
-    <MenuTrigger class="menu-trigger" {menu} slot="trigger">
-      <Icon icon="custom:logo" width=36 />
-      <span class="title">PaletteWorks</span>
-      <Icon icon="ph:caret-down-fill" width=15 />
+    <MenuTrigger {menu} slot="trigger">
+      <button class="menu-trigger">
+        <Icon icon="custom:logo" width=36 />
+        <span class="title">PaletteWorks</span>
+        <Icon icon="ph:caret-down-fill" width=15 />
+      </button>
     </MenuTrigger>
 
     <MenuItem icon="ic:outline-insert-drive-file" text="ファイル (&F)">
@@ -137,7 +139,8 @@
     vertical-align: baseline;
   }
 
-  .toolbox-container :global(.menu-trigger) {
+  .toolbox-container .menu-trigger {
+    border: none;
     padding: 1em;
     display: flex;
     justify-content: center;
@@ -147,10 +150,11 @@
     font-size: 1em;
     gap: 0.5em;
     background: rgba(0, 0, 0, 0.025);
+    color: var(--color-text-main);
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.45);
   }
 
-  .toolbox-container :global(.menu-trigger:hover) {
+  .toolbox-container .menu-trigger:hover {
     filter: brightness(1.5);
   }
 

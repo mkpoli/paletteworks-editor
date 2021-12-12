@@ -1,6 +1,11 @@
 <script lang="ts" context="module">
   export type MenuInfo = {
     opened: boolean,
+    submenuOpened: boolean,
+    items: {
+      element: HTMLButtonElement | HTMLAnchorElement,
+      hasSubMenu: boolean,
+    }[]
   }
 </script>
 
@@ -9,6 +14,8 @@
   import { setContext } from 'svelte'
   const menuInfo: MenuInfo = {
     opened: false,
+    submenuOpened: false,
+    items: []
   }
   setContext<MenuInfo>('menu-info', menuInfo)
 </script>
