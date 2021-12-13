@@ -195,6 +195,7 @@
     })
 
     mainContainer = new PIXI.Container()
+    mainContainer.sortableChildren = true
     app.stage.addChild(mainContainer)
 
     app.stage.interactive = true
