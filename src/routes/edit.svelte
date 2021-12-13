@@ -455,6 +455,8 @@
   function initScore() {
     ({ metadata, score: { singles, slides, bpms, fever, skills }} = emptySUSData)
     music = null
+    $mutationHistory = []
+    $undoneHistory = []
   }
   
   import { db, preferences } from '$lib/database'
@@ -497,6 +499,8 @@
       savecurrent(`${currentProject.name} として保存されました。`)
     }
     ({ metadata, score: { bpms, singles, slides, fever, skills }, music } = project)
+    $mutationHistory = []
+    $undoneHistory = []
     if (skills === undefined) skills = new Set()
     currentProject = project
   }
