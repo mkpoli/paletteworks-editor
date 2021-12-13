@@ -457,6 +457,8 @@
     music = null
     $mutationHistory = []
     $undoneHistory = []
+    scrollTick = 0
+    currentTick = 0
   }
   
   import { db, preferences } from '$lib/database'
@@ -498,9 +500,8 @@
     if (currentProject) {
       savecurrent(`${currentProject.name} として保存されました。`)
     }
+    initScore();
     ({ metadata, score: { bpms, singles, slides, fever, skills }, music } = project)
-    $mutationHistory = []
-    $undoneHistory = []
     if (skills === undefined) skills = new Set()
     currentProject = project
   }
