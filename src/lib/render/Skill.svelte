@@ -9,8 +9,8 @@
   import type PIXI from 'pixi.js'
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Constants
   import { LANE_AREA_WIDTH, MARGIN } from '$lib/consts'
@@ -28,7 +28,7 @@
   function drawSkills(skills: Set<number>, position: PositionManager) {
     [...skillSprites.entries()].forEach(([skill, sprite]) => {
       if (!skills.has(skill)) {
-        app.stage.removeChild(sprite)
+        mainContainer.removeChild(sprite)
         skillSprites.delete(skill)
       }
     })
@@ -39,7 +39,7 @@
       sprite.anchor.set(0, 0.5)
       sprite.x = MARGIN + LANE_AREA_WIDTH + SKILL_GAP
       sprite.y = position.calcY(skill)
-      app.stage.addChild(sprite)
+      mainContainer.addChild(sprite)
     })
   }
 </script>

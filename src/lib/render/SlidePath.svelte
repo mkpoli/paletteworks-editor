@@ -29,8 +29,8 @@
   let graphics: PIXI.Graphics
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   onMount(() => {
     graphics = new PIXI.Graphics()
@@ -42,11 +42,11 @@
         dispatch('dblclick')
       }
     })
-    app.stage.addChild(graphics)
+    mainContainer.addChild(graphics)
   })
 
   onDestroy(() => {
-    app.stage.removeChild(graphics)
+    mainContainer.removeChild(graphics)
   })
 
   $: graphics && $position && drawSlidePath(notes)

@@ -26,6 +26,7 @@
   // Contexts
   const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
       
   let container: HTMLDivElement
   let preview: HTMLCanvasElement
@@ -44,12 +45,12 @@
     })
     
     for (let i = 0; i < columns; i++) {
-      app.renderer.render(app.stage, {
+      app.renderer.render(mainContainer, {
         renderTexture, clear: false,
         transform: new PIXI.Matrix(
           RESOLUTION, 0, 0, RESOLUTION,
           i * COLUMN_WIDTH,
-          snap((i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION) + app.stage.pivot.y * RESOLUTION, measureHeight * RESOLUTION) + measureHeight * RESOLUTION - innerHeight * RESOLUTION) //fullHeight - 2 * innerHeight
+          snap((i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION) + mainContainer.pivot.y * RESOLUTION, measureHeight * RESOLUTION) + measureHeight * RESOLUTION - innerHeight * RESOLUTION) //fullHeight - 2 * innerHeight
       })
     }
     const canvas = app.renderer.plugins.extract.canvas(renderTexture)

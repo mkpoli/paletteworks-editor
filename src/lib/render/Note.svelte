@@ -26,9 +26,9 @@
   }
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Variables
   let instance: PIXI.NineSlicePlane
@@ -45,11 +45,11 @@
     instance.scale.y = 1
     instance.zIndex = zIndex
     instance.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
-    app.stage.addChild(instance)
+    mainContainer.addChild(instance)
   })
 
   onDestroy(() => {
-    app.stage.removeChild(instance)
+    mainContainer.removeChild(instance)
   })
   
   $: x = $position.calcMidX(lane, width)

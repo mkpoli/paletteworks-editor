@@ -12,19 +12,19 @@
   export let bpms: Map<number, number>
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Variables
   let graphics: PIXI.Graphics
 
   onMount(() => {
     graphics = new PIXI.Graphics()
-    app.stage.addChild(graphics)
+    mainContainer.addChild(graphics)
   })
 
   onDestroy(() => {
-    app.stage.removeChild(graphics)
+    mainContainer.removeChild(graphics)
   })
 
   $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBPMs($position, bpms)

@@ -18,32 +18,30 @@
   export let moving: boolean = false
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Stores
   import { selectedNotes } from '$lib/editing/selection'
 
   // Variables
-  let PIXI: typeof import('pixi.js')
   let container: PIXI.Container
   let graphics: PIXI.Graphics
 
   onMount(async () => {
-    PIXI = await import('pixi.js')
-
     container = new PIXI.Container()
     container.zIndex = 3
-    app.stage.addChild(container)
+    mainContainer.addChild(container)
     
     graphics = new PIXI.Graphics()
     graphics.zIndex = 2
-    app.stage.addChild(graphics)
+    mainContainer.addChild(graphics)
   })
 
   onDestroy(() => {
-    app.stage.removeChild(container)
-    app.stage.removeChild(graphics)
+    mainContainer.removeChild(container)
+    mainContainer.removeChild(graphics)
   })
 
   // Draw

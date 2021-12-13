@@ -14,9 +14,9 @@
   export let snapTo: number
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
   const fontLoaded = getContext<Writable<boolean>>('fontLoaded')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Variables
   let graphics: PIXI.Graphics
@@ -24,7 +24,7 @@
   onMount(async () => {
     graphics = new PIXI.Graphics()
     graphics.zIndex = -1
-    app.stage.addChild(graphics)
+    mainContainer.addChild(graphics)
   })
 
   $: if (graphics && $fontLoaded) {

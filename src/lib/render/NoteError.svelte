@@ -16,6 +16,7 @@
   // Contexts
   const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Variables
   let graphics: PIXI.Graphics
@@ -24,13 +25,13 @@
   onMount(() => {
     graphics = new PIXI.Graphics()
     graphics.zIndex = 5
-    app.stage.addChild(graphics)
+    mainContainer.addChild(graphics)
     app.ticker.add(changeAlpha)
   })
 
   onDestroy(() => {
     app.ticker.remove(changeAlpha)
-    app.stage.removeChild(graphics)
+    mainContainer.removeChild(graphics)
   })
 
   function changeAlpha(deltaT: number) {

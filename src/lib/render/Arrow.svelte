@@ -7,9 +7,9 @@
   import { getContext, onDestroy, onMount } from "svelte";
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Props
   export let critical: boolean
@@ -28,11 +28,11 @@
     sprite.anchor.y = 0.5
     sprite.scale.y = 0.25
     sprite.zIndex = zIndex
-    app.stage.addChild(sprite)
+    mainContainer.addChild(sprite)
   })
 
   onDestroy(() => {
-    app.stage.removeChild(sprite)
+    mainContainer.removeChild(sprite)
   })
   
   $: if (sprite) sprite.alpha = alpha

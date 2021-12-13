@@ -7,7 +7,7 @@
   import { dragging } from "$lib/editing/playhead"
 
   // Functions
-  import { getContext, onMount } from 'svelte'
+  import { getContext, onDestroy, onMount } from 'svelte'
 
   // Types
   import type PIXI from 'pixi.js'
@@ -19,6 +19,7 @@
   // Contexts
   const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Variables
   let graphics: PIXI.Graphics
@@ -40,7 +41,11 @@
     app.renderer.view.addEventListener('pointerup', () => {
       if ($dragging) $dragging = false
     })
-    app.stage.addChild(graphics)
+    mainContainer.addChild(graphics)
+  })
+
+  onDestroy(() => {
+    mainContainer.removeChild(graphics)
   })
 
   $: graphics && drawPlayhead($position.calcY(currentTick))

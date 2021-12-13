@@ -1,7 +1,7 @@
 <script lang="ts">
   import type PIXI from 'pixi.js'
   import COLORS from '$lib/colors'
-  import { getContext, onMount } from 'svelte'
+  import { getContext, onDestroy, onMount } from 'svelte'
 
   export let dragging: boolean
   export let rect: PIXI.Rectangle
@@ -9,13 +9,17 @@
   let graphics: PIXI.Graphics
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   onMount(() => {
     graphics = new PIXI.Graphics()
     graphics.zIndex = 9
-    app.stage.addChild(graphics)
+    mainContainer.addChild(graphics)
+  })
+
+  onDestroy(() => {
+    mainContainer.removeChild(graphics)
   })
 
   function draw(graphics: PIXI.Graphics, rect: PIXI.Rectangle, dragging: boolean) {

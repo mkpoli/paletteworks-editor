@@ -171,6 +171,8 @@
   const fontLoaded = writable(false)
   setContext('fontLoaded', fontLoaded)
 
+  let mainContainer: PIXI.Container
+
   onMount(async () => {
     // Initialise PIXI.js
     PIXI = await import('pixi.js')
@@ -191,6 +193,9 @@
     app.loader.add('font', '/fonts/Font.fnt').load(() => {
       $fontLoaded = true
     })
+
+    mainContainer = new PIXI.Container()
+    app.stage.addChild(mainContainer)
 
     app.stage.interactive = true
     const baseTexture = new PIXI.BaseTexture(spritesheetImage, {})
@@ -713,6 +718,8 @@
     />
     <Canvas
       {PIXI}
+      {app}
+      {mainContainer}
       {maxMeasure}
       {scrollMode}
       {scrollTick}
@@ -721,7 +728,6 @@
       {innerHeight}
       {visibility}
       {shiftKey}
-      bind:app
       bind:currentTick
       bind:paused
       bind:singles

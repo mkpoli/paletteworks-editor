@@ -34,9 +34,9 @@
   import { hasFlick } from '$lib/score/beatmap'
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
   const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Variables
   let graphics: PIXI.Graphics
@@ -45,14 +45,14 @@
 
   let isMounted: boolean = false
   onMount(() => {
-    container = new PIXI.Container
+    container = new PIXI.Container()
     container.alpha = 0.5
     container.zIndex = 4
-    app.stage.addChild(container)
+    mainContainer.addChild(container)
 
     graphics = new PIXI.Graphics()
     graphics.zIndex = 4
-    app.stage.addChild(graphics)
+    mainContainer.addChild(graphics)
 
     floating = new PIXI.Sprite()
     floating.anchor.set(0.5, 0.5)
@@ -78,7 +78,7 @@
   $: if (isMounted && $pointer && floating.visible) {
     switch (currentMode) {
       case 'mid':
-        container.setTransform($pointer.x, $pointer.y + app.stage.pivot.y)
+        container.setTransform($pointer.x, $pointer.y + mainContainer.pivot.y)
         break
     }
   }

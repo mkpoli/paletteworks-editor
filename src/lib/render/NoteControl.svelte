@@ -23,6 +23,7 @@
   // Contexts
   const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Event
   const dispatch = createEventDispatcher<{
@@ -108,7 +109,7 @@
     controlL.interactive = true
     controlL.addListener('pointerdown', onresizestart(false))
     controlL.cursor = 'ew-resize'
-    app.stage.addChild(controlL)
+    mainContainer.addChild(controlL)
 
     controlR = new PIXI.Graphics()
     controlR.zIndex = 5
@@ -116,13 +117,13 @@
     controlR.interactive = true
     controlR.addListener('pointerdown', onresizestart(true))
     controlR.cursor = 'ew-resize'
-    app.stage.addChild(controlR)
+    mainContainer.addChild(controlR)
 
     app.renderer.view.addEventListener('pointermove', onresizing)
 
     graphics = new PIXI.Graphics()
     graphics.zIndex = 4
-    app.stage.addChild(graphics)
+    mainContainer.addChild(graphics)
 
     middle = new PIXI.Container()
     middle.zIndex = 5
@@ -147,16 +148,16 @@
         dispatch('rightclick', { note })
       }
     })
-    app.stage.addChild(middle)
+    mainContainer.addChild(middle)
 
     app.renderer.view.addEventListener('pointermove', onmoving)
   })
 
   onDestroy(() => {
-    app.stage.removeChild(graphics)
-    app.stage.removeChild(middle)
-    app.stage.removeChild(controlL)
-    app.stage.removeChild(controlR)
+    mainContainer.removeChild(graphics)
+    mainContainer.removeChild(middle)
+    mainContainer.removeChild(controlL)
+    mainContainer.removeChild(controlR)
   })
 
   const SELECTION_MARGIN = 5

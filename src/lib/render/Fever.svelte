@@ -17,16 +17,15 @@
   export let fever: Fever
 
   // Contexts
-  const app = getContext<PIXI.Application>('app')
+  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
+  const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Variables
-  let PIXI: typeof import('pixi.js')
   let feverStart: PIXI.Sprite
   let feverEnd: PIXI.Sprite
   let graphics: PIXI.Graphics
 
   onMount(async () => {
-    PIXI = await import('pixi.js')
     const TEXTURE = PIXI.Texture.from(feverPNG)
 
     feverStart = new PIXI.Sprite(TEXTURE)
@@ -49,12 +48,12 @@
   }
 
   $: if (fever) {
-    app.stage.addChild(feverStart)
-    app.stage.addChild(feverEnd)
-    app.stage.addChild(graphics)
+    mainContainer.addChild(feverStart)
+    mainContainer.addChild(feverEnd)
+    mainContainer.addChild(graphics)
   } else {
-    app.stage.removeChild(feverStart)
-    app.stage.removeChild(feverEnd)
-    app.stage.removeChild(graphics)
+    mainContainer.removeChild(feverStart)
+    mainContainer.removeChild(feverEnd)
+    mainContainer.removeChild(graphics)
   }
 </script>

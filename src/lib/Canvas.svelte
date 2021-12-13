@@ -51,6 +51,7 @@
   // Props
   export let app: PIXI.Application
   export let PIXI: typeof import('pixi.js')
+  export let mainContainer: PIXI.Container
   export let currentTick: number
   export let maxMeasure: number
   export let snapTo: number
@@ -73,6 +74,7 @@
 
   setContext('app', app)
   setContext('PIXI', PIXI)
+  setContext('mainContainer', mainContainer)
 
   $: measureHeight = MEASURE_HEIGHT * zoom
 
