@@ -18,7 +18,6 @@
   export let width: number
   export let flick: Flick
   export let alpha: number = 1
-  export let zIndex: number = 3
 
   let sprite: PIXI.Sprite
 
@@ -27,7 +26,7 @@
     sprite.anchor.x = 0.5
     sprite.anchor.y = 0.5
     sprite.scale.y = 0.25
-    sprite.zIndex = zIndex
+    sprite.zIndex = 4
     mainContainer.addChild(sprite)
   })
 
