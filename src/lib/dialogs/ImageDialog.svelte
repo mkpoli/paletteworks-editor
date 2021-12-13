@@ -15,7 +15,7 @@
   import { getContext } from 'svelte'
   import { download } from '$lib/basic/file'
   import { clamp, snap } from '$lib/basic/math'
-  import { position } from '$lib/position'
+  import { position, scrollY } from '$lib/position'
 
   // Props
   export let opened: boolean
@@ -50,7 +50,7 @@
         transform: new PIXI.Matrix(
           RESOLUTION, 0, 0, RESOLUTION,
           i * COLUMN_WIDTH,
-          snap((i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION) + mainContainer.pivot.y * RESOLUTION, measureHeight * RESOLUTION) + measureHeight * RESOLUTION - innerHeight * RESOLUTION) //fullHeight - 2 * innerHeight
+          snap((i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION) + $scrollY * RESOLUTION, measureHeight * RESOLUTION) + measureHeight * RESOLUTION - innerHeight * RESOLUTION) //fullHeight - 2 * innerHeight
       })
     }
     const canvas = app.renderer.plugins.extract.canvas(renderTexture)

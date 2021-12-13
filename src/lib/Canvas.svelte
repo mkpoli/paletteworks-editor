@@ -26,7 +26,7 @@
   import { clamp, snap } from '$lib/basic/math'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/editing/selection'
-  import { inside } from '$lib/position'
+  import { inside, scrollY } from '$lib/position'
 
   // Score Components
   import Background from '$lib/render/Background.svelte'
@@ -102,7 +102,9 @@
   // -- SCROLLING & ZOOMING --
 
   // Camera follow scroll position
-  $: app.stage.pivot.y = MARGIN_BOTTOM - scrollTick / TICK_PER_MEASURE * measureHeight
+
+  $: $scrollY = MARGIN_BOTTOM - scrollTick / TICK_PER_MEASURE * measureHeight
+  $: mainContainer.pivot.y = $scrollY
 
   // Auto scroll when playing music
   $: if (!paused) {
@@ -253,8 +255,8 @@
         case 'select': {
           dragging = true
 
-          pointA = new PIXI.Point($pointer.x, $pointer.y + app.stage.pivot.y)
-          pointB = new PIXI.Point($pointer.x, $pointer.y + app.stage.pivot.y)
+          pointA = new PIXI.Point($pointer.x, $pointer.y + $scrollY)
+          pointB = new PIXI.Point($pointer.x, $pointer.y + $scrollY)
 
           if (!shiftKey) {
             selectedNotes.set([])
@@ -292,7 +294,7 @@
       $pointer = { x, y }
 
       if (dragging && currentMode === 'select') {
-        pointB = new PIXI.Point($pointer.x, $pointer.y + app.stage.pivot.y)
+        pointB = new PIXI.Point($pointer.x, $pointer.y + $scrollY)
       }
 
       if (draggingSlide !== null && currentMode === 'slide') {

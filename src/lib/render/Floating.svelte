@@ -1,6 +1,6 @@
 <script lang="ts">
   // Imports
-  import { placing, position } from '$lib/position'
+  import { placing, position, scrollY } from '$lib/position'
   import { getContext, onMount } from 'svelte'
 
   // Types
@@ -75,10 +75,10 @@
   }
 
   // Update floating position
-  $: if (isMounted && $pointer && floating.visible) {
+  $: if (isMounted && $pointer && $scrollY && floating.visible) {
     switch (currentMode) {
       case 'mid':
-        container.setTransform($pointer.x, $pointer.y + mainContainer.pivot.y)
+        container.setTransform($pointer.x, $pointer.y + $scrollY)
         break
     }
   }
