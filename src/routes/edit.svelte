@@ -696,6 +696,33 @@
     const [prev, next] = notes
     exec(new UpdateSlideNotes(slides, new Map([[prev, { tick: next.tick - 1 }]])))
   }
+
+  let loop: boolean = false
+  let loopFrom: number = 0
+  let loopTo: number = 0
+  function setLoop() {
+    const minTick = Math.min(...$selectedNotes.map(({ tick }) => tick))
+    const maxTick = Math.max(...$selectedNotes.map(({ tick }) => tick))
+    loopFrom = snap(minTick, TICK_PER_MEASURE)
+    loopTo = snap(maxTick + TICK_PER_MEASURE, TICK_PER_MEASURE)
+    loop = true
+  }
+  
+  function doLoop() {
+    gotoTick(loopFrom)
+  }
+
+  $: if (!paused && !loop && $selectedNotes.length > 0) {
+    setLoop()
+  }
+
+  $: if (loop && $selectedNotes.length === 0) {
+    loop = false
+  }
+
+  $: if (!paused && loop && currentTick > loopTo) {
+    doLoop()
+  }
 </script>
 
 <svelte:head>
