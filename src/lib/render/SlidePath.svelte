@@ -3,8 +3,7 @@
 
   import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
 
-  import COLORS from '$lib/colors'
-  import { LANE_WIDTH } from '$lib/consts';
+  import { LANE_WIDTH, COLORS } from '$lib/consts'
   import { position } from '$lib/position'
   
   import type { SlideNote } from '$lib/score/beatmap'
