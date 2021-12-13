@@ -52,7 +52,7 @@
   let trap: FocusTrap
 
   $: if (menu) {
-    trap = focusTrap.createFocusTrap(menu, { fallbackFocus: menu })
+    trap = focusTrap.createFocusTrap(menu, { fallbackFocus: menu, clickOutsideDeactivates: true })
   }
 
   import hotkeys from 'hotkeys-js'
