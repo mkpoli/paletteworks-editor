@@ -19,3 +19,35 @@ export default {
   COLOR_MOVING_TINT: 0xCED3E4,
   ALPHA_FLOATING: 0.5,
 }
+
+// next color hue from the source
+export function getColor(source: number, i: number) {
+  const [l, c, h] = convertRGBToLCH(source)
+  return convertLCHtoRGB([l, c, (h + i * 50) % 360])
+}
+
+function convertRGBToLCH(color: number) {
+  const [r, g, b] = [
+    (color >> 16) & 0xff,
+    (color >> 8) & 0xff,
+    color & 0xff,
+  ]
+  const l = 0.2126 * r + 0.7152 * g + 0.0722 * b
+  const c = Math.sqrt(
+    0.299 * (r ** 2) + 0.587 * (g ** 2) + 0.114 * (b ** 2),
+  )
+  const h = Math.atan2(b, r) * 180 / Math.PI
+  return [l, c, h]
+}
+
+function convertLCHtoRGB(lch: [number, number, number]): number {
+  const [l, c, h] = lch
+  const r = l + c * Math.cos((h * Math.PI) / 180)
+  const b = l + c * Math.cos(((h + 120) * Math.PI) / 180)
+  const g = l + c * Math.cos(((h + 240) * Math.PI) / 180)
+  return (
+    (Math.round(r * 255) << 16) +
+    (Math.round(g * 255) << 8) +
+    Math.round(b * 255)
+  )
+}

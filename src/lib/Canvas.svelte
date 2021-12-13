@@ -20,7 +20,7 @@
 
   // Constants
   import { createEventDispatcher, onMount, setContext } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, CANVAS_WIDTH } from '$lib/consts'
 
   // Functions
   import { clamp, snap } from '$lib/basic/math'
@@ -42,6 +42,7 @@
   import MovingNotes from '$lib/render/MovingNotes.svelte'
   import ResizingNotes from '$lib/render/ResizingNotes.svelte'
   import DraggingSlide from '$lib/render/DraggingSlide.svelte'
+  import Minimap from '$lib/render/Minimap.svelte'
 
   // UI Components
   import CanvasContextMenu from '$lib/menus/CanvasContextMenu.svelte'
@@ -511,6 +512,7 @@
 
 <div
   class="canvas-container"
+  style={`width: ${CANVAS_WIDTH}px;`}
 >
   <div
     bind:this={canvasContainer}
@@ -735,6 +737,7 @@
     <MovingNotes {singles} {slides} moving={isLongPress && $moving} />
     <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
     <DraggingSlide {draggingSlide} />
+    <Minimap {maxMeasure} on:scrollTo={({ detail }) => { $scrollY = detail }} />
   </div>
   <div class="zoom-indicator-container">
     <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP}/>
@@ -776,6 +779,8 @@
   }
 
   .zoom-indicator-container {
+    position: absolute;
+    right: 0;
     height: 100%;
     padding: 1em;
     display: flex;    
