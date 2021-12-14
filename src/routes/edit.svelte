@@ -979,17 +979,13 @@
 <LibraryDialog
   bind:opened={libraryDialogOpened}
   on:input={({ detail: content }) => {
-    const newSingles = content.singles ?? []
-    const newSlides = content.slides ?? []
     const maxTick = Math.max(...[
       ...singles.map((single) => single.tick),
       ...slides.flatMap(({ head, tail, steps }) => [head.tick, tail.tick, ...steps.map((step) => step.tick)])
     ])
     const endTick = snap(isFinite(maxTick) ? maxTick : 0, TICK_PER_MEASURE / snapTo) + TICK_PER_MEASURE / snapTo
-    exec(new BatchAdd(
-      singles, slides,
-      newSingles.map((single) => ({ ...single, tick: endTick + single.tick })),
-      newSlides.map((slide) => ({
+    const newSingles = (content.singles ?? []).map((single) => ({ ...single, tick: endTick + single.tick }))
+    const newSlides = (content.slides ?? []).map((slide) => ({
         ...slide,
         head: {
           ...slide.head,
@@ -1004,7 +1000,16 @@
           tick: endTick + step.tick,
         })),
       }))
+
+    exec(new BatchAdd(
+      singles, slides,
+      newSingles,
+      newSlides
     ))
+    $selectedNotes = [
+      ...newSingles,
+      ...newSlides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]),
+    ]
   }}
 />
 
