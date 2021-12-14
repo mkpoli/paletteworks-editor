@@ -1,4 +1,6 @@
 <script lang="ts">
+  import LL from '$i18n/i18n-svelte'
+
   import Modal from "$lib/ui/Modal.svelte"
   import Icon from '@iconify/svelte'
   import Button from "$lib/ui/Button.svelte"
@@ -22,7 +24,7 @@
     
   </template>
   <div slot="presentation">
-    <h2>カスタム分音符</h2>
+    <h2>{$LL.editor.dialog.customSnappingTitle()}</h2>
     <div class="close">
       <ClickableIcon
         icon="gridicons:cross"
@@ -51,7 +53,7 @@
         <Icon icon="ph:equals-bold" width="1em" />
       </div>
       <div slot="tail">
-        <span style="white-space: nowrap;">分音符（1 ~ 1920）</span>
+        <span style="white-space: nowrap;">{$LL.editor.snapTo.snapWithRange()}</span>
       </div>
     </TextInput>
     <Button
@@ -59,7 +61,7 @@
       icon={'ic:sharp-edit'}
       on:click={() => { dispatch('ok'); opened = false }}
     >
-      OK
+      {$LL.editor.dialog.ok()}
     </Button>
   </div> 
 </Modal>

@@ -1,4 +1,7 @@
 <script lang="ts">
+  // I18n
+  import LL from '$i18n/i18n-svelte'
+
   // UI Components
   import Modal from '$lib/ui/Modal.svelte'
   import Button from '$lib/ui/Button.svelte'
@@ -82,7 +85,7 @@
     
   </template>
   <div slot="presentation">
-    <h2>画像出力</h2>
+    <h2>{$LL.editor.dialog.imageTitle()}</h2>
     <div class="close">
       <ClickableIcon
         icon="gridicons:cross"
@@ -104,7 +107,7 @@
       icon='ic:baseline-photo-camera'
       on:click={() => { downloadImage(); opened = false }}
     >
-      出力する
+      {$LL.editor.dialog.export()}
     </Button>
   </div> 
 </Modal>
@@ -116,7 +119,7 @@
     gap: 2em;
     grid-template-columns: repeat(7, 3em);
     grid-template-areas:
-      "h h . . . . x"
+      "h h h h . . x"
       "t t t t t t z"
       "t t t t t t z"
       ". o o o o o ."

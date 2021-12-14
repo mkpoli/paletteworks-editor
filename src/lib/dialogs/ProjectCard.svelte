@@ -1,4 +1,7 @@
 <script lang="ts">
+  // I18n
+  import LL from '$i18n/i18n-svelte'
+
   import type { Project } from '$lib/database'
   import { createEventDispatcher, onMount, tick } from 'svelte'
 
@@ -62,11 +65,11 @@
   </div>
   <div bind:this={tooltipContent}>
     <dl>
-      <dt>タイトル</dt>
+      <dt>{$LL.editor.panel.title()}</dt>
       <dd>{project.metadata.title}</dd>
-      <dt>アーティスト</dt>
+      <dt>{$LL.editor.panel.artist()}</dt>
       <dd>{project.metadata.title}</dd>
-      <dt>更新時間</dt>
+      <dt>{$LL.editor.panel.updatedTime()}</dt>
       <dd>{project.updated}</dd>
     </dl>
   </div>
@@ -93,19 +96,19 @@
   <MenuTrigger contextArea={container} menu={menu} />
   <MenuItem
     icon="mdi:open-in-new"
-    text="開く (&O)"
+    text={$LL.editor.menu.open()}
     on:click={() => { dispatch('open') }}
   />
   <MenuDivider/>
   <MenuItem
     icon="ic:sharp-edit"
-    text="リネーム (&R)"
+    text={$LL.editor.menu.rename()}
     on:click={async () => { renaming = true; await tick(); renameInput.focus() }}
   />
   <MenuDivider/>
   <MenuItem
     icon="ic:delete"
-    text="削除 (&D)"
+    text={$LL.editor.menu.delete()}
     on:click={() => { dispatch('delete') }}
   />
 </Menu>

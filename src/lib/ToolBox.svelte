@@ -1,4 +1,8 @@
 <script lang="ts">
+  import LL, { setLocale, locale } from '$i18n/i18n-svelte'
+  import { locales } from '$i18n/i18n-util'
+  import { LANGUAGE_ENDONYMS } from '$i18n/metadata'
+
   import Icon, { addIcon } from '@iconify/svelte'
 
   import Menu from '$lib/ui/Menu.svelte'
@@ -59,36 +63,41 @@
       </button>
     </MenuTrigger>
 
-    <MenuItem icon="ic:outline-insert-drive-file" text="ファイル (&F)">
-      <MenuItem icon="eos-icons:content-new" text="新規 (&N)" on:click={() => dispatch('new')} tooltip={{ description: '新規譜面を作成', keys: KEYBOARD_SHORTCUTS.new, placement: 'right'}}/>
+    <MenuItem icon="ic:outline-insert-drive-file" text={$LL.editor.menu.file()}>
+      <MenuItem icon="eos-icons:content-new" text={$LL.editor.menu.new()} on:click={() => dispatch('new')} tooltip={{ description: $LL.editor.menuDescription.new(), keys: KEYBOARD_SHORTCUTS.new, placement: 'right'}}/>
       <MenuDivider/>
-      <MenuItem icon="ic:baseline-folder-open" text="開く (&O)" on:click={() => dispatch('open') } tooltip={{ description: 'プロジェクト等を開く', keys: KEYBOARD_SHORTCUTS.open, placement: 'right'}}/>
+      <MenuItem icon="ic:baseline-folder-open" text={$LL.editor.menu.open()} on:click={() => dispatch('open') } tooltip={{ description: $LL.editor.menuDescription.open(), keys: KEYBOARD_SHORTCUTS.open, placement: 'right'}}/>
       <MenuDivider/>
-      <MenuItem icon="mdi:file-export-outline" text="譜面保存 (&S)" on:click={() => dispatch('export')} tooltip={{ description: 'SUSファイルに出力', keys: KEYBOARD_SHORTCUTS.export, placement: 'right'}}/>
+      <MenuItem icon="mdi:file-export-outline" text={$LL.editor.menu.save()} on:click={() => dispatch('export')} tooltip={{ description: $LL.editor.menuDescription.save(), keys: KEYBOARD_SHORTCUTS.export, placement: 'right'}}/>
       <MenuDivider/>
-      <MenuItem icon="ic:baseline-photo-camera" text="画像出力 (&I)" on:click={() => dispatch('image')} tooltip={{ description: '譜面の画像化', keys: KEYBOARD_SHORTCUTS.image, placement: 'right'}}/>
+      <MenuItem icon="ic:baseline-photo-camera" text={$LL.editor.menu.image()} on:click={() => dispatch('image')} tooltip={{ description: $LL.editor.menuDescription.image(), keys: KEYBOARD_SHORTCUTS.image, placement: 'right'}}/>
     </MenuItem>
     <MenuDivider/>
-      <MenuItem icon="ic:sharp-edit" text="編集 (&E)">
-        <MenuItem icon="ic:round-undo" text="元に戻す (&U)" on:click={() => dispatch('undo')} tooltip={{ description: '前の操作を取り消す', keys: KEYBOARD_SHORTCUTS.undo, placement: 'right'}} />
-        <MenuItem icon="ic:round-redo" text="やり直し (&R)" on:click={() => dispatch('redo')} tooltip={{ description: '取り消した操作をやり直す', keys: KEYBOARD_SHORTCUTS.redo, placement: 'right'}}/>
+      <MenuItem icon="ic:sharp-edit" text={$LL.editor.menu.edit()}>
+        <MenuItem icon="ic:round-undo" text={$LL.editor.menu.undo()} on:click={() => dispatch('undo')} tooltip={{ description: $LL.editor.menuDescription.undo(), keys: KEYBOARD_SHORTCUTS.undo, placement: 'right'}} />
+        <MenuItem icon="ic:round-redo" text={$LL.editor.menu.redo()} on:click={() => dispatch('redo')} tooltip={{ description: $LL.editor.menuDescription.redo(), keys: KEYBOARD_SHORTCUTS.redo, placement: 'right'}}/>
         <MenuDivider/>
-        <MenuItem icon="ic:baseline-select-all" text="すべて選択 (&A)" on:click={() => dispatch('selectall')} tooltip={{ description: 'すべてのノーツを選択', keys: KEYBOARD_SHORTCUTS.selectall, placement: 'right'}}/>
+        <MenuItem icon="ic:baseline-select-all" text={$LL.editor.menu.selectall()} on:click={() => dispatch('selectall')} tooltip={{ description: $LL.editor.menuDescription.selectall(), keys: KEYBOARD_SHORTCUTS.selectall, placement: 'right'}}/>
         <MenuDivider/>
-        <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatch('cut')} />
-        <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy')} />
-        <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')} />
+        <MenuItem icon="ic:content-cut" text={$LL.editor.menu.cut()} on:click={() => dispatch('cut')} />
+        <MenuItem icon="mdi:content-copy" text={$LL.editor.menu.copy()} on:click={() => dispatch('copy')} />
+        <MenuItem icon="mdi:content-save" text={$LL.editor.menu.paste()} on:click={() => dispatch('paste')} />
       </MenuItem>
     <MenuDivider/>
-    <MenuItem icon="fluent:library-28-filled" text="ライブラリ (&L)">
-      <MenuItem icon="mdi:format-list-bulleted" text="一覧" on:click={() => dispatch('openlibrary')} />
+    <MenuItem icon="fluent:library-28-filled" text={$LL.editor.menu.library()}>
+      <MenuItem icon="mdi:format-list-bulleted" text={$LL.editor.menu.listall()} on:click={() => dispatch('openlibrary')} />
       <MenuDivider/>
-      <MenuItem icon="mdi:cloud-upload" text="アップロード" on:click={() => dispatch('upload')} />
+      <MenuItem icon="mdi:cloud-upload" text={$LL.editor.menu.upload()} on:click={() => dispatch('upload')} />
     </MenuItem>
     <MenuDivider/>
-    <MenuItem icon="vaadin:cog" text="設定 (&P)" on:click={() => dispatch('preferences')}/>
+    <MenuItem icon="ion:earth" text={$LL.editor.menu.language()}>
+      {#each locales as l}
+        <MenuItem icon="ion:language-outline" text={`${l} - ${LANGUAGE_ENDONYMS[l]}`} on:click={async () => setLocale(l)} checked={$locale === l} />
+      {/each}
+    </MenuItem>
+    <MenuItem icon="vaadin:cog" text={$LL.editor.menu.preferences()} on:click={() => dispatch('preferences')}/>
     <MenuDivider/>
-    <MenuItem icon="vaadin:question-circle-o" text="ヘルプ (&H)" href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks" />
+    <MenuItem icon="vaadin:question-circle-o" text={$LL.editor.menu.help()} href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks" />
   </Menu>
 
   <div class="tool-container">
@@ -109,9 +118,9 @@
       }
     }}>
       {#each ALLOWED_SNAPPINGS as snap}
-        <option value={snap}>{snap}分音符</option>
+        <option value={snap}>{$LL.editor.snapTo.snap({ n: snap })}</option>
       {/each}
-      <option value={snapTo} on:click={() => { customSnappingDialogOpened = true }}>カスタム {customSnappingDialogValue}</option>
+      <option value={snapTo} on:click={() => { customSnappingDialogOpened = true }}>{$LL.editor.snapTo.custom()} {customSnappingDialogValue}</option>
     </select>
   </div>
 </div>
@@ -121,12 +130,12 @@
   bind:value={customSnappingDialogValue}
   on:ok={() => {
     if (isNaN(customSnappingDialogValue)) {
-      toast.error('数値を入力してください')
+      toast.error($LL.editor.messages.nonNumeralInputError())
       return
     }
 
     if (customSnappingDialogValue < 1 || customSnappingDialogValue > 1920) {
-      toast.error('1から1920までの数値を入力してください')
+      toast.error($LL.editor.messages.outOfRangeInputError({ from: 1, to: 1920 }))
       return
     }
 
@@ -184,6 +193,6 @@
     font-size: 1.125em;
     padding: 0.25em 0.5em;
     border-radius: 1em;
-    margin: 1em;
+    margin: 1em 0;
   }
 </style>

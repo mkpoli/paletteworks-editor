@@ -1,4 +1,5 @@
 <script lang="ts">
+  import LL from '$i18n/i18n-svelte'
   import type { Metadata } from "$lib/score/beatmap"
 
   import { createEventDispatcher, tick } from "svelte"
@@ -54,6 +55,8 @@
     })
   }
 
+  $: scrollModes = SCROLL_MODES.map(mode => [mode, $LL.editor.scrollmode[mode]()]) as [ScrollMode, string][]
+
   function formatTime(time: number): string {
     const minutes = Math.floor(time / 60)
     const seconds = Math.floor(time % 60)
@@ -63,13 +66,13 @@
 </script>
 <div class="panel-container">
   <div class="panel">
-    <h2>コントロール</h2>
+    <h2>{$LL.editor.panel.control()}</h2>
       <div style="display: flex; gap: 0.5em;">
         <TextInput
           bind:value={currentMeasure}
         >
           <Icon icon="fontisto:hashtag" slot="head" style="flex-shrink: 0;"></Icon>
-          <span style="white-space: nowrap;" slot="tail">（小節）</span>
+          <span style="white-space: nowrap;" slot="tail">{$LL.editor.panel.measure()}</span>
           <Button
             slot="action"
             class="action"
@@ -85,7 +88,7 @@
       <div class="control-buttons">
         <Tooltip
           placement="bottom"
-          description="頭出し"
+          description={$LL.editor.panel.skipstart()}
           keys={KEYBOARD_SHORTCUTS.skipstart}
         >
           <ClickableIcon
@@ -96,7 +99,7 @@
         </Tooltip>
         <Tooltip
           placement="bottom"
-          description="再生／一時停止"
+          description={$LL.editor.panel.playpause()}
           keys={KEYBOARD_SHORTCUTS.playpause}
         >
           <ClickableIcon
@@ -107,7 +110,7 @@
         </Tooltip>
         <Tooltip
           placement="bottom"
-          description="戻る"
+          description={$LL.editor.panel.skipback()}
           keys={KEYBOARD_SHORTCUTS.skipback}
         >
           <ClickableIcon
@@ -118,34 +121,34 @@
         </Tooltip>
       </div>
       <label for="scroll">
-        スクロール方式
+        {$LL.editor.panel.scrollmode()}
         <Select
           bind:value={scrollMode}
-          options={SCROLL_MODES}
+          options={scrollModes}
           name="scroll"
         />
       </label>
   </div>
   <div class="panel">
-    <h2>基本情報</h2>
+    <h2>{$LL.editor.panel.metadata()}</h2>
     <label>
-      タイトル
+      {$LL.editor.panel.title()}
       <input type="text" bind:value={metadata.title}>
     </label>
     <label>
-      アーティスト
+      {$LL.editor.panel.artist()}
       <input type="text" bind:value={metadata.artist}>
     </label>
     <label>
-      譜面作者
+      {$LL.editor.panel.author()}
       <input type="text" bind:value={metadata.author}>
     </label>
   </div>
   <div class="panel">
     <Tabs>
       <TabSelect>
-        <TabItem><h2>統計</h2></TabItem>
-        <TabItem><h2>履歴</h2></TabItem>
+        <TabItem><h2>{$LL.editor.panel.statistics()}</h2></TabItem>
+        <TabItem><h2>{$LL.editor.panel.history()}</h2></TabItem>
       </TabSelect>
       <TabContent>
         <ul class="statistics">
@@ -166,8 +169,8 @@
               <span class="title">{name}</span><value>{value}</value>
             </li>
           {/each}
-          <li><p>総コンボ数 {totalCombo}</p></li>
-          <li><p>選択されたアイテム数 {$selectedNotes.length}</p></li>
+          <li><p>{$LL.editor.panel.totalcombo({ combo: totalCombo })}</p></li>
+          <li><p>{$LL.editor.panel.totalselected({ selected: $selectedNotes.length })}</p></li>
         </ul>
       </TabContent>
       <TabContent class="history-tab">
@@ -176,13 +179,13 @@
             placement="bottom"
             keys={KEYBOARD_SHORTCUTS.undo}
           > 
-            <Button icon="ic:round-undo" on:click={() => dispatch('undo')} class="history-button">元に戻す</Button>
+            <Button icon="ic:round-undo" on:click={() => dispatch('undo')} class="history-button">{$LL.editor.panel.undo()}</Button>
           </Tooltip>
           <Tooltip
             placement="bottom"
             keys={KEYBOARD_SHORTCUTS.redo}
           >
-            <Button icon="ic:round-redo" on:click={() => dispatch('redo')} class="history-button">やり直し</Button>
+            <Button icon="ic:round-redo" on:click={() => dispatch('redo')} class="history-button">{$LL.editor.panel.redo()}</Button>
           </Tooltip>
         </div>
         <div class="history" bind:this={historyDiv}>
@@ -194,25 +197,25 @@
     </Tabs>
   </div>  
   <div class="panel">
-    <h2>音楽情報</h2>
+    <h2>{$LL.editor.panel.music()}</h2>
     <label for="music">
-      音楽ファイル {music ? filesize(music.size) : ''}
+      {$LL.editor.panel.musicfile()} {music ? filesize(music.size) : ''}
       <FileInput
         bind:file={music}
         accept="audio/*"
         name="music"
         openIcon="mdi:folder-music"
         fileIcon="mdi:file-music-outline"
-        text="開く"
+        text={$LL.editor.panel.open()}
         loading={bgmLoading}
       />
     </label>
     <label>
-      マスター音量
+      {$LL.editor.panel.master()}
       <input type="range" bind:value={volume} min=0 max=1 step=0.01 />
     </label>
     <label>
-      SE
+      {$LL.editor.panel.sfxvolume()}
       <input type="range" bind:value={sfxVolume} min=0 max=1 step=0.01 />
     </label>
   </div>

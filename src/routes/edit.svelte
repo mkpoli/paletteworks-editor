@@ -3,6 +3,9 @@
 </script>
 
 <script lang="ts">
+  // I18n
+  import LL from '$i18n/i18n-svelte'
+
   // Parts
   import ToolBox from '$lib/ToolBox.svelte'
   import Canvas from '$lib/Canvas.svelte'
@@ -264,7 +267,7 @@
   }
 
   function deleteNotes(notes: NoteType[], cut = false) {
-    exec(new BatchRemove(singles, slides, notes, !cut ? '削除' : 'カット'))
+    exec(new BatchRemove(singles, slides, notes, !cut ? $LL.editor.mutation.delete() : $LL.editor.mutation.cut()))
   }
 
   function copyNotes(notes: NoteType[]) {
@@ -403,7 +406,7 @@
     }
     $mutationHistory.push(mutation)
     $mutationHistory = $mutationHistory
-    toast.undo(mutation, undoneHistory, '元に戻す', () => { undo(mutation) })
+    toast.undo(mutation, undoneHistory, $LL.editor.panel.undo(), () => { undo(mutation) })
     playSound('stage')
   }
 
@@ -420,7 +423,7 @@
     }
     $undoneHistory.push(mutation)
     $undoneHistory = $undoneHistory
-    toast.undo(mutation, mutationHistory, 'やり直し', () => { exec(mutation) })
+    toast.undo(mutation, mutationHistory, $LL.editor.panel.redo(), () => { exec(mutation) })
     playSound('stage')
   }
 
@@ -474,7 +477,7 @@
 
   async function onnewproject() {
     if (currentProject) {
-      savecurrent(`${currentProject.name} として保存されました。`)
+      savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name }))
     }
     initScore()
     await tick()
@@ -501,7 +504,7 @@
 
   function onopenproject({ detail: { project }}: CustomEvent<{ project: Project }>) {
     if (currentProject) {
-      savecurrent(`${currentProject.name} として保存されました。`)
+      savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name }))
     }
     initScore();
     ({ metadata, score: { bpms, singles, slides, fever, skills }, music } = project)
@@ -524,7 +527,7 @@
     try {
       ({ metadata, score: { singles, slides, bpms, fever, skills } } = loadSUS(text))
     } catch (e) {
-      toast.error(`SUSファイルを読み込む際にエラーが発生しました`)
+      toast.error($LL.editor.messages.loadingSUSError())
       console.error(e)
       initScore()
       return
@@ -577,7 +580,7 @@
         ...('flick' in note ? { flick: note.flick } : {})
       }]
     ))
-    exec(new BatchUpdate(singles, slides, flipTargets, flipOrigins, 'ミラー'))
+    exec(new BatchUpdate(singles, slides, flipTargets, flipOrigins, $LL.editor.mutation.flip()))
   }
 
   function duplicateNotes(notes: NoteType[]) {
@@ -612,7 +615,7 @@
       singles, slides,
       new Map(flickNotes.map((note) => [note, { flick: flip ? flipFlick(oldFlick) : rotateFlick(oldFlick) }])),
       new Map(flickNotes.map((note) => [note, { flick: note.flick }])),
-      '更新'
+      $LL.editor.mutation.update()
     ))
   }
 
@@ -636,7 +639,7 @@
       new Map(criticalNotes.map((note) => [note, { critical: note.critical }])),
       new Map(criticalSlides.map((slide) => [slide, { critical: !oldcritical }])),
       new Map(criticalSlides.map((slide) => [slide, { critical: slide.critical }])),  
-      '更新'
+      $LL.editor.mutation.update()
     ))
   }
 
@@ -683,7 +686,7 @@
   }
   function autosave() {
     if (currentProject && updated) {
-      savecurrent(`自動保存されました。`)
+      savecurrent($LL.editor.messages.autoSaved())
     }
   }
   function clearAutosave() {
@@ -783,10 +786,10 @@
             }))
           }))
         }
-        const title = prompt('タイトルを入力してください')
-        const description = prompt('説明を入力してください')
+        const title = prompt($LL.editor.messages.inputTitlePrompt())
+        const description = prompt($LL.editor.messages.inputDescriptionPrompt())
         if (!title || !description) {
-          toast.error('タイトルと説明を入力してください')
+          toast.error($LL.editor.messages.inputEmptyError())
           return
         }
 
@@ -807,12 +810,12 @@
             })
           })
           if (res.ok) {
-            toast.success('アップロードしました')
+            toast.success($LL.editor.messages.uploaded())
           } else {
-            toast.error('アップロードに失敗しました')
+            toast.error($LL.editor.messages.uploadFailed())
           }
         } catch (error) {
-          toast.error('アップロードに失敗しました')
+          toast.error($LL.editor.messages.uploadFailed())
           console.error(error)
         }
       }}
@@ -857,10 +860,10 @@
       on:cut={(event) => { cutNotes(event.detail.notes) }}
       on:paste={onpaste}
       on:movenotes={({ detail: { movingTargets, movingOrigins }}) => {
-        exec(new BatchUpdate(singles, slides, movingTargets, movingOrigins, '移動'))
+        exec(new BatchUpdate(singles, slides, movingTargets, movingOrigins, $LL.editor.mutation.move()))
       }}
       on:resizenotes={({ detail: { resizingTargets, resizingOrigins }}) => {
-        exec(new BatchUpdate(singles, slides, resizingTargets, resizingOrigins, 'リサイズ'))
+        exec(new BatchUpdate(singles, slides, resizingTargets, resizingOrigins, $LL.editor.mutation.resize()))
       }}
       on:changecurve={onchangecurve}
       on:changediamond={onchangediamond}
@@ -946,7 +949,7 @@
     if (bpmDialogValue) {
       const last = bpms.get(lastPointerTick)
       if (isNaN(bpmDialogValue)) {
-        toast.error('正しい数字ではありません')
+        toast.error($LL.editor.messages.nonNumeralInputError())
         return
       }
 
@@ -1024,7 +1027,7 @@
   on:undo={onundo}
   on:redo={onredo}
   on:export={onexport}
-  on:save={() => { savecurrent(`保存されました`) }}
+  on:save={() => { savecurrent($LL.editor.messages.saved()) }}
   on:open={onopen}
   on:new={onnewproject}
   on:switch={({ detail: mode }) => { currentMode = mode }}
@@ -1070,8 +1073,8 @@
   bind:innerHeight
   on:beforeunload={(event) => { if (updated) {
     event.preventDefault()
-    event.returnValue = '本当にエディターを閉じますか'
-    return '本当にエディターを閉じますか'
+    event.returnValue = $LL.editor.messages.exitConfirm()
+    return $LL.editor.messages.exitConfirm()
   }}}
   on:dragover|preventDefault
   on:drop|preventDefault={dropHandlerMultiple([
@@ -1086,7 +1089,7 @@
         })
       }
     }}],
-    () => { toast.error('未知のファイルタイプ') }
+    () => { toast.error($LL.editor.messages.unknownFileType()) }
   )}
 />
 

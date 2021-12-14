@@ -1,6 +1,6 @@
 <script lang="ts">
   export let value: string
-  export let options: [string, string][]
+  export let options: readonly [string, string][]
   export let name: string
 </script>
 

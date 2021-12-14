@@ -1,4 +1,7 @@
 <script lang="ts">
+  // I18n
+  import LL from '$i18n/i18n-svelte'
+
   // Types
   import type { Mode } from '$lib/editing/modes'
 
@@ -6,7 +9,7 @@
   import Tooltip from '$lib/ui/Tooltip.svelte'
 
   // Constants
-  import { MODE_DESCRIPTIONS, MODE_SHORTCUTS, MODE_SHORTCUTS_NUMERAL, MODE_TEXTURES } from '$lib/editing/modes'
+  import { MODE_SHORTCUTS, MODE_SHORTCUTS_NUMERAL, MODE_TEXTURES } from '$lib/editing/modes'
 
   // Props
   export let mode: Mode
@@ -16,12 +19,12 @@
 <Tooltip
   placement="right"
   offset={[0, -15]}
-  description={MODE_DESCRIPTIONS[mode]}
+  description={$LL.editor.modes[mode]()}
   class="tool-button"
   keys={[...MODE_SHORTCUTS_NUMERAL[mode], ...MODE_SHORTCUTS[mode]].map((key) => [key])}
 >
   <button on:click={() => { currentMode = mode}} class:current={currentMode === mode}>
-    <img src={MODE_TEXTURES[mode]} alt={`${MODE_DESCRIPTIONS[mode]} Mode`} />
+    <img src={MODE_TEXTURES[mode]} alt={`${$LL.editor.modes[mode]()} Mode`} />
   </button>
 </Tooltip>
 

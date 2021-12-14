@@ -7,7 +7,8 @@
     "build": "svelte-kit build",
     "preview": "svelte-kit preview",
     "check": "svelte-check --tsconfig ./tsconfig.json --diagnostic-sources js,svelte",
-    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch"
+    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+    "typesafe-i18n": "typesafe-i18n"
   },
   "license": "MIT",
   "devDependencies": {
@@ -33,6 +34,7 @@
     "svelte-preprocess": "^4.0.0",
     "tippy.js": "^6.3.7",
     "tslib": "^2.0.0",
+    "typesafe-i18n": "^2.56.0",
     "typescript": "^4.0.0"
   },
   "type": "module",

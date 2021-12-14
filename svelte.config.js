@@ -17,7 +17,8 @@ const config = {
       ],
       resolve: {
         alias: {
-          '$assets': path.resolve('./src/assets')
+          '$assets': path.resolve('./src/assets'),
+          '$i18n': path.resolve('./src/i18n'),
         }
       },
       define: {

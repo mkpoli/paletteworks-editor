@@ -1,4 +1,7 @@
 <script lang="ts">
+  // I18n
+  import LL from '$i18n/i18n-svelte'
+
   // UI Components
   import Button from "$lib/ui/Button.svelte"
   import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
@@ -30,8 +33,7 @@
 >
   <div slot="presentation">
     {#if preferences}
-      <h2>環境設定</h2>
-      
+      <h2>{$LL.editor.dialog.preferencesTitle()}</h2>
       <div class="close">
         <ClickableIcon
           icon="gridicons:cross"
@@ -42,9 +44,9 @@
       <div
         class="form"
       >
-        <label for="autosave-interval">自動保存の間隔（秒）</label>
+        <label for="autosave-interval">{$LL.editor.preferences.autosaveInterval()}</label>
         <input type="number" name="autosave-interval" min=0 bind:value={preferences.autosaveInterval}/>
-        <label for="scroll-speed">スクロールの早さ（倍）</label>
+        <label for="scroll-speed">{$LL.editor.preferences.scrollSpeed()}</label>
         <input type="number" name="scroll-speed" min=0.01 bind:value={preferences.scrollSpeed}/>
       </div>
       <Button
@@ -54,11 +56,11 @@
           Object.entries(preferences).forEach(([key, value]) => {
             db.preferences.put({ key, value })
           })
-          toast.success('設定を保存しました')
+          toast.success($LL.editor.messages.preferencesSaved())
           dispatch('ok'); opened = false
         }}
       >
-        OK
+        {$LL.editor.dialog.ok()}
       </Button>
     {/if}
   </div>

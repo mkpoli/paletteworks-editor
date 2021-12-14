@@ -1,4 +1,7 @@
 <script lang="ts">
+  // I18n
+  import LL from '$i18n/i18n-svelte'
+
   // UI Components
   import Modal from '$lib/ui/Modal.svelte'
   import Button from '$lib/ui/Button.svelte'
@@ -9,7 +12,7 @@
   import { createEventDispatcher } from 'svelte'
   import type { Item } from '$lib/server/api'
   import type { Single, Slide } from '$lib/score/beatmap'
-import toast from '$lib/ui/toast';
+  import toast from '$lib/ui/toast'
 
   const dispatch = createEventDispatcher<{
     input: {
@@ -31,7 +34,7 @@ import toast from '$lib/ui/toast';
     const res = await fetch('/library.json')
     library = await res.json()
   } catch (err) {
-    toast.error('ライブラリの読み込みに失敗しました')
+    toast.error($LL.editor.messages.loadingLibraryFailed())
     console.error(err)
   } finally {
     loading = false
@@ -184,7 +187,7 @@ import toast from '$lib/ui/toast';
   // ]
 }}>
   <div slot="presentation">
-    <h2>ライブラリ</h2>
+    <h2>{$LL.editor.dialog.libraryTitle()}</h2>
     <div class="close">
       <ClickableIcon
         icon="gridicons:cross"
@@ -206,7 +209,7 @@ import toast from '$lib/ui/toast';
               icon="mdi:plus-thick"
               on:click={() => { dispatch('input', item.content) }}
             >
-              追加
+              ${$LL.editor.dialog.append()}
             </Button>
           </div>
         {/each}

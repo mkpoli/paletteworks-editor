@@ -1,4 +1,7 @@
 <script lang="ts">
+  // Ii8n
+  import LL from '$i18n/i18n-svelte'
+
   // UI Components
   import Button from "$lib/ui/Button.svelte"
   import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
@@ -63,7 +66,7 @@
   })
 
   function ondelete() {
-    if (selected && confirm('本当に削除しますか？')) {
+    if (selected && confirm($LL.editor?.messages?.deleteConfirm())) {
       dispatch('delete', selected.id)
     }
   }
@@ -79,7 +82,6 @@
   $: if (elements.length !== 0) {
     if (firstOpen) {
       tick().then(() => {
-        console.log('firstOpen', { elements })
         elements[0].focus()
       })
       firstOpen = false
@@ -111,7 +113,7 @@
     
   </template>
   <div slot="presentation">
-    <h2>譜面一覧</h2>
+    <h2>{$LL.editor.dialog?.projectsTitle()}</h2>
     <div class="close">
       {#if currentProject !== null}
         <ClickableIcon
@@ -156,7 +158,7 @@
         opened = false
       }}
     >
-      SUSを開く
+      {$LL.editor.dialog.opensus()}
     </Button>
     <Button
       class="new"
@@ -166,7 +168,7 @@
         opened = false
       }}
     >
-      新規作成
+    {$LL.editor.dialog.new()}
     </Button>
   </div>
 </Modal>

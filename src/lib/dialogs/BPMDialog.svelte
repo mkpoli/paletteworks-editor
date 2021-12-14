@@ -1,4 +1,6 @@
 <script lang="ts">
+  import LL from '$i18n/i18n-svelte'
+
   import Modal from "$lib/ui/Modal.svelte"
   import Icon from '@iconify/svelte'
   import Button from "$lib/ui/Button.svelte"
@@ -23,7 +25,7 @@
     
   </template>
   <div slot="presentation">
-    <h2>BPM設定</h2>
+    <h2>{$LL.editor.dialog.bpmTitle()}</h2>
     <div class="close">
       <ClickableIcon
         icon="gridicons:cross"
@@ -61,7 +63,7 @@
       icon={!exist ? 'mdi:plus-thick' : 'ic:sharp-edit'}
       on:click={() => { dispatch('ok'); opened = false }}
     >
-      {!exist ? '追加' : '変更'}
+      {!exist ? $LL.editor.dialog.append() : $LL.editor.dialog.change() }
     </Button>
     {#if exist}
       <Button

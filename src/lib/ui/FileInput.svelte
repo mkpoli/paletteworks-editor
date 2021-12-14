@@ -1,4 +1,6 @@
 <script lang='ts'>
+  import LL from '$i18n/i18n-svelte'
+
   import TextInput from '$lib/ui/TextInput.svelte'
   import Button from './Button.svelte'
   import Icon from '@iconify/svelte'
@@ -59,9 +61,9 @@
 <Menu bind:menu>
   <MenuTrigger slot="trigger" contextArea={container} {menu}/>
   {#if file}
-    <MenuItem text="ダウンロード (&S)" icon="mdi:download" on:click={() => { if (file) download(file, file.name) }} />
+    <MenuItem text={$LL.editor.menu.download()} icon="mdi:download" on:click={() => { if (file) download(file, file.name) }} />
     <MenuDivider/>
-    <MenuItem text="削除 (&D)" icon="mdi:delete" on:click={() => { if (confirm('本当に削除しますか？')) { input.value = ''; file = null } }} />
+    <MenuItem text={$LL.editor.menu.delete()} icon="mdi:delete" on:click={() => { if (confirm($LL.editor.messages.deleteConfirm())) { input.value = ''; file = null } }} />
   {/if}
 </Menu>
 

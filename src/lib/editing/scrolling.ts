@@ -1,7 +1,5 @@
-export type ScrollMode = 'page' | 'smooth' | 'none'
 
-export const SCROLL_MODES: [ScrollMode, string][] = [
-  ['page', '上下スクロール'],
-  ['smooth', '固定スクロール'],
-  ['none', 'スクロールしない'],
-]
+export const SCROLL_MODES = [
+  'page', 'smooth', 'none'
+] as const
+export type ScrollMode = typeof SCROLL_MODES[number]

@@ -53,13 +53,3 @@ export const MODE_SHORTCUTS_NUMERAL = {
   critical: '6',
   bpm: '7',
 }
-
-export const MODE_DESCRIPTIONS = {
-  select: '選択',
-  tap: 'シングル',
-  slide: 'スライド',
-  mid: '中継点',
-  flick: 'フリック',
-  critical: 'クリティカル',
-  bpm: 'BPM',
-}

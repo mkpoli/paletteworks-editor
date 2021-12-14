@@ -1,4 +1,7 @@
 <script lang="ts">
+  // I18n
+  import LL from '$i18n/i18n-svelte'
+
   // Type Definitions
   import { Note, EaseType, DiamondType, hasEaseType, isSlideStep, toDiamondType } from '$lib/score/beatmap'
 
@@ -86,54 +89,54 @@
     }}
   ></MenuTrigger>
   {#if $selectedNotes.length || currentNote}
-    <MenuItem icon="mdi:delete" text={ currentNote ? "削除" : "削除（全部）"} on:click={() => dispatchNotes('delete', currentNote)} />
+    <MenuItem icon="mdi:delete" text={ currentNote ? $LL.editor.menu.delete() : $LL.editor.menu.deleteall()} on:click={() => dispatchNotes('delete', currentNote)} />
     <MenuDivider/>
-    <MenuItem icon="ic:content-cut" text="切り取り (&X)" on:click={() => dispatchNotes('cut', currentNote)} />
-    <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatchNotes('copy', currentNote)} />
+    <MenuItem icon="ic:content-cut" text={$LL.editor.menu.cut()} on:click={() => dispatchNotes('cut', currentNote)} />
+    <MenuItem icon="mdi:content-copy" text={$LL.editor.menu.copy()} on:click={() => dispatchNotes('copy', currentNote)} />
   {/if}
-  <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')}
+  <MenuItem icon="mdi:content-save" text={$LL.editor.menu.paste()} on:click={() => dispatch('paste')}
     disabled={!$clipboardSingles.length && !$clipboardSlides.length}
   />
   <MenuDivider/>
-  <MenuItem icon="ic:baseline-select-all" text="すべて選択 (&A)" on:click={() => dispatch('selectall')}/>
+  <MenuItem icon="ic:baseline-select-all" text={$LL.editor.menu.selectall()} on:click={() => dispatch('selectall')}/>
   {#if $selectedNotes.length || currentNote}
     <MenuDivider/>
-    <MenuItem icon="mdi:content-duplicate" text="複製 (&D)" on:click={() => dispatchNotes('duplicate', currentNote)} />
+    <MenuItem icon="mdi:content-duplicate" text={$LL.editor.menu.duplicate()} on:click={() => dispatchNotes('duplicate', currentNote)} />
   {/if}
   {#if $selectedNotes.length}
-    <MenuItem icon="mdi:flip-horizontal" text="左右ミラー (&H)" on:click={() => dispatch('flip', { notes: $selectedNotes })} />
+    <MenuItem icon="mdi:flip-horizontal" text={$LL.editor.menu.flip()} on:click={() => dispatch('flip', { notes: $selectedNotes })} />
   {/if}
   {#if !$selectedNotes.length && currentNote !== null && 'easeType' in currentNote}
     <MenuDivider/>
-    <MenuItem icon="custom:straight" text="直線" on:click={() => { changecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>
-    <MenuItem icon="custom:curve-in" text="加速" on:click={() => { changecurve('easeOut'); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
-    <MenuItem icon="custom:curve-out" text="減速" on:click={() => { changecurve('easeIn'); currentNote = currentNote }} checked={currentNote.easeType === 'easeIn'}/>
+    <MenuItem icon="custom:straight" text={$LL.editor.menu.straight()} on:click={() => { changecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>
+    <MenuItem icon="custom:curve-in" text={$LL.editor.menu.curvein()} on:click={() => { changecurve('easeOut'); currentNote = currentNote }} checked={currentNote.easeType === 'easeOut'}/>
+    <MenuItem icon="custom:curve-out" text={$LL.editor.menu.curveout()} on:click={() => { changecurve('easeIn'); currentNote = currentNote }} checked={currentNote.easeType === 'easeIn'}/>
   {/if}
   {#if !$selectedNotes.length && currentNote !== null && 'ignored' in currentNote}
     <MenuDivider/>
-    <MenuItem icon="custom:diamond-visible" text="可視" on:click={() => { changediamond('visible'); currentNote = currentNote }} checked={toDiamondType(currentNote) === 'visible'}/>
-    <MenuItem icon="custom:diamond-ignored" text="無視" on:click={() => { changediamond('ignored'); currentNote = currentNote }} checked={toDiamondType(currentNote) === 'ignored'}/>
-    <MenuItem icon="custom:diamond-invisible" text="不可視" on:click={() => { changediamond('invisible'); currentNote = currentNote }} checked={toDiamondType(currentNote) === 'invisible'}/>
+    <MenuItem icon="custom:diamond-visible" text={$LL.editor.menu.visible()} on:click={() => { changediamond('visible'); currentNote = currentNote }} checked={toDiamondType(currentNote) === 'visible'}/>
+    <MenuItem icon="custom:diamond-ignored" text={$LL.editor.menu.ignored()} on:click={() => { changediamond('ignored'); currentNote = currentNote }} checked={toDiamondType(currentNote) === 'ignored'}/>
+    <MenuItem icon="custom:diamond-invisible" text={$LL.editor.menu.invisible()} on:click={() => { changediamond('invisible'); currentNote = currentNote }} checked={toDiamondType(currentNote) === 'invisible'}/>
   {/if}
   {#if $selectedNotes.length && $selectedNotes.some(hasEaseType)}
     <MenuDivider/>
     <MenuItem
       icon="custom:straight"
-      text="直線"
+      text={$LL.editor.menu.straight()}
       on:click={() => { changecurve(false); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => 'easeType' in note && note.easeType === false)}
       indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === false)}
     />
     <MenuItem
       icon="custom:curve-in"
-      text="加速"
+      text={$LL.editor.menu.curvein()}
       on:click={() => { changecurve('easeOut'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => 'easeType' in note && note.easeType === 'easeOut')}
       indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === 'easeOut')}
     />
     <MenuItem
       icon="custom:curve-out"
-      text="減速"
+      text={$LL.editor.menu.curveout()}
       on:click={() => { changecurve('easeIn'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => 'easeType' in note && note.easeType === 'easeIn')}
       indeterminate={$selectedNotes.some((note) => 'easeType' in note && note.easeType === 'easeIn')}
@@ -143,21 +146,21 @@
     <MenuDivider/>
     <MenuItem
       icon="custom:diamond-visible"
-      text="可視"
+      text={$LL.editor.menu.visible()}
       on:click={() => { changediamond('visible'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => diamondTypeEquals(note, 'visible'))}
       indeterminate={$selectedNotes.some((note) => diamondTypeEquals(note, 'visible'))}
     />
     <MenuItem
       icon="custom:diamond-ignored"
-      text="無視"
+      text={$LL.editor.menu.ignored()}
       on:click={() => { changediamond('ignored'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => diamondTypeEquals(note, 'ignored'))}
       indeterminate={$selectedNotes.some((note) => diamondTypeEquals(note, 'ignored'))}
     />
     <MenuItem
       icon="custom:diamond-invisible"
-      text="不可視"
+      text={$LL.editor.menu.invisible()}
       on:click={() => { changediamond('invisible'); $selectedNotes = $selectedNotes }}
       checked={$selectedNotes.every((note) => diamondTypeEquals(note, 'invisible'))}
       indeterminate={$selectedNotes.some((note) => diamondTypeEquals(note, 'invisible'))}
@@ -167,7 +170,7 @@
     <MenuDivider/>
     <MenuItem
       icon="ci:shrink"
-      text="縮める"
+      text={$LL.editor.menu.shrink()}
       on:click={() => { dispatch('shrink', { notes: $selectedNotes }) }}
     />
   {/if}

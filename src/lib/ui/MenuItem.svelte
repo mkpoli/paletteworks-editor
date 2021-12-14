@@ -57,7 +57,7 @@
     }
   }
   function registerShortcut(text: string) {
-    shortcutKey = text.match(/&([A-Z])/)?.[1]
+    shortcutKey = text.match(/&([A-Za-z])/)?.[1]
     if (lastShortcut) hotkeys.unbind(lastShortcut, handle)
     if (shortcutKey) {
       lastShortcut = `alt+${shortcutKey.toLowerCase()}`
@@ -100,7 +100,7 @@
       {tooltip}
       bind:element
     >
-      <div>{@html text.replace(/&([A-Z])/, `<span style="text-decoration: ${altPressed ? 'underline' : 'none'};">$1</span>`)}</div>
+      <div>{@html text.replace(/&([A-Za-z])/, `<span style="text-decoration: ${altPressed ? 'underline' : 'none'};">$1</span>`)}</div>
       {#if hasSubMenu}
         <Icon icon="ic:round-chevron-right" width="1.5em" class="chevron" />
       {/if}
