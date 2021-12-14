@@ -9,3 +9,5 @@ temp/*
 .svelte-kit
 
 .env.local
+
+.vscode
