@@ -7,3 +7,5 @@ temp/*
 
 .vercel_build_output
 .svelte-kit
+
+.env.local

@@ -38,6 +38,8 @@
     open: void,
     selectall: void,
     preferences: void,
+    upload: void,
+    openlibrary: void,
   }>()
 
   import CustomSnappingDialog from './dialogs/CustomSnappingDialog.svelte'
@@ -77,6 +79,12 @@
         <MenuItem icon="mdi:content-copy" text="コピー (&C)" on:click={() => dispatch('copy')} />
         <MenuItem icon="mdi:content-save" text="貼り付け (&V)" on:click={() => dispatch('paste')} />
       </MenuItem>
+    <MenuDivider/>
+    <MenuItem icon="fluent:library-28-filled" text="ライブラリ (&L)">
+      <MenuItem icon="mdi:format-list-bulleted" text="一覧" on:click={() => dispatch('openlibrary')} />
+      <MenuDivider/>
+      <MenuItem icon="mdi:cloud-upload" text="アップロード" on:click={() => dispatch('upload')} />
+    </MenuItem>
     <MenuDivider/>
     <MenuItem icon="vaadin:cog" text="設定 (&P)" on:click={() => dispatch('preferences')}/>
     <MenuDivider/>

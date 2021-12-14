@@ -13,6 +13,9 @@
   import AudioManager from '$lib/audio/AudioManager.svelte'
   import DebugInfo from '$lib/ui/DebugInfo.svelte'
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte'
+  import LibraryDialog from '$lib/dialogs/LibraryDialog.svelte'
+
+  let libraryDialogOpened = false
 
   // Toast
   import toast from '$lib/ui/toast'
@@ -748,6 +751,72 @@
       on:open={onopen}
       on:selectall={onselectall}
       on:preferences={() => { preferencesDialogOpened = true }}
+      on:upload={async () => { 
+        if (!$selectedNotes.length) {
+          toast.error('アップロードするにはまずアップロードしたいノーツを選択してください')
+          return
+        }
+        const selectedSingles = singles.filter((note) => $selectedNotes.includes(note))
+        const selectedSlides = slides.filter(({ head, tail, steps }) => $selectedNotes.includes(head) || $selectedNotes.includes(tail) || steps.some((step) => $selectedNotes.includes(step)))
+        const minTick = Math.min(...[
+          ...selectedSingles.map((single) => single.tick),
+          ...selectedSlides.flatMap(({ head, tail, steps }) => [head.tick, tail.tick, ...steps.map((step) => step.tick)])
+        ])
+        const content = {
+          singles: selectedSingles.map((note) => ({
+            ...note,
+            tick: note.tick - minTick
+          })),
+          slides: selectedSlides.map((slide) => ({
+            ...slide,
+            head: {
+              ...slide.head,
+              tick: slide.head.tick - minTick
+            },
+            tail: {
+              ...slide.tail,
+              tick: slide.tail.tick - minTick
+            },
+            steps: slide.steps.map((step) => ({
+              ...step,
+              tick: step.tick - minTick
+            }))
+          }))
+        }
+        const title = prompt('タイトルを入力してください')
+        const description = prompt('説明を入力してください')
+        if (!title || !description) {
+          toast.error('タイトルと説明を入力してください')
+          return
+        }
+
+        try {
+          const res = await fetch('/library.json', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              title: {
+                ja: title
+              },
+              description: {
+                ja: description
+              },
+              content
+            })
+          })
+          if (res.ok) {
+            toast.success('アップロードしました')
+          } else {
+            toast.error('アップロードに失敗しました')
+          }
+        } catch (error) {
+          toast.error('アップロードに失敗しました')
+          console.error(error)
+        }
+      }}
+      on:openlibrary={() => { libraryDialogOpened = true }}
     />
     <Canvas
       {PIXI}
@@ -904,6 +973,38 @@
       currentProject = null
       initScore()
     }
+  }}
+/>
+
+<LibraryDialog
+  bind:opened={libraryDialogOpened}
+  on:input={({ detail: content }) => {
+    const newSingles = content.singles ?? []
+    const newSlides = content.slides ?? []
+    const maxTick = Math.max(...[
+      ...singles.map((single) => single.tick),
+      ...slides.flatMap(({ head, tail, steps }) => [head.tick, tail.tick, ...steps.map((step) => step.tick)])
+    ])
+    const endTick = snap(isFinite(maxTick) ? maxTick : 0, TICK_PER_MEASURE / snapTo) + TICK_PER_MEASURE / snapTo
+    exec(new BatchAdd(
+      singles, slides,
+      newSingles.map((single) => ({ ...single, tick: endTick + single.tick })),
+      newSlides.map((slide) => ({
+        ...slide,
+        head: {
+          ...slide.head,
+          tick: endTick + slide.head.tick,
+        },
+        tail: {
+          ...slide.tail,
+          tick: endTick + slide.tail.tick,
+        },
+        steps: slide.steps.map((step) => ({
+          ...step,
+          tick: endTick + step.tick,
+        })),
+      }))
+    ))
   }}
 />
 
