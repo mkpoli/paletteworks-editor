@@ -1,5 +1,7 @@
 import type { Single, Slide } from '$lib/score/beatmap'
-import faunadb, { query as q } from 'faunadb'
+import faunadb from 'faunadb'
+
+const q = faunadb.query
 
 type LocaleStrings = {
   [key: string]: string
