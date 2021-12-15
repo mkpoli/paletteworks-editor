@@ -11,12 +11,14 @@ export const baseLocale: Locales = 'ja'
 
 export const locales: Locales[] = [
 	'en',
-	'ja'
+	'ja',
+	'zh'
 ]
 
 const localeTranslationLoaders = {
 	en: () => import('./en'),
 	ja: () => import('./ja'),
+	zh: () => import('./zh'),
 }
 
 export const getTranslationForLocale = async (locale: Locales) => (await (localeTranslationLoaders[locale] || localeTranslationLoaders[baseLocale])()).default as Translation

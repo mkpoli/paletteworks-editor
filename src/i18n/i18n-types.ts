@@ -8,6 +8,7 @@ export type BaseLocale = 'ja'
 export type Locales =
 	| 'en'
 	| 'ja'
+	| 'zh'
 
 export type Translation = {
 	'editor': {	

@@ -84,13 +84,21 @@ const en: Translation = {
 			inputTitlePrompt: 'Please enter a title',
 			inputDescriptionPrompt: 'Please enter a description',
 			inputEmptyError: 'Please enter both a title and a description',
-			uploaded: 'The score is successfully uploaded',
+			uploaded: 'The notes are successfully uploaded',
 			uploadFailed: 'Upload failed',
 			exitConfirm: 'Do you want to save the score before exiting?',
 			unknownFileType: 'Unknown file type',
 			loadingLibraryFailed: 'Failed to load library',
 			preferencesSaved: 'Preferences saved',
 			deleteConfirm: 'Do you want to delete it?',
+		},
+		mutation: {
+			update: "updated",
+			cut: "cut",
+			delete: "deleted",
+			flip: "flipped",
+			move: "moved",
+			resize: "resized"
 		},
 		snapTo: {
 			snap: '{n}-Division',
