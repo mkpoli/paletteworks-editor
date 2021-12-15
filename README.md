@@ -24,6 +24,7 @@ pnpm dev -- --open
 - **R** for **R**efactor (Adjustments of code structure, naming, typing, comments, etc.)
 - **S** for **S**tyle (Styling, Visual Design Adjustments, etc.)
 - **V** for **V**ersion (Versioning, Dependency Change, etc.)
+- **I** for **I**18n (Translation, Localisation, etc.)
 
 ## LICENSE / ライセンス / 授權
 

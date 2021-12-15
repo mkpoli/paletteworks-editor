@@ -127,11 +127,11 @@ const zh: Translation = {
 		},
 		modes: {
 			select: "選擇",
-			tap: "單點",
+			tap: "單擊",
 			slide: "長條",
-			mid: "中點",
+			mid: "中繼點",
 			flick: "FLICK",
-			critical: "金色",
+			critical: "黃鍵",
 			bpm: "BPM",
 		}
 	}
