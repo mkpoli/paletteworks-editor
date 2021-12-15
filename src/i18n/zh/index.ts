@@ -115,6 +115,7 @@ const zh: Translation = {
 			append: '添加',
 			change: '更改',
 			export: '導出',
+			delete: '刪除',
 			ok: '確定',
 			new: '新建',
 			opensus: '打開SUS',

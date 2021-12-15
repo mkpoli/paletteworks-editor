@@ -115,6 +115,7 @@ const en: Translation = {
 			append: 'Append',
 			change: 'Change',
 			export: 'Export',
+			delete: 'Delete',
 			ok: 'OK',
 			new: 'New',
 			opensus: 'Open SUS',

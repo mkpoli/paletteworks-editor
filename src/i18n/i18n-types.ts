@@ -427,6 +427,10 @@ export type Translation = {
 			 */
 			'export': string
 			/**
+			 * 削除
+			 */
+			'delete': string
+			/**
 			 * OK
 			 */
 			'ok': string
@@ -891,6 +895,10 @@ export type TranslationFunctions = {
 			 * 出力
 			 */
 			'export': () => LocalizedString
+			/**
+			 * 削除
+			 */
+			'delete': () => LocalizedString
 			/**
 			 * OK
 			 */

@@ -71,7 +71,7 @@
         icon="mdi:delete"
         on:click={() => { dispatch('delete'); opened = false }}
       >
-        削除
+        {$LL.editor.dialog.delete()}
       </Button>
     {/if}
   </div> 

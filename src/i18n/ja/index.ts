@@ -116,6 +116,7 @@ const ja: BaseTranslation = {
 			append: "追加",
 			change: "変更",
 			export: "出力",
+			delete: "削除",
 			ok: "OK",
 			new: '新規作成',
 			opensus: 'SUSファイルを開く',

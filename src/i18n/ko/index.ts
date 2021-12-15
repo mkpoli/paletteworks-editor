@@ -115,6 +115,7 @@ const ko: Translation = {
 			append: '추가',
 			change: '변경',
 			export: '내보내기',
+			delete: '삭제',
 			ok: '확인',
 			new: '새로 만들기',
 			opensus: 'SUS 파일 열기',
