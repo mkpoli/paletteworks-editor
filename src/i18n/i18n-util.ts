@@ -12,12 +12,14 @@ export const baseLocale: Locales = 'ja'
 export const locales: Locales[] = [
 	'en',
 	'ja',
+	'ko',
 	'zh'
 ]
 
 const localeTranslationLoaders = {
 	en: () => import('./en'),
 	ja: () => import('./ja'),
+	ko: () => import('./ko'),
 	zh: () => import('./zh'),
 }
 
