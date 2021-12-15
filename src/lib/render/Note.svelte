@@ -2,6 +2,7 @@
   import { NOTE_HEIGHT } from '$lib/consts'
   import { getContext, onDestroy, onMount } from "svelte"
   import { position } from '$lib/position'
+  import { preferences } from '$lib/preferences'
 
   import type PIXI from 'pixi.js'
   import type { Flick, Type } from '$lib/score/beatmap'
@@ -37,10 +38,8 @@
     const texture = TEXTURES[NOTE_TEXTURE[type]]
     instance = new PIXI.NineSlicePlane(
       texture,
-      100, 0, 100, 0
+      100, 20, 100, 20
     )
-    instance.height = NOTE_HEIGHT
-    instance.pivot.y = NOTE_HEIGHT * 0.5
     instance.scale.x = 0.25
     instance.scale.y = 1
     instance.zIndex = zIndex
@@ -55,6 +54,7 @@
   $: x = $position.calcMidX(lane, width)
   $: y = $position.calcY(tick)
   $: rawWidth = width * 123 + 100
+  $: height = $preferences.noteHeight * NOTE_HEIGHT
   $: type = calcType(critical, flick, slide)
 
   function calcType(critical: boolean, flick: Flick, slide: boolean): Type {
@@ -74,6 +74,8 @@
   $: if (instance) instance.texture = TEXTURES[NOTE_TEXTURE[type]]
   $: if (instance) instance.alpha = alpha
   $: if (instance) instance.tint = tint
+  $: if (instance) instance.height = height
+  $: if (instance) instance.pivot.y = height * 0.5
 </script>
 
 <!-- FLICK ARROW -->

@@ -46,6 +46,8 @@
         <input type="number" name="autosave-interval" min=0 bind:value={preferences.autosaveInterval}/>
         <label for="scroll-speed">{$LL.editor.preferences.scrollSpeed()}</label>
         <input type="number" name="scroll-speed" min=0.01 bind:value={preferences.scrollSpeed}/>
+        <label for="note-height">{$LL.editor.preferences.noteHeight()}</label>
+        <input type="range" name="note-height" min=1 max=1.85 step=0.01 bind:value={preferences.noteHeight}/>
       </div>
       <Button
         class="ok"

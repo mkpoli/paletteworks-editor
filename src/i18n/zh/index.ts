@@ -123,6 +123,7 @@ const zh: Translation = {
 		preferences: {
 			autosaveInterval: '自動保存間隔（秒)',
 			scrollSpeed: '滾動速度（倍）',
+			noteHeight: '音符高度（倍）',
 		},
 		modes: {
 			select: "選擇",

@@ -1,6 +1,6 @@
 <script lang="ts">
   // Constants
-  import { COLORS } from '$lib/consts'
+  import { COLORS, LANE_WIDTH, NOTE_HEIGHT } from '$lib/consts'
 
   // Functions
   import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
@@ -11,14 +11,25 @@
 
   // Props
   export let draw: boolean
-  export let rect: PIXI.Rectangle
+  export let lane: number
+  export let tick: number
+  export let width: number
+  export let marginX: number = 0
   export let note: Note
+
+  $: sideMargin = 10 * $preferences.noteHeight
+  $: noteHeight = 0.3 * NOTE_HEIGHT * $preferences.noteHeight
+  $: rect = new PIXI.Rectangle(
+    $position.calcX(lane) - marginX, $position.calcY(tick) - 0.5 * noteHeight,
+    width * LANE_WIDTH + 2 * marginX, noteHeight
+  )
 
   // Stores
   import { moving, movingNotes, movingOrigins, movingTargets, movingOffsets } from '$lib/editing/moving'
-  import { cursor } from '$lib/position'
+  import { cursor, position } from '$lib/position'
   import { calcResized, resizing, resizingNotes, resizingOffsets, resizingOrigins, resizingTargets, resizingOriginNote } from '$lib/editing/resizing'
   import { selectedNotes } from '$lib/editing/selection'
+  import { preferences } from '$lib/preferences'
 
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -39,7 +50,6 @@
   let middle: PIXI.Container
   let controlL: PIXI.Graphics
   let controlR: PIXI.Graphics
-  const SIDE_MARGIN = 10
 
   // Moving
   function onmovestart() {
@@ -186,13 +196,13 @@
     controlL.clear()
     controlR.clear()
     middle.hitArea = new PIXI.Rectangle(
-      rect.x + SIDE_MARGIN, rect.y, rect.width - 2 * SIDE_MARGIN, rect.height
+      rect.x + sideMargin, rect.y, rect.width - 2 * sideMargin, rect.height
     )
     controlL.hitArea = new PIXI.Rectangle(
-      rect.x - SIDE_MARGIN, rect.y, SIDE_MARGIN * 2, rect.height
+      rect.x - sideMargin, rect.y, sideMargin * 2, rect.height
     )
     controlR.hitArea = new PIXI.Rectangle(
-      rect.right - SIDE_MARGIN, rect.y, SIDE_MARGIN * 2, rect.height
+      rect.right - sideMargin, rect.y, sideMargin * 2, rect.height
     )
 
     if (draw) {

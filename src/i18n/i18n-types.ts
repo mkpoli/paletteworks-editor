@@ -452,6 +452,10 @@ export type Translation = {
 			 * スクロールの早さ（倍）
 			 */
 			'scrollSpeed': string
+			/**
+			 * ノーツの高さ（倍）
+			 */
+			'noteHeight': string
 		}
 		'modes': {	
 			/**
@@ -921,6 +925,10 @@ export type TranslationFunctions = {
 			 * スクロールの早さ（倍）
 			 */
 			'scrollSpeed': () => LocalizedString
+			/**
+			 * ノーツの高さ（倍）
+			 */
+			'noteHeight': () => LocalizedString
 		}
 		'modes': {	
 			/**

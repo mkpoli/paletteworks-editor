@@ -24,6 +24,7 @@
 
   // Stores
   import { selectedNotes } from '$lib/editing/selection'
+  import { preferences } from '$lib/preferences'
 
   // Variables
   let container: PIXI.Container
@@ -115,7 +116,7 @@
 
   const SLIDE_STEP_MARGIN_X = -5
   const SLIDE_STEP_MARGIN_Y = 0
-  function drawSteps(position: PositionManager, slide: Slide, visible: boolean) {
+  function drawSteps(position: PositionManager, slide: Slide, visible: boolean, height: number) {
     graphics.clear()
 
     if (!visible) {
@@ -125,8 +126,8 @@
 
       const noteWidth = width * LANE_WIDTH
       const currentRect = new PIXI.Rectangle(
-        position.calcX(lane), position.calcY(tick) - 0.5 * 0.5 * NOTE_HEIGHT,
-        noteWidth, 0.5 * NOTE_HEIGHT
+        position.calcX(lane), position.calcY(tick) - 0.5 * height,
+        noteWidth, height
       )
 
       // graphics.lineStyle(0)
@@ -215,7 +216,7 @@
     drawDiamonds($position, slide, moving)
   }
   $: if (graphics) {
-    drawSteps($position, slide, stepsVisible)
+    drawSteps($position, slide, stepsVisible, 0.3 * NOTE_HEIGHT * $preferences.noteHeight)
   }
   $: if (graphics) {
     graphics.tint = moving ? COLORS.COLOR_MOVING_TINT : 0xFFFFFF
@@ -226,10 +227,10 @@
   {#each slide.steps as step}
     <NoteControl
       draw={$selectedNotes.includes(step)}
-      rect={new PIXI.Rectangle(
-        $position.calcX(step.lane) - SLIDE_STEP_MARGIN_X, $position.calcY(step.tick) - 0.5 * 0.5 * NOTE_HEIGHT,
-        step.width * LANE_WIDTH + 2 * SLIDE_STEP_MARGIN_X, 0.5 * NOTE_HEIGHT
-      )}
+      lane={step.lane}
+      tick={step.tick}
+      width={step.width}
+      marginX={SLIDE_STEP_MARGIN_X}
       bind:note={step}
       on:movestart
       on:move

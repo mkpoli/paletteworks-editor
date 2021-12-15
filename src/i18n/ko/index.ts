@@ -123,6 +123,7 @@ const ko: Translation = {
 		preferences: {
 			autosaveInterval: '자동 저장 간격 (초)',
 			scrollSpeed: '스크롤 속도 (배)',
+			noteHeight: '노트 높이 (배)',
 		},
 		modes: {
 			select: "선택",

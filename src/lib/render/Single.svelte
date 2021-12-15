@@ -1,10 +1,6 @@
 <script lang="ts">
-  import { NOTE_HEIGHT, LANE_WIDTH } from '$lib/consts';  
-  import { getContext } from "svelte";
   import { selectedNotes } from '$lib/editing/selection'
-  import { position } from '$lib/position'
 
-  import type PIXI from 'pixi.js'
   import type { Flick, Note as NoteType } from '$lib/score/beatmap'
 
   // Components
@@ -22,17 +18,6 @@
   let flick: Flick
   $: flick = 'flick' in note ? note.flick : 'no'
   $: realCritical = critical || ('critical' in note && note.critical) // critical ==
-
-  // Contexts
-  const PIXI = getContext<typeof import('pixi.js')>('PIXI')
-
-  // Variables
-  let currentRect: PIXI.Rectangle
-
-  $: currentRect = new PIXI.Rectangle(
-      $position.calcX(lane), $position.calcY(tick) - 0.5 * 0.5 * NOTE_HEIGHT,
-      width * LANE_WIDTH, 0.5 * NOTE_HEIGHT
-    )
 </script>
 
 <Note
@@ -52,7 +37,9 @@
   on:dblclick
   on:pointerenter
   on:pointerleave
+  {lane}
+  {tick}
+  {width}
   draw={$selectedNotes.includes(note)}
-  rect={currentRect}
   bind:note
 />

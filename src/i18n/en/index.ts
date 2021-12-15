@@ -123,6 +123,7 @@ const en: Translation = {
 		preferences: {
 			autosaveInterval: 'Auto-save Interval (sec)',
 			scrollSpeed: 'Scroll Speed (x)',
+			noteHeight: 'Note Height (x)',
 		},
 		modes: {
 			select: "Select",
