@@ -17,19 +17,17 @@
   export let opened: boolean
   import { db } from '$lib/database'
 
-  import { DEFAULT_PREFERENCES } from '$lib/consts'
   import toast from "$lib/ui/toast"
 
-  let preferences: Record<keyof typeof DEFAULT_PREFERENCES, any>
+  import { preferences as _preferences } from '$lib/preferences'
+  import type { Preferences } from '$lib/preferences'
+
+  let preferences: Preferences
 </script>
 
-<Modal bind:opened
-  on:opened={async () => {
-    preferences = Object.fromEntries(await Promise.all(Object.entries(DEFAULT_PREFERENCES).map(async ([key, value]) => {
-      const data = await db.preferences.get(key)
-      return [key, data ? data.value : value] 
-    })))
-  }}
+<Modal
+  bind:opened
+  on:opened={() => { preferences = $_preferences }}
 >
   <div slot="presentation">
     {#if preferences}

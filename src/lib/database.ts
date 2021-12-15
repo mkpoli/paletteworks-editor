@@ -16,7 +16,6 @@ export interface Preferences {
 }
 
 import { Dexie, liveQuery } from 'dexie'
-import { DEFAULT_PREFERENCES } from '$lib/consts'
 
 class Database extends Dexie {
   projects: Dexie.Table<Project, number>
@@ -34,9 +33,7 @@ class Database extends Dexie {
 
 export const db = new Database()
 
-// Projects as Store
 export const projects = liveQuery(async () => (await db.projects.toArray()).reverse())
-export const preferences = liveQuery(async () => ({
-  ...DEFAULT_PREFERENCES,
-  ...Object.fromEntries((await db.preferences.toArray()).map(({ key, value }) => [key, value]))
-}))
+export const preferences = liveQuery(async () => 
+  Object.fromEntries((await db.preferences.toArray()).map(({ key, value }) => [key, value]))
+)

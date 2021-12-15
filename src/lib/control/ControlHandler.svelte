@@ -7,6 +7,7 @@
 
   // Stores
   import { inside } from '$lib/position'
+  import { preferences } from '$lib/preferences'
 
   type KeyboardEvents = {
     [K in KeyboardAction]: void
@@ -18,14 +19,14 @@
 
   export let zoom: number
   export let scrollTick: number
-  export let scrollSpeed: number
+
   function mousewheel(event: WheelEvent) {
     if (!$inside) return
     event.preventDefault()
     if (event.ctrlKey) { 
       zoom -= (event.deltaY > 0 ? 0.1 : -0.1) * (event.shiftKey ? 10 : 1)
     } else {
-      scrollTick -= event.deltaY * (event.deltaMode === event.DOM_DELTA_PIXEL ? 1.5 : 35) * (event.shiftKey ? 5 : 1) * scrollSpeed / zoom
+      scrollTick -= event.deltaY * (event.deltaMode === event.DOM_DELTA_PIXEL ? 1.5 : 35) * (event.shiftKey ? 5 : 1) * $preferences.scrollSpeed / zoom
     }
   }
   

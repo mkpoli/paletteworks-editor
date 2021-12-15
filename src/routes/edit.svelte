@@ -77,7 +77,6 @@
     ZOOM_DEFAULT,
     ZOOM_MIN,
     LANE_MAX,
-    DEFAULT_PREFERENCES,
     MEASURE_HEIGHT,
   } from '$lib/consts'
 
@@ -467,7 +466,7 @@
     currentTick = 0
   }
   
-  import { db, preferences } from '$lib/database'
+  import { db } from '$lib/database'
 
   import type { Project } from '$lib/database'
   import ProjectsDialog from '$lib/dialogs/ProjectsDialog.svelte'
@@ -672,17 +671,14 @@
     return await new Promise(resolve => canvas.toBlob(resolve))
   }
 
-  let { autosaveInterval, scrollSpeed } = DEFAULT_PREFERENCES
-  $: if ($preferences) {
-    ({ autosaveInterval, scrollSpeed } = $preferences)
-  }
+  import { preferences } from '$lib/preferences'
 
-  $: dbg('autosaveInterval', autosaveInterval)
+  $: dbg('autosaveInterval', $preferences.autosaveInterval)
   
   let autosaveIntervalTimer: number | undefined = undefined
-  $: if (autosaveInterval !== 0) {
+  $: if ($preferences.autosaveInterval !== 0) {
     clearAutosave()
-    autosaveIntervalTimer = window.setInterval(autosave, autosaveInterval * 1000)
+    autosaveIntervalTimer = window.setInterval(autosave, $preferences.autosaveInterval * 1000)
   }
   function autosave() {
     if (currentProject && updated) {
@@ -1021,7 +1017,6 @@
 />
 
 <ControlHandler
-  {scrollSpeed}
   bind:zoom
   bind:scrollTick
   on:undo={onundo}
