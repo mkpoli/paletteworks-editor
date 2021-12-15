@@ -209,7 +209,7 @@
               icon="mdi:plus-thick"
               on:click={() => { dispatch('input', item.content) }}
             >
-              ${$LL.editor.dialog.append()}
+              {$LL.editor.dialog.append()}
             </Button>
           </div>
         {/each}
