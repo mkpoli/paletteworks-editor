@@ -16,7 +16,7 @@ pnpm dev -- --open
 ### Commit Message Naming Convention
 
 ```
-(F|R|D|S|V): <Verb Phrase>
+(F|R|D|S|V|I): <Verb Phrase>
 ```
 
 - **F** for **F**eature (Additions, Ajustments of functionalities, etc.)
