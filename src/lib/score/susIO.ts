@@ -289,8 +289,7 @@ export function exportScoreData(score: Score): SusScore {
           width,
           type: 3
         })
-      }
-      if (easeType) {
+      } else if (easeType) {
         tapNotes.push({
           tick,
           lane,
