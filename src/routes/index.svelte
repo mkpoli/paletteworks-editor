@@ -7,6 +7,11 @@
   import soundeffects from '$assets/homepage/soundeffects.png'
   import filesupport from '$assets/homepage/filesupport.png'
 </script>
+
+<svelte:head>
+  <title>PaletteWorks Editor - Homepage</title>
+</svelte:head>
+
 <header>
   <h1><img src="/favicon.png" alt="Logo" class="logo"/>PaletteWorks Editor</h1>
   <nav>
