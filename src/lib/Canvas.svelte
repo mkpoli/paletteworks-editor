@@ -29,7 +29,7 @@
   import { inside, scrollY } from '$lib/position'
 
   // Score Components
-  import Background from '$lib/render/Background.svelte'
+  import Grid from '$lib/render/Grid.svelte'
   import BPM from '$lib/render/BPM.svelte'
   import Playhead from '$lib/render/Playhead.svelte'
   import Single from '$lib/render/Single.svelte'
@@ -524,7 +524,7 @@
     />
 
     <!-- BACKGROUND -->
-    <Background
+    <Grid
       {maxMeasure}
       {snapTo}
     />
