@@ -54,7 +54,7 @@ const ko: Translation = {
 			scrollmode: '스크롤 모드',
 			metadata: '채보 정보',
 			title: '제목',
-			artist: '작곡가',
+			artist: '가수/작곡가',
 			author: '채보 제작자',
 			statistics: '통계',
 			history: '실행 내역',
