@@ -1,5 +1,4 @@
 import type { BaseTranslation } from "../i18n-types"
-import { preferences } from '../../lib/database';
 
 const ja: BaseTranslation = {
 	editor: {
