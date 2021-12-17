@@ -25,7 +25,7 @@
   export let maxMeasure: number
 
   // Constants
-  import { CANVAS_WIDTH, MAIN_WIDTH, MARGIN_BOTTOM } from '$lib/consts'
+  import { CANVAS_WIDTH, MAIN_WIDTH, MARGIN_BOTTOM, Z_INDEX } from '$lib/consts'
   const MINIMAP_RESOLUTION = 0.15
   $: minimapRect = new PIXI.Rectangle(
     CANVAS_WIDTH - MAIN_WIDTH * MINIMAP_RESOLUTION,
@@ -37,6 +37,7 @@
 
   onMount(() => {
     container = new PIXI.Container()
+    container.zIndex = Z_INDEX.MINIMAP
     container.hitArea = minimapRect
     container.interactive = true
 /*     container.addEventListener('click', (event) => {

@@ -1,5 +1,15 @@
 <script lang="ts">
-  import { BEAT_IN_MEASURE, COLORS, LANE_AREA_WIDTH, LANE_WIDTH, MARGIN, MARGIN_BOTTOM, TEXT_MARGIN, TICK_PER_MEASURE } from "$lib/consts";
+  import {
+    BEAT_IN_MEASURE,
+    COLORS,
+    LANE_AREA_WIDTH,
+    LANE_WIDTH,
+    MARGIN,
+    MARGIN_BOTTOM,
+    TEXT_MARGIN,
+    TICK_PER_MEASURE,
+    Z_INDEX
+  } from '$lib/consts'
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -23,7 +33,7 @@
 
   onMount(async () => {
     graphics = new PIXI.Graphics()
-    graphics.zIndex = -1
+    graphics.zIndex = Z_INDEX.GRID
     mainContainer.addChild(graphics)
   })
 

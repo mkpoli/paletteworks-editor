@@ -29,6 +29,7 @@
   {slide}
   alpha={resizing || floating ? 0.5 : 1}
   tint={moving ? 0xb0b0b0 : 0xffffff}
+  {floating}
 />
 
 <NoteControl

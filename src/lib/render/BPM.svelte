@@ -1,5 +1,13 @@
 <script lang="ts">
-  import { COLORS, LANE_AREA_WIDTH, LANE_WIDTH, MARGIN, TEXT_MARGIN } from "$lib/consts";
+  // Constants
+  import {
+    COLORS,
+    LANE_AREA_WIDTH,
+    LANE_WIDTH,
+    MARGIN,
+    TEXT_MARGIN,
+    Z_INDEX
+  } from '$lib/consts'
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -20,6 +28,7 @@
 
   onMount(() => {
     graphics = new PIXI.Graphics()
+    graphics.zIndex = Z_INDEX.BAR
     mainContainer.addChild(graphics)
   })
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { COLORS, LANE_WIDTH, NOTE_HEIGHT_REAL } from '$lib/consts'
+  import { COLORS, LANE_WIDTH, NOTE_HEIGHT_REAL, Z_INDEX } from '$lib/consts'
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -24,7 +24,7 @@
 
   onMount(() => {
     graphics = new PIXI.Graphics()
-    graphics.zIndex = 5
+    graphics.zIndex = Z_INDEX.ERROR
     mainContainer.addChild(graphics)
     app.ticker.add(changeAlpha)
   })

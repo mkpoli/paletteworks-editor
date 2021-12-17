@@ -1,6 +1,6 @@
 <script lang="ts">
   // Constants
-  import { COLORS, LANE_AREA_WIDTH, MARGIN } from "$lib/consts"
+  import { COLORS, LANE_AREA_WIDTH, MARGIN, Z_INDEX } from '$lib/consts'
 
   // Stores
   import { cursor, position } from '$lib/position'
@@ -26,7 +26,7 @@
 
   onMount(async () => {
     graphics = new PIXI.Graphics()
-    graphics.zIndex = -1
+    graphics.zIndex = Z_INDEX.PLAYHEAD
     graphics.interactive = true
     graphics.addListener('pointerdown', () => {
       if (paused) {

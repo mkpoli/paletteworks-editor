@@ -3,7 +3,7 @@
 
   import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
 
-  import { LANE_WIDTH, COLORS } from '$lib/consts'
+  import { LANE_WIDTH, COLORS, Z_INDEX } from '$lib/consts'
   import { position } from '$lib/position'
   
   import type { SlideNote } from '$lib/score/beatmap'
@@ -33,6 +33,7 @@
 
   onMount(() => {
     graphics = new PIXI.Graphics()
+    graphics.zIndex = floating ? Z_INDEX.FLOATING_SLIDE_PATH : Z_INDEX.SLIDE_PATH
     graphics.interactive = true
     graphics.addEventListener('click', (event) => {
       if (event.detail === 1) {

@@ -1,6 +1,6 @@
 <script lang="ts">
   // Constants
-  import { COLORS, DIAMOND_HEIGHT, DIAMOND_WIDTH, LANE_WIDTH, NOTE_HEIGHT } from '$lib/consts'
+  import { COLORS, DIAMOND_HEIGHT, DIAMOND_WIDTH, LANE_WIDTH, NOTE_HEIGHT, Z_INDEX } from '$lib/consts'
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -32,11 +32,11 @@
 
   onMount(async () => {
     container = new PIXI.Container()
-    container.zIndex = 3
+    container.zIndex = floating ? Z_INDEX.FLOATING_DIAMOND : Z_INDEX.DIAMOND
     mainContainer.addChild(container)
     
     graphics = new PIXI.Graphics()
-    graphics.zIndex = 2
+    graphics.zIndex = floating ? Z_INDEX.FLOATING_STEP : Z_INDEX.STEP
     mainContainer.addChild(graphics)
   })
 

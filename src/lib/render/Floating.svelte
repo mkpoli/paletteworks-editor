@@ -14,6 +14,7 @@
     LANE_AREA_WIDTH,
     TEXT_MARGIN,
     MARGIN,
+    Z_INDEX,
   } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
@@ -47,11 +48,11 @@
   onMount(() => {
     container = new PIXI.Container()
     container.alpha = 0.5
-    container.zIndex = 4
+    container.zIndex = Z_INDEX.FLOATING_NOTE
     mainContainer.addChild(container)
 
     graphics = new PIXI.Graphics()
-    graphics.zIndex = 4
+    graphics.zIndex = Z_INDEX.FLOATING_BAR
     mainContainer.addChild(graphics)
 
     floating = new PIXI.Sprite()
@@ -135,7 +136,6 @@
       slide={currentMode === 'slide'}
       critical={currentMode === 'critical'}
       alpha={0.5}
-      zIndex={2}
     />
   {/if}
 {/if}

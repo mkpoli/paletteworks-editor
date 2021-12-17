@@ -2,6 +2,7 @@
   import type PIXI from 'pixi.js'
   import COLORS from '$lib/colors'
   import { getContext, onDestroy, onMount } from 'svelte'
+  import { Z_INDEX } from '$lib/consts'
 
   export let dragging: boolean
   export let rect: PIXI.Rectangle
@@ -14,7 +15,7 @@
 
   onMount(() => {
     graphics = new PIXI.Graphics()
-    graphics.zIndex = 9
+    graphics.zIndex = Z_INDEX.SELECTION
     mainContainer.addChild(graphics)
   })
 

@@ -98,3 +98,29 @@ export const EFFECT_SOUNDS = {
   connectCritical,
   stage
 }
+
+/**
+ * Z-indicies
+ **/
+export enum Z_INDEX {
+  GRID,
+  BAR,
+  GAMESCRIPT,
+  FLOATING_BAR,
+  PLAYHEAD,
+  SLIDE_PATH,
+  STEP,
+  DIAMOND,
+  NOTE,
+  ARROW,
+  CONTROL,
+  CONTROL_INTERACTION,
+  MINIMAP,
+  ERROR,
+  SELECTION,
+  FLOATING_SLIDE_PATH,
+  FLOATING_STEP,
+  FLOATING_DIAMOND,
+  FLOATING_NOTE,
+  FLOATING_ARROW,
+}

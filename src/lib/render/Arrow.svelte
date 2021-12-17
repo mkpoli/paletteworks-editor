@@ -1,4 +1,7 @@
 <script lang="ts">
+  // Constants
+  import { Z_INDEX } from '$lib/consts'
+
   // Types
   import type PIXI from 'pixi.js'
   import type { Flick } from "$lib/score/beatmap"
@@ -18,6 +21,7 @@
   export let width: number
   export let flick: Flick
   export let alpha: number = 1
+  export let floating: boolean
 
   let sprite: PIXI.Sprite
 
@@ -26,7 +30,7 @@
     sprite.anchor.x = 0.5
     sprite.anchor.y = 0.5
     sprite.scale.y = 0.25
-    sprite.zIndex = 4
+    sprite.zIndex = floating ? Z_INDEX.FLOATING_ARROW : Z_INDEX.ARROW
     mainContainer.addChild(sprite)
   })
 

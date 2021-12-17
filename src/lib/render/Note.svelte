@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { NOTE_HEIGHT } from '$lib/consts'
+  import { NOTE_HEIGHT, Z_INDEX } from '$lib/consts'
   import { getContext, onDestroy, onMount } from "svelte"
   import { position } from '$lib/position'
   import { preferences } from '$lib/preferences'
@@ -15,7 +15,7 @@
   export let slide: boolean
   export let alpha: number = 1
   export let tint: number = 0xFFFFFF
-  export let zIndex: number = 1
+  export let floating: boolean = false
 
   import Arrow from '$lib/render/Arrow.svelte'
 
@@ -42,7 +42,7 @@
     )
     instance.scale.x = 0.25
     instance.scale.y = 1
-    instance.zIndex = zIndex
+    instance.zIndex = floating ? Z_INDEX.FLOATING_NOTE : Z_INDEX.NOTE
     instance.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
     mainContainer.addChild(instance)
   })
@@ -86,4 +86,5 @@
   critical={type === 'critical'}
   {flick}
   {alpha}
+  {floating}
 />

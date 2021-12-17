@@ -10,7 +10,7 @@
   import type { Fever } from '$lib/score/beatmap'
 
   // Constants
-  import { LANE_AREA_WIDTH, MARGIN } from '$lib/consts'
+  import { LANE_AREA_WIDTH, MARGIN, Z_INDEX } from '$lib/consts'
   const FEVER_GAP = 5
 
   // Props
@@ -30,6 +30,8 @@
 
     feverStart = new PIXI.Sprite(TEXTURE)
     feverEnd = new PIXI.Sprite(TEXTURE)
+    feverStart.zIndex = Z_INDEX.GAMESCRIPT
+    feverEnd.zIndex = Z_INDEX.GAMESCRIPT
     feverStart.scale.set(0.5)
     feverEnd.scale.set(0.5)
     feverStart.anchor.set(0, 0.5)

@@ -1,6 +1,6 @@
 <script lang="ts">
   // Constants
-  import { COLORS, LANE_WIDTH, NOTE_HEIGHT } from '$lib/consts'
+  import { COLORS, LANE_WIDTH, NOTE_HEIGHT, Z_INDEX } from '$lib/consts'
 
   // Functions
   import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
@@ -115,14 +115,14 @@
 
   onMount(async () => {
     controlL = new PIXI.Graphics()
-    controlL.zIndex = 5
+    controlL.zIndex = Z_INDEX.CONTROL_INTERACTION
     controlL.interactive = true
     controlL.addListener('pointerdown', onresizestart(false))
     controlL.cursor = 'ew-resize'
     mainContainer.addChild(controlL)
 
     controlR = new PIXI.Graphics()
-    controlR.zIndex = 5
+    controlR.zIndex = Z_INDEX.CONTROL_INTERACTION
     controlR.cursor = 'ew-resize'
     controlR.interactive = true
     controlR.addListener('pointerdown', onresizestart(true))
@@ -132,11 +132,11 @@
     app.renderer.view.addEventListener('pointermove', onresizing)
 
     graphics = new PIXI.Graphics()
-    graphics.zIndex = 4
+    graphics.zIndex = Z_INDEX.CONTROL
     mainContainer.addChild(graphics)
 
     middle = new PIXI.Container()
-    middle.zIndex = 5
+    middle.zIndex = Z_INDEX.CONTROL_INTERACTION
     middle.interactive = true
     middle.cursor = 'move'
     middle.addEventListener('pointerdown', onmovestart)
