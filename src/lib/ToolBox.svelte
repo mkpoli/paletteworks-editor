@@ -157,11 +157,14 @@
   }
 
   .toolbox-container .menu-trigger {
-    border: none;
+    width: 100%;
     padding: 1em;
+    border: none;
+  
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: space-between;
+
     font-family: 'Jura', sans-serif;
     font-weight: 800;
     font-size: 1em;
