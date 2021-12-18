@@ -8,6 +8,7 @@
     "preview": "svelte-kit preview",
     "check": "svelte-check --tsconfig ./tsconfig.json --diagnostic-sources js,svelte",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "eslint --ignore-path .gitignore .",
     "typesafe-i18n": "typesafe-i18n"
   },
   "license": "MIT",
