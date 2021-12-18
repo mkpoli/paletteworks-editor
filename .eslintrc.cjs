@@ -18,9 +18,13 @@ module.exports = {
 		node: true
 	},
 	rules: {
-		'no-inferrable-types': {
-			ignoreParameters: true,
-			ignoreProperties: true
-		}
+		'@typescript-eslint/no-inferrable-types': [
+			'error',
+			{
+				ignoreParameters: true,
+				ignoreProperties: true
+			}	
+		],
+		"no-restricted-globals": ["error", "closed", "event", "fdescribe", "name", "length", "location", "parent", "top"]
 	}
 };
