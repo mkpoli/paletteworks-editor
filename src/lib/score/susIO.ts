@@ -4,6 +4,7 @@ import type { Flick, Single, Slide, SlideTail, SlideStep, SlideHead, Metadata, S
 import { analyze, getMetaData } from '$lib/score/sus/analyze'
 import { dump } from '$lib/score/sus/generate'
 import { LANE_FEVER, LANE_SKILL } from '$lib/consts'
+import { gcd } from '$lib/basic/math'
 
 export function getScoreData(sus: string): SusScore {
   const TICKS_PER_BIT = 480
@@ -198,9 +199,26 @@ export function convertScoreData(score: SusScore): Score {
 
   const bpms = new Map<number, number>(score.bpms.map(({ tick, value }) => [tick, value]))
 
+  const timeSignatures = new Map<number, [number, number]>(
+    score.barLengths.map(({ measure, value }) => [measure, simplify4(value, 4)])
+  )
+
   return {
     singles, slides, bpms, skills,
-    fever: feverStartTick !== null && feverEndTick !== null ? [feverStartTick, feverEndTick] : null
+    fever: feverStartTick !== null && feverEndTick !== null ? [feverStartTick, feverEndTick] : null,
+    timeSignatures
+  }
+}
+
+// Make denominator equals to 4
+function simplify4(numerator: number, denominator: number): [number, number] {
+  const g = gcd(numerator, denominator)
+  const n = numerator / g
+  const d = denominator / g
+  if (d % 4 === 0) {
+    return [n, d]
+  } else {
+    return [n * 4, d * 4]
   }
 }
 
@@ -222,7 +240,7 @@ export function exportScoreData(score: Score): SusScore {
   const slideNotes: Note[][] = []
   const bpmNotes: Timing[] = []
   
-  const { singles, slides, bpms, fever, skills } = score
+  const { singles, slides, bpms, fever, skills, timeSignatures } = score
 
   if (fever) {
     const [start, end] = fever
@@ -346,7 +364,11 @@ export function exportScoreData(score: Score): SusScore {
   directionalNotes.sort(sortKey)
   bpmNotes.sort(sortKey)
   
-  return { tapNotes, directionalNotes, slideNotes, bpms: bpmNotes }
+  const barLengths = [...timeSignatures]
+    .map(([measure, [p, q]]) => ({ measure, value: p / q * 4 }))
+    .sort((a, b) => a.measure - b.measure)
+
+  return { tapNotes, directionalNotes, slideNotes, bpms: bpmNotes, barLengths }
 }
 
 export function dumpSUS(metadata: Metadata, score: Score): string {

@@ -1,5 +1,5 @@
 import * as math from "$lib/basic/math"
-import { BEAT_IN_MEASURE, TICK_PER_BEAT, TICK_PER_MEASURE } from "$lib/consts"
+import { TICK_PER_BEAT } from "$lib/consts"
 import type { Meta, Score } from '$lib/score/sus/susdata'
 export type Raw = {
   tick: number
@@ -54,15 +54,33 @@ export function dump(metadata: Meta, score: Score, comment: string) {
   lines.push(`#REQUEST "ticks_per_beat ${TICK_PER_BEAT}"`)
   lines.push(``)
 
-  const noteMaps: DefaultMap<string, Raw[]> = new DefaultMap(() => [])
+  const noteMaps: DefaultMap<string, { raws: Raw[], ticksPerMeasure: number }> = new DefaultMap(() => ({ raws: [], ticksPerMeasure: 0 }))
+
+  const { bpms, tapNotes, directionalNotes, slideNotes, barLengths } = score
+
+  barLengths.forEach(({ measure, value }) => {
+    lines.push(`#${measure.toString().padStart(3, '0')}02:${value}`)
+  })
+  lines.push(``)
+
+  console.log('dumping score', score)
+
+  let accumulatedTicks = 0
+  const barLengthsInTicks = barLengths.map(({ measure, value }, ind, arr) => {
+    const { measure: nextMeasure } = arr[ind + 1] ?? [Infinity]
+    const tick = accumulatedTicks
+    accumulatedTicks += (nextMeasure - measure) * value * TICK_PER_BEAT
+    return { tick, measure, value }
+  }).reverse()
 
   const pushRaw = (tick: number, info: string, data: string) => {
-    const currentMeasure = Math.floor(tick / TICK_PER_BEAT / BEAT_IN_MEASURE)
-    noteMaps.get(`${currentMeasure.toString().padStart(3, '0')}${info}`).push({ tick, value: data })
+    const { tick: startTick, measure, value: beatsPerMeasure } = barLengthsInTicks.find(({ tick: startTick }) => tick >= startTick)!
+    const currentMeasure = Math.floor(measure + (tick - startTick) / TICK_PER_BEAT / beatsPerMeasure)
+    const noteMap = noteMaps.get(`${currentMeasure.toString().padStart(3, '0')}${info}`)
+    noteMap.raws.push({ tick: tick - startTick, value: data })
+    noteMap.ticksPerMeasure = beatsPerMeasure * TICK_PER_BEAT
   }
 
-  const { bpms, tapNotes, directionalNotes, slideNotes } = score
-  
   if (bpms.length >= 36 ** 2 - 1) {
     throw new Error(`Too much BPMS (${bpms.length} >= 36^2 -1 = ${36 ** 2 - 1})`); 
   }
@@ -94,14 +112,15 @@ export function dump(metadata: Meta, score: Score, comment: string) {
     })
   })
   
-  noteMaps.forEach((raws, tag) => {
-    const gcd = raws.reduce((acc, ele) => math.gcd(ele.tick, acc), TICK_PER_MEASURE)
+
+  noteMaps.forEach(({ raws, ticksPerMeasure }, tag) => {
+    const gcd = raws.reduce((acc, ele) => math.gcd(ele.tick, acc), ticksPerMeasure)
     const data = new Map(raws
       .sort(({ tick: a }, { tick: b }) => a - b)
-      .map(({ tick, value }) => [tick % TICK_PER_MEASURE, value])
+      .map(({ tick, value }) => [tick % ticksPerMeasure, value])
     )
     const values: string[] = []
-    for (let i = 0; i * gcd < TICK_PER_MEASURE; i++) {
+    for (let i = 0; i * gcd < ticksPerMeasure; i++) {
       const tick = i * gcd
       values.push(data.get(tick) ?? `00`)
     }
