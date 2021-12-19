@@ -8,6 +8,8 @@
   <chars count="16">
     <char id="35" x="19" y="0" width="15" height="32" xoffset="1" yoffset="0" xadvance="16" page="0" chnl="15" />
     <char id="43" x="68" y="33" width="11" height="32" xoffset="1" yoffset="0" xadvance="13" page="0" chnl="15" />
+    <char id="46" x="122" y="0" width="4" height="32" xoffset="2" yoffset="0" xadvance="7" page="0" chnl="15" />
+    <char id="47" x="0" y="66" width="10" height="32" xoffset="1" yoffset="0" xadvance="10" page="0" chnl="15" />
     <char id="48" x="35" y="0" width="15" height="32" xoffset="1" yoffset="0" xadvance="16" page="0" chnl="15" />
     <char id="49" x="92" y="33" width="7" height="32" xoffset="0" yoffset="0" xadvance="8" page="0" chnl="15" />
     <char id="50" x="66" y="0" width="13" height="32" xoffset="0" yoffset="0" xadvance="13" page="0" chnl="15" />
@@ -24,6 +26,6 @@
     <char id="80" x="28" y="33" width="13" height="32" xoffset="2" yoffset="0" xadvance="15" page="0" chnl="15" />
     <char id="8593" x="101" y="33" width="10" height="32" xoffset="0" yoffset="0" xadvance="13" page="0" chnl="15" />
     <char id="9833" x="112" y="33" width="12" height="32" xoffset="0" yoffset="0" xadvance="13" page="0" chnl="15" />
-    <char id="32" x="0" y="66" width="13" height="32" xoffset="0" yoffset="0" xadvance="8" page="0" chnl="15" />
+    <char id="32" x="112" y="66" width="13" height="32" xoffset="0" yoffset="0" xadvance="8" page="0" chnl="15" />
   </chars>
 </font>
