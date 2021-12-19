@@ -22,6 +22,7 @@ export const LANE_AREA_WIDTH = LANE_WIDTH * LANE_COUNT
 export const LANE_FEVER = 15
 export const LANE_SKILL = 0
 export const MEASURE_HEIGHT = 300
+export const TICK_HEIGHT = 0.15625
 export const MAIN_WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
 export const CANVAS_WIDTH = MAIN_WIDTH + 0.5 * MARGIN
 

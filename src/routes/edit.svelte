@@ -98,8 +98,11 @@
   let singles: Single[]
   let slides: Slide[]
   let bpms: Map<number, number>
+  let timeSignatures: Map<number, TimeSignature>
   let fever: Fever
   let skills: Set<number>
+
+  $: timeSignatureManager = new TimeSignatureManager(timeSignatures)
 
   // let empty: boolean = true
   // $: empty = singles.length === 0 && slides.length === 0 && (bpms.size === 0 || bpms.size === 1 && bpms.get(0) === 120)
@@ -251,7 +254,7 @@
   let lastPointerTick: number = 0
 
   function onexport() {
-    const sus = dumpSUS(metadata, { singles, slides, bpms, fever, skills })
+    const sus = dumpSUS(metadata, { singles, slides, bpms, fever, skills, timeSignatures })
     download(toBlob(sus), `${currentProject?.name}-${new Date().toISOString().replace(':', '-')}.sus`)
   }
 
@@ -346,12 +349,12 @@
     soundQueue = soundQueue
   }
 
-  let shiftKey: boolean = false
+  import { shiftKey } from '$lib/control/keyboard'
   document.addEventListener('keydown', (event: KeyboardEvent) => {
-    shiftKey = event.shiftKey
+    $shiftKey = event.shiftKey
   })
   document.addEventListener('keyup', (event: KeyboardEvent) => {
-    shiftKey = event.shiftKey
+    $shiftKey = event.shiftKey
   })
 
   import {
@@ -366,9 +369,12 @@
     BPMMutation,
     Mutation,
     RemoveBPM,
+    RemoveTimeSignature,
     SetBPM,
+    SetTimeSignature,
     SingleMutation,
     SlideMutation,
+    TimeSignatureMutation,
     UpdateSingle,
     UpdateSlide,
     UpdateSlideNote,
@@ -402,6 +408,10 @@
       ({ singles, slides } = mutation.exec())
     } else if (mutation instanceof BPMMutation) {
       bpms = mutation.exec()
+    } else if (mutation instanceof TimeSignatureMutation) {
+      timeSignatures = mutation.exec()
+    } else {
+      throw new Error('Unknown mutation type')
     }
     $mutationHistory.push(mutation)
     $mutationHistory = $mutationHistory
@@ -419,6 +429,10 @@
       ({ singles, slides } = mutation.undo())
     } else if (mutation instanceof BPMMutation) {
       bpms = mutation.undo()
+    } else if (mutation instanceof TimeSignatureMutation) {
+      timeSignatures = mutation.undo()
+    } else {
+      throw new Error('Unknown mutation type')
     }
     $undoneHistory.push(mutation)
     $undoneHistory = $undoneHistory
@@ -447,6 +461,7 @@
         bpms,
         fever,
         skills,
+        timeSignatures
       },
       music,
       preview: await renderPreview()
@@ -458,7 +473,7 @@
   initScore()
 
   function initScore() {
-    ({ metadata, score: { singles, slides, bpms, fever, skills }} = emptySUSData)
+    ({ metadata, score: { singles, slides, bpms, fever, skills, timeSignatures }} = emptySUSData)
     music = null
     $mutationHistory = []
     $undoneHistory = []
@@ -491,6 +506,7 @@
         bpms,
         fever,
         skills,
+        timeSignatures
       },
       music,
       preview: await renderPreview()
@@ -506,8 +522,9 @@
       savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name }))
     }
     initScore();
-    ({ metadata, score: { bpms, singles, slides, fever, skills }, music } = project)
+    ({ metadata, score: { bpms, singles, slides, fever, skills, timeSignatures }, music } = project)
     if (skills === undefined) skills = new Set()
+    if (timeSignatures === undefined) timeSignatures = new Map([[0, [4, 4]]])
     currentProject = project
   }
 
@@ -524,7 +541,7 @@
     const res = await fetch(url)
     const text = await res.text()
     try {
-      ({ metadata, score: { singles, slides, bpms, fever, skills } } = loadSUS(text))
+      ({ metadata, score: { singles, slides, bpms, fever, skills, timeSignatures } } = loadSUS(text))
     } catch (e) {
       toast.error($LL.editor.messages.loadingSUSError())
       console.error(e)
@@ -543,6 +560,7 @@
         bpms,
         fever,
         skills,
+        timeSignatures
       },
       music: null,
       preview: await renderPreview()
@@ -692,7 +710,7 @@
   }
 
   import PreferencesDialog from '$lib/dialogs/PreferencesDialog.svelte'
-  import { sortedBPMs } from '$lib/timing'
+  import { sortedBPMs, TimeSignature, TimeSignatureManager } from '$lib/timing'
   let preferencesDialogOpened = false
 
   function shrinkNotes(notes: NoteType[]) {
@@ -726,6 +744,10 @@
   $: if (!paused && loop && currentTick > loopTo) {
     doLoop()
   }
+
+  import TimeSignatureDialog from '$lib/dialogs/TimeSignatureDialog.svelte'
+  let timeSignatureDialogOpened = false
+  let timeSignatureDialogValue: [number, number] = [4, 4]
 </script>
 
 <svelte:head>
@@ -821,6 +843,7 @@
       {PIXI}
       {app}
       {mainContainer}
+      {maxTick}
       {maxMeasure}
       {scrollMode}
       {scrollTick}
@@ -828,11 +851,13 @@
       {currentMode}
       {innerHeight}
       {visibility}
-      {shiftKey}
+      {singles}
+      {slides}
+      {timeSignatures}
+      {timeSignatureManager}
+      shiftKey={$shiftKey}
       bind:currentTick
       bind:paused
-      bind:singles
-      bind:slides
       bind:bpms
       bind:zoom
       bind:fever
@@ -843,6 +868,12 @@
         ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)
         await tick()
         bpmDialogOpened = true
+      }}
+      on:changeTimeSignature={async (event) => {
+        ({ tick: lastPointerTick } = event.detail)
+        await tick()
+        timeSignatureDialogValue = [4, 4]
+        timeSignatureDialogOpened = true
       }}
       on:playSound={(event) => {
         soundQueue.push(event.detail)
@@ -957,6 +988,43 @@
   }}
   on:delete={() => {
     exec(new RemoveBPM(bpms, lastPointerTick))
+  }}
+/>
+
+<TimeSignatureDialog
+  bind:opened={timeSignatureDialogOpened}
+  bind:value={timeSignatureDialogValue}
+  exist={timeSignatureManager.has(lastPointerTick)}
+  on:ok={() => {
+    if (timeSignatureDialogValue) {
+      // const [last] = timeSignatureManager.get(lastPointerTick)
+      // const last = timeSignatures.get(lastPointerTick)
+
+      const [p, q] = timeSignatureDialogValue
+
+      if (isNaN(p) || isNaN(q)) {
+        toast.error($LL.editor.messages.nonNumeralInputError())
+        return
+      }
+
+      const exist = timeSignatureManager.has(lastPointerTick)
+
+      // if (last !== timeSignatureDialogValue) {
+      exec(new SetTimeSignature(
+        timeSignatures,
+        timeSignatureManager.tick2measure(lastPointerTick),
+        timeSignatureDialogValue,
+        exist ? $LL.editor.mutation.update() : $LL.editor.mutation.append()
+      ))
+      // }
+    }
+  }}
+  on:delete={() => {
+    exec(new RemoveTimeSignature(
+      timeSignatures,
+      timeSignatureManager.tick2measure(lastPointerTick),
+      $LL.editor.mutation.delete()
+    ))
   }}
 />
 

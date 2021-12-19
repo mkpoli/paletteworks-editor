@@ -54,6 +54,7 @@
   export let PIXI: typeof import('pixi.js')
   export let mainContainer: PIXI.Container
   export let currentTick: number
+  export let maxTick: number
   export let maxMeasure: number
   export let snapTo: number
   export let scrollTick: number
@@ -70,6 +71,8 @@
   export let singles: SingleType[]
   export let slides: SlideType[]
   export let bpms: Map<number, number>
+  export let timeSignatures: Map<number, [number, number]>
+  export let timeSignatureManager: TimeSignatureManager
   export let fever: FeverType
   export let skills: Set<number>
 
@@ -77,13 +80,15 @@
   setContext('PIXI', PIXI)
   setContext('mainContainer', mainContainer)
 
+  import type { TimeSignatureManager } from './timing';
+
   $: measureHeight = MEASURE_HEIGHT * zoom
 
   import { PositionManager, position, pointer, cursor, placing } from '$lib/position'
-  $: $position = new PositionManager(measureHeight, innerHeight)
+  $: $position = new PositionManager(measureHeight, innerHeight, zoom)
   $: $cursor = {
     lane: $position.calcLane($pointer.x),
-    tick: $position.calcTick($pointer.y, scrollTick, snapTo),
+    tick: timeSignatureManager.snap($position.calcScrolledTick($pointer.y, scrollTick), snapTo),
     laneSide: $position.calcLaneSide($pointer.x),
     rawLane: $position.calcRawLane($pointer.x),
     rawTick: $position.calcRawTick2($pointer.y) + scrollTick,
@@ -142,6 +147,7 @@
 
   type Events = {
     changeBPM: { tick: number, bpm: number },
+    changeTimeSignature: { tick: number },
     playSound: string,
     delete: { notes: NoteType[] },
     copy: { notes: NoteType[] },
@@ -340,6 +346,13 @@
           return
         }
 
+        if (currentMode === 'timeSignature') {
+          dispatch('changeTimeSignature', {
+            tick: $cursor.tick,
+          })
+          return
+        }
+
         if (!clickedOnNote && currentMode === 'flick') {
           dispatch('addsingle', { 
             note : {
@@ -526,12 +539,15 @@
     <!-- BACKGROUND -->
     <Grid
       {maxMeasure}
+      {maxTick}
       {snapTo}
+      {timeSignatures}
     />
 
     <!-- BPM -->
     <BPM
       {bpms}
+      {timeSignatures}
     />
 
     <!-- FEVER -->

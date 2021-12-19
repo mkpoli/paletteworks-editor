@@ -82,7 +82,8 @@ export type Score = {
   slides: Slide[]
   bpms: Map<number, number>
   fever: Fever,
-  skills: Set<number>
+  skills: Set<number>,
+  timeSignatures: Map<number, [number, number]>,
 }
 
 export type Beatmap = {

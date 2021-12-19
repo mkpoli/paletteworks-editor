@@ -6,6 +6,7 @@ import {
   MARGIN,
   MARGIN_BOTTOM,
   TICK_PER_MEASURE,
+  TICK_HEIGHT,
 } from "./consts"
 import { writable } from 'svelte/store'
 
@@ -21,12 +22,14 @@ interface IRect {
 }
 
 export class PositionManager {
+  zoom: number
   measureHeight: number
   containerHeight: number
 
-  constructor(measureHeight: number, containerHeight: number) {
+  constructor(measureHeight: number, containerHeight: number, zoom: number) {
     this.measureHeight = measureHeight
     this.containerHeight = containerHeight
+    this.zoom = zoom
   }
 
   calcX(lane: number): number {
@@ -36,9 +39,9 @@ export class PositionManager {
   calcMidX(lane: number, width: number): number {
     return MARGIN + (lane - 1 + width / 2) * LANE_WIDTH
   }
-  
+
   calcY(tick: number): number {
-    return this.containerHeight - (MARGIN_BOTTOM + (tick / TICK_PER_MEASURE) * this.measureHeight)
+    return this.containerHeight - (MARGIN_BOTTOM + tick * TICK_HEIGHT * this.zoom)
   }
 
   calcRawLane(x: number): number {
@@ -61,6 +64,10 @@ export class PositionManager {
   calcRawTick2(y: number): number {
     const rawTick = (this.containerHeight - y - 2 * MARGIN_BOTTOM) / this.measureHeight * TICK_PER_MEASURE
     return Math.max(0, rawTick)
+  }
+
+  calcScrolledTick(y: number, scrollTick: number): number {
+    return this.calcRawTick(y) + scrollTick
   }
 
   calcTick(y: number, scrollTick: number, snapTo: number): number {

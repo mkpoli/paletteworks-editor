@@ -94,6 +94,7 @@ const zh: Translation = {
 		},
 		mutation: {
 			update: "更新",
+			append: "追加",
 			cut: "剪切",
 			delete: "刪除",
 			flip: "翻轉",
@@ -107,6 +108,7 @@ const zh: Translation = {
 		},
 		dialog: {
 			bpmTitle: '設置BPM',
+			timeSignatureTitle: '設置拍號',
 			customSnappingTitle: '設置自定義分割',
 			imageTitle: '導出圖片',
 			libraryTitle: '梗庫',
@@ -133,6 +135,7 @@ const zh: Translation = {
 			flick: "FLICK",
 			critical: "黃鍵",
 			bpm: "BPM",
+			timeSignature: "拍號",
 		}
 	}
 }

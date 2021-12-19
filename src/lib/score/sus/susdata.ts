@@ -10,11 +10,17 @@ export type Timing = {
   value: number
 }
 
+export type MeasureObject = {
+  measure: number,
+  value: number
+}
+
 export type Score = {
   tapNotes: Note[]
   directionalNotes: Note[]
   slideNotes: Note[][]
-  bpms: Timing[]
+  bpms: Timing[],
+  barLengths: MeasureObject[],
 }
 
 export type Meta = {

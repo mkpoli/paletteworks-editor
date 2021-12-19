@@ -1,12 +1,12 @@
 <script lang="ts">
   import {
-    BEAT_IN_MEASURE,
     COLORS,
     LANE_AREA_WIDTH,
     LANE_WIDTH,
     MARGIN,
     MARGIN_BOTTOM,
     TEXT_MARGIN,
+    TICK_PER_BEAT,
     TICK_PER_MEASURE,
     Z_INDEX
   } from '$lib/consts'
@@ -20,8 +20,10 @@
   import type { Writable } from 'svelte/store'
 
   // Props
+  export let maxTick: number
   export let maxMeasure: number
   export let snapTo: number
+  export let timeSignatures: Map<number, [number, number]>
 
   // Contexts
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
@@ -38,17 +40,61 @@
   })
 
   $: if (graphics && $fontLoaded) {
-    drawBackground($position, maxMeasure, snapTo)
+    drawBackground($position, maxMeasure, snapTo, timeSignatures)
   }
 
   function drawBackground(
     position: PositionManager,
     maxMeasure: number,
-    snapTo: number
+    snapTo: number,
+    timeSignatures: Map<number, [number, number]>
   ) {
     const innerHeight = position.containerHeight
     graphics.removeChildren()
     graphics.clear()
+
+    // Draw beat / measures
+    let accumulatedTicks = 0
+    let accumulatedMeasures = 0
+    ;[...timeSignatures].forEach(([measure, [p, q]], ind, arr) => {
+      const beatsPerMeasure = p / q * 4
+
+      const [nextMeasure] = arr[ind + 1] ?? [maxMeasure + 3]
+      const startTick = accumulatedTicks
+      accumulatedTicks += (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT
+
+      const maxT = maxTick - startTick
+
+
+      for (let tick = 0; tick < (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT; tick++) {
+        const y = position.calcY(startTick + tick)
+        if (tick % (beatsPerMeasure * TICK_PER_BEAT) === 0) {
+          graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
+          graphics.moveTo(MARGIN, y)
+          graphics.lineTo(MARGIN + LANE_AREA_WIDTH, y)
+
+          // const number = (accumulatedBeats + i) / beatsPerMeasure
+          const text = new PIXI.BitmapText(`#${accumulatedMeasures + 1}`, {
+            fontName: 'Font',
+            tint: 0xFFFFFF,
+          })
+          accumulatedMeasures += 1
+          text.x = MARGIN - TEXT_MARGIN
+          text.y = y
+          text.anchor.x = 1
+          text.anchor.y = 0.5
+          graphics.addChild(text)
+        } else if (tick < maxT && tick % (TICK_PER_BEAT * beatsPerMeasure / p) === 0) {
+          graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
+          graphics.moveTo(MARGIN + LANE_WIDTH, y)
+          graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
+        } else if (tick < maxT && snapTo < 192 && tick % (TICK_PER_BEAT * beatsPerMeasure / p / snapTo * 4) === 0) {
+          graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
+          graphics.moveTo(MARGIN + LANE_WIDTH, y)
+          graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
+        }
+      }
+    })
 
     // Draw lanes
     for (let i = 1; i < 14; i++) {
@@ -62,44 +108,6 @@
       }
       graphics.moveTo(x, innerHeight)
       graphics.lineTo(x, position.calcY(maxMeasure * TICK_PER_MEASURE) - MARGIN_BOTTOM)
-    }
-
-    // Draw bars
-    for (let i = 0; i < maxMeasure * BEAT_IN_MEASURE + 1 ; i++) {
-      const y = innerHeight - (MARGIN_BOTTOM + i * position.measureHeight / BEAT_IN_MEASURE)
-
-      if (i % BEAT_IN_MEASURE == 0) {
-        graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
-        graphics.moveTo(MARGIN, y)
-        graphics.lineTo(MARGIN + LANE_AREA_WIDTH, y)
-
-        const number = i / BEAT_IN_MEASURE
-        const text = new PIXI.BitmapText(`#${number + 1}`, {
-          fontName: 'Font',
-          tint: 0xFFFFFF,
-        })
-        text.x = MARGIN - TEXT_MARGIN
-        text.y = y
-        text.anchor.x = 1
-        text.anchor.y = 0.5
-        graphics.addChild(text)
-      } else {
-        graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
-        graphics.moveTo(MARGIN + LANE_WIDTH, y)
-        graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
-      }
-    }
-
-    // DrawSnappingLines
-    if (snapTo > 192) return
-
-    for (let i = 0; i < maxMeasure * snapTo; i++) {
-      const tick = TICK_PER_MEASURE / snapTo * i
-      if (tick % 480 === 0) continue
-      const y = position.calcY(tick)
-      graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
-      graphics.moveTo(MARGIN + LANE_WIDTH, y)
-      graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
     }
   }
 </script>

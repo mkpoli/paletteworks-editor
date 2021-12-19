@@ -94,6 +94,7 @@ const ko: Translation = {
 		},
 		mutation: {
 			update: '업데이트',
+			append: '추가',
 			cut: '잘라내기',
 			delete: '삭제',
 			flip: '반전',
@@ -107,6 +108,7 @@ const ko: Translation = {
 		},
 		dialog: {
 			bpmTitle: 'BPM 설정',
+			timeSignatureTitle: '박자 설정',
 			customSnappingTitle: '사용자 설정 분음표',
 			imageTitle: '이미지로 내보내기',
 			libraryTitle: '컬렉션',
@@ -133,6 +135,7 @@ const ko: Translation = {
 			flick: "플릭",
 			critical: "크리티컬",
 			bpm: "BPM",
+			timeSignature: "박자",
 		}
 	}
 }

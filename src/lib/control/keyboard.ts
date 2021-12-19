@@ -28,3 +28,7 @@ export const KEYBOARD_SHORTCUTS  = {
 } as const
 
 export type KeyboardAction = keyof typeof KEYBOARD_SHORTCUTS
+
+import { writable } from 'svelte/store'
+
+export const shiftKey = writable(false)

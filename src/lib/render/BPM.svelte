@@ -6,6 +6,7 @@
     LANE_WIDTH,
     MARGIN,
     TEXT_MARGIN,
+    TICK_PER_BEAT,
     Z_INDEX
   } from '$lib/consts'
 
@@ -18,6 +19,7 @@
 
   // Props
   export let bpms: Map<number, number>
+  export let timeSignatures: Map<number, [number, number]>
 
   // Contexts
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
@@ -36,30 +38,50 @@
     mainContainer.removeChild(graphics)
   })
 
-  $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBPMs($position, bpms)
+  $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBPMs($position, bpms, timeSignatures)
 
-  function drawBPMs(position: PositionManager, bpms: Map<number, number>) {
+  function drawBPMs(position: PositionManager, bpms: Map<number, number>, timeSignatures: Map<number, [number, number]>) {
     graphics.clear()
-    graphics.lineStyle(1, COLORS.COLOR_BPM, 1)
     graphics.removeChildren()
-  
+
+    graphics.lineStyle(1, COLORS.COLOR_BPM, 0.95)
     // Draw BPMs
     bpms.forEach((bpm, tick) => {
       const newY = position.calcY(tick)
-  
+
       // Draw BPM LINES
       graphics.moveTo(MARGIN, newY)
       graphics.lineTo(MARGIN + LANE_AREA_WIDTH, newY)
-  
+
       // Draw BPM Texts
       const text = graphics.addChild(new PIXI.BitmapText(`♩=${bpm}`, {
-          tint: COLORS.COLOR_BPM,
-          fontName: 'Font',
-        }))
+        tint: COLORS.COLOR_BPM,
+        fontName: 'Font',
+      }))
       text.anchor.set(0.5, 0.5)
-  
+
       text.setTransform(MARGIN + LANE_AREA_WIDTH + LANE_WIDTH + TEXT_MARGIN, newY)
     })
-  }
 
+    graphics.lineStyle(1, COLORS.COLOR_TIME_SIGNATURE, 0.95)
+    let accumulatedTicks = 0
+    // Draw Time Signatures
+    ;[...timeSignatures].forEach(([measure, [beatPerMeasure, beatLength]], ind, arr) => {
+      const [nextMeasure] = arr[ind + 1] ?? [Infinity]
+
+      const newY = position.calcY(accumulatedTicks)
+      accumulatedTicks += (nextMeasure - measure) * (beatPerMeasure / beatLength * 4) * TICK_PER_BEAT
+ 
+      // Draw Time Signature LINES
+      graphics.moveTo(MARGIN, newY)
+      graphics.lineTo(MARGIN + LANE_AREA_WIDTH, newY)
+      // Draw Time Signature Texts
+      const text = graphics.addChild(new PIXI.BitmapText(`${beatPerMeasure}/${beatLength}`, {
+        tint: COLORS.COLOR_TIME_SIGNATURE,
+        fontName: 'Font',
+      }))
+      text.anchor.set(0.5, 0.5)
+      text.setTransform(MARGIN - 2 * TEXT_MARGIN, newY - 30)
+    })
+  }
 </script>
