@@ -464,3 +464,55 @@ export class BatchUpdateCombinated extends BatchMutation {
     return { singles: this.singles, slides: this.slides }
   }
 }
+
+export abstract class TimeSignatureMutation extends Mutation {
+  timeSignatures: Map<number, [number, number]>
+  measure: number
+  constructor(timeSignatures: Map<number, [number, number]>, measure: number) {
+    super()
+    this.size = 1
+    this.type = '拍子'
+    this.timeSignatures = timeSignatures
+    this.measure = measure
+  }
+}
+
+export class SetTimeSignature extends TimeSignatureMutation {
+  value: [number, number]
+  constructor(timeSignatures: Map<number, [number, number]>, measure: number, value: [number, number], name: string) {
+    super(timeSignatures, measure)
+    this.value = value
+    this.name = name
+  }
+
+  exec() {
+    this.timeSignatures.set(this.measure, this.value)
+    return this.timeSignatures
+  }
+
+  undo() {
+    this.timeSignatures.delete(this.measure)
+    return this.timeSignatures
+  }
+}
+
+export class RemoveTimeSignature extends TimeSignatureMutation {
+  oldValue: [number, number]
+  constructor(timeSignatures: Map<number, [number, number]>, measure: number, name: string) {
+    super(timeSignatures, measure)
+    this.name = name
+    const oldValue = timeSignatures.get(measure)
+    if (!oldValue) throw new Error(`Unexpected non-exist timeSignature at measure #${measure}`)
+    this.oldValue = oldValue
+  }
+
+  exec() {
+    this.timeSignatures.delete(this.measure)
+    return this.timeSignatures
+  }
+
+  undo() {
+    this.timeSignatures.set(this.measure, this.oldValue)
+    return this.timeSignatures
+  }
+}

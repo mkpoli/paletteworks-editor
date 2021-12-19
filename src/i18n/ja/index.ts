@@ -99,6 +99,7 @@ const ja: BaseTranslation = {
 		},
 		mutation: {
 			update: "更新",
+			append: '追加',
 			cut: "カット",
 			delete: "削除",
 			flip: "反転",
@@ -107,6 +108,7 @@ const ja: BaseTranslation = {
 		},
 		dialog: {
 			bpmTitle: "BPM設定",
+			timeSignatureTitle: "拍子設定",
 			customSnappingTitle: "カスタム分音符",
 			imageTitle: "画像出力",
 			libraryTitle: "ライブラリ",
@@ -133,6 +135,7 @@ const ja: BaseTranslation = {
 			flick: "フリック",
 			critical: "クリティカル",
 			bpm: "BPM",
+			timeSignature: "拍子",
 		}
 	}
 }

@@ -97,23 +97,39 @@
   ) {
     graphics.clear()
     graphics.removeChildren()
-  
-    if (currentMode == 'bpm') {
-      const text = new PIXI.BitmapText(hasBPM ? `↑ BPM` : `+ BPM`, {
-        fontName: 'Font',
-        tint: COLORS.COLOR_BPM,
-      })
-      text.anchor.set(0.5, 0.5)
-      text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
-      graphics.addChild(text)
 
-      if (!hasBPM) {
-        graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
-        drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y)
+    switch (currentMode) {
+      case 'bpm': {
+        const text = new PIXI.BitmapText(hasBPM ? `↑ BPM` : `+ BPM`, {
+          fontName: 'Font',
+          tint: COLORS.COLOR_BPM,
+        })
+        text.anchor.set(0.5, 0.5)
+        text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
+        graphics.addChild(text)
+
+        if (!hasBPM) {
+          graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
+          drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y)
+        }
+        break
       }
-      return
+      case 'timeSignature': {
+        const text = new PIXI.BitmapText(`+ 4/4`, {
+          fontName: 'Font',
+          tint: COLORS.COLOR_TIME_SIGNATURE,
+        })
+        text.anchor.set(0.5, 0.5)
+        text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
+        graphics.addChild(text)
+
+        if (!hasBPM) {
+          graphics.lineStyle(2, COLORS.COLOR_TIME_SIGNATURE, 1)
+          drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y)
+        }
+        break
+      }
     }
-    
   }
 
   $: lane = hoveringNote ? hoveringNote.lane : $placing.lane

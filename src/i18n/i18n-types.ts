@@ -369,6 +369,10 @@ export type Translation = {
 			 */
 			'update': string
 			/**
+			 * 追加
+			 */
+			'append': string
+			/**
 			 * カット
 			 */
 			'cut': string
@@ -394,6 +398,10 @@ export type Translation = {
 			 * BPM設定
 			 */
 			'bpmTitle': string
+			/**
+			 * 拍子設定
+			 */
+			'timeSignatureTitle': string
 			/**
 			 * カスタム分音符
 			 */
@@ -486,6 +494,10 @@ export type Translation = {
 			 * BPM
 			 */
 			'bpm': string
+			/**
+			 * 拍子
+			 */
+			'timeSignature': string
 		}
 	}
 }
@@ -842,6 +854,10 @@ export type TranslationFunctions = {
 			 */
 			'update': () => LocalizedString
 			/**
+			 * 追加
+			 */
+			'append': () => LocalizedString
+			/**
 			 * カット
 			 */
 			'cut': () => LocalizedString
@@ -867,6 +883,10 @@ export type TranslationFunctions = {
 			 * BPM設定
 			 */
 			'bpmTitle': () => LocalizedString
+			/**
+			 * 拍子設定
+			 */
+			'timeSignatureTitle': () => LocalizedString
 			/**
 			 * カスタム分音符
 			 */
@@ -959,6 +979,10 @@ export type TranslationFunctions = {
 			 * BPM
 			 */
 			'bpm': () => LocalizedString
+			/**
+			 * 拍子
+			 */
+			'timeSignature': () => LocalizedString
 		}
 	}
 }

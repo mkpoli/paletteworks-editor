@@ -28,7 +28,7 @@
   export let snapTo: SnapTo
 
   let menu: HTMLDivElement
-  import { KEYBOARD_SHORTCUTS } from './control/keyboard'
+  import { KEYBOARD_SHORTCUTS } from '$lib/control/keyboard'
 
   const dispatch = createEventDispatcher<{
     export: void,

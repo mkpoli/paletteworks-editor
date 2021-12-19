@@ -94,6 +94,7 @@ const en: Translation = {
 		},
 		mutation: {
 			update: "updated",
+			append: "appended",
 			cut: "cut",
 			delete: "deleted",
 			flip: "flipped",
@@ -107,6 +108,7 @@ const en: Translation = {
 		},
 		dialog: {
 			bpmTitle: 'Set BPM',
+			timeSignatureTitle: 'Set Time Signature',
 			customSnappingTitle: 'Set Custom Division',
 			imageTitle: 'Export Image',
 			libraryTitle: 'Library',
@@ -133,6 +135,7 @@ const en: Translation = {
 			flick: "Flick",
 			critical: "Critical",
 			bpm: "BPM",
+			timeSignature: "Time Signature",
 		}
 	}
 }
