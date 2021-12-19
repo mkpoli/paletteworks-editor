@@ -8,8 +8,8 @@
   export let button: string
   export let undo: () => void
   // export let toastID: number
-  export let history: Writable<Mutation[]>
-  export let mutation: Mutation
+  export let history: Writable<Mutation<any>[]>
+  export let mutation: Mutation<any>
   
   $: done = $history.includes(mutation)
 </script>

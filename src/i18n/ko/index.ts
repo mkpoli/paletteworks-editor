@@ -96,10 +96,19 @@ const ko: Translation = {
 			update: '업데이트',
 			append: '추가',
 			cut: '잘라내기',
+			set: '설정',
 			delete: '삭제',
 			flip: '반전',
 			move: '이동',
-			resize: "크기 조정"
+			resize: "크기 조정",
+			message: "{amount}개의 {type}를 {operation}",
+			target: {
+				note: '노트',
+				slide: '슬라이드',
+				slidenote: '슬라이드 노트',
+				timeSignature: '박자',
+				bpm: "BPM",
+			}
 		},
 		snapTo: {
 			snap: '{n}분음표',

@@ -102,9 +102,18 @@ const ja: BaseTranslation = {
 			append: '追加',
 			cut: "カット",
 			delete: "削除",
+			set: "設定",
 			flip: "反転",
 			move: "移動",
-			resize: "リサイズ"
+			resize: "リサイズ",
+			message: "{amount:number} {type: string}を{operation: string}",
+			target: {
+				note: "ノーツ",
+				slide: "スライド",
+				slidenote: "スライドノート",
+				timeSignature: "拍子",
+				bpm: "BPM",
+			}
 		},
 		dialog: {
 			bpmTitle: "BPM設定",

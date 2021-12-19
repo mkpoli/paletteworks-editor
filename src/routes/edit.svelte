@@ -269,7 +269,7 @@
   }
 
   function deleteNotes(notes: NoteType[], cut = false) {
-    exec(new BatchRemove(singles, slides, notes, !cut ? $LL.editor.mutation.delete() : $LL.editor.mutation.cut()))
+    exec(new BatchRemove(singles, slides, notes, !cut ? 'delete' : 'cut'))
   }
 
   function copyNotes(notes: NoteType[]) {
@@ -397,8 +397,8 @@
     exec(mutation)
   }
 
-  function exec(mutation: Mutation) {
-    if (mutation.size === 0) return
+  function exec(mutation: Mutation<any>) {
+    if (mutation.amount === 0) return
     $undoneHistory = $undoneHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
       singles = mutation.exec()
@@ -419,7 +419,7 @@
     playSound('stage')
   }
 
-  function undo(mutation: Mutation) {
+  function undo(mutation: Mutation<any>) {
     $mutationHistory = $mutationHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
       singles = mutation.undo()
@@ -597,7 +597,7 @@
         ...('flick' in note ? { flick: note.flick } : {})
       }]
     ))
-    exec(new BatchUpdate(singles, slides, flipTargets, flipOrigins, $LL.editor.mutation.flip()))
+    exec(new BatchUpdate(singles, slides, flipTargets, flipOrigins, 'flip'))
   }
 
   function duplicateNotes(notes: NoteType[]) {
@@ -632,7 +632,7 @@
       singles, slides,
       new Map(flickNotes.map((note) => [note, { flick: flip ? flipFlick(oldFlick) : rotateFlick(oldFlick) }])),
       new Map(flickNotes.map((note) => [note, { flick: note.flick }])),
-      $LL.editor.mutation.update()
+      'update'
     ))
   }
 
@@ -656,7 +656,7 @@
       new Map(criticalNotes.map((note) => [note, { critical: note.critical }])),
       new Map(criticalSlides.map((slide) => [slide, { critical: !oldcritical }])),
       new Map(criticalSlides.map((slide) => [slide, { critical: slide.critical }])),  
-      $LL.editor.mutation.update()
+      'update'
     ))
   }
 
@@ -887,10 +887,10 @@
       on:cut={(event) => { cutNotes(event.detail.notes) }}
       on:paste={onpaste}
       on:movenotes={({ detail: { movingTargets, movingOrigins }}) => {
-        exec(new BatchUpdate(singles, slides, movingTargets, movingOrigins, $LL.editor.mutation.move()))
+        exec(new BatchUpdate(singles, slides, movingTargets, movingOrigins, 'move'))
       }}
       on:resizenotes={({ detail: { resizingTargets, resizingOrigins }}) => {
-        exec(new BatchUpdate(singles, slides, resizingTargets, resizingOrigins, $LL.editor.mutation.resize()))
+        exec(new BatchUpdate(singles, slides, resizingTargets, resizingOrigins, 'resize'))
       }}
       on:changecurve={onchangecurve}
       on:changediamond={onchangediamond}
@@ -1014,7 +1014,7 @@
         timeSignatures,
         timeSignatureManager.tick2measure(lastPointerTick),
         timeSignatureDialogValue,
-        exist ? $LL.editor.mutation.update() : $LL.editor.mutation.append()
+        exist ? 'update' : 'append'
       ))
       // }
     }
@@ -1023,7 +1023,7 @@
     exec(new RemoveTimeSignature(
       timeSignatures,
       timeSignatureManager.tick2measure(lastPointerTick),
-      $LL.editor.mutation.delete()
+      'delete'
     ))
   }}
 />

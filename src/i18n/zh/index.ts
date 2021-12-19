@@ -94,12 +94,21 @@ const zh: Translation = {
 		},
 		mutation: {
 			update: "更新",
-			append: "追加",
+			append: "添加",
 			cut: "剪切",
 			delete: "刪除",
 			flip: "翻轉",
 			move: "移動",
-			resize: "調整大小"
+			set: "設置",
+			resize: "調整大小",
+			message: "{operation}了 {amount} 個{type}",
+			target: {
+				note: "音符",
+				slide: "長條",
+				slidenote: "長條音符",
+				timeSignature: "拍號",
+				bpm: "BPM",
+			}
 		},
 		snapTo: {
 			snap: '{n}分音符',

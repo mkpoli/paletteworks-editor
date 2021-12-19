@@ -381,6 +381,10 @@ export type Translation = {
 			 */
 			'delete': string
 			/**
+			 * 設定
+			 */
+			'set': string
+			/**
 			 * 反転
 			 */
 			'flip': string
@@ -392,6 +396,35 @@ export type Translation = {
 			 * リサイズ
 			 */
 			'resize': string
+			/**
+			 * {amount} {type}を{operation}
+			 * @param {number} amount
+			 * @param {string} operation
+			 * @param {string} type
+			 */
+			'message': RequiredParams3<'amount', 'operation', 'type'>
+			'target': {	
+				/**
+				 * ノーツ
+				 */
+				'note': string
+				/**
+				 * スライド
+				 */
+				'slide': string
+				/**
+				 * スライドノート
+				 */
+				'slidenote': string
+				/**
+				 * 拍子
+				 */
+				'timeSignature': string
+				/**
+				 * BPM
+				 */
+				'bpm': string
+			}
 		}
 		'dialog': {	
 			/**
@@ -866,6 +899,10 @@ export type TranslationFunctions = {
 			 */
 			'delete': () => LocalizedString
 			/**
+			 * 設定
+			 */
+			'set': () => LocalizedString
+			/**
 			 * 反転
 			 */
 			'flip': () => LocalizedString
@@ -877,6 +914,32 @@ export type TranslationFunctions = {
 			 * リサイズ
 			 */
 			'resize': () => LocalizedString
+			/**
+			 * {amount} {type}を{operation}
+			 */
+			'message': (arg: { amount: number, operation: string, type: string }) => LocalizedString
+			'target': {	
+				/**
+				 * ノーツ
+				 */
+				'note': () => LocalizedString
+				/**
+				 * スライド
+				 */
+				'slide': () => LocalizedString
+				/**
+				 * スライドノート
+				 */
+				'slidenote': () => LocalizedString
+				/**
+				 * 拍子
+				 */
+				'timeSignature': () => LocalizedString
+				/**
+				 * BPM
+				 */
+				'bpm': () => LocalizedString
+			}
 		}
 		'dialog': {	
 			/**
@@ -997,9 +1060,20 @@ type Params1<P1 extends string> =
 type Params2<P1 extends string, P2 extends string> =
 	`${string}${Param<P1>}${string}${Param<P2>}${string}`
 
+type Params3<P1 extends string, P2 extends string, P3 extends string> =
+	`${string}${Param<P1>}${string}${Param<P2>}${string}${Param<P3>}${string}`
+
 type RequiredParams1<P1 extends string> =
 	| Params1<P1>
 
 type RequiredParams2<P1 extends string, P2 extends string> =
 	| Params2<P1, P2>
 	| Params2<P2, P1>
+
+type RequiredParams3<P1 extends string, P2 extends string, P3 extends string> =
+	| Params3<P1, P2, P3>
+	| Params3<P1, P3, P2>
+	| Params3<P2, P1, P3>
+	| Params3<P2, P3, P1>
+	| Params3<P3, P1, P2>
+	| Params3<P3, P2, P1>

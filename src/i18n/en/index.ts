@@ -95,11 +95,20 @@ const en: Translation = {
 		mutation: {
 			update: "updated",
 			append: "appended",
+			set: "set",
 			cut: "cut",
 			delete: "deleted",
 			flip: "flipped",
 			move: "moved",
-			resize: "resized"
+			resize: "resized",
+			message: "{amount} {type} {operation}",
+			target: {
+				note: 'notes',
+				slide: 'slides',
+				slidenote: 'slide notes',
+				timeSignature: 'time signatures',
+				bpm: "BPMs",
+			}
 		},
 		snapTo: {
 			snap: '{n}-Division',
