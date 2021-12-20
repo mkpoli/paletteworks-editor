@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte"
+  import { onMount, createEventDispatcher } from 'svelte'
   import { AudioEvent, AudioScheduler, playOnce } from '$lib/audio/scheduler'
   import { EFFECT_SOUNDS, TICK_PER_BEAT } from "$lib/consts"
   import { accumulateDuration, sortedBPMs, tick2secs } from "$lib/timing"
@@ -19,6 +19,10 @@
   export let lastTick: number
   export let bgmLoading: boolean
   export let musicDuration: number | undefined = undefined
+
+  const dispatch = createEventDispatcher<{
+    bpmdetected: number
+  }>()
 
   let scheduler: AudioScheduler | null = null
   let audioContext: AudioContext
@@ -57,6 +61,7 @@
     return bpms.get([...bpms.keys()].closest(tick) ?? NaN) ?? 120
   }
 
+  import detect from 'bpm-detective'
   $: onchangemusic(music)
   function onchangemusic(music: File | null) {
     stopScheduler()
@@ -69,6 +74,9 @@
         bgmBuffer = buffer
         bgmLoading = false
         musicDuration = buffer.duration
+
+        dispatch('bpmdetected', detect(buffer))
+
         if (!paused) {
           restartScheduler()
         }

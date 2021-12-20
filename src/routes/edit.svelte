@@ -1130,6 +1130,14 @@
   {sfxVolume}
   bind:gotoTick
   bind:soundQueue
+  on:bpmdetected={({ detail: bpm }) => {
+    if (isNaN(bpm)) return
+    if (bpms.get(0) === bpm) return
+
+    if (confirm($LL.editor.messages.confirmBPMDetected({ bpm }))) {
+      exec(new SetBPM(bpms, 0, bpm))
+    }
+  }}
 />
 
 <svelte:window

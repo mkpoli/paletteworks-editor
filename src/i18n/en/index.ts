@@ -91,6 +91,7 @@ const en: Translation = {
 			loadingLibraryFailed: 'Failed to load library',
 			preferencesSaved: 'Preferences saved',
 			deleteConfirm: 'Do you want to delete it?',
+			confirmBPMDetected: 'The BPM of the audio file is {bpm} BPM. Do you want to use it?',
 		},
 		mutation: {
 			update: "updated",

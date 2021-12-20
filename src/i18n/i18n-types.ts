@@ -347,6 +347,11 @@ export type Translation = {
 			 * 本当に削除しますか？
 			 */
 			'deleteConfirm': string
+			/**
+			 * 楽曲のBPMが検出されました。BPMを{bpm}に変更しますか？
+			 * @param {number} bpm
+			 */
+			'confirmBPMDetected': RequiredParams1<'bpm'>
 		}
 		'snapTo': {	
 			/**
@@ -866,6 +871,10 @@ export type TranslationFunctions = {
 			 * 本当に削除しますか？
 			 */
 			'deleteConfirm': () => LocalizedString
+			/**
+			 * 楽曲のBPMが検出されました。BPMを{bpm}に変更しますか？
+			 */
+			'confirmBPMDetected': (arg: { bpm: number }) => LocalizedString
 		}
 		'snapTo': {	
 			/**

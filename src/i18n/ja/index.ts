@@ -91,6 +91,7 @@ const ja: BaseTranslation = {
 			loadingLibraryFailed: "ライブラリの読み込みに失敗しました。",
 			preferencesSaved: '設定を保存しました',
 			deleteConfirm: '本当に削除しますか？',
+			confirmBPMDetected: '楽曲のBPMが検出されました。BPMを{bpm:number}に変更しますか？',
 		},
 		snapTo: {
 			snap: "{n:number}分音符",

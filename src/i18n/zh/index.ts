@@ -91,6 +91,7 @@ const zh: Translation = {
 			loadingLibraryFailed: '載入梗庫時出錯',
 			preferencesSaved: '設定已保存',
 			deleteConfirm: '您確定要刪除嗎？',
+			confirmBPMDetected: '檢測到樂曲的BPM。是否要把BPM改爲{bpm}？',
 		},
 		mutation: {
 			update: "更新",

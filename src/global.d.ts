@@ -6,6 +6,11 @@ interface ImportMeta {
   }
 }
 
+declare module 'bpm-detective' {
+  declare function detect(data: AudioBuffer): number
+  export default detect
+}
+
 declare module '@pixi/events' {
   type PointerEvents = 'pointerdown' | 'pointerup' | 'pointermove' | 'pointerenter' | 'pointerleave' | 'click'
   export interface FederatedEventTarget {

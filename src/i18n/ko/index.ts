@@ -91,6 +91,7 @@ const ko: Translation = {
 			loadingLibraryFailed: '컬렉션을 불러오는 중 오류가 발생했습니다.',
 			preferencesSaved: '설정이 저장되었습니다.',
 			deleteConfirm: '삭제하시겠습니까?',
+			confirmBPMDetected: 'BPM이 감지되었습니다. BPM를 {bpm}(으)로 변경하시겠습니까?',
 		},
 		mutation: {
 			update: '업데이트',

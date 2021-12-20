@@ -10,6 +10,7 @@ specifiers:
   '@typescript-eslint/parser': 5.0.0
   '@zerodevx/svelte-toast': ^0.6.1
   attr-accept: ^2.2.2
+  bpm-detective: ^2.0.5
   dexie: ^3.2.0-rc.3
   eslint: ^8.0.0
   eslint-plugin-svelte3: ^3.2.1
@@ -40,6 +41,7 @@ devDependencies:
   '@typescript-eslint/parser': 5.0.0_eslint@8.0.0+typescript@4.4.3
   '@zerodevx/svelte-toast': 0.6.1
   attr-accept: 2.2.2
+  bpm-detective: 2.0.5
   dexie: 3.2.0-rc.3
   eslint: 8.0.0
   eslint-plugin-svelte3: 3.2.1_eslint@8.0.0+svelte@3.43.0
@@ -852,6 +854,10 @@ packages:
       widest-line: 3.1.0
       wrap-ansi: 7.0.0
     dev: false
+
+  /bpm-detective/2.0.5:
+    resolution: {integrity: sha512-FaHFT5WDCR5zwtjVTqxk01o2MDaf22ORHityX1lxMamBcVNX6NWXB6hw7nx4fmlEseRMv0xfuSybINZylljLfA==}
+    dev: true
 
   /brace-expansion/1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
