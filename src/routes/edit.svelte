@@ -3,6 +3,9 @@
 </script>
 
 <script lang="ts">
+  // Polyfill
+  import 'core-js/actual/array/at'
+
   // I18n
   import LL from '$i18n/i18n-svelte'
 
