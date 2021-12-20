@@ -38,6 +38,7 @@
   export let paused: boolean
   export let metadata: Metadata
   export let music: File | null
+  export let musicLoadedFromFile: boolean
   export let scrollMode: ScrollMode
   export let visibility: Record<string, boolean>
   export let totalCombo: number
@@ -202,6 +203,7 @@
       {$LL.editor.panel.musicfile()} {music ? filesize(music.size) : ''}
       <FileInput
         bind:file={music}
+        on:open={() => { musicLoadedFromFile = true }}
         accept="audio/*"
         name="music"
         openIcon="mdi:folder-music"

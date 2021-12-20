@@ -9,6 +9,7 @@
   import MenuTrigger from './MenuTrigger.svelte'
   import MenuDivider from './MenuDivider.svelte'
 
+  import { createEventDispatcher } from 'svelte'
   import toast from '$lib/ui/toast'
   import { download, dropHandler } from '$lib/basic/file'
 
@@ -20,9 +21,15 @@
   export let fileIcon: string
   export let loading: boolean
 
+  const dispatch = createEventDispatcher<{
+    open: File
+  }>()    
+
   let fileList: FileList
 
   $: file = fileList?.[0] ?? null
+
+  $: if (fileList?.[0]) dispatch('open', fileList?.[0])
 
   let input: HTMLInputElement
 

@@ -227,6 +227,7 @@
     })
   })
 
+  let musicLoadedFromFile: boolean = false
   let music: File | null = null
   let bgmLoading: boolean = false
   let musicDuration: number | undefined = undefined
@@ -942,6 +943,7 @@
       bind:paused
       bind:metadata
       bind:music
+      bind:musicLoadedFromFile
       bind:scrollMode
       bind:visibility
       bind:volume
@@ -1131,12 +1133,15 @@
   bind:gotoTick
   bind:soundQueue
   on:bpmdetected={({ detail: bpm }) => {
+    if (!musicLoadedFromFile) return
     if (isNaN(bpm)) return
     if (bpms.get(0) === bpm) return
 
     if (confirm($LL.editor.messages.confirmBPMDetected({ bpm }))) {
       exec(new SetBPM(bpms, 0, bpm))
     }
+
+    musicLoadedFromFile = false
   }}
 />
 
