@@ -87,7 +87,7 @@
   import { onMount, setContext, tick } from 'svelte'
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
-  import { clamp, snap } from '$lib/basic/math'
+  import { average, clamp, snap } from '$lib/basic/math'
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
@@ -288,13 +288,32 @@
         || steps.some((step) => notes.includes(step))
       ))
 
+    const [lane, tick] = average<2>(
+      [
+        ...$clipboardSlides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]),
+        ...$clipboardSingles
+      ].map(
+        ({ tick, lane, width }) => [lane + width / 2, tick]
+      )
+    )
+    const center = { lane, tick }
+
+    // const graphics = new PIXI.Graphics
+    // graphics.beginFill(0xffffff, 0.5)
+    // graphics.drawCircle(
+    //   $position.calcX(center.lane),
+    //   $position.calcY(center.tick),
+    //   10
+    // )
+    // mainContainer.addChild(graphics)
+
     $clipboardSlides
       .flatMap(({ head, tail, steps }) => [head, tail, ...steps])
       .concat($clipboardSingles)
       .forEach((note) => {
         $clipboardOffsets.set(note, {
-          lane: $cursor.lane - note.lane,
-          tick: $cursor.tick - note.tick
+          lane: center.lane - note.lane,
+          tick: center.tick - note.tick
         })
       })
   }
