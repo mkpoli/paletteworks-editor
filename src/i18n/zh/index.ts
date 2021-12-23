@@ -102,6 +102,7 @@ const zh: Translation = {
 			move: "移動",
 			set: "設置",
 			resize: "調整大小",
+			paste: "粘貼",
 			message: "{operation}了 {amount} 個{type}",
 			target: {
 				note: "音符",

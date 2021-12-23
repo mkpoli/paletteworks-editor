@@ -113,7 +113,7 @@
 
   // Stores
   import { selectedNotes } from '$lib/editing/selection'
-  import { clipboardSlides, clipboardSingles, clipboardOffsets, pasted } from '$lib/editing/clipboard'
+  import { clipboardSlides, clipboardSingles, clipboardOffsets, pasted, flippasted } from '$lib/editing/clipboard'
 
   // Sound
   let soundQueue: string[] = []
@@ -333,11 +333,22 @@
     const { singles: pastedSingles, slides: pastedSlides } = pasted($cursor)
 
     if (pastedSingles.length === 0 && pastedSlides.length === 0) return
-    exec(new BatchAdd(singles, slides, pastedSingles, pastedSlides))
+    exec(new BatchAdd(singles, slides, pastedSingles, pastedSlides, 'paste'))
 
     $selectedNotes = [
       ...pastedSingles,
       ...pastedSlides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])
+    ]
+  }
+
+  function onflippaste() {
+    const { singles: flippastedSingles, slides: flippastedSlides } = flippasted($cursor)
+
+    exec(new BatchAdd(singles, slides, flippastedSingles, flippastedSlides, 'paste'))
+
+    $selectedNotes = [
+      ...flippastedSingles,
+      ...flippastedSlides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])
     ]
   }
 
@@ -905,7 +916,7 @@
       on:updateflicks={onupdateflicks}
       on:updatecriticals={onupdatecriticals}
       on:flip={({ detail: { notes }}) => exec(flipNotes(singles, slides, notes))}
-      on:flippaste={() => { onpaste(); exec(flipNotes(singles, slides, $selectedNotes)) }}
+      on:flippaste={onflippaste}
       on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
       on:shrink={({ detail: { notes }}) => { shrinkNotes(notes) }}
     />
@@ -1091,7 +1102,7 @@
   on:playpause={onplaypause}
   on:duplicate={() => { duplicateNotes($selectedNotes) }}
   on:flip={() => { exec(flipNotes(singles, slides, $selectedNotes)) }}
-  on:flippaste={() => { onpaste(); exec(flipNotes(singles, slides, $selectedNotes)) }}
+  on:flippaste={onflippaste}
   on:selectall={onselectall}
   on:increaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotateNext(snapTo) ?? SNAPTO_DEFAULT }}
   on:decreaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotatePrev(snapTo) ?? SNAPTO_DEFAULT }}

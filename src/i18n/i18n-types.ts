@@ -402,6 +402,10 @@ export type Translation = {
 			 */
 			'resize': string
 			/**
+			 * 貼り付け
+			 */
+			'paste': string
+			/**
 			 * {amount} {type}を{operation}
 			 * @param {number} amount
 			 * @param {string} operation
@@ -923,6 +927,10 @@ export type TranslationFunctions = {
 			 * リサイズ
 			 */
 			'resize': () => LocalizedString
+			/**
+			 * 貼り付け
+			 */
+			'paste': () => LocalizedString
 			/**
 			 * {amount} {type}を{operation}
 			 */
