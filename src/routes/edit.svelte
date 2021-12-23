@@ -91,6 +91,7 @@
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
+  import { flipNotes } from '$lib/editing/flip'
 
   import '$lib/basic/collections'
 
@@ -112,7 +113,7 @@
 
   // Stores
   import { selectedNotes } from '$lib/editing/selection'
-  import { clipboardSlides, clipboardSingles, clipboardOffsets } from '$lib/editing/clipboard'
+  import { clipboardSlides, clipboardSingles, clipboardOffsets, pasted } from '$lib/editing/clipboard'
 
   // Sound
   let soundQueue: string[] = []
@@ -277,7 +278,12 @@
   }
 
   function copyNotes(notes: NoteType[]) {
-    if (!notes.length) return
+    if (!notes.length) {
+      $clipboardSingles = []
+      $clipboardSlides = []
+      $clipboardOffsets = new Map()
+      return
+    }
 
     $clipboardSingles = singles
       .filter((single) => notes.includes(single))
@@ -324,39 +330,7 @@
   }
   
   function onpaste() {
-    const pastedSingles = $clipboardSingles.map((note) => {
-      const { width, critical, flick } = note
-      return {
-        lane: $cursor.lane - $clipboardOffsets.get(note)!.lane,
-        tick: $cursor.tick - $clipboardOffsets.get(note)!.tick,
-        width, critical, flick
-      }
-    })
-    const pastedSlides = $clipboardSlides.map((slide): SlideType => {
-      const { head, tail, steps, critical } = slide
-      return {
-        head: {
-          lane: $cursor.lane - $clipboardOffsets.get(head)!.lane,
-          tick: $cursor.tick - $clipboardOffsets.get(head)!.tick,
-          width: head.width, easeType: head.easeType
-        },
-        tail: {
-          lane: $cursor.lane - $clipboardOffsets.get(tail)!.lane,
-          tick: $cursor.tick - $clipboardOffsets.get(tail)!.tick,
-          width: tail.width, flick: tail.flick, critical: tail.critical
-        },
-        steps: steps.map((note) => (
-          {
-            lane: $cursor.lane - $clipboardOffsets.get(note)!.lane,
-            tick: $cursor.tick - $clipboardOffsets.get(note)!.tick,
-            width: note.width,
-            diamond: note.diamond,
-            easeType: note.easeType,
-            ignored: note.ignored
-          })),
-        critical
-      }
-    })
+    const { singles: pastedSingles, slides: pastedSlides } = pasted($cursor)
 
     if (pastedSingles.length === 0 && pastedSlides.length === 0) return
     exec(new BatchAdd(singles, slides, pastedSingles, pastedSlides))
@@ -372,12 +346,16 @@
     soundQueue = soundQueue
   }
 
-  import { shiftKey } from '$lib/control/keyboard'
+  import { ctrlKey, shiftKey, altKey } from '$lib/control/keyboard'
   document.addEventListener('keydown', (event: KeyboardEvent) => {
     $shiftKey = event.shiftKey
+    $ctrlKey = event.ctrlKey
+    $altKey = event.altKey
   })
   document.addEventListener('keyup', (event: KeyboardEvent) => {
     $shiftKey = event.shiftKey
+    $ctrlKey = event.ctrlKey
+    $altKey = event.altKey
   })
 
   import {
@@ -605,22 +583,6 @@
 
   function onskipback() {
     gotoTick(lastTick)
-  }
-
-  function flipNotes(notes: NoteType[]) {
-    const flipTargets = new Map(notes.map((note) => 
-      [note, {
-        lane: LANE_MAX + 1 - note.lane,
-        ...('flick' in note ? { flick: flipFlick(note.flick) } : {})
-      }]
-    ))
-    const flipOrigins = new Map(notes.map((note) =>
-      [note, {
-        lane: note.lane,
-        ...('flick' in note ? { flick: note.flick } : {})
-      }]
-    ))
-    exec(new BatchUpdate(singles, slides, flipTargets, flipOrigins, 'flip'))
   }
 
   function duplicateNotes(notes: NoteType[]) {
@@ -942,7 +904,8 @@
       }}
       on:updateflicks={onupdateflicks}
       on:updatecriticals={onupdatecriticals}
-      on:flip={({ detail: { notes }}) => flipNotes(notes)}
+      on:flip={({ detail: { notes }}) => exec(flipNotes(singles, slides, notes))}
+      on:flippaste={() => { onpaste(); exec(flipNotes(singles, slides, $selectedNotes)) }}
       on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
       on:shrink={({ detail: { notes }}) => { shrinkNotes(notes) }}
     />
@@ -1127,8 +1090,8 @@
   on:skipstart={onskipstart}
   on:playpause={onplaypause}
   on:duplicate={() => { duplicateNotes($selectedNotes) }}
-  on:flip={() => { flipNotes($selectedNotes) }}
-  on:flippaste={() => { onpaste(); flipNotes($selectedNotes) }}
+  on:flip={() => { exec(flipNotes(singles, slides, $selectedNotes)) }}
+  on:flippaste={() => { onpaste(); exec(flipNotes(singles, slides, $selectedNotes)) }}
   on:selectall={onselectall}
   on:increaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotateNext(snapTo) ?? SNAPTO_DEFAULT }}
   on:decreaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotatePrev(snapTo) ?? SNAPTO_DEFAULT }}
