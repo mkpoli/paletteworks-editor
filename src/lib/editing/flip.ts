@@ -4,11 +4,15 @@ import { LANE_MAX } from "$lib/consts"
 import { flipFlick } from "$lib/editing/flick"
 import { BatchUpdate } from "$lib/editing/mutations"
 
+export function flipLane(lane: number): number {
+  return LANE_MAX + 1 - lane
+}
+
 export function flippedNote(note: Note): Note {
   return {
     ...note,
     ...('flick' in note ? { flick: flipFlick(note.flick) } : {}),
-    lane: LANE_MAX + 1 - note.lane,
+    lane: flipLane(note.lane),
   }
 }
 

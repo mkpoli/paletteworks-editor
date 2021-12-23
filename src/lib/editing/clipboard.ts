@@ -2,7 +2,7 @@ import type { Note, Single, Slide } from '$lib/score/beatmap'
 import type { Cursor  } from '$lib/position'
 
 import { writable, get } from 'svelte/store'
-import { flipped } from '$lib/editing/flip'
+import { flipLane, flipped } from '$lib/editing/flip'
 
 export const clipboardSlides = writable<Slide[]>([])
 export const clipboardSingles = writable<Single[]>([])
@@ -35,6 +35,6 @@ export function pasted(cursor: Cursor): { singles: Single[], slides: Slide[] } {
 }
 
 export function flippasted(cursor: Cursor): { singles: Single[], slides: Slide[] } {
-  const { singles, slides } = pasted(cursor)
+  const { singles, slides } = pasted({ ...cursor, lane: flipLane(cursor.lane) });
   return flipped(singles, slides)
 }
