@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { Mode, MODES, MODE_SHORTCUTS, MODE_SHORTCUTS_NUMERAL } from '$lib/editing/modes'
+  import { Mode, MODES, MODE_SHORTCUTS, MODE_SHORTCUTS_NUMERAL, MODE_SHORTCUTS_NUMERAL } from '$lib/editing/modes'
   import { KEYBOARD_SHORTCUTS } from '$lib/control/keyboard'
 
   import type { KeyboardAction } from '$lib/control/keyboard'
@@ -42,7 +42,7 @@
   })
 
   for (let mode of MODES) {
-    hotkeys(`${MODE_SHORTCUTS[mode]},${MODE_SHORTCUTS_NUMERAL[mode]}`, (event) => {
+    hotkeys(`${MODE_SHORTCUTS[mode]},${MODE_SHORTCUTS_NUMERAL[mode]},num_${MODE_SHORTCUTS_NUMERAL[mode]}`, (event) => {
       event.preventDefault()
       dispatch('switch', mode)
     })
