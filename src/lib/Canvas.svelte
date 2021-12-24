@@ -431,7 +431,8 @@
       }
     })
 
-    app.renderer.view.addEventListener('click', async () => {
+    app.renderer.view.addEventListener('click', async (event: MouseEvent) => {
+      if (event.button !== 0) return
       if (!clickedOnNote) {
         if ($ctrlKey && $clipboardOffsets.size > 0) {
           if ($altKey) {
