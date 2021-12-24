@@ -302,7 +302,7 @@
         ({ tick, lane, width }) => [lane + width / 2, tick]
       )
     )
-    const center = { lane, tick }
+    const center = { lane: Math.round(lane), tick: Math.round(tick) }
 
     // const graphics = new PIXI.Graphics
     // graphics.beginFill(0xffffff, 0.5)
