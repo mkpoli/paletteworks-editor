@@ -21,6 +21,7 @@
     copy: { notes: Note[] },
     cut: { notes: Note[] },
     paste: void,
+    flippaste: void,
     changecurve: {
       note: Note | null,
       type?: EaseType
@@ -94,7 +95,10 @@
     <MenuItem icon="ic:content-cut" text={$LL.editor.menu.cut()} on:click={() => dispatchNotes('cut', currentNote)} />
     <MenuItem icon="mdi:content-copy" text={$LL.editor.menu.copy()} on:click={() => dispatchNotes('copy', currentNote)} />
   {/if}
-  <MenuItem icon="mdi:content-save" text={$LL.editor.menu.paste()} on:click={() => dispatch('paste')}
+  <MenuItem icon="mdi:content-paste" text={$LL.editor.menu.paste()} on:click={() => dispatch('paste')}
+    disabled={!$clipboardSingles.length && !$clipboardSlides.length}
+  />
+  <MenuItem icon="ic:round-content-paste-go" text={$LL.editor.menu.flippaste()} on:click={() => dispatch('flippaste')}
     disabled={!$clipboardSingles.length && !$clipboardSlides.length}
   />
   <MenuDivider/>

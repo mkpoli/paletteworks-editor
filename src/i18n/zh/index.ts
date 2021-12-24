@@ -18,6 +18,7 @@ const zh: Translation = {
 			cut: "剪切 (&X)",
 			copy: "複製 (&C)",
 			paste: "粘貼 (&V)",
+			flippaste: "翻轉粘貼 (&F)",
 			listall: "一覽 (&A)",
 			upload: "上傳 (&U)",
 			language: "語言 (&G)",

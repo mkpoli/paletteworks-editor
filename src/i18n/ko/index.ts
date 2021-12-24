@@ -18,6 +18,7 @@ const ko: Translation = {
 			cut: "잘라내기(&X)",
 			copy: "복사(&C)",
 			paste: "붙여넣기(&V)",
+			flippaste: "반전 붙여넣기(&F)",
 			listall: "목록(&A)",
 			upload: "업로드(&U)",
 			language: "언어(&G)",

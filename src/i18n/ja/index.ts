@@ -18,6 +18,7 @@ const ja: BaseTranslation = {
 			cut: "切り取り (&X)",
 			copy: "コピー (&C)",
 			paste: "貼り付け (&P)",
+			flippaste: "反転貼り付け (&F)",
 			listall: "一覧 (&A)",
 			upload: "アップロード (&U)",
 			language: "言語 (&G)",

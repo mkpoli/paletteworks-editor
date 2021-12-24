@@ -789,6 +789,7 @@
   on:selectall
   on:duplicate
   on:flip
+  on:flippaste
   on:shrink
 />
 

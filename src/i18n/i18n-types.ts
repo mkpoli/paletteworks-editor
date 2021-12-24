@@ -75,6 +75,10 @@ export type Translation = {
 			 */
 			'paste': string
 			/**
+			 * 反転貼り付け (&F)
+			 */
+			'flippaste': string
+			/**
 			 * 一覧 (&A)
 			 */
 			'listall': string
@@ -607,6 +611,10 @@ export type TranslationFunctions = {
 			 * 貼り付け (&P)
 			 */
 			'paste': () => LocalizedString
+			/**
+			 * 反転貼り付け (&F)
+			 */
+			'flippaste': () => LocalizedString
 			/**
 			 * 一覧 (&A)
 			 */

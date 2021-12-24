@@ -18,6 +18,7 @@ const en: Translation = {
 			cut: "Cu&t",
 			copy: "&Copy",
 			paste: "&Paste",
+			flippaste: "&Flip Paste",
 			listall: "List &All",
 			upload: "&Upload",
 			language: "Lan&guage",
