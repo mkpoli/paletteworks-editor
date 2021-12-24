@@ -44,6 +44,8 @@ pnpm dev -- --open
 - ![Avatar of jch](https://images.weserv.nl/?url=user-images.githubusercontent.com/3502597/147321520-7de435a2-a1bb-467b-9b98-2877794420e9.png?size=128?v=4&h=50&w=50&fit=cover&mask=circle&maxage=7d) jch
 - ![Avatar of Sora](https://images.weserv.nl/?url=user-images.githubusercontent.com/3502597/147321464-0e4ef37f-45ef-46cd-a7b3-2f727c88523d.png?size=128&h=50&w=50&fit=cover&mask=circle&maxage=7d) Sora
 
+and many others from 紫式部 / Sonolus Discord ...
+
 ### Contributors / コントリビューター / 貢獻者 / 기여자(寄與者)
 <a href="https://github.com/mkpoli/paletteworks-editor/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=mkpoli/paletteworks-editor" />
