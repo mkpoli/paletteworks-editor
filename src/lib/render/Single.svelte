@@ -32,15 +32,17 @@
   {floating}
 />
 
-<NoteControl
-  on:click
-  on:rightclick
-  on:dblclick
-  on:pointerenter
-  on:pointerleave
-  {lane}
-  {tick}
-  {width}
-  draw={$selectedNotes.includes(note)}
-  bind:note
-/>
+{#if !floating}
+  <NoteControl
+    on:click
+    on:rightclick
+    on:dblclick
+    on:pointerenter
+    on:pointerleave
+    {lane}
+    {tick}
+    {width}
+    draw={$selectedNotes.includes(note)}
+    bind:note
+  />
+{/if}

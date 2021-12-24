@@ -153,6 +153,7 @@
     copy: { notes: NoteType[] },
     cut: { notes: NoteType[] },
     paste: void,
+    flippaste: void,
     resizestart: void,
     resize: void,
     changecurve: {
@@ -432,7 +433,15 @@
 
     app.renderer.view.addEventListener('click', async () => {
       if (!clickedOnNote) {
-        dispatch('goto', { tick: snap($cursor.rawTick, TICK_PER_MEASURE / snapTo) })
+        if ($ctrlKey && $clipboardOffsets.size > 0) {
+          if ($altKey) {
+            dispatch('flippaste')
+          } else {
+            dispatch('paste')
+          }
+        } else {
+          dispatch('goto', { tick: snap($cursor.rawTick, TICK_PER_MEASURE / snapTo) })
+        }
       }
     })
 
@@ -521,6 +530,11 @@
     $resizingTargets = new Map()
     $resizingOrigins = new Map()
   }
+
+  // Clipboard
+  import { clipboardOffsets } from './editing/clipboard'
+  import { altKey, ctrlKey } from './control/keyboard'
+  import PastingNotes from './render/PastingNotes.svelte'
 </script>
 
 <div
@@ -749,7 +763,8 @@
       dragging={dragging && currentMode === 'select'}
       rect={selectRect}
     />
-    
+
+    <PastingNotes/>
     <MovingNotes {singles} {slides} moving={isLongPress && $moving} />
     <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
     <DraggingSlide {draggingSlide} />

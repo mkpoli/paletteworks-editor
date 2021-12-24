@@ -102,6 +102,7 @@ const ko: Translation = {
 			flip: '반전',
 			move: '이동',
 			resize: "크기 조정",
+			paste: '붙여넣기',
 			message: "{amount}개의 {type}를 {operation}",
 			target: {
 				note: '노트',

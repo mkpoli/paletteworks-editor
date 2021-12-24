@@ -96,7 +96,8 @@ export type Point = {
   y: number
 }
 
-export const cursor = writable<LaneTick & { laneSide: number, rawTick: number, rawLane: number }>({
+export type Cursor = LaneTick & { laneSide: number, rawTick: number, rawLane: number }
+export const cursor = writable<Cursor>({
   lane: 0, tick: 0, laneSide: 0, rawTick: 0, rawLane: 0
 })
 export const placing = writable<{ lane: number, width: number }>({ lane: 0, width: 0})

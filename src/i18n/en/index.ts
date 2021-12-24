@@ -102,6 +102,7 @@ const en: Translation = {
 			flip: "flipped",
 			move: "moved",
 			resize: "resized",
+			paste: "pasted",
 			message: "{amount} {type} {operation}",
 			target: {
 				note: 'notes',

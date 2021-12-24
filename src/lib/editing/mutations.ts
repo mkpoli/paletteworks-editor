@@ -3,7 +3,7 @@ import type { Note, Single, Slide, SlideNote, SlideStep } from '$lib/score/beatm
 import { LL } from '$i18n/i18n-svelte'
 
 type TargetType = 'slide' | 'slidenote' | 'note' | 'bpm' | 'timeSignature'
-type Operation = 'append' | 'delete' | 'update' | 'set' | 'cut' | 'flip' | 'move' | 'resize'
+type Operation = 'append' | 'delete' | 'update' | 'set' | 'cut' | 'flip' | 'move' | 'resize' | 'paste'
 
 type Stringify = (amount: number, type: TargetType, operation: Operation) => string 
 
@@ -422,12 +422,12 @@ export class BatchAdd extends BatchMutation {
   addSingles: AddSingles
   addSlides: AddSlides
 
-  constructor(singles: Single[], slides: Slide[], newSingles: Single[], newSlides: Slide[]) {
+  constructor(singles: Single[], slides: Slide[], newSingles: Single[], newSlides: Slide[], operation: Operation = 'append') {
     super(singles, slides)
     this.addSingles = new AddSingles(singles, newSingles)
     this.addSlides = new AddSlides(slides, newSlides)
 
-    this.operation = 'append'
+    this.operation = operation
     this.amount = newSingles.length + newSlides.length
   }
 

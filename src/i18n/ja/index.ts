@@ -107,6 +107,7 @@ const ja: BaseTranslation = {
 			flip: "反転",
 			move: "移動",
 			resize: "リサイズ",
+			paste: "貼り付け",
 			message: "{amount:number} {type: string}を{operation: string}",
 			target: {
 				note: "ノーツ",

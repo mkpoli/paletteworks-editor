@@ -20,3 +20,23 @@ export function between(a: number, x: number, b: number, includeMin = true, incl
   const [min, max] = minmax(a, b)
   return (includeMin ? x >= min : x > min) && (includeMax ? x <= max : x < max)
 }
+
+// from: https://stackoverflow.com/a/59906630/2719898
+type ArrayLengthMutationKeys = 'splice' | 'push' | 'pop' | 'shift' | 'unshift'
+type FixedLengthArray<T, L extends number, TObj = [T, ...Array<T>]> =
+  Pick<TObj, Exclude<keyof TObj, ArrayLengthMutationKeys>>
+  & {
+    readonly length: L 
+    [ I : number ] : T
+    [Symbol.iterator]: () => IterableIterator<T>   
+  }
+
+/**
+ * Calculate the average of multiple vectors with the same dimension
+ * @param values an array of vectors
+ * @returns average of all vectors
+ */
+export function average<T extends number>(values: FixedLengthArray<number, T>[]): number[] {
+  const total = values.reduce((acc, v) => acc.map((a, i) => a + v[i]), values[0].map(() => 0))
+  return total.map(v => v / values.length)
+}
