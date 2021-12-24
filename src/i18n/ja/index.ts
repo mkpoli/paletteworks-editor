@@ -15,6 +15,7 @@ const ja: BaseTranslation = {
 			undo: "元に戻す (&U)",
 			redo: "やり直し (&R)",
 			selectall: "すべて選択 (&A)",
+			unselectall: "選択解除 (&U)",
 			cut: "切り取り (&X)",
 			copy: "コピー (&C)",
 			paste: "貼り付け (&P)",

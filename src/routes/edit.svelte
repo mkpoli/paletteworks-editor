@@ -660,6 +660,10 @@
     $selectedNotes = [...singles, ...slides.flatMap((slide) => [slide.head, slide.tail, ...slide.steps])]
   }
 
+  function unselectall() {
+    $selectedNotes = []
+  }
+
   let updated: boolean = false
   $: dbg('updated', updated)
 
@@ -767,6 +771,7 @@
       on:new={onnewproject}
       on:open={onopen}
       on:selectall={onselectall}
+      on:unselectall={unselectall}
       on:preferences={() => { preferencesDialogOpened = true }}
       on:upload={async () => { 
         if (!$selectedNotes.length) {
@@ -1104,6 +1109,7 @@
   on:flip={() => { exec(flipNotes(singles, slides, $selectedNotes)) }}
   on:flippaste={onflippaste}
   on:selectall={onselectall}
+  on:unselectall={unselectall}
   on:increaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotateNext(snapTo) ?? SNAPTO_DEFAULT }}
   on:decreaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotatePrev(snapTo) ?? SNAPTO_DEFAULT }}
   on:pageup={() => { scrollTick += innerHeight / MEASURE_HEIGHT * zoom * TICK_PER_MEASURE }}

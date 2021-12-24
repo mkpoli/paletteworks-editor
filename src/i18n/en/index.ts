@@ -15,6 +15,7 @@ const en: Translation = {
 			undo: "&Undo",
 			redo: "&Redo",
 			selectall: "Select &All",
+			unselectall: "&Unselect All",
 			cut: "Cu&t",
 			copy: "&Copy",
 			paste: "&Paste",

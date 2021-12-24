@@ -63,6 +63,10 @@ export type Translation = {
 			 */
 			'selectall': string
 			/**
+			 * 選択解除 (&U)
+			 */
+			'unselectall': string
+			/**
 			 * 切り取り (&X)
 			 */
 			'cut': string
@@ -599,6 +603,10 @@ export type TranslationFunctions = {
 			 * すべて選択 (&A)
 			 */
 			'selectall': () => LocalizedString
+			/**
+			 * 選択解除 (&U)
+			 */
+			'unselectall': () => LocalizedString
 			/**
 			 * 切り取り (&X)
 			 */

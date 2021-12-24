@@ -15,6 +15,7 @@ const ko: Translation = {
 			undo: "실행 취소(&U)",
 			redo: "다시 실행(&R)",
 			selectall: "모두 선택(&A)",
+			unselectall: "선택 취소(&U)",
 			cut: "잘라내기(&X)",
 			copy: "복사(&C)",
 			paste: "붙여넣기(&V)",

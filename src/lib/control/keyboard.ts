@@ -16,6 +16,7 @@ export const KEYBOARD_SHORTCUTS  = {
   image: [['ctrl', 'i']],
   new: [['ctrl', 'n']],
   selectall: [['ctrl', 'a']],
+  unselectall: [['ctrl', 'shift', 'a']],
   delete: [['delete']],
   increaseSnapTo: [['alt', '=']],
   decreaseSnapTo: [['alt', '-']],

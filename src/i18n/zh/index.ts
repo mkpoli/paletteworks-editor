@@ -15,6 +15,7 @@ const zh: Translation = {
 			undo: "撤銷 (&U)",
 			redo: "重做 (&R)",
 			selectall: "全選 (&A)",
+			unselectall: "取消選擇 (&U)",
 			cut: "剪切 (&X)",
 			copy: "複製 (&C)",
 			paste: "粘貼 (&V)",

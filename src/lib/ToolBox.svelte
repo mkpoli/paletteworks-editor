@@ -41,6 +41,7 @@
     new: void,
     open: void,
     selectall: void,
+    unselectall: void,
     preferences: void,
     upload: void,
     openlibrary: void,
@@ -78,6 +79,7 @@
         <MenuItem icon="ic:round-redo" text={$LL.editor.menu.redo()} on:click={() => dispatch('redo')} tooltip={{ description: $LL.editor.menuDescription.redo(), keys: KEYBOARD_SHORTCUTS.redo, placement: 'right'}}/>
         <MenuDivider/>
         <MenuItem icon="ic:baseline-select-all" text={$LL.editor.menu.selectall()} on:click={() => dispatch('selectall')} tooltip={{ description: $LL.editor.menuDescription.selectall(), keys: KEYBOARD_SHORTCUTS.selectall, placement: 'right'}}/>
+        <MenuItem icon="mdi:select-remove" text={$LL.editor.menu.unselectall()} on:click={() => dispatch('unselectall')}/>
         <MenuDivider/>
         <MenuItem icon="ic:content-cut" text={$LL.editor.menu.cut()} on:click={() => dispatch('cut')} />
         <MenuItem icon="mdi:content-copy" text={$LL.editor.menu.copy()} on:click={() => dispatch('copy')} />
