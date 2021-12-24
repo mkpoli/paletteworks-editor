@@ -10,12 +10,17 @@
   // export let toastID: number
   export let history: Writable<Mutation<any>[]>
   export let mutation: Mutation<any>
+  export let undone: boolean
   
   $: done = $history.includes(mutation)
 </script>
 
 <div class:clicked={done}>
-  {text}
+  {#if undone}
+    <s>{text}</s>
+  {:else}
+    {text}
+  {/if}
   <Button on:click={undo} class="text" disabled={done}>
     {button}
   </Button>

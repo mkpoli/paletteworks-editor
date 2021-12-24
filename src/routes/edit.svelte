@@ -427,7 +427,7 @@
     }
     $mutationHistory.push(mutation)
     $mutationHistory = $mutationHistory
-    toast.undo(mutation, undoneHistory, $LL.editor.panel.undo(), () => { undo(mutation) })
+    toast.undo(mutation, undoneHistory, $LL.editor.panel.undo(), () => { undo(mutation) }, false)
     playSound('stage')
   }
 
@@ -448,7 +448,7 @@
     }
     $undoneHistory.push(mutation)
     $undoneHistory = $undoneHistory
-    toast.undo(mutation, mutationHistory, $LL.editor.panel.redo(), () => { exec(mutation) })
+    toast.undo(mutation, mutationHistory, $LL.editor.panel.redo(), () => { exec(mutation) }, true)
     playSound('stage')
   }
 

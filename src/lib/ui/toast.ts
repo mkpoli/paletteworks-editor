@@ -23,7 +23,7 @@ export default {
     }
     )
   },
-  undo: (mutation: Mutation<unknown>, history: Writable<Mutation<unknown>[]>, button: string, undo: () => void) => {
+  undo: (mutation: Mutation<unknown>, history: Writable<Mutation<unknown>[]>, button: string, undo: () => void, undone: boolean) => {
     toast.push({
       component: {
         src: UndoToast as any,
@@ -33,6 +33,7 @@ export default {
           undo,
           mutation,
           history,
+          undone
         },
       },
       theme: {
