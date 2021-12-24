@@ -3,7 +3,7 @@
   import type PIXI from 'pixi.js'
   
   // Functions
-  import { getContext, onDestroy, onMount, createEventDispatcher } from 'svelte'
+  import { getContext, onDestroy, onMount } from 'svelte'
   
   // Contexts
   const app = getContext<PIXI.Application>('app')
@@ -17,9 +17,9 @@
   let container: PIXI.Container
 
   // Events
-  const dispatch = createEventDispatcher<{
-    scrollTo: number,
-  }>()
+  // const dispatch = createEventDispatcher<{
+  //   scrollTo: number,
+  // }>()
 
   // Props
   export let maxMeasure: number

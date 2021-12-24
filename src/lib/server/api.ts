@@ -30,7 +30,7 @@ export async function list(): Promise<Item[]> {
 }
 
 export async function create(item: Item) {
-  const result = await client.query(
+  await client.query(
     q.Create(q.Collection('items'), {
       data: item
     })
