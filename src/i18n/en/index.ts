@@ -70,6 +70,7 @@ const en: Translation = {
 			control: 'Controls',
 			updatedTime: 'Last Updated',
 			offset: 'Offset',
+			seconds: 'secs',
 		},
 		scrollmode: {
 			page: 'Page Up/Down',

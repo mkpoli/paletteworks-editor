@@ -219,7 +219,7 @@
         type="number"
         name="offset"
       >
-        <span slot="tail">秒</span>
+        <span slot="tail">{$LL.editor.panel.seconds()}</span>
       </TextInput>
     </label>
     <label>

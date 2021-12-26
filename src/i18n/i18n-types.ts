@@ -272,6 +272,10 @@ export type Translation = {
 			 * オフセット
 			 */
 			'offset': string
+			/**
+			 * 秒
+			 */
+			'seconds': string
 		}
 		'scrollmode': {	
 			/**
@@ -815,6 +819,10 @@ export type TranslationFunctions = {
 			 * オフセット
 			 */
 			'offset': () => LocalizedString
+			/**
+			 * 秒
+			 */
+			'seconds': () => LocalizedString
 		}
 		'scrollmode': {	
 			/**

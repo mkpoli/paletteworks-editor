@@ -70,6 +70,7 @@ const ko: Translation = {
 			control: '컨트롤',
 			updatedTime: '갱신 시각',
 			offset: '오프셋',
+			seconds: '초',
 		},
 		scrollmode: {
 			page: '페이지',

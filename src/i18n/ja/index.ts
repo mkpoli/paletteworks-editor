@@ -70,6 +70,7 @@ const ja: BaseTranslation = {
 			control: "コントロール",
 			updatedTime: "更新時刻",
 			offset: 'オフセット',
+			seconds: '秒',
 		},
 		scrollmode: {
 			page: "上下スクロール",

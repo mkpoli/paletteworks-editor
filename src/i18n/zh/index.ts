@@ -70,6 +70,7 @@ const zh: Translation = {
 			control: '控制面板',
 			updatedTime: '最後更新',
 			offset: '時間偏移',
+			seconds: '秒',
 		},
 		scrollmode: {
 			page: '翻頁',
