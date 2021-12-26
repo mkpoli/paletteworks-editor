@@ -119,6 +119,7 @@
   let soundQueue: string[] = []
   let volume: number = 0.5
   let sfxVolume: number = 1
+  let sfxEnabled: boolean = true
 
   // PIXI.js
   let PIXI: typeof import('pixi.js')
@@ -959,6 +960,7 @@
       bind:visibility
       bind:volume
       bind:sfxVolume
+      bind:sfxEnabled
       {bgmLoading}
       totalCombo={
         singles.length +
@@ -1143,6 +1145,7 @@
   {music}
   {volume}
   {sfxVolume}
+  {sfxEnabled}
   offset={metadata.offset}
   bind:gotoTick
   bind:soundQueue

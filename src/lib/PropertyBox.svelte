@@ -44,6 +44,7 @@
   export let totalCombo: number
   export let volume: number
   export let sfxVolume: number
+  export let sfxEnabled: boolean
   export let bgmLoading: boolean
   export let musicDuration: number | undefined
 
@@ -227,8 +228,8 @@
       <input type="range" bind:value={volume} min=0 max=1 step=0.01 />
     </label>
     <label>
-      {$LL.editor.panel.sfxvolume()}
-      <input type="range" bind:value={sfxVolume} min=0 max=1 step=0.01 />
+      <span>{$LL.editor.panel.sfxvolume()}<input type="checkbox" bind:checked={sfxEnabled} /></span>
+      <input type="range" bind:value={sfxVolume} min=0 max=1 step=0.01 on:change={() => { sfxEnabled = true }} />
     </label>
   </div>
 </div>
@@ -287,6 +288,11 @@ h2 {
 
 label {
   display: grid;
+}
+
+label > span {
+  display: flex;
+  align-items: center;
 }
 
 .history {

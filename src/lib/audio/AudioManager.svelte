@@ -15,6 +15,7 @@
   export let music: File | null
   export let volume: number
   export let sfxVolume: number
+  export let sfxEnabled: boolean
   export let gotoTick: (tick: number) => void
   export let lastTick: number
   export let bgmLoading: boolean
@@ -48,7 +49,7 @@
   $: if (master) { master.gain.value = volume }
 
   let sfxGain: GainNode
-  $: if (sfxGain) { sfxGain.gain.value = sfxVolume }
+  $: if (sfxGain) { sfxGain.gain.value = sfxEnabled ? sfxVolume : 0 }
 
   let bgmBuffer: AudioBuffer | null = null
 
@@ -177,44 +178,42 @@
 
     let events: Array<AudioEvent> = [bgmEvent]
 
-    if (sfxVolume !== 0) {
-      let accumulatedTime = 0
-      const bpmAreas = [
-          [currentTick, getBPM(currentTick)],
-          ...$sortedBPMs.filter(([tick]) => tick > currentTick)
-        ].map(([currTick, bpm], ind, arr) => {
-          const nextTick = ind < arr.length - 1 ? arr[ind + 1][0] : Infinity
-          const result = {
-            fromTick: currTick,
-            toTick: nextTick,
-            bpm,
-            fromTime: accumulatedTime
-          }
-          accumulatedTime += tick2secs(nextTick - currTick, TICK_PER_BEAT, bpm)
-          return result
-        })
+    let accumulatedTime = 0
+    const bpmAreas = [
+        [currentTick, getBPM(currentTick)],
+        ...$sortedBPMs.filter(([tick]) => tick > currentTick)
+      ].map(([currTick, bpm], ind, arr) => {
+        const nextTick = ind < arr.length - 1 ? arr[ind + 1][0] : Infinity
+        const result = {
+          fromTick: currTick,
+          toTick: nextTick,
+          bpm,
+          fromTime: accumulatedTime
+        }
+        accumulatedTime += tick2secs(nextTick - currTick, TICK_PER_BEAT, bpm)
+        return result
+      })
 
-      const noteEvents = bpmAreas.flatMap(
-        ({ fromTick, toTick, bpm, fromTime }) => generateEvents(fromTick, toTick, bpm, fromTime)
-      )
+    const noteEvents = bpmAreas.flatMap(
+      ({ fromTick, toTick, bpm, fromTime }) => generateEvents(fromTick, toTick, bpm, fromTime)
+    )
 
-      function accumulate(tick: number) {
-        const nearestBPMTick = $sortedBPMs.map(([tick]) => tick).closest(tick) ?? 0
-        const nearestBPMStartFrom = bpmAreas.find(({ fromTick }) => fromTick === nearestBPMTick)?.fromTime ?? 0
-        const lastDuration = tick2secs(tick - Math.max(nearestBPMTick, currentTick), TICK_PER_BEAT, bpms.get(nearestBPMTick) ?? 0)
-        return nearestBPMStartFrom + lastDuration
-      }
-
-      const connectEvents = slides
-        .filter(({ tail }) => tail.tick > currentTick)
-        .map(({ head, tail, critical }) => ({
-          time: accumulate(Math.max(head.tick, currentTick)),
-          sound: !critical ? 'connect' : 'connectCritical',
-          loopTo: accumulate(tail.tick)
-        }) as AudioEvent)
-
-      events = [...events, ...noteEvents, ...connectEvents].sort(({ time: a }, { time: b }) => a - b)
+    function accumulate(tick: number) {
+      const nearestBPMTick = $sortedBPMs.map(([tick]) => tick).closest(tick) ?? 0
+      const nearestBPMStartFrom = bpmAreas.find(({ fromTick }) => fromTick === nearestBPMTick)?.fromTime ?? 0
+      const lastDuration = tick2secs(tick - Math.max(nearestBPMTick, currentTick), TICK_PER_BEAT, bpms.get(nearestBPMTick) ?? 0)
+      return nearestBPMStartFrom + lastDuration
     }
+
+    const connectEvents = slides
+      .filter(({ tail }) => tail.tick > currentTick)
+      .map(({ head, tail, critical }) => ({
+        time: accumulate(Math.max(head.tick, currentTick)),
+        sound: !critical ? 'connect' : 'connectCritical',
+        loopTo: accumulate(tail.tick)
+      }) as AudioEvent)
+
+    events = [...events, ...noteEvents, ...connectEvents].sort(({ time: a }, { time: b }) => a - b)
 
     return new AudioScheduler(audioContext, audioNodes, {
       events,
