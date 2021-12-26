@@ -18,9 +18,9 @@ declare module '@pixi/events' {
   }
 }
 
-import type { EventSystem, FederatedEvent, FederatedPointerEvent } from '@pixi/events'
-
 declare module 'pixi.js' {
+  import type { EventSystem } from '@pixi/events'
+
   export interface Renderer {
     events: EventSystem
   }
