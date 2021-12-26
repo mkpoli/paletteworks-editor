@@ -268,6 +268,10 @@ export type Translation = {
 			 * 更新時刻
 			 */
 			'updatedTime': string
+			/**
+			 * オフセット
+			 */
+			'offset': string
 		}
 		'scrollmode': {	
 			/**
@@ -807,6 +811,10 @@ export type TranslationFunctions = {
 			 * 更新時刻
 			 */
 			'updatedTime': () => LocalizedString
+			/**
+			 * オフセット
+			 */
+			'offset': () => LocalizedString
 		}
 		'scrollmode': {	
 			/**

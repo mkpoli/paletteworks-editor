@@ -1132,6 +1132,7 @@
   {music}
   {volume}
   {sfxVolume}
+  offset={metadata.offset}
   bind:gotoTick
   bind:soundQueue
   on:bpmdetected={({ detail: bpm }) => {

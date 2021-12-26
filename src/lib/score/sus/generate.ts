@@ -50,6 +50,7 @@ export function dump(metadata: Meta, score: Score, comment: string) {
   lines.push(`#TITLE "${metadata.title}"`)
   lines.push(`#ARTIST "${metadata.artist}"`)
   lines.push(`#DESIGNER "${metadata.designer}"`)
+  lines.push(`#WAVEOFFSET ${metadata.waveOffset}`)
   lines.push(``)
   lines.push(`#REQUEST "ticks_per_beat ${TICK_PER_BEAT}"`)
   lines.push(``)

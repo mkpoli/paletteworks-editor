@@ -196,7 +196,8 @@ export function getMetaData(sus: string): Meta {
   const metadata: Meta = {
     title: '',
     artist: '',
-    designer: ''
+    designer: '',
+    waveOffset: 0,
   }
   lines.forEach(([header, data]) => {
     data = data.replace(/^"(.*(?="$))"$/, '$1')
@@ -209,6 +210,9 @@ export function getMetaData(sus: string): Meta {
         break
       case 'DESIGNER':
         metadata.designer = data
+        break
+      case 'WAVEOFFSET':
+        metadata.waveOffset = +data
         break
       default:
         break

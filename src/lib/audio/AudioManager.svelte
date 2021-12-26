@@ -19,6 +19,7 @@
   export let lastTick: number
   export let bgmLoading: boolean
   export let musicDuration: number | undefined = undefined
+  export let offset: number
 
   const dispatch = createEventDispatcher<{
     bpmdetected: number
@@ -166,10 +167,12 @@
 
 
   function newSchedular(): AudioScheduler {
+    const accumulatedDuration = accumulateDuration(currentTick, $sortedBPMs, TICK_PER_BEAT)
+
     const bgmEvent: AudioEvent = {
-      time: 0,
+      time: accumulatedDuration < offset ? offset : 0,
       sound: 'bgm',
-      startFrom: accumulateDuration(currentTick, $sortedBPMs, TICK_PER_BEAT)
+      startFrom: accumulatedDuration < offset ? 0: accumulatedDuration - offset
     }
 
     let events: Array<AudioEvent> = [bgmEvent]

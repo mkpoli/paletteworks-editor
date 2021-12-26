@@ -69,6 +69,7 @@ const ja: BaseTranslation = {
 			musicfile: "音楽ファイル",
 			control: "コントロール",
 			updatedTime: "更新時刻",
+			offset: 'オフセット',
 		},
 		scrollmode: {
 			page: "上下スクロール",

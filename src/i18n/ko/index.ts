@@ -69,6 +69,7 @@ const ko: Translation = {
 			musicfile: '음악 파일',
 			control: '컨트롤',
 			updatedTime: '갱신 시각',
+			offset: '오프셋',
 		},
 		scrollmode: {
 			page: '페이지',

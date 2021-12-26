@@ -2,6 +2,7 @@ export interface Metadata {
   title: string
   artist: string
   author: string
+  offset: number
 }
 
 export interface INote {

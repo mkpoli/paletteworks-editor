@@ -27,4 +27,5 @@ export type Meta = {
   title: string
   artist: string
   designer: string
+  waveOffset: number
 }

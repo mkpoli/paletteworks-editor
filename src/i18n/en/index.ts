@@ -69,6 +69,7 @@ const en: Translation = {
 			musicfile: 'Music File',
 			control: 'Controls',
 			updatedTime: 'Last Updated',
+			offset: 'Offset',
 		},
 		scrollmode: {
 			page: 'Page Up/Down',

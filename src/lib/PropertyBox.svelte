@@ -213,6 +213,10 @@
       />
     </label>
     <label>
+      {$LL.editor.panel.offset()}
+      <input type="number" bind:value={metadata.offset}>
+    </label>
+    <label>
       {$LL.editor.panel.master()}
       <input type="range" bind:value={volume} min=0 max=1 step=0.01 />
     </label>
