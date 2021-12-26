@@ -31,7 +31,7 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Slide as SlideType, Note as NoteType, EaseType, SlideStep, DiamondType, Metadata, Single, Fever, Slide, IDirectional, ICritical } from '$lib/score/beatmap'
+  import type { Note as NoteType, EaseType, SlideStep, DiamondType, Single, Fever, Slide, IDirectional, ICritical, Metadata, Score } from '$lib/score/beatmap'
 
   import { ALLOWED_SNAPPINGS } from '$lib/editing/modes'
   import { hasEaseType, isSlideStep, toDiamondType, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
@@ -533,10 +533,17 @@
     if (currentProject) {
       savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name }))
     }
-    initScore();
-    ({ metadata, score: { bpms, singles, slides, fever, skills, timeSignatures }, music } = project)
-    if (skills === undefined) skills = new Set()
-    if (timeSignatures === undefined) timeSignatures = new Map([[0, [4, 4]]])
+
+    initScore()
+
+    metadata = Object.fromEntries(Object.entries(project.metadata).map(
+      ([key, value]) => [key, value ?? emptySUSData.metadata[key as keyof Metadata]]
+    )) as Metadata
+    ;({ bpms, singles, slides, fever, skills, timeSignatures } = Object.fromEntries(Object.entries(project.score).map(
+      ([key, value]) => [key, value ?? emptySUSData.score[key as keyof Score]])
+    ) as Score)
+    music = project.music ?? null
+
     currentProject = project
   }
 
