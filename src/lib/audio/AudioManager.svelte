@@ -74,7 +74,7 @@
       createAudioBuffer(music).then((buffer) => {
         bgmBuffer = buffer
         bgmLoading = false
-        musicDuration = buffer.duration
+        musicDuration = buffer.duration + offset
 
         dispatch('bpmdetected', detect(buffer))
 
