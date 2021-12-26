@@ -1,5 +1,22 @@
 <script lang="ts" context="module">
   export const ssr = false
+
+  declare module '@pixi/events' {
+    type PointerEvents = 'pointerdown' | 'pointerup' | 'pointermove' | 'pointerenter' | 'pointerleave' | 'click'
+    export interface FederatedEventTarget {
+      addEventListener<T extends PointerEvents>(type: T, listener: (event:  FederatedPointerEvent) => void): void
+    }
+  }
+
+  import type { EventSystem } from '@pixi/events'
+  declare module 'pixi.js' {
+    export interface Renderer {
+      events: EventSystem
+    }
+    export interface AbstractRenderer {
+      events: EventSystem
+    }
+  }
 </script>
 
 <script lang="ts">
@@ -140,6 +157,7 @@
   $: $sortedBPMs = [...bpms].sort(([tickA,], [tickB,]) => tickA - tickB)
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
   $: if (isNaN(currentMeasure)) currentMeasure = 1
+
 
   function calcMaxMeasure(bpms: Map<number, number>, duration: number = 3 * 60) {
     const bpmEntries = [...bpms.entries()]
