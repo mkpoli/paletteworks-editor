@@ -17,16 +17,18 @@
 
   // Props
   export let menu: HTMLDivElement
+  export let contextArea: HTMLElement | undefined = undefined
+  export let sub: boolean = false
+  export let opened: boolean = false
+  export const open: () => void = () => {
+    if (instance) instance.show()
+  }
 
   // Contexts
   const menuInfo = getContext<MenuInfo>('menu-info')
 
   // Variables
   let instance: TippyInstance
-
-  export let contextArea: HTMLElement | undefined = undefined
-  export let sub: boolean = false
-  export let opened: boolean = false
 
   const dispatch = createEventDispatcher<{
     contextmenu: void,

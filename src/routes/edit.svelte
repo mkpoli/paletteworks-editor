@@ -755,6 +755,8 @@
   import TimeSignatureDialog from '$lib/dialogs/TimeSignatureDialog.svelte'
   let timeSignatureDialogOpened = false
   let timeSignatureDialogValue: [number, number] = [4, 4]
+
+  let openMainMenu: () => void
 </script>
 
 <svelte:head>
@@ -768,6 +770,7 @@
     <ToolBox
       bind:currentMode
       bind:snapTo
+      bind:openMainMenu={openMainMenu}
       on:export={onexport}
       on:image={() => { imageDialogOpened = true }}
       on:copy={() => { copyNotes($selectedNotes) }}
@@ -1125,6 +1128,7 @@
   on:gotodown={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE / snapTo) - TICK_PER_MEASURE / snapTo) }}
   on:gotoupfast={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE) + TICK_PER_MEASURE) }}
   on:gotodownfast={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE) - TICK_PER_MEASURE) }}
+  on:openmainmenu={openMainMenu}
 />
 
 <AudioManager

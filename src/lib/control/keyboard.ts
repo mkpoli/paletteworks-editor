@@ -26,6 +26,7 @@ export const KEYBOARD_SHORTCUTS  = {
   gotodown: [['down']],
   gotoupfast: [['shift', 'up']],
   gotodownfast: [['shift', 'down']],
+  openmainmenu: [['ctrl', 'm']],
 } as const
 
 export type KeyboardAction = keyof typeof KEYBOARD_SHORTCUTS

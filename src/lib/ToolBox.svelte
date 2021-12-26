@@ -26,6 +26,7 @@
 
   export let currentMode: Mode
   export let snapTo: SnapTo
+  export let openMainMenu: () => void
 
   let menu: HTMLDivElement
   import { KEYBOARD_SHORTCUTS } from '$lib/control/keyboard'
@@ -56,7 +57,7 @@
 
 <div class="toolbox-container">
   <Menu bind:menu={menu}>
-    <MenuTrigger {menu} slot="trigger">
+    <MenuTrigger {menu} slot="trigger" bind:open={openMainMenu}>
       <button class="menu-trigger">
         <Icon icon="custom:logo" width=36 />
         <span class="title">PaletteWorks</span>
