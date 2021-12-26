@@ -536,12 +536,12 @@
 
     initScore()
 
-    metadata = Object.fromEntries(Object.entries(project.metadata).map(
-      ([key, value]) => [key, value ?? emptySUSData.metadata[key as keyof Metadata]]
-    )) as Metadata
-    ;({ bpms, singles, slides, fever, skills, timeSignatures } = Object.fromEntries(Object.entries(project.score).map(
-      ([key, value]) => [key, value ?? emptySUSData.score[key as keyof Score]])
-    ) as Score)
+    metadata = Object.fromEntries(Object.entries(emptySUSData.metadata).map(
+      ([key, value]) => [key, project.metadata[key as keyof Metadata] ?? value]
+    )) as unknown as Metadata
+    ;({ bpms, singles, slides, fever, skills, timeSignatures } = Object.fromEntries(Object.entries(emptySUSData.score).map(
+      ([key, value]) => [key, project.score[key as keyof Score] ?? value]
+    )) as Score)
     music = project.music ?? null
 
     currentProject = project
