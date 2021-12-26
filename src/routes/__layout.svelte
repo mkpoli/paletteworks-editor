@@ -51,7 +51,9 @@
     --color-text-lighter: #ffffff;
 
     --input-border-radius: 10px;
-    --input-padding: 0.75em 1em;
+    --input-padding-vertical: 0.75em;
+    --input-padding-horizontal: 1em;
+    --input-padding: var(--input-padding-vertical) var(--input-padding-horizontal);
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -59,6 +61,8 @@
     color-scheme: dark;
     font-family: 'M PLUS 1p', sans-serif;
     overflow: hidden;
+
+    font-size: 14px;
   }
 
   body {

@@ -132,17 +132,17 @@
   </div>
   <div class="panel">
     <h2>{$LL.editor.panel.metadata()}</h2>
-    <label>
+    <label for="title">
       {$LL.editor.panel.title()}
-      <input type="text" bind:value={metadata.title}>
+      <TextInput type="text" name="title" bind:value={metadata.title}/>
     </label>
-    <label>
+    <label for="artist">
       {$LL.editor.panel.artist()}
-      <input type="text" bind:value={metadata.artist}>
+      <TextInput type="text" name="artist" bind:value={metadata.artist}/>
     </label>
-    <label>
+    <label for="author">
       {$LL.editor.panel.author()}
-      <input type="text" bind:value={metadata.author}>
+      <TextInput type="text" name="author" bind:value={metadata.author}/>
     </label>
   </div>
   <div class="panel">
@@ -212,9 +212,15 @@
         loading={bgmLoading}
       />
     </label>
-    <label>
+    <label for="offset">
       {$LL.editor.panel.offset()}
-      <input type="number" bind:value={metadata.offset}>
+      <TextInput
+        bind:value={metadata.offset}
+        type="number"
+        name="offset"
+      >
+        <span slot="tail">秒</span>
+      </TextInput>
     </label>
     <label>
       {$LL.editor.panel.master()}

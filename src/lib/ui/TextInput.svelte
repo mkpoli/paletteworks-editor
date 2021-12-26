@@ -27,6 +27,7 @@
     flex-grow: 1;
     overflow: hidden;
     display: flex;
+    gap: 1em;
     align-items: center;
   }
 
@@ -41,6 +42,7 @@
     box-shadow: none;
     width: 100%;
     flex-grow: 1;
+    padding: var(--input-padding-vertical) 0;
   }
 
   .input-container :global(*) {
