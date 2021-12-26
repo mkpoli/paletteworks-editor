@@ -1158,6 +1158,7 @@
   on:drop|preventDefault={dropHandlerMultiple([
     { accept: '.sus', callback(file) { onfileopened(URL.createObjectURL(file)) } },
     { accept: 'audio/*', callback(file) {
+      musicLoadedFromFile = true
       if (currentProject) {
         music = file
       } else {

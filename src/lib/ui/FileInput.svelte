@@ -51,7 +51,7 @@
   class="file-container"
   bind:this={container}
   on:dragover|preventDefault|capture={() => {}}
-  on:drop|preventDefault|capture={dropHandler(accept, (dropped) => { file = dropped }, () => { toast.error('未知のファイルタイプ') })}
+  on:drop|preventDefault|capture={dropHandler(accept, (dropped) => { file = dropped; dispatch('open', file) }, () => { toast.error('未知のファイルタイプ') })}
 >
   {#if file}
     <TextInput value={file.name} disabled>
