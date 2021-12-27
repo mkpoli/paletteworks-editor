@@ -2,6 +2,7 @@ import { toast } from '@zerodevx/svelte-toast'
 
 import UndoToast from '$lib/ui/UndoToast.svelte'
 
+import type { SvelteComponent } from 'svelte'
 import type { Mutation } from '$lib/editing/mutations'
 import type { Writable } from 'svelte/store'
 
@@ -26,7 +27,7 @@ export default {
   undo: (mutation: Mutation<unknown>, history: Writable<Mutation<unknown>[]>, button: string, undo: () => void, undone: boolean) => {
     toast.push({
       component: {
-        src: UndoToast as any,
+        src: UndoToast as unknown as SvelteComponent,
         props: {
           text: mutation.toString(),
           button,

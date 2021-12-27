@@ -12,7 +12,7 @@ export interface Project {
 
 export interface Preferences {
   key?: string
-  value: any
+  value: unknown
 }
 
 import { Dexie, liveQuery } from 'dexie'

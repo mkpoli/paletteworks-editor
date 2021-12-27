@@ -23,7 +23,7 @@ export async function list(): Promise<Item[]> {
     q.Paginate(q.Match(q.Index('all_items'))),
     q.Lambda(x => q.Get(x))
     )
-  ) as { data: any[] }
+  ) as { data: { data: Item }[] }
   if (!result.data) return []
   return result.data
     .map(({ data }) => data).filter((data) => data !== undefined)

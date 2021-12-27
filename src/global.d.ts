@@ -1,4 +1,5 @@
 /// <reference types="@sveltejs/kit" />
+/// <reference types="core-js" />
 interface ImportMeta {
   env: {
     PACKAGE_VERSION: string,

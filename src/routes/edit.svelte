@@ -1,21 +1,19 @@
 <script lang="ts" context="module">
   export const ssr = false
 
+  import type { EventSystem, FederatedPointerEvent as FPE } from '@pixi/events'
   declare module '@pixi/events' {
     type PointerEvents = 'pointerdown' | 'pointerup' | 'pointermove' | 'pointerenter' | 'pointerleave' | 'click'
     export interface FederatedEventTarget {
-      addEventListener<T extends PointerEvents>(type: T, listener: (event:  FederatedPointerEvent) => void): void
+      addEventListener<T extends PointerEvents>(type: T, listener: (event: FPE) => void): void
     }
   }
 
-  import type { EventSystem } from '@pixi/events'
   declare module 'pixi.js' {
-    export interface Renderer {
-      events: EventSystem
-    }
     export interface AbstractRenderer {
       events: EventSystem
     }
+    export type FederatedPointerEvent = FPE
   }
 </script>
 
@@ -96,7 +94,6 @@
     SNAPTO_DEFAULT,
     ZOOM_DEFAULT,
     ZOOM_MIN,
-    LANE_MAX,
     MEASURE_HEIGHT,
   } from '$lib/consts'
 
@@ -208,7 +205,6 @@
     // Initialise PIXI.js
     PIXI = await import('pixi.js')
     const { EventSystem } = await import('@pixi/events')
-    // @ts-ignore
     delete PIXI.Renderer.__plugins.interaction
 
     app = new PIXI.Application({
@@ -218,8 +214,7 @@
       resolution: RESOLUTION,
       backgroundAlpha: 0
     })
-    // @ts-ignore
-    ;(app.renderer as PIXI.Renderer).addSystem(EventSystem, 'events')
+    ;(app.renderer as PIXI.Renderer).addSystem(EventSystem as unknown as PIXI.ISystemConstructor<PIXI.Renderer>, 'events')
 
     app.loader.add('font', '/fonts/Font.fnt').load(() => {
       $fontLoaded = true
@@ -429,7 +424,7 @@
     exec(mutation)
   }
 
-  function exec(mutation: Mutation<any>) {
+  function exec(mutation: Mutation<unknown>) {
     if (mutation.amount === 0) return
     $undoneHistory = $undoneHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
@@ -451,7 +446,7 @@
     playSound('stage')
   }
 
-  function undo(mutation: Mutation<any>) {
+  function undo(mutation: Mutation<unknown>) {
     $mutationHistory = $mutationHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
       singles = mutation.undo()

@@ -50,7 +50,7 @@
 <div
   class="file-container"
   bind:this={container}
-  on:dragover|preventDefault|capture={() => {}}
+  on:dragover|preventDefault|capture={() => { /* empty */ }}
   on:drop|preventDefault|capture={dropHandler(accept, (dropped) => { file = dropped; dispatch('open', file) }, () => { toast.error($LL.editor.messages.unknownFileType()) })}
 >
   {#if file}

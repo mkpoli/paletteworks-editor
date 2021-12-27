@@ -6,6 +6,7 @@ specifiers:
   '@pixi/events': 6.1.3
   '@sveltejs/adapter-vercel': ^1.0.0-next.31
   '@sveltejs/kit': ^1.0.0-next.178
+  '@types/core-js': ^2.5.5
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': 5.0.0
   '@zerodevx/svelte-toast': ^0.6.1
@@ -38,6 +39,7 @@ devDependencies:
   '@pixi/events': 6.1.3
   '@sveltejs/adapter-vercel': 1.0.0-next.31
   '@sveltejs/kit': 1.0.0-next.178_svelte@3.44.3
+  '@types/core-js': 2.5.5
   '@typescript-eslint/eslint-plugin': 5.0.0_23617e02451b63a8997d0f18b2622d8e
   '@typescript-eslint/parser': 5.0.0_eslint@8.0.0+typescript@4.4.3
   '@zerodevx/svelte-toast': 0.6.1
@@ -617,6 +619,10 @@ packages:
       vite: 2.6.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@types/core-js/2.5.5:
+    resolution: {integrity: sha512-C4vwOHrhsvxn7UFyk4NDQNUpgNKdWsT/bL39UWyD75KSEOObZSKa9mYDOCM5FGeJG2qtbG0XiEbUKND2+j0WOg==}
     dev: true
 
   /@types/earcut/2.1.1:

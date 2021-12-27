@@ -36,7 +36,7 @@ export function dropHandlerMultiple(handlers: { accept: string, callback: (file:
     if (item.kind !== 'file') return
     const file = item.getAsFile()
     event.stopPropagation()
-    for (let { accept, callback } of handlers) {
+    for (const { accept, callback } of handlers) {
       if (file && accepted(file, accept)) {
         callback(file)
         return

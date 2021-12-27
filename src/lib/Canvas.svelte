@@ -518,9 +518,9 @@
 
   function onresizeend() {
     if ($resizingNotes.every((note) => {
-      const target = $resizingTargets.get(note)!
-      const origin = $resizingOrigins.get(note)!
-      return target.lane === origin.lane && target.width === origin.width
+      const target = $resizingTargets.get(note)
+      const origin = $resizingOrigins.get(note)
+      return target && origin && target.lane === origin.lane && target.width === origin.width
     })) return
     dispatch('resizenotes', {
       resizingTargets: new Map($resizingTargets),

@@ -18,13 +18,10 @@ module.exports = {
 		node: true
 	},
 	rules: {
-		'@typescript-eslint/no-inferrable-types': [
-			'error',
-			{
-				ignoreParameters: true,
-				ignoreProperties: true
-			}	
-		],
-		"no-restricted-globals": ["error", "closed", "event", "fdescribe", "name", "length", "location", "parent", "top"]
+		'@typescript-eslint/no-inferrable-types': 'off',
+		'@typescript-eslint/no-non-null-assertion': 'off',
+		"no-restricted-globals": ["error", "closed", "event", "fdescribe", "name", "length", "location", "parent", "top"],
+		'no-redeclare': 'warn',
+		'no-import-assign': 'warn'
 	}
 };

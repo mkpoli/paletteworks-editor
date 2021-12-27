@@ -8,7 +8,7 @@ declare global {
   }
 
   interface Array<T = number> {
-    closest(num: number, smaller?: boolean): number | undefined
+    closest(num: T, smaller?: boolean): T | undefined
   }
   
   interface ReadonlyArray<T> {

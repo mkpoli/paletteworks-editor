@@ -31,7 +31,7 @@ export class AudioScheduler {
     scheduleInterval =  50,  // in milliseconds
     scheduleLookahead = 100, // in milliseconds
     events = [],
-    callback = () => {}
+    callback = () => { /* empty */ }
   }: SchedulerOption) {
     this.audioContext = audioContext
     this.audioNodes = audioNodes               // keep track of all created audio nodes so they can be stopped
