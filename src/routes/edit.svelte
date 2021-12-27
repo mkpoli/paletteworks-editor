@@ -293,6 +293,7 @@
   }
 
   function deleteNotes(notes: NoteType[], cut = false) {
+    $selectedNotes = $selectedNotes.filter(note => !notes.includes(note))
     exec(new BatchRemove(singles, slides, notes, !cut ? 'delete' : 'cut'))
   }
 
