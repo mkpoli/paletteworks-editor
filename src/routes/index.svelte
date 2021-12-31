@@ -180,11 +180,13 @@
     font-weight: bold;
     text-shadow: 1px 1px 3px #8603ab;
     margin: 0.5 1em;
+    transition: all 0.2s ease-in-out;
   }
 
   a.button:hover {
-    box-shadow: 0px 0px 10px #2980d7;
+    box-shadow: 0px 2px 5px #104376;
     text-shadow: 1px 1px 6px #8603ab;
+    transform: translateY(-3px);
   }
 
   a:visited {
