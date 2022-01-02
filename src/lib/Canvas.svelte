@@ -314,7 +314,14 @@
     })
 
     function calcSelection(): NoteType[] {
-      return [...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
+      return [
+        ...singles
+          .filter((note) =>
+            visibility.Taps && note.flick === 'no' ||
+            visibility.Flicks && note.flick !== 'no'
+          ),
+        ...(visibility.Slides ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]) : [])
+      ]
         .filter(({ lane, width, tick }) => $position.intersectRect(lane, width, tick, selectRect))
     }
 

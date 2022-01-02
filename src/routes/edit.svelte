@@ -679,7 +679,15 @@
   }
 
   function onselectall() {
-    $selectedNotes = [...singles, ...slides.flatMap((slide) => [slide.head, slide.tail, ...slide.steps])]
+    $selectedNotes = [
+      ...singles
+        .filter((note) =>
+          visibility.Taps && note.flick === 'no' ||
+          visibility.Flicks && note.flick !== 'no'
+        )
+      ,
+      ...(visibility.Slides ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]) : [])
+    ]
   }
 
   function unselectall() {
