@@ -48,8 +48,8 @@ const zh: Translation = {
 		},
 		panel: {
 			measure: "(小節)",
-			totalcombo: '總 Combo 數： {combo}',
-			totalselected: '選擇音符數： {selected}',
+			totalcombo: '總 COMBO 數',
+			totalselected: '選擇音符數',
 			skipstart: '重播',
 			playpause: '播放/暫停',
 			skipback: '返回',

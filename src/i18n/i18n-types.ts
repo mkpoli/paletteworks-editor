@@ -183,15 +183,13 @@ export type Translation = {
 			 */
 			'measure': string
 			/**
-			 * 合計コンボ数 {combo}
-			 * @param {unknown} combo
+			 * 合計コンボ数
 			 */
-			'totalcombo': RequiredParams1<'combo'>
+			'totalcombo': string
 			/**
-			 * 選択されたノーツ数 {selected}
-			 * @param {unknown} selected
+			 * 選択されたノーツ数
 			 */
-			'totalselected': RequiredParams1<'selected'>
+			'totalselected': string
 			/**
 			 * 頭出し
 			 */
@@ -754,13 +752,13 @@ export type TranslationFunctions = {
 			 */
 			'measure': () => LocalizedString
 			/**
-			 * 合計コンボ数 {combo}
+			 * 合計コンボ数
 			 */
-			'totalcombo': (arg: { combo: unknown }) => LocalizedString
+			'totalcombo': () => LocalizedString
 			/**
-			 * 選択されたノーツ数 {selected}
+			 * 選択されたノーツ数
 			 */
-			'totalselected': (arg: { selected: unknown }) => LocalizedString
+			'totalselected': () => LocalizedString
 			/**
 			 * 頭出し
 			 */

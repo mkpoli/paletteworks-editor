@@ -48,8 +48,8 @@ const ko: Translation = {
 		},
 		panel: {
 			measure: "(소절)",
-			totalcombo: '총 콤보 수: {combo}',
-			totalselected: '선택된 노트수: {selected}',
+			totalcombo: '총 콤보 수',
+			totalselected: '선택된 노트수',
 			skipstart: '처음으로',
 			playpause: '재생/일시정지',
 			skipback: '건너뛰기',

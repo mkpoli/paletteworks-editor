@@ -48,8 +48,8 @@ const ja: BaseTranslation = {
 		},
 		panel: {
 			measure: "（小節）",
-			totalcombo: "合計コンボ数 {combo}",
-			totalselected: "選択されたノーツ数 {selected}",
+			totalcombo: "合計コンボ数",
+			totalselected: "選択されたノーツ数",
 			skipstart: "頭出し",
 			playpause: "再生／一時停止",
 			skipback: "戻る",

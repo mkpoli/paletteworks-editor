@@ -48,8 +48,8 @@ const en: Translation = {
 		},
 		panel: {
 			measure: "(Bar)",
-			totalcombo: 'Total Combos: {combo}',
-			totalselected: '{selected} Notes Selected',
+			totalcombo: 'Total Combos',
+			totalselected: 'Selected',
 			skipstart: 'Previous',
 			playpause: 'Play/Pause',
 			skipback: 'Back',

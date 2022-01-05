@@ -152,10 +152,10 @@
         <TabItem><h2>{$LL.editor.panel.statistics()}</h2></TabItem>
         <TabItem><h2>{$LL.editor.panel.history()}</h2></TabItem>
       </TabSelect>
-      <TabContent>
-        <ul class="statistics">
+      <TabContent class="statistics">
+        <ul class="visibility">
           {#each visibilitys as name}
-            <li>
+            <li class:visible={$visibility[name]}>
               <ClickableIcon
                 icon={$visibility[name] ? 'ic:baseline-visibility' : 'ic:baseline-visibility-off'}
                 width="1.5em"
@@ -168,11 +168,19 @@
                   }
                 }}
               />
-              <span class="title">{$LL.editor.panel.visibility[name]()}</span><value>{statistics[name]}</value>
+              <span class="title">{$LL.editor.panel.visibility[name]()}</span><span class="value">{statistics[name]}</span>
             </li>
           {/each}
-          <li><p>{$LL.editor.panel.totalcombo({ combo: totalCombo })}</p></li>
-          <li><p>{$LL.editor.panel.totalselected({ selected: $selectedNotes.length })}</p></li>
+        </ul>
+        <ul class="other">
+          <li>
+            <span>{$LL.editor.panel.totalcombo()}</span>
+            <span class="combo">{totalCombo}</span>
+          </li>
+          <li>
+            <span>{$LL.editor.panel.totalselected()}</span>
+            <span>{$selectedNotes.length}</span>
+          </li>
         </ul>
       </TabContent>
       <TabContent class="history-tab">
@@ -235,24 +243,63 @@
 </div>
 
 <style>
-ul.statistics {
+:global(.statistics) {
+  font-size: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  /* justify-content: space-between; */
+}
+
+:global(.statistics) ul {
   width: auto;
   margin: 0 auto;
   padding: 0.5em;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: .4em 1em;
+  grid-template-columns: auto 1fr 1fr;
   list-style-type: none;
 }
 
-ul.statistics li {
-  display: flex;
+:global(.statistics) ul li {
+  display: contents;
+}
+
+:global(.statistics) ul.visibility li:not(.visible) {
+  color: rgba(238, 238, 238, 0.8);
+}
+
+:global(.statistics) ul.other {
+  grid-template-columns: 1fr 5em;
+  text-align: right;
   gap: 1em;
+}
+
+:global(.statistics) ul.other li {
+  gap: 1em;
+}
+
+:global(.statistics) span.combo {
+  position: relative;
+}
+
+:global(.statistics) span.combo:after {
+  content: 'x';
+  position: absolute;
+  left: calc(100% + 0.1em);
 }
 
 ul .title {
   font-weight: bold;
   display: block;
   width: 5em;
+}
+
+ul .value {
+  /* display: block;
+  width: 5em; */
+  text-align: right;
+  align-self: end;
 }
 
 .panel-container {
