@@ -147,6 +147,10 @@
 
   let innerHeight: number
 
+  function allNotes() {
+    return [...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
+  }
+
   // Resize on window resize
   $: app?.renderer.resize(CANVAS_WIDTH, innerHeight)
   
@@ -965,7 +969,7 @@
         flicks: singles.filter((x) => x.flick !== 'no').length,
         slides: slides.length,
         slidesteps: slides.map(({steps}) => steps).reduce((acc, ele) => acc += ele.length, 0),
-        all: singles.length + slides.length,
+        all: allNotes().length,
       }}
       bind:paused
       bind:metadata
