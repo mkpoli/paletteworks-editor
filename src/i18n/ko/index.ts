@@ -71,6 +71,13 @@ const ko: Translation = {
 			updatedTime: '갱신 시각',
 			offset: '오프셋',
 			seconds: '초',
+			visibility: {
+				taps: '탭',
+				flicks: '플릭',
+				slides: '슬라이드',
+				slidesteps: '슬라이드 스텝',
+				all: '모두',
+			}
 		},
 		scrollmode: {
 			page: '페이지',

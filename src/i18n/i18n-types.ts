@@ -276,6 +276,28 @@ export type Translation = {
 			 * 秒
 			 */
 			'seconds': string
+			'visibility': {	
+				/**
+				 * タップ
+				 */
+				'taps': string
+				/**
+				 * フリック
+				 */
+				'flicks': string
+				/**
+				 * スライド
+				 */
+				'slides': string
+				/**
+				 * スライドステップ
+				 */
+				'slidesteps': string
+				/**
+				 * すべて
+				 */
+				'all': string
+			}
 		}
 		'scrollmode': {	
 			/**
@@ -823,6 +845,28 @@ export type TranslationFunctions = {
 			 * 秒
 			 */
 			'seconds': () => LocalizedString
+			'visibility': {	
+				/**
+				 * タップ
+				 */
+				'taps': () => LocalizedString
+				/**
+				 * フリック
+				 */
+				'flicks': () => LocalizedString
+				/**
+				 * スライド
+				 */
+				'slides': () => LocalizedString
+				/**
+				 * スライドステップ
+				 */
+				'slidesteps': () => LocalizedString
+				/**
+				 * すべて
+				 */
+				'all': () => LocalizedString
+			}
 		}
 		'scrollmode': {	
 			/**

@@ -279,14 +279,6 @@
 
   let imageDialogOpened: boolean = false
 
-  let visibility: Record<string, boolean> = {
-    'Taps': true,
-    'Flicks': true, 
-    'Slides': true,
-    'SlideSteps': true,
-    'Total': true
-  }
-
   function deleteNotes(notes: NoteType[], cut = false) {
     $selectedNotes = $selectedNotes.filter(note => !notes.includes(note))
     exec(new BatchRemove(singles, slides, notes, !cut ? 'delete' : 'cut'))
@@ -682,11 +674,11 @@
     $selectedNotes = [
       ...singles
         .filter((note) =>
-          visibility.Taps && note.flick === 'no' ||
-          visibility.Flicks && note.flick !== 'no'
+          $visibility.taps && note.flick === 'no' ||
+          $visibility.flicks && note.flick !== 'no'
         )
       ,
-      ...(visibility.Slides ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]) : [])
+      ...($visibility.slides ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]) : [])
     ]
   }
 
@@ -780,6 +772,8 @@
   let timeSignatureDialogValue: [number, number] = [4, 4]
 
   let openMainMenu: () => void
+
+  import { visibility } from '$lib/editing/visibility'
 </script>
 
 <svelte:head>
@@ -884,7 +878,6 @@
       {snapTo}
       {currentMode}
       {innerHeight}
-      {visibility}
       {singles}
       {slides}
       {timeSignatures}
@@ -968,18 +961,17 @@
       on:skipstart={onskipstart}
       on:skipback={onskipback}
       statistics={{
-        'Taps': singles.filter((x) => x.flick === 'no').length,
-        'Flicks': singles.filter((x) => x.flick !== 'no').length,
-        'Slides': slides.length,
-        'SlideSteps': slides.map(({steps}) => steps).reduce((acc, ele) => acc += ele.length, 0),
-        'Total': singles.length + slides.length,
+        taps: singles.filter((x) => x.flick === 'no').length,
+        flicks: singles.filter((x) => x.flick !== 'no').length,
+        slides: slides.length,
+        slidesteps: slides.map(({steps}) => steps).reduce((acc, ele) => acc += ele.length, 0),
+        all: singles.length + slides.length,
       }}
       bind:paused
       bind:metadata
       bind:music
       bind:musicLoadedFromFile
       bind:scrollMode
-      bind:visibility
       bind:volume
       bind:sfxVolume
       bind:sfxEnabled

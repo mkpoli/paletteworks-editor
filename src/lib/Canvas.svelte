@@ -15,7 +15,10 @@
   } from '$lib/score/beatmap'
     
   import { hasEaseType, isSlideStep } from '$lib/score/beatmap'
-  
+
+  // Stores
+  import { visibility } from '$lib/editing/visibility'
+
   import '$lib/basic/collections'
 
   // Constants
@@ -63,7 +66,6 @@
   export let currentMode: Mode
   export let innerHeight: number
   export let imageDialogOpened: boolean
-  export let visibility: Record<string, boolean>
   export let shiftKey: boolean
   export let paused: boolean
   export let zoom: number
@@ -330,10 +332,10 @@
       return [
         ...singles
           .filter((note) =>
-            visibility.Taps && note.flick === 'no' ||
-            visibility.Flicks && note.flick !== 'no'
+            $visibility.taps && note.flick === 'no' ||
+            $visibility.flicks && note.flick !== 'no'
           ),
-        ...(visibility.Slides ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]) : [])
+        ...($visibility.slides ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]) : [])
       ]
         .filter(({ lane, width, tick }) => $position.intersectRect(lane, width, tick, selectRect))
     }
@@ -601,7 +603,7 @@
   
     <!-- SINGLE NOTES -->
     {#each singles as note (note)}
-      {#if visibility.Flicks && note.flick !== 'no' || visibility.Taps && note.flick === 'no' }
+      {#if $visibility.flicks && note.flick !== 'no' || $visibility.taps && note.flick === 'no' }
         <Single
           bind:note
           on:click={() => {
@@ -633,11 +635,11 @@
     {/each}
 
     <!-- SLIDE NOTES -->
-    {#if visibility.Slides}
+    {#if $visibility.slides}
       {#each slides as slide (slide)}
         <Slide
           bind:slide
-          stepsVisible={visibility.SlideSteps}
+          stepsVisible={$visibility.slidesteps}
           moving={isLongPress && $moving && ($movingNotes.includes(slide.head) || $movingNotes.includes(slide.tail) || slide.steps.some((step) => $movingNotes.includes(step)))}
           on:headclick={({ detail: { note } }) => {
             currentNote = note

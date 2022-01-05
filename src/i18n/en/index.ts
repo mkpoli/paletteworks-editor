@@ -71,6 +71,13 @@ const en: Translation = {
 			updatedTime: 'Last Updated',
 			offset: 'Offset',
 			seconds: 'secs',
+			visibility: {
+				taps: 'Taps',
+				flicks: 'Flicks',
+				slides: 'Slides',
+				slidesteps: 'Slide Steps',
+				all: 'All',
+			}
 		},
 		scrollmode: {
 			page: 'Page Up/Down',

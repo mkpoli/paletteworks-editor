@@ -33,14 +33,15 @@
   import { SCROLL_MODES } from '$lib/editing/scrolling'
   import type { ScrollMode } from '$lib/editing/scrolling'
 
+  import { visibility, visibilitys, VisibilityType } from "$lib/editing/visibility"
+
   export let currentMeasure: number
-  export let statistics: Record<string, number>
+  export let statistics: Record<VisibilityType, number>
   export let paused: boolean
   export let metadata: Metadata
   export let music: File | null
   export let musicLoadedFromFile: boolean
   export let scrollMode: ScrollMode
-  export let visibility: Record<string, boolean>
   export let totalCombo: number
   export let volume: number
   export let sfxVolume: number
@@ -49,7 +50,6 @@
   export let musicDuration: number | undefined
 
   let historyDiv: HTMLDivElement
-  
 
   $: if ($mutationHistory) {
     tick().then(() => {
@@ -154,21 +154,21 @@
       </TabSelect>
       <TabContent>
         <ul class="statistics">
-          {#each Object.entries(statistics) as [ name, value ]}
+          {#each visibilitys as name}
             <li>
               <ClickableIcon
-                icon={visibility[name] ? 'ic:baseline-visibility' : 'ic:baseline-visibility-off'}
+                icon={$visibility[name] ? 'ic:baseline-visibility' : 'ic:baseline-visibility-off'}
                 width="1.5em"
                 on:click={() => {
-                  visibility[name] = !visibility[name]
-                  if (name === 'Total') {
-                    Object.keys(visibility).forEach((key) => {
-                      visibility[key] = visibility[name]
-                    })
+                  $visibility[name] = !$visibility[name]
+                  if (name === 'all') {
+                    for (const type of visibilitys) {
+                      $visibility[type] = $visibility[name]
+                    }
                   }
                 }}
               />
-              <span class="title">{name}</span><value>{value}</value>
+              <span class="title">{$LL.editor.panel.visibility[name]()}</span><value>{statistics[name]}</value>
             </li>
           {/each}
           <li><p>{$LL.editor.panel.totalcombo({ combo: totalCombo })}</p></li>

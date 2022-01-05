@@ -71,6 +71,13 @@ const ja: BaseTranslation = {
 			updatedTime: "更新時刻",
 			offset: 'オフセット',
 			seconds: '秒',
+			visibility: {
+				taps: 'タップ',
+				flicks: 'フリック',
+				slides: 'スライド',
+				slidesteps: 'スライドステップ',
+				all: 'すべて',
+			}
 		},
 		scrollmode: {
 			page: "上下スクロール",

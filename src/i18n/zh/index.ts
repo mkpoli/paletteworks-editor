@@ -71,6 +71,13 @@ const zh: Translation = {
 			updatedTime: '最後更新',
 			offset: '時間偏移',
 			seconds: '秒',
+			visibility: {
+				taps: '單擊',
+				flicks: '劃鍵',
+				slides: '長條',
+				slidesteps: '中繼點',
+				all: '全部',
+			}
 		},
 		scrollmode: {
 			page: '翻頁',
@@ -147,7 +154,7 @@ const zh: Translation = {
 			tap: "單擊",
 			slide: "長條",
 			mid: "中繼點",
-			flick: "FLICK",
+			flick: "劃鍵",
 			critical: "黃鍵",
 			bpm: "BPM",
 			timeSignature: "拍號",
