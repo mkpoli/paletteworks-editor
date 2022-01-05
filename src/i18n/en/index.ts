@@ -75,7 +75,7 @@ const en: Translation = {
 				taps: 'Taps',
 				flicks: 'Flicks',
 				slides: 'Slides',
-				slidesteps: 'Slide Steps',
+				slidesteps: 'Steps',
 				all: 'All',
 			}
 		},

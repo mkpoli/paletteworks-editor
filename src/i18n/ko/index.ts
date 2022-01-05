@@ -75,7 +75,7 @@ const ko: Translation = {
 				taps: '탭',
 				flicks: '플릭',
 				slides: '슬라이드',
-				slidesteps: '슬라이드 스텝',
+				slidesteps: '스텝',
 				all: '모두',
 			}
 		},

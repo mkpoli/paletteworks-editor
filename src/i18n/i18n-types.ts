@@ -290,7 +290,7 @@ export type Translation = {
 				 */
 				'slides': string
 				/**
-				 * スライドステップ
+				 * 中継点
 				 */
 				'slidesteps': string
 				/**
@@ -859,7 +859,7 @@ export type TranslationFunctions = {
 				 */
 				'slides': () => LocalizedString
 				/**
-				 * スライドステップ
+				 * 中継点
 				 */
 				'slidesteps': () => LocalizedString
 				/**

@@ -75,7 +75,7 @@ const ja: BaseTranslation = {
 				taps: 'タップ',
 				flicks: 'フリック',
 				slides: 'スライド',
-				slidesteps: 'スライドステップ',
+				slidesteps: '中継点',
 				all: 'すべて',
 			}
 		},
