@@ -183,11 +183,11 @@ export type Translation = {
 			 */
 			'measure': string
 			/**
-			 * 合計コンボ数
+			 * 合計コンボ
 			 */
 			'totalcombo': string
 			/**
-			 * 選択されたノーツ数
+			 * 選択された
 			 */
 			'totalselected': string
 			/**
@@ -247,7 +247,7 @@ export type Translation = {
 			 */
 			'master': string
 			/**
-			 * SE音量
+			 * SE 音量
 			 */
 			'sfxvolume': string
 			/**
@@ -752,11 +752,11 @@ export type TranslationFunctions = {
 			 */
 			'measure': () => LocalizedString
 			/**
-			 * 合計コンボ数
+			 * 合計コンボ
 			 */
 			'totalcombo': () => LocalizedString
 			/**
-			 * 選択されたノーツ数
+			 * 選択された
 			 */
 			'totalselected': () => LocalizedString
 			/**
@@ -816,7 +816,7 @@ export type TranslationFunctions = {
 			 */
 			'master': () => LocalizedString
 			/**
-			 * SE音量
+			 * SE 音量
 			 */
 			'sfxvolume': () => LocalizedString
 			/**

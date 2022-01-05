@@ -171,15 +171,15 @@
               <span class="title">{$LL.editor.panel.visibility[name]()}</span><span class="value">{statistics[name]}</span>
             </li>
           {/each}
-        </ul>
-        <ul class="other">
-          <li>
+          <li class="other">
+            <Icon icon="fa-solid:drum" width="1.5em" />
             <span>{$LL.editor.panel.totalcombo()}</span>
-            <span class="combo">{totalCombo}</span>
+            <span class="value combo">{totalCombo}</span>
           </li>
-          <li>
+          <li class="other">
+            <Icon icon="mdi:select-group" width="1.5em" />
             <span>{$LL.editor.panel.totalselected()}</span>
-            <span>{$selectedNotes.length}</span>
+            <span class="value">{$selectedNotes.length}</span>
           </li>
         </ul>
       </TabContent>
@@ -254,10 +254,10 @@
 :global(.statistics) ul {
   width: auto;
   margin: 0 auto;
-  padding: 0.5em;
+  padding: 0;
   display: grid;
-  gap: .4em 1em;
-  grid-template-columns: auto 1fr 1fr;
+  gap: .4em 0;
+  grid-template-columns: auto 1fr 4em;
   list-style-type: none;
 }
 
@@ -265,18 +265,17 @@
   display: contents;
 }
 
-:global(.statistics) ul.visibility li:not(.visible) {
+:global(.statistics) ul li :global(svg) {
+  margin-right: 1em;
+  min-width: 1em;
+}
+
+:global(.statistics) ul.visibility li:not(.visible, .other) {
   color: rgba(238, 238, 238, 0.8);
 }
 
-:global(.statistics) ul.other {
-  grid-template-columns: 1fr 5em;
-  text-align: right;
-  gap: 1em;
-}
-
-:global(.statistics) ul.other li {
-  gap: 1em;
+:global(.statistics) ul li.other > :global(*) {
+  margin: 1em 0em;
 }
 
 :global(.statistics) span.combo {

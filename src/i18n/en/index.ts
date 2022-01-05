@@ -48,7 +48,7 @@ const en: Translation = {
 		},
 		panel: {
 			measure: "(Bar)",
-			totalcombo: 'Total Combos',
+			totalcombo: 'Combos',
 			totalselected: 'Selected',
 			skipstart: 'Previous',
 			playpause: 'Play/Pause',

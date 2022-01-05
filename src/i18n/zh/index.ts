@@ -48,7 +48,7 @@ const zh: Translation = {
 		},
 		panel: {
 			measure: "(小節)",
-			totalcombo: '總 COMBO 數',
+			totalcombo: '總 COMBO',
 			totalselected: '選擇音符數',
 			skipstart: '重播',
 			playpause: '播放/暫停',
