@@ -18,15 +18,15 @@ pnpm dev -- --open
 
 ### Commit Message Naming Convention / コミットメッセージ命名規則 / 提交消息命名规则 / 커밋 메시지 명명 규칙 (커밋 메시지 命名 規則)
 
-```
+```regex
 (F|R|D|S|V|I): <Verb Phrase>
 ```
 
-- **F** for **F**eature (Additions, Ajustments of functionalities, etc.)
-- **D** for **D**ebug (Debuging, Fixes, etc.)
+- **F** for **F**eature (Additions, Fixes, Ajustments of functionalities, etc.)
 - **R** for **R**efactor (Adjustments of code structure, naming, typing, comments, etc.)
+- **D** for **D**ocumentation (Documentation, README, etc.)
 - **S** for **S**tyle (Styling, Visual Design Adjustments, etc.)
-- **V** for **V**ersion (Versioning, Dependency Change, Licensing, README etc.)
+- **V** for **V**ersion (Versioning, Dependencies, Licensing, etc.)
 - **I** for **I**18n (Translation, Localisation, etc.)
 
 ## Acknowledgements / 謝辞 / 致謝 / 사사(謝辭)
