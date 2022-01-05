@@ -1,6 +1,7 @@
 <script lang="ts">
   // Imports
-  import { placing, position, scrollY } from '$lib/position'
+  import { placing, position } from '$lib/position'
+  import { scrollY } from '$lib/editing/scrolling'
   import { getContext, onMount } from 'svelte'
 
   // Types

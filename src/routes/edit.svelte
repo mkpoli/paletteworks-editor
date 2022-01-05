@@ -3,7 +3,7 @@
 
   import type { EventSystem, FederatedPointerEvent as FPE } from '@pixi/events'
   declare module '@pixi/events' {
-    type PointerEvents = 'pointerdown' | 'pointerup' | 'pointermove' | 'pointerenter' | 'pointerleave' | 'click'
+    type PointerEvents = 'pointerdown' | 'pointerup' | 'pointermove' | 'pointerenter' | 'pointerleave' | 'click' | 'pointerupoutside'
     export interface FederatedEventTarget {
       addEventListener<T extends PointerEvents>(type: T, listener: (event: FPE) => void): void
     }

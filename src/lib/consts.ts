@@ -24,7 +24,9 @@ export const LANE_SKILL = 0
 export const MEASURE_HEIGHT = 300
 export const TICK_HEIGHT = 0.15625
 export const MAIN_WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
-export const CANVAS_WIDTH = MAIN_WIDTH + 0.5 * MARGIN
+export const SCROLLBAR_WIDTH = 13
+export const CANVAS_MINIMAP_WIDTH = MAIN_WIDTH + 0.5 * MARGIN
+export const CANVAS_WIDTH = CANVAS_MINIMAP_WIDTH + SCROLLBAR_WIDTH
 
 export const WIDTH_DEFAULT = 3
 

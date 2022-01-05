@@ -20,13 +20,13 @@
 
   // Constants
   import { createEventDispatcher, onMount, setContext } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, CANVAS_WIDTH } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, CANVAS_WIDTH, SCROLLBAR_WIDTH, MAIN_WIDTH } from '$lib/consts'
 
   // Functions
   import { clamp, snap } from '$lib/basic/math'
   import { dbg, formatPoint } from '$lib/basic/debug'
   import { selectedNotes } from '$lib/editing/selection'
-  import { inside, scrollY } from '$lib/position'
+  import { inside } from '$lib/position'
 
   // Score Components
   import Grid from '$lib/render/Grid.svelte'
@@ -43,6 +43,7 @@
   import ResizingNotes from '$lib/render/ResizingNotes.svelte'
   import DraggingSlide from '$lib/render/DraggingSlide.svelte'
   import Minimap from '$lib/render/Minimap.svelte'
+  import Scrollbar from '$lib/render/Scrollbar.svelte'
 
   // UI Components
   import CanvasContextMenu from '$lib/menus/CanvasContextMenu.svelte'
@@ -79,6 +80,7 @@
   setContext('app', app)
   setContext('PIXI', PIXI)
   setContext('mainContainer', mainContainer)
+  setContext('container', app.stage)
 
   import type { TimeSignatureManager } from './timing';
 
@@ -109,7 +111,9 @@
 
   // Camera follow scroll position
 
-  $: $scrollY = MARGIN_BOTTOM - scrollTick / TICK_PER_MEASURE * measureHeight
+  import { calcScrollY, scrollY } from '$lib/editing/scrolling'
+
+  $: $scrollY = calcScrollY(scrollTick, zoom)
   $: mainContainer.pivot.y = $scrollY
 
   // Auto scroll when playing music
@@ -257,6 +261,11 @@
         isLongPress = true
       }, 150)
       clickedOnNote = false
+
+      if ($pointer.x > MAIN_WIDTH) {
+        return
+      }
+
       if (event.button === 2) return
       if ($moving || $resizing || $playheadDragging) return
       switch (currentMode) {
@@ -301,6 +310,10 @@
       const { x, y } = point
       $pointer = { x, y }
 
+      if (x > MAIN_WIDTH) {
+        return
+      }
+
       if (dragging && currentMode === 'select') {
         pointB = new PIXI.Point($pointer.x, $pointer.y + $scrollY)
       }
@@ -330,6 +343,10 @@
 
       clearTimeout(clickTimer)
       isLongPress = false
+
+      if ($pointer.x > MAIN_WIDTH) {
+        return
+      }
 
       if (!$moving && !$resizing) {
         const { lane, width } = $placing
@@ -439,6 +456,10 @@
     })
 
     app.renderer.view.addEventListener('click', async (event: MouseEvent) => {
+      if ($pointer.x > MAIN_WIDTH) {
+        return
+      }
+
       if (event.button !== 0) return
       if (!clickedOnNote) {
         if ($ctrlKey && $clipboardOffsets.size > 0) {
@@ -777,8 +798,13 @@
     <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
     <DraggingSlide {draggingSlide} />
     <Minimap {maxMeasure} on:scrollTo={({ detail }) => { $scrollY = detail }} />
+    <Scrollbar
+      {currentTick}
+      {maxTick}
+      on:scroll={({ detail }) => { dispatch('scroll', detail) }}
+    />
   </div>
-  <div class="zoom-indicator-container">
+  <div class="zoom-indicator-container" style={`right: ${SCROLLBAR_WIDTH}px;`}>
     <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP}/>
   </div>
 </div>
@@ -820,7 +846,6 @@
 
   .zoom-indicator-container {
     position: absolute;
-    right: 0;
     height: 100%;
     padding: 1em;
     display: flex;    

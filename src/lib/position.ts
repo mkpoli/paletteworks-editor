@@ -40,6 +40,10 @@ export class PositionManager {
     return MARGIN + (lane - 1 + width / 2) * LANE_WIDTH
   }
 
+  calcDistanceY(ticks: number): number {
+    return ticks * TICK_HEIGHT * this.zoom
+  }
+
   calcY(tick: number): number {
     return this.containerHeight - (MARGIN_BOTTOM + tick * TICK_HEIGHT * this.zoom)
   }
@@ -103,4 +107,3 @@ export const cursor = writable<Cursor>({
 export const placing = writable<{ lane: number, width: number }>({ lane: 0, width: 0})
 export const inside = writable<boolean>(false)
 export const pointer = writable<Point>({ x: 0, y: 0 })
-export const scrollY = writable<number>(0)

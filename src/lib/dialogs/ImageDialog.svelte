@@ -18,7 +18,8 @@
   import { getContext } from 'svelte'
   import { download } from '$lib/basic/file'
   import { clamp, snap } from '$lib/basic/math'
-  import { position, scrollY } from '$lib/position'
+  import { position } from '$lib/position'
+  import { scrollY } from '$lib/editing/scrolling'
 
   // Props
   export let opened: boolean
