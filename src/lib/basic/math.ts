@@ -40,3 +40,15 @@ export function average<T extends number>(values: FixedLengthArray<number, T>[])
   const total = values.reduce((acc, v) => acc.map((a, i) => a + v[i]), values[0].map(() => 0))
   return total.map(v => v / values.length)
 }
+
+export function lerp(x: number, y: number, a: number):number {
+  return x * (1 - a) + y * a
+}
+
+export function easeInQuad(x: number): number {
+  return x * x
+}
+
+export function easeOutQuad(x: number): number {
+  return 1 - (1 - x) * (1 - x)
+}

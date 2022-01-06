@@ -194,6 +194,8 @@
   // Textures
   import spritesheet from '$assets/spritesheet.json'
   import spritesheetImage from '$assets/spritesheet.png'
+  import pathPNG from '$assets/notes/path.png'
+  import pathCriticalPNG from '$assets/notes/path_critical.png'
   import { cursor } from '$lib/position'
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
@@ -237,6 +239,9 @@
         TEXTURES[name] = texture
       })
     });
+
+    TEXTURES['path.png'] = PIXI.Texture.from(pathPNG)
+    TEXTURES['path_critical.png'] = PIXI.Texture.from(pathCriticalPNG)
 
     app.ticker.add(() => {
       if (!paused) {

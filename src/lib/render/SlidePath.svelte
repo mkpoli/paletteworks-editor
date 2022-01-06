@@ -5,9 +5,10 @@
 
   import { LANE_WIDTH, COLORS, Z_INDEX } from '$lib/consts'
   import { position } from '$lib/position'
-  
-  import type { SlideNote } from '$lib/score/beatmap'
+
+  import type { IEase, SlideNote } from '$lib/score/beatmap'
   import type PIXI from 'pixi.js'
+  import { lerp, easeInQuad, easeOutQuad } from '$lib/basic/math'
 
   export let notes: SlideNote[]
   export let critical: boolean
@@ -15,69 +16,104 @@
   export let moving: boolean = false
 
   const dispatch = createEventDispatcher<{
-    'click': void,
-    'dblclick': void,
+    click: void
+    dblclick: void
   }>()
-
-  const EASE_RATIOS = {
-    curved: 0.5,
-    straight: 0
-  }
-  const SHRINK_WIDTH = LANE_WIDTH / 8
-
-  let graphics: PIXI.Graphics
 
   // Contexts
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
   const mainContainer = getContext<PIXI.Container>('mainContainer')
+  const TEXTURES =
+    getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
 
+  let planeContainer: PIXI.Container
+  let colorMatrixFilter: InstanceType<typeof PIXI.filters.ColorMatrixFilter>
   onMount(() => {
-    graphics = new PIXI.Graphics()
-    graphics.zIndex = floating ? Z_INDEX.FLOATING_SLIDE_PATH : Z_INDEX.SLIDE_PATH
-    graphics.interactive = true
-    graphics.addEventListener('click', (event) => {
+    planeContainer = new PIXI.Container()
+    planeContainer.zIndex = floating
+      ? Z_INDEX.FLOATING_SLIDE_PATH
+      : Z_INDEX.SLIDE_PATH
+    planeContainer.interactive = true
+    planeContainer.addEventListener('click', (event) => {
       if (event.detail === 1) {
         dispatch('click')
       } else if (event.detail === 2) {
         dispatch('dblclick')
       }
     })
-    mainContainer.addChild(graphics)
+    colorMatrixFilter = new PIXI.filters.ColorMatrixFilter()
+    planeContainer.filters = [
+      new PIXI.filters.FXAAFilter(),
+      colorMatrixFilter,
+      new PIXI.filters.AlphaFilter(floating ? COLORS.ALPHA_FLOATING : 1),
+    ]
+    mainContainer.addChild(planeContainer)
   })
 
   onDestroy(() => {
-    mainContainer.removeChild(graphics)
+    mainContainer.removeChild(planeContainer)
   })
 
-  $: graphics && $position && drawSlidePath(notes)
-  $: if (graphics) graphics.tint = moving ? COLORS.COLOR_MOVING_TINT : 0xFFFFFF
+  $: planeContainer && $position && drawSlidePath(notes)
+  $: if (colorMatrixFilter)
+    colorMatrixFilter.tint(moving ? COLORS.COLOR_MOVING_TINT : 0xffffff)
   export function drawSlidePath(slideNotes: SlideNote[]) {
-    graphics.clear()
-    slideNotes
-      .pairwise()
-      .forEach(([origin, target]) => {
-        const easeInRatio = 'easeType' in origin && origin.easeType === 'easeIn' ? EASE_RATIOS.curved : EASE_RATIOS.straight
-        const easeOutRatio = 'easeType' in origin && origin.easeType === 'easeOut' ? EASE_RATIOS.curved : EASE_RATIOS.straight
+    planeContainer.removeChildren()
+    slideNotes.pairwise().forEach(([origin, target]) => {
+      const origin_x_left = $position.calcX(origin.lane)
+      const origin_x_right =
+        $position.calcX(origin.lane) + origin.width * LANE_WIDTH
+      const origin_y = $position.calcY(origin.tick)
 
-        const origin_x_left = $position.calcX(origin.lane) + SHRINK_WIDTH
-        const origin_x_right = $position.calcX(origin.lane) + origin.width * LANE_WIDTH - SHRINK_WIDTH
-        const origin_y = $position.calcY(origin.tick) 
-        
-        const target_x_left = $position.calcX(target.lane) + SHRINK_WIDTH
-        const target_x_right = $position.calcX(target.lane) + target.width * LANE_WIDTH - SHRINK_WIDTH
-        const target_y = $position.calcY(target.tick)
+      const target_x_left = $position.calcX(target.lane)
+      const target_x_right =
+        $position.calcX(target.lane) + target.width * LANE_WIDTH
+      const target_y = $position.calcY(target.tick)
 
-        graphics.beginFill(
-          critical ? COLORS.COLOR_SLIDE_PATH_CRITICAL: COLORS.COLOR_SLIDE_PATH,
-          floating ? COLORS.ALPHA_FLOATING : COLORS.ALPHA_SLIDE_PATH
-        )
-        graphics.moveTo(origin_x_left, origin_y)
-        graphics.bezierCurveTo(origin_x_left, origin_y - (origin_y - target_y) * easeInRatio, target_x_left, target_y + (origin_y - target_y) * easeOutRatio, target_x_left, target_y)
-        graphics.lineTo(target_x_right, target_y)
-        graphics.bezierCurveTo(target_x_right, target_y + (origin_y - target_y) * easeOutRatio, origin_x_right, origin_y - (origin_y - target_y) * easeInRatio, origin_x_right, origin_y)
-        graphics.closePath()
-        graphics.endFill()
-      })
+      const STEPS = Math.ceil((origin_y - target_y) / 10)
+
+      const points = []
+
+      if ((origin as IEase).easeType) {
+        for (let i = 0; i < STEPS; i++) {
+          const xL = lerp(
+            target_x_left,
+            origin_x_left,
+            ((origin as IEase).easeType === 'easeIn' ? easeOutQuad : easeInQuad)(
+              i / STEPS
+            )
+          )
+          const xR = lerp(
+            target_x_right,
+            origin_x_right,
+            ((origin as IEase).easeType === 'easeIn' ? easeOutQuad: easeInQuad)(
+              i / STEPS
+            )
+          )
+          const y = lerp(target_y, origin_y, i / STEPS)
+          points.push(xL, y, xR, y)
+        }
+      }
+
+      const plane = new PIXI.SimplePlane(
+        critical ? TEXTURES['path_critical.png'] : TEXTURES['path.png'],
+        2,
+        (origin as IEase).easeType ? STEPS + 2 : 2
+      )
+      plane.geometry
+        .getBuffer('aVertexPosition')
+        .update([
+          target_x_left,
+          target_y,
+          target_x_right,
+          target_y,
+          ...points,
+          origin_x_left,
+          origin_y,
+          origin_x_right,
+          origin_y,
+        ])
+      planeContainer.addChild(plane)
+    })
   }
 </script>
- 
