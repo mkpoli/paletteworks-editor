@@ -188,8 +188,17 @@
 
   let scrollMode: ScrollMode = 'page'
 
+  import { SCROLL_FUNCTIONS } from '$lib/editing/scrolling'
+
   let lastTick: number = 0
   let gotoTick: (tick: number) => void
+  function goto(tick: number) {
+    gotoTick(tick)
+    const scrollFunction = SCROLL_FUNCTIONS[scrollMode]
+    if (scrollFunction) {
+      scrollTick = scrollFunction(tick)
+    }
+  }
 
   // Textures
   import spritesheet from '$assets/spritesheet.json'
@@ -614,11 +623,11 @@
   }
 
   function onskipstart() {
-    gotoTick(0)
+    goto(0)
   }
 
   function onskipback() {
-    gotoTick(lastTick)
+    goto(lastTick)
   }
 
   function duplicateNotes(notes: NoteType[]) {
@@ -763,7 +772,7 @@
   }
   
   function doLoop() {
-    gotoTick(loopFrom)
+    goto(loopFrom)
   }
 
   $: if (!paused && !loop && $selectedNotes.length > 0) {
@@ -1151,10 +1160,10 @@
   on:decreaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotatePrev(snapTo) ?? SNAPTO_DEFAULT }}
   on:pageup={() => { scrollTick += innerHeight / MEASURE_HEIGHT * zoom * TICK_PER_MEASURE }}
   on:pagedown={() => { scrollTick -= innerHeight / MEASURE_HEIGHT * zoom * TICK_PER_MEASURE }}
-  on:gotoup={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE / snapTo) + TICK_PER_MEASURE / snapTo) }}
-  on:gotodown={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE / snapTo) - TICK_PER_MEASURE / snapTo) }}
-  on:gotoupfast={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE) + TICK_PER_MEASURE) }}
-  on:gotodownfast={() => { gotoTick(snap(currentTick, TICK_PER_MEASURE) - TICK_PER_MEASURE) }}
+  on:gotoup={() => { goto(snap(currentTick, TICK_PER_MEASURE / snapTo) + TICK_PER_MEASURE / snapTo) }}
+  on:gotodown={() => { goto(snap(currentTick, TICK_PER_MEASURE / snapTo) - TICK_PER_MEASURE / snapTo) }}
+  on:gotoupfast={() => { goto(snap(currentTick, TICK_PER_MEASURE) + TICK_PER_MEASURE) }}
+  on:gotodownfast={() => { goto(snap(currentTick, TICK_PER_MEASURE) - TICK_PER_MEASURE) }}
   on:openmainmenu={openMainMenu}
 />
 
