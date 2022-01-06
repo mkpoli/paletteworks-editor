@@ -25,6 +25,7 @@
   onMount(() => {
     graphics = new PIXI.Graphics()
     graphics.zIndex = Z_INDEX.ERROR
+    graphics.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
     mainContainer.addChild(graphics)
     app.ticker.add(changeAlpha)
   })
