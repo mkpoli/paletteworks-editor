@@ -18,6 +18,7 @@
 
   // Stores
   import { visibility } from '$lib/editing/visibility'
+  import { preferences } from '$lib/preferences'
 
   import '$lib/basic/collections'
 
@@ -799,7 +800,9 @@
     <MovingNotes {singles} {slides} moving={isLongPress && $moving} />
     <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
     <DraggingSlide {draggingSlide} />
-    <Minimap {maxMeasure} on:scrollTo={({ detail }) => { $scrollY = detail }} />
+    {#if $preferences.minimapEnabled}
+      <Minimap {maxMeasure} on:scrollTo={({ detail }) => { $scrollY = detail }} />
+    {/if}
     <Scrollbar
       {currentTick}
       {maxTick}

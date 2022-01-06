@@ -48,6 +48,10 @@
         <input type="number" name="scroll-speed" min=0.01 bind:value={preferences.scrollSpeed}/>
         <label for="note-height">{$LL.editor.preferences.noteHeight()}</label>
         <input type="range" name="note-height" min=1 max=1.85 step=0.01 bind:value={preferences.noteHeight}/>
+        <div class="toggles">
+          <input type="checkbox" name="minimap-enabled" bind:checked={preferences.minimapEnabled}/>
+          <label for="minimap-enabled">{$LL.editor.preferences.minimapEnabled()}</label>
+        </div>
       </div>
       <Button
         class="ok"
@@ -87,6 +91,14 @@
 
     display: flex;
     flex-direction: column;
+  }
+
+  .toggles {
+    margin-top: 1em;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.5em;
   }
 
   .close {

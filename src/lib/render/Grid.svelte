@@ -59,7 +59,7 @@
     ;[...timeSignatures].forEach(([measure, [p, q]], ind, arr) => {
       const beatsPerMeasure = p / q * 4
 
-      const [nextMeasure] = arr[ind + 1] ?? [maxMeasure + 3]
+      const [nextMeasure] = arr[ind + 1] ?? [maxMeasure + 1]
       const startTick = accumulatedTicks
       accumulatedTicks += (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT
 

@@ -328,6 +328,11 @@ export type Translation = {
 			 */
 			'projectSavedAs': RequiredParams1<'project'>
 			/**
+			 * SUSファイル {filename} を読み込みました
+			 * @param {string} filename
+			 */
+			'loadingSUSSuccess': RequiredParams1<'filename'>
+			/**
 			 * SUSファイルを読み込む際にエラーが発生しました
 			 */
 			'loadingSUSError': string
@@ -542,6 +547,10 @@ export type Translation = {
 			 * ノーツの高さ（倍）
 			 */
 			'noteHeight': string
+			/**
+			 * ミニマップ（プレビュー表示）を表示する
+			 */
+			'minimapEnabled': string
 		}
 		'modes': {	
 			/**
@@ -894,6 +903,10 @@ export type TranslationFunctions = {
 			 */
 			'projectSavedAs': (arg: { project: string }) => LocalizedString
 			/**
+			 * SUSファイル {filename} を読み込みました
+			 */
+			'loadingSUSSuccess': (arg: { filename: string }) => LocalizedString
+			/**
 			 * SUSファイルを読み込む際にエラーが発生しました
 			 */
 			'loadingSUSError': () => LocalizedString
@@ -1103,6 +1116,10 @@ export type TranslationFunctions = {
 			 * ノーツの高さ（倍）
 			 */
 			'noteHeight': () => LocalizedString
+			/**
+			 * ミニマップ（プレビュー表示）を表示する
+			 */
+			'minimapEnabled': () => LocalizedString
 		}
 		'modes': {	
 			/**

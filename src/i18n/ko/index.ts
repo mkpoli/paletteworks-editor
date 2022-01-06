@@ -88,6 +88,7 @@ const ko: Translation = {
 			nonNumeralInputError: '숫자가 아닌 값을 입력하였습니다.',
 			outOfRangeInputError: '{from}부터{to}까지의 값을 입력하였습니다.',
 			projectSavedAs: '{project} (으)로 저장되었습니다.',
+			loadingSUSSuccess: '{filename} (으)로 불러오기가 성공하였습니다.',
 			loadingSUSError: 'SUS 파일을 불러오는 중 오류가 발생했습니다.',
 			autoSaved: '자동 저장되었습니다.',
 			saved: '저장되었습니다.',
@@ -148,6 +149,7 @@ const ko: Translation = {
 			autosaveInterval: '자동 저장 간격 (초)',
 			scrollSpeed: '스크롤 속도',
 			noteHeight: '노트 높이',
+			minimapEnabled: '미니맵 (채보의 미리보기) 활성화',
 		},
 		modes: {
 			select: "선택",
