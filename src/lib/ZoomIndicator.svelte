@@ -56,6 +56,7 @@
 
   .zoom-range-container {
     width: 2em;
+    height: 10em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -69,7 +70,7 @@
   input {
     margin-bottom: 5%;
     transform: rotate(270deg);
-    height: 10em;
+    height: 2em;
     width: 10em;
     min-width: 10em;
     position: relative;
