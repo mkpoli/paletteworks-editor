@@ -170,6 +170,10 @@
       note: NoteType | null,
       type?: DiamondType
     },
+    select: {
+      notes: NoteType[],
+      overwrite: boolean
+    }
     selectsingle: {
       note: NoteType
     },
@@ -628,6 +632,12 @@
           on:click={() => {
             clickedOnNote = true
             switch (currentMode) {
+              case 'select': {
+                if ($ctrlKey) {
+                  dispatch('select', { notes: [note], overwrite: false })
+                }
+                break
+              }
               case 'flick': {
                 dispatch('updateflicks', {
                   notes: $selectedNotes.length ? $selectedNotes : [note],
@@ -663,6 +673,12 @@
           on:headclick={({ detail: { note } }) => {
             currentNote = note
             switch(currentMode) {
+              case 'select': {
+                if ($ctrlKey) {
+                  dispatch('select', { notes: [note], overwrite: false })
+                }
+                break
+              }
               case 'mid': {
                 if (shiftKey) {
                   changecurve()
@@ -694,6 +710,12 @@
           }}
           on:stepclick={({ detail: { note, slide } }) => {
             switch (currentMode) {
+              case 'select': {
+                if ($ctrlKey) {
+                  dispatch('select', { notes: [note], overwrite: false })
+                }
+                break
+              }
               case 'flick': {
                 dispatch('updateflicks', {
                   notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
@@ -728,6 +750,12 @@
           }}
           on:tailclick={({ detail: { note } }) => {
             switch (currentMode) {
+              case 'select': {
+                if ($ctrlKey) {
+                  dispatch('select', { notes: [note], overwrite: false })
+                }
+                break
+              }
               case 'flick': {
                 dispatch('updateflicks', {
                   notes: $selectedNotes.length ? $selectedNotes : [note],

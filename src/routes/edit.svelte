@@ -941,6 +941,12 @@
       }}
       on:changecurve={onchangecurve}
       on:changediamond={onchangediamond}
+      on:select={({ detail: { notes, overwrite } }) => {
+        $selectedNotes = [
+          ...(overwrite ? [] : $selectedNotes),
+          ...notes
+        ]
+      }}
       on:selectsingle={(event) => {
         if (currentMode !== 'select') return
         const slide = slides
