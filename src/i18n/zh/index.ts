@@ -88,6 +88,7 @@ const zh: Translation = {
 			nonNumeralInputError: '請輸入數字',
 			outOfRangeInputError: '請輸入{from}到{to}的數字',
 			projectSavedAs: '項目成功保存爲{project}',
+			loadingSUSSuccess: '成功載入.sus文檔 {filename}',
 			loadingSUSError: '載入.sus文檔時出錯',
 			autoSaved: '已自動保存',
 			saved: '保存成功',

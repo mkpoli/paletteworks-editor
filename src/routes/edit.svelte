@@ -560,15 +560,16 @@
 
   let fileInput: HTMLInputElement
   let scoreFiles: FileList
-  $: scoreURL = scoreFiles && scoreFiles[0] ? URL.createObjectURL(scoreFiles[0]) : undefined
-  $: if (scoreURL) onfileopened(scoreURL)
+
+  $: if (scoreFiles && scoreFiles[0]) onfileopened(scoreFiles[0])
 
   function onopenfile() {
     fileInput.click()
   }
 
-  async function onfileopened(url: string) {
-    const res = await fetch(url)
+  async function onfileopened(file: File) {
+    const { name: filename } = file 
+    const res = await fetch(URL.createObjectURL(file))
     const text = await res.text()
     try {
       ({ metadata, score: { singles, slides, bpms, fever, skills, timeSignatures } } = loadSUS(text))
@@ -578,9 +579,10 @@
       initScore()
       return
     }
+    toast.success($LL.editor.messages.loadingSUSSuccess({ filename }))
     await tick()
     const project: Project = {
-      name: metadata.title || 'Untitled',
+      name: metadata.title || filename.replace(/\.[^/.]+$/, '') || 'Untitled',
       created: new Date(),
       updated: new Date(),
       metadata,
@@ -1189,7 +1191,7 @@
   }}}
   on:dragover|preventDefault
   on:drop|preventDefault={dropHandlerMultiple([
-    { accept: '.sus', callback(file) { onfileopened(URL.createObjectURL(file)) } },
+    { accept: '.sus', callback(file) { onfileopened(file) } },
     { accept: 'audio/*', callback(file) {
       musicLoadedFromFile = true
       if (currentProject) {

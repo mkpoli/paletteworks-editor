@@ -88,6 +88,7 @@ const ja: BaseTranslation = {
 			nonNumeralInputError: "数値を入力してください",
 			outOfRangeInputError: "{from:number}から{to:number}までの数値を入力してください",
 			projectSavedAs: "{project:string} として保存されました。",
+			loadingSUSSuccess: "SUSファイル {filename:string} を読み込みました",
 			loadingSUSError: "SUSファイルを読み込む際にエラーが発生しました",
 			autoSaved: "譜面が自動保存されました",
 			saved: "譜面が保存されました",

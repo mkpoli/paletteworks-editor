@@ -328,6 +328,11 @@ export type Translation = {
 			 */
 			'projectSavedAs': RequiredParams1<'project'>
 			/**
+			 * SUSファイル {filename} を読み込みました
+			 * @param {string} filename
+			 */
+			'loadingSUSSuccess': RequiredParams1<'filename'>
+			/**
 			 * SUSファイルを読み込む際にエラーが発生しました
 			 */
 			'loadingSUSError': string
@@ -897,6 +902,10 @@ export type TranslationFunctions = {
 			 * {project} として保存されました。
 			 */
 			'projectSavedAs': (arg: { project: string }) => LocalizedString
+			/**
+			 * SUSファイル {filename} を読み込みました
+			 */
+			'loadingSUSSuccess': (arg: { filename: string }) => LocalizedString
 			/**
 			 * SUSファイルを読み込む際にエラーが発生しました
 			 */
