@@ -44,6 +44,10 @@ export class PositionManager {
     return ticks * TICK_HEIGHT * this.zoom
   }
 
+  calcDistanceTicks(y: number): number {
+    return y / (TICK_HEIGHT * this.zoom)
+  }
+
   calcY(tick: number): number {
     return this.containerHeight - (MARGIN_BOTTOM + tick * TICK_HEIGHT * this.zoom)
   }

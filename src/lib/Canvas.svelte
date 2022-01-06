@@ -114,17 +114,16 @@
 
   // Camera follow scroll position
 
-  import { calcScrollY, calcScrollTick, scrollY } from '$lib/editing/scrolling'
+  import { calcScrollY, calcScrollTick, scrollY, SCROLL_FUNCTIONS } from '$lib/editing/scrolling'
 
   $: $scrollY = calcScrollY(scrollTick, zoom)
   $: mainContainer.pivot.y = $scrollY
 
   // Auto scroll when playing music
   $: if (!paused) {
-    if (scrollMode == 'page') {
-      scrollTick = snap(currentTick + MARGIN_BOTTOM / MEASURE_HEIGHT * TICK_PER_MEASURE, innerHeight / measureHeight * TICK_PER_MEASURE * 0.76)
-    } else if (scrollMode == 'smooth') {
-      scrollTick = currentTick - innerHeight / measureHeight * TICK_PER_MEASURE * 0.5 + MARGIN_BOTTOM / MEASURE_HEIGHT * TICK_PER_MEASURE
+    const scrollFunction = SCROLL_FUNCTIONS[scrollMode]
+    if (scrollFunction) {
+      scrollTick = scrollFunction(currentTick)
     }
   } else {
     dispatch('scroll', scrollTick)
