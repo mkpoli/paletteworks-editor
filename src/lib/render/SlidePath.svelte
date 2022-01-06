@@ -57,8 +57,11 @@
   $: planeContainer && $position && drawSlidePath(notes)
   $: if (colorMatrixFilter)
     colorMatrixFilter.tint(moving ? COLORS.COLOR_MOVING_TINT : 0xffffff)
+
+  const SIDE_RATIO = 32 / 448
   export function drawSlidePath(slideNotes: SlideNote[]) {
     planeContainer.removeChildren()
+
     slideNotes.pairwise().forEach(([origin, target]) => {
       const origin_x_left = $position.calcX(origin.lane)
       const origin_x_right =
@@ -73,6 +76,7 @@
       const STEPS = Math.ceil((origin_y - target_y) / 10)
 
       const points = []
+      const uvs = []
 
       if ((origin as IEase).easeType) {
         for (let i = 0; i < STEPS; i++) {
@@ -92,6 +96,7 @@
           )
           const y = lerp(target_y, origin_y, i / STEPS)
           points.push(xL, y, xR, y)
+          uvs.push(SIDE_RATIO, i / STEPS, 1 - SIDE_RATIO, i / STEPS)
         }
       }
 
@@ -113,6 +118,17 @@
           origin_x_right,
           origin_y,
         ])
+      plane.geometry.getBuffer('aTextureCoord').update([
+        SIDE_RATIO,
+        0,
+        1 - SIDE_RATIO,
+        0,
+        ...uvs,
+        SIDE_RATIO,
+        1,
+        1 - SIDE_RATIO,
+        1,
+      ])
       planeContainer.addChild(plane)
     })
   }
