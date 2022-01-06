@@ -148,6 +148,7 @@ const en: Translation = {
 			autosaveInterval: 'Auto-save Interval (sec)',
 			scrollSpeed: 'Scroll Speed (x)',
 			noteHeight: 'Note Height (x)',
+			minimapEnabled: 'Enable Minimap (Score Outline)',
 		},
 		modes: {
 			select: "Select",

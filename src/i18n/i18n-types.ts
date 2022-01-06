@@ -542,6 +542,10 @@ export type Translation = {
 			 * ノーツの高さ（倍）
 			 */
 			'noteHeight': string
+			/**
+			 * ミニマップ（プレビュー表示）を表示する
+			 */
+			'minimapEnabled': string
 		}
 		'modes': {	
 			/**
@@ -1103,6 +1107,10 @@ export type TranslationFunctions = {
 			 * ノーツの高さ（倍）
 			 */
 			'noteHeight': () => LocalizedString
+			/**
+			 * ミニマップ（プレビュー表示）を表示する
+			 */
+			'minimapEnabled': () => LocalizedString
 		}
 		'modes': {	
 			/**

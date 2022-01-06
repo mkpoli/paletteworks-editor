@@ -148,6 +148,7 @@ const ja: BaseTranslation = {
 			autosaveInterval: '自動保存の間隔（秒）',
 			scrollSpeed: 'スクロールの早さ（倍）',
 			noteHeight: 'ノーツの高さ（倍）',
+			minimapEnabled: 'ミニマップ（プレビュー表示）を表示する',
 		},
 		modes: {
 			select: "選択",

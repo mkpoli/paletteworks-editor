@@ -148,6 +148,7 @@ const zh: Translation = {
 			autosaveInterval: '自動保存間隔（秒)',
 			scrollSpeed: '滾動速度（倍）',
 			noteHeight: '音符高度（倍）',
+			minimapEnabled: '啟用小地圖（預覽）',
 		},
 		modes: {
 			select: "選擇",

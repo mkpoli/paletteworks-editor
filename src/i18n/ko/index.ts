@@ -148,6 +148,7 @@ const ko: Translation = {
 			autosaveInterval: '자동 저장 간격 (초)',
 			scrollSpeed: '스크롤 속도',
 			noteHeight: '노트 높이',
+			minimapEnabled: '미니맵 (채보의 미리보기) 활성화',
 		},
 		modes: {
 			select: "선택",

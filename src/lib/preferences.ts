@@ -4,7 +4,8 @@ import { writable } from 'svelte/store'
 export const DEFAULT_PREFERENCES = {
   autosaveInterval: 10,
   scrollSpeed: 1,
-  noteHeight: 1.25
+  noteHeight: 1.25,
+  minimapEnabled: true,
 }
 
 export type Preferences = typeof DEFAULT_PREFERENCES
