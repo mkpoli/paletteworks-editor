@@ -59,18 +59,19 @@
     colorMatrixFilter.tint(moving ? COLORS.COLOR_MOVING_TINT : 0xffffff)
 
   const SIDE_RATIO = 32 / 448
+  const SHRINK_WIDTH = 1
   export function drawSlidePath(slideNotes: SlideNote[]) {
     planeContainer.removeChildren()
 
     slideNotes.pairwise().forEach(([origin, target]) => {
-      const origin_x_left = $position.calcX(origin.lane)
+      const origin_x_left = $position.calcX(origin.lane) + SHRINK_WIDTH
       const origin_x_right =
-        $position.calcX(origin.lane) + origin.width * LANE_WIDTH
+        $position.calcX(origin.lane) + origin.width * LANE_WIDTH - SHRINK_WIDTH
       const origin_y = $position.calcY(origin.tick)
 
-      const target_x_left = $position.calcX(target.lane)
+      const target_x_left = $position.calcX(target.lane) + SHRINK_WIDTH
       const target_x_right =
-        $position.calcX(target.lane) + target.width * LANE_WIDTH
+        $position.calcX(target.lane) + target.width * LANE_WIDTH - SHRINK_WIDTH
       const target_y = $position.calcY(target.tick)
 
       const STEPS = Math.ceil((origin_y - target_y) / 10)
