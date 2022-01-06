@@ -114,7 +114,7 @@
 
   // Camera follow scroll position
 
-  import { calcScrollY, scrollY } from '$lib/editing/scrolling'
+  import { calcScrollY, calcScrollTick, scrollY } from '$lib/editing/scrolling'
 
   $: $scrollY = calcScrollY(scrollTick, zoom)
   $: mainContainer.pivot.y = $scrollY
@@ -240,21 +240,18 @@
     draggingSlide = null
   }
 
-  import moveCursor from '$assets/move-cursor.png'
-  import resizeCursor from '$assets/resize-cursor.png'
-  import selectCursor from '$assets/select-cursor.png'
-
   let clickTimer: number | undefined
   let isLongPress = false
 
-  const myCursorStyle = {
-    move: `url(${moveCursor}) 16 16, move`,
-    resize: `url(${resizeCursor}) 16 16, ew-resize`,
-    select: `url(${selectCursor}) 6 4, default`
-  } as const
+  import { CURSOR_STYLES, MOUSE_BUTTON } from '$lib/control/pointer'
+
+  let grabbing = false
+  let grabbingLastY = 0
+
   onMount(() => {
-    app.renderer.events.cursorStyles['move'] = myCursorStyle.move
-    app.renderer.events.cursorStyles['ew-resize'] = myCursorStyle.resize
+    app.renderer.events.cursorStyles['move'] = CURSOR_STYLES.move
+    app.renderer.events.cursorStyles['ew-resize'] = CURSOR_STYLES.resize
+    app.renderer.events.cursorStyles['grab'] = CURSOR_STYLES.grab
 
     app.stage.sortableChildren = true
 
@@ -269,7 +266,12 @@
         return
       }
 
-      if (event.button === 2) return
+      if (event.button === MOUSE_BUTTON.MIDDLE) {
+        grabbing = true
+        grabbingLastY = $pointer.y
+        return
+      }
+      if (event.button === MOUSE_BUTTON.RIGHT) return
       if ($moving || $resizing || $playheadDragging) return
       switch (currentMode) {
         case 'select': {
@@ -307,18 +309,27 @@
       }
     })
 
-    app.renderer.view.addEventListener('pointermove', (event) => {
+    app.renderer.view.addEventListener('pointermove', (event: PointerEvent) => {
       const point = new PIXI.Point()
       app.renderer.events.mapPositionToPoint(point, event.clientX, event.clientY)
       const { x, y } = point
       $pointer = { x, y }
+    })
 
-      if (x > MAIN_WIDTH) {
+    app.renderer.view.addEventListener('pointermove', (event: PointerEvent) => {
+      if ($pointer.x > MAIN_WIDTH) {
+        return
+      }
+
+      if (grabbing) {
+        scrollTick = calcScrollTick($scrollY - ($pointer.y - grabbingLastY) * 0.5, zoom)
+        grabbingLastY = $pointer.y
         return
       }
 
       if (dragging && currentMode === 'select') {
         pointB = new PIXI.Point($pointer.x, $pointer.y + $scrollY)
+        return
       }
 
       if (draggingSlide !== null && currentMode === 'slide') {
@@ -326,6 +337,7 @@
         draggingSlide.tail.tick = $cursor.tick
         draggingSlide.tail.width = $placing.width
         draggingSlide = draggingSlide
+        return
       }
     })
 
@@ -348,6 +360,11 @@
       isLongPress = false
 
       if ($pointer.x > MAIN_WIDTH) {
+        return
+      }
+     
+      if (event.button === MOUSE_BUTTON.MIDDLE) {
+        grabbing = false
         return
       }
 
@@ -489,8 +506,8 @@
 
   let canvasContainer: HTMLDivElement
 
-  function setCursor(cursor: keyof typeof myCursorStyle) {
-    app.renderer.events.cursorStyles.default =  myCursorStyle[cursor]
+  function setCursor(cursor: keyof typeof CURSOR_STYLES) {
+    app.renderer.events.cursorStyles.default =  CURSOR_STYLES[cursor]
     app.renderer.events.setCursor(cursor)
   }
 
@@ -499,6 +516,8 @@
       setCursor('move')
     } else if ($resizing) {
       setCursor('resize')
+    } else if (grabbing) {
+      setCursor('grab')
     } else {
       setCursor('select')
     }

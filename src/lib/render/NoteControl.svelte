@@ -1,6 +1,7 @@
 <script lang="ts">
   // Constants
   import { COLORS, LANE_WIDTH, NOTE_HEIGHT, Z_INDEX } from '$lib/consts'
+  import { MOUSE_BUTTON } from '$lib/control/pointer'
 
   // Functions
   import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
@@ -52,7 +53,8 @@
   let controlR: PIXI.Graphics
 
   // Moving
-  function onmovestart() {
+  function onmovestart(event: PIXI.FederatedPointerEvent) {
+    if (event.button !== MOUSE_BUTTON.LEFT) return
     if ($resizing) return
     $moving = true
     $movingNotes = $selectedNotes.length ? $selectedNotes : [note]
@@ -85,7 +87,8 @@
   }
 
   function onresizestart(right: boolean) {
-    return () => {
+    return (event: PIXI.FederatedPointerEvent) => {
+      if (event.button !== MOUSE_BUTTON.LEFT) return
       if ($moving) return
       $resizing = true
       $resizingOriginNote = note
