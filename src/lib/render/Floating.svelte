@@ -12,7 +12,6 @@
   // Consts
   import COLORS from '$lib/colors'
   import {
-    LANE_AREA_WIDTH,
     TEXT_MARGIN,
     MARGIN,
     Z_INDEX,
@@ -106,12 +105,12 @@
           tint: COLORS.COLOR_BPM,
         })
         text.anchor.set(0.5, 0.5)
-        text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
+        text.setTransform(MARGIN + $position.laneAreaWidth + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
         graphics.addChild(text)
 
         if (!hasBPM) {
           graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
-          drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y)
+          drawDashedLine(graphics, MARGIN, y, MARGIN + $position.laneAreaWidth, y)
         }
         break
       }
@@ -121,12 +120,12 @@
           tint: COLORS.COLOR_TIME_SIGNATURE,
         })
         text.anchor.set(0.5, 0.5)
-        text.setTransform(MARGIN + LANE_AREA_WIDTH + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
+        text.setTransform(MARGIN + $position.laneAreaWidth + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
         graphics.addChild(text)
 
         if (!hasBPM) {
           graphics.lineStyle(2, COLORS.COLOR_TIME_SIGNATURE, 1)
-          drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y)
+          drawDashedLine(graphics, MARGIN, y, MARGIN + $position.laneAreaWidth, y)
         }
         break
       }

@@ -2,7 +2,7 @@ import { between, clamp, snap } from "./basic/math"
 import {
   LANE_MAX,
   LANE_MIN,
-  LANE_WIDTH,
+  LANE_COUNT,
   MARGIN,
   MARGIN_BOTTOM,
   TICK_PER_MEASURE,
@@ -23,21 +23,25 @@ interface IRect {
 
 export class PositionManager {
   zoom: number
+  laneWidth: number
+  laneAreaWidth: number
   measureHeight: number
   containerHeight: number
 
-  constructor(measureHeight: number, containerHeight: number, zoom: number) {
+  constructor(measureHeight: number, containerHeight: number, zoom: number, laneWidth: number) {
     this.measureHeight = measureHeight
     this.containerHeight = containerHeight
     this.zoom = zoom
+    this.laneWidth = laneWidth
+    this.laneAreaWidth = laneWidth * LANE_COUNT
   }
 
   calcX(lane: number): number {
-    return MARGIN + (lane - 1) * LANE_WIDTH
+    return MARGIN + (lane - 1) * this.laneWidth
   }
   
   calcMidX(lane: number, width: number): number {
-    return MARGIN + (lane - 1 + width / 2) * LANE_WIDTH
+    return MARGIN + (lane - 1 + width / 2) * this.laneWidth
   }
 
   calcDistanceY(ticks: number): number {
@@ -53,7 +57,7 @@ export class PositionManager {
   }
 
   calcRawLane(x: number): number {
-    return (x - MARGIN) / LANE_WIDTH + 1
+    return (x - MARGIN) / this.laneWidth + 1
   }
 
   calcLane(x: number): number {

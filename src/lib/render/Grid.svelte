@@ -1,8 +1,6 @@
 <script lang="ts">
   import {
     COLORS,
-    LANE_AREA_WIDTH,
-    LANE_WIDTH,
     MARGIN,
     MARGIN_BOTTOM,
     TEXT_MARGIN,
@@ -29,6 +27,9 @@
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
   const fontLoaded = getContext<Writable<boolean>>('fontLoaded')
   const mainContainer = getContext<PIXI.Container>('mainContainer')
+
+  // Stores
+  import { preferences } from '$lib/preferences'
 
   // Variables
   let graphics: PIXI.Graphics
@@ -71,7 +72,7 @@
         if (tick % (beatsPerMeasure * TICK_PER_BEAT) === 0) {
           graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
           graphics.moveTo(MARGIN, y)
-          graphics.lineTo(MARGIN + LANE_AREA_WIDTH, y)
+          graphics.lineTo(MARGIN + position.laneAreaWidth, y)
 
           // const number = (accumulatedBeats + i) / beatsPerMeasure
           const text = new PIXI.BitmapText(`#${accumulatedMeasures + 1}`, {
@@ -86,19 +87,19 @@
           graphics.addChild(text)
         } else if (tick < maxT && tick % (TICK_PER_BEAT * beatsPerMeasure / p) === 0) {
           graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
-          graphics.moveTo(MARGIN + LANE_WIDTH, y)
-          graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
+          graphics.moveTo(MARGIN + $preferences.laneWidth, y)
+          graphics.lineTo(MARGIN + position.laneAreaWidth - $preferences.laneWidth, y)
         } else if (tick < maxT && snapTo < 192 && tick % (TICK_PER_BEAT * beatsPerMeasure / p / snapTo * 4) === 0) {
           graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
-          graphics.moveTo(MARGIN + LANE_WIDTH, y)
-          graphics.lineTo(MARGIN + LANE_AREA_WIDTH - LANE_WIDTH, y)
+          graphics.moveTo(MARGIN + $preferences.laneWidth, y)
+          graphics.lineTo(MARGIN + position.laneAreaWidth - $preferences.laneWidth, y)
         }
       }
     })
 
     // Draw lanes
     for (let i = 1; i < 14; i++) {
-      const x = MARGIN + i * LANE_WIDTH
+      const x = MARGIN + i * $preferences.laneWidth
       const primary = i % 2 !== 0
 
       if (primary) {

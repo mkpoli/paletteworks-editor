@@ -46,8 +46,10 @@
         <input type="number" name="autosave-interval" min=0 bind:value={preferences.autosaveInterval}/>
         <label for="scroll-speed">{$LL.editor.preferences.scrollSpeed()}</label>
         <input type="number" name="scroll-speed" min=0.01 bind:value={preferences.scrollSpeed}/>
-        <label for="note-height">{$LL.editor.preferences.noteHeight()}</label>
-        <input type="range" name="note-height" min=1 max=1.85 step=0.01 bind:value={preferences.noteHeight}/>
+        <label for="note-height">{$LL.editor.preferences.laneWidth()}<span class="value">{preferences.laneWidth}</span></label>
+        <input type="range" name="note-height" min=10 max=35 step=1 bind:value={preferences.laneWidth}/>
+        <label for="note-height">{$LL.editor.preferences.noteHeight()}<span class="value">{preferences.noteHeight}x</span></label>
+        <input type="range" name="note-height" min=0.5 max=1 step=0.01 bind:value={preferences.noteHeight}/>
         <div class="toggles">
           <input type="checkbox" name="minimap-enabled" bind:checked={preferences.minimapEnabled}/>
           <label for="minimap-enabled">{$LL.editor.preferences.minimapEnabled()}</label>
@@ -80,6 +82,7 @@
     grid-template-rows: repeat(5, 3.2em);
     grid-template-areas:
       "h h h . . x"
+      "t t t t t t"
       "t t t t t t"
       "t t t t t t"
       "t t t t t t"
@@ -123,5 +126,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .form label {
+    display: flex;
+    justify-content: space-between;
   }
 </style>

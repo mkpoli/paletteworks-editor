@@ -60,7 +60,7 @@
     playhead.anchor.set(1, 0.5)
     playhead.setTransform(MARGIN, y)
     graphics.addChild(playhead)
-    drawDashedLine(graphics, MARGIN, y, MARGIN + LANE_AREA_WIDTH, y, 2, 2)
+    drawDashedLine(graphics, MARGIN, y, MARGIN + $position.laneAreaWidth, y, 2, 2)
     return 
   }
 </script>

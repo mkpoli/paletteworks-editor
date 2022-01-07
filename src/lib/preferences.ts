@@ -6,6 +6,7 @@ export const DEFAULT_PREFERENCES = {
   scrollSpeed: 1,
   noteHeight: 1.25,
   minimapEnabled: true,
+  laneWidth: 30,
 }
 
 export type Preferences = typeof DEFAULT_PREFERENCES

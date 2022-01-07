@@ -544,7 +544,11 @@ export type Translation = {
 			 */
 			'scrollSpeed': string
 			/**
-			 * ノーツの高さ（倍）
+			 * レーンの幅
+			 */
+			'laneWidth': string
+			/**
+			 * ノーツの高さ
 			 */
 			'noteHeight': string
 			/**
@@ -1113,7 +1117,11 @@ export type TranslationFunctions = {
 			 */
 			'scrollSpeed': () => LocalizedString
 			/**
-			 * ノーツの高さ（倍）
+			 * レーンの幅
+			 */
+			'laneWidth': () => LocalizedString
+			/**
+			 * ノーツの高さ
 			 */
 			'noteHeight': () => LocalizedString
 			/**

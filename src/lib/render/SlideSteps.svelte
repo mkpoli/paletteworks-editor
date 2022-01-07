@@ -4,7 +4,6 @@
     COLORS,
     DIAMOND_HEIGHT,
     DIAMOND_WIDTH,
-    LANE_WIDTH,
     NOTE_HEIGHT,
     Z_INDEX,
   } from '$lib/consts'
@@ -152,7 +151,7 @@
       return
     }
     slide.steps.forEach(({ lane, tick, width, ignored }) => {
-      const noteWidth = width * LANE_WIDTH
+      const noteWidth = width * $preferences.laneWidth
       const currentRect = new PIXI.Rectangle(
         position.calcX(lane),
         position.calcY(tick) - 0.5 * height,

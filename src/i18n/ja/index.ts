@@ -148,7 +148,8 @@ const ja: BaseTranslation = {
 		preferences: {
 			autosaveInterval: '自動保存の間隔（秒）',
 			scrollSpeed: 'スクロールの早さ（倍）',
-			noteHeight: 'ノーツの高さ（倍）',
+			laneWidth: 'レーンの幅',
+			noteHeight: 'ノーツの高さ',
 			minimapEnabled: 'ミニマップ（プレビュー表示）を表示する',
 		},
 		modes: {

@@ -8,6 +8,7 @@
   // Types
   import type PIXI from 'pixi.js'
   import type { Note, Single, Slide } from '$lib/score/beatmap'
+  import { preferences } from '$lib/preferences'
 
   // Props
   export let singles: Single[]
@@ -97,9 +98,7 @@
       n.forEach(([lane, laneR]) => {
         graphics.drawRoundedRect(
           position.calcX(lane) - 0.5 * MARGIN_X,
-          position.calcY(tick) - 0.5 * NOTE_HEIGHT_REAL - 0.5 * MARGIN_Y,
-          ((laneR ?? lane) - lane + 1) * LANE_WIDTH + MARGIN_X,
-          NOTE_HEIGHT_REAL + MARGIN_Y,
+          ((laneR ?? lane) - lane + 1) * $preferences.laneWidth + MARGIN_X,
           5
         ) 
       })

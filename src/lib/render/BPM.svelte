@@ -2,8 +2,6 @@
   // Constants
   import {
     COLORS,
-    LANE_AREA_WIDTH,
-    LANE_WIDTH,
     MARGIN,
     TEXT_MARGIN,
     TICK_PER_BEAT,
@@ -16,6 +14,7 @@
 
   // Types
   import type PIXI from 'pixi.js'
+import { preferences } from '$lib/preferences';
 
   // Props
   export let bpms: Map<number, number>
@@ -51,7 +50,7 @@
 
       // Draw BPM LINES
       graphics.moveTo(MARGIN, newY)
-      graphics.lineTo(MARGIN + LANE_AREA_WIDTH, newY)
+      graphics.lineTo(MARGIN + position.laneAreaWidth, newY)
 
       // Draw BPM Texts
       const text = graphics.addChild(new PIXI.BitmapText(`♩=${bpm}`, {
@@ -60,7 +59,7 @@
       }))
       text.anchor.set(0.5, 0.5)
 
-      text.setTransform(MARGIN + LANE_AREA_WIDTH + LANE_WIDTH + TEXT_MARGIN, newY)
+      text.setTransform(MARGIN + position.laneAreaWidth + $preferences.laneWidth + TEXT_MARGIN, newY)
     })
 
     graphics.lineStyle(1, COLORS.COLOR_TIME_SIGNATURE, 0.95)
@@ -74,7 +73,7 @@
  
       // Draw Time Signature LINES
       graphics.moveTo(MARGIN, newY)
-      graphics.lineTo(MARGIN + LANE_AREA_WIDTH, newY)
+      graphics.lineTo(MARGIN + position.laneAreaWidth, newY)
       // Draw Time Signature Texts
       const text = graphics.addChild(new PIXI.BitmapText(`${beatPerMeasure}/${beatLength}`, {
         tint: COLORS.COLOR_TIME_SIGNATURE,

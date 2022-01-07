@@ -13,7 +13,7 @@
   const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Constants
-  import { LANE_AREA_WIDTH, MARGIN, Z_INDEX } from '$lib/consts'
+  import { MARGIN, Z_INDEX } from '$lib/consts'
   const SKILL_GAP = 5
   const TEXTURE = PIXI.Texture.from(skillPNG)
 
@@ -38,7 +38,7 @@
       sprite.scale.set(0.5)
       sprite.anchor.set(0, 0.5)
       sprite.zIndex = Z_INDEX.GAMESCRIPT
-      sprite.x = MARGIN + LANE_AREA_WIDTH + SKILL_GAP
+      sprite.x = MARGIN + position.laneAreaWidth + SKILL_GAP
       sprite.y = position.calcY(skill)
       mainContainer.addChild(sprite)
     })

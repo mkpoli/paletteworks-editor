@@ -1,6 +1,6 @@
 <script lang="ts">
   // Constants
-  import { COLORS, LANE_WIDTH, NOTE_HEIGHT, Z_INDEX } from '$lib/consts'
+  import { COLORS, NOTE_HEIGHT, Z_INDEX } from '$lib/consts'
   import { MOUSE_BUTTON } from '$lib/control/pointer'
 
   // Functions
@@ -22,7 +22,7 @@
   $: noteHeight = 0.3 * NOTE_HEIGHT * $preferences.noteHeight
   $: rect = new PIXI.Rectangle(
     $position.calcX(lane) - marginX, $position.calcY(tick) - 0.5 * noteHeight,
-    width * LANE_WIDTH + 2 * marginX, noteHeight
+    width * $preferences.laneWidth + 2 * marginX, noteHeight
   )
 
   // Stores

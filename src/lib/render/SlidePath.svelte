@@ -3,7 +3,8 @@
 
   import { createEventDispatcher, getContext, onDestroy, onMount } from 'svelte'
 
-  import { LANE_WIDTH, COLORS, Z_INDEX } from '$lib/consts'
+  import { COLORS, Z_INDEX } from '$lib/consts'
+  import { preferences } from '$lib/preferences'
   import { position } from '$lib/position'
 
   import type { IEase, SlideNote } from '$lib/score/beatmap'
@@ -66,12 +67,12 @@
     slideNotes.pairwise().forEach(([origin, target]) => {
       const origin_x_left = $position.calcX(origin.lane) + SHRINK_WIDTH
       const origin_x_right =
-        $position.calcX(origin.lane) + origin.width * LANE_WIDTH - SHRINK_WIDTH
+        $position.calcX(origin.lane) + origin.width * $preferences.laneWidth - SHRINK_WIDTH
       const origin_y = $position.calcY(origin.tick)
 
       const target_x_left = $position.calcX(target.lane) + SHRINK_WIDTH
       const target_x_right =
-        $position.calcX(target.lane) + target.width * LANE_WIDTH - SHRINK_WIDTH
+        $position.calcX(target.lane) + target.width * $preferences.laneWidth - SHRINK_WIDTH
       const target_y = $position.calcY(target.tick)
 
       const STEPS = Math.ceil((origin_y - target_y) / 10)
