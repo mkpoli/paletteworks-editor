@@ -80,55 +80,76 @@
       const points = []
       const uvs = []
 
+      const SIDE_WIDTH = 7
+      
       if ((origin as IEase).easeType) {
         for (let i = 0; i < STEPS; i++) {
+          const percentage = i / STEPS
           const xL = lerp(
             target_x_left,
             origin_x_left,
             ((origin as IEase).easeType === 'easeIn' ? easeOutQuad : easeInQuad)(
-              i / STEPS
+              percentage
             )
           )
           const xR = lerp(
             target_x_right,
             origin_x_right,
             ((origin as IEase).easeType === 'easeIn' ? easeOutQuad: easeInQuad)(
-              i / STEPS
+              percentage
             )
           )
-          const y = lerp(target_y, origin_y, i / STEPS)
-          points.push(xL, y, xR, y)
-          uvs.push(SIDE_RATIO, i / STEPS, 1 - SIDE_RATIO, i / STEPS)
+          
+
+          const y = lerp(target_y, origin_y, percentage)
+          points.push(xL - SIDE_WIDTH, y, xL, y, xR, y, xR + SIDE_WIDTH, y)
+          uvs.push(0, percentage, SIDE_RATIO, percentage, 1 - SIDE_RATIO, percentage, 1, percentage)
         }
       }
 
       const plane = new PIXI.SimplePlane(
         critical ? TEXTURES['path_critical.png'] : TEXTURES['path.png'],
-        2,
+        4,
         (origin as IEase).easeType ? STEPS + 2 : 2
       )
       plane.geometry
         .getBuffer('aVertexPosition')
         .update([
+          target_x_left - SIDE_WIDTH,
+          target_y,
           target_x_left,
           target_y,
           target_x_right,
           target_y,
+          target_x_right + SIDE_WIDTH,
+          target_y,
           ...points,
+          origin_x_left - SIDE_WIDTH,
+          origin_y,
           origin_x_left,
           origin_y,
           origin_x_right,
           origin_y,
+          origin_x_right + SIDE_WIDTH,
+          origin_y,
         ])
       plane.geometry.getBuffer('aTextureCoord').update([
+        0,
+        0,
         SIDE_RATIO,
         0,
         1 - SIDE_RATIO,
         0,
+        1,
+        0,
         ...uvs,
+        0,
+        1,
         SIDE_RATIO,
         1,
         1 - SIDE_RATIO,
+        1,
+        1,
         1,
       ])
       planeContainer.addChild(plane)
