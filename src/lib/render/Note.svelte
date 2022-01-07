@@ -3,6 +3,7 @@
   import { getContext, onDestroy, onMount } from "svelte"
   import { position } from '$lib/position'
   import { preferences } from '$lib/preferences'
+  import { NotePlane } from './note'
 
   import type PIXI from 'pixi.js'
   import type { Flick, Type } from '$lib/score/beatmap'
@@ -32,16 +33,20 @@
   const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Variables
-  let instance: PIXI.NineSlicePlane
+  // let instance: PIXI.NineSlicePlane
+  let instance: NotePlane
 
+  let colorMatrixFilter: InstanceType<typeof PIXI.filters.ColorMatrixFilter>
+  let alphaFilter: InstanceType<typeof PIXI.filters.AlphaFilter>
   onMount(() => {
     const texture = TEXTURES[NOTE_TEXTURE[type]]
-    instance = new PIXI.NineSlicePlane(
-      texture,
-      100, 20, 100, 20
-    )
-    instance.scale.x = 0.25
-    instance.scale.y = 1
+    instance = new NotePlane(texture)
+
+    colorMatrixFilter = new PIXI.filters.ColorMatrixFilter()
+    
+    alphaFilter = new PIXI.filters.AlphaFilter()
+
+    instance.filters = [colorMatrixFilter, alphaFilter]
     instance.zIndex = floating ? Z_INDEX.FLOATING_NOTE : Z_INDEX.NOTE
     instance.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
     mainContainer.addChild(instance)
@@ -53,9 +58,14 @@
   
   $: x = $position.calcMidX(lane, width)
   $: y = $position.calcY(tick)
-  $: rawWidth = width * 123 + 100
-  $: height = $preferences.noteHeight * NOTE_HEIGHT
+  $: rawWidth = width * $position.laneWidth
+  $: height = $preferences.noteHeight * 30
   $: type = calcType(critical, flick, slide)
+  $: if (instance) instance.update(x, y, rawWidth, height)
+  $: if (instance) instance.texture = TEXTURES[NOTE_TEXTURE[type]]
+  $: if (instance) colorMatrixFilter.tint(tint)
+  $: if (instance) alphaFilter.alpha = alpha
+  $: if (instance) console.log('width', width, ' vertices', instance.vertices, 'uvcoords', instance.uvCoords)
 
   function calcType(critical: boolean, flick: Flick, slide: boolean): Type {
     return critical
@@ -66,22 +76,12 @@
                 ? 'slide'
                 : 'tap'
   }
-
-  $: if (instance) instance.x = x
-  $: if (instance) instance.y = y
-  $: if (instance) instance.width = rawWidth
-  $: if (instance) instance.pivot.x = rawWidth * 0.5
-  $: if (instance) instance.texture = TEXTURES[NOTE_TEXTURE[type]]
-  $: if (instance) instance.alpha = alpha
-  $: if (instance) instance.tint = tint
-  $: if (instance) instance.height = height
-  $: if (instance) instance.pivot.y = height * 0.5
 </script>
 
 <!-- FLICK ARROW -->
 <Arrow
   x={x}
-  y={y - NOTE_HEIGHT + 15}
+  y={y - NOTE_HEIGHT * $preferences.noteHeight - 10}
   {width}
   critical={type === 'critical'}
   {flick}

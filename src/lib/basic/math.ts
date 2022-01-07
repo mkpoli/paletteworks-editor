@@ -52,3 +52,17 @@ export function easeInQuad(x: number): number {
 export function easeOutQuad(x: number): number {
   return 1 - (1 - x) * (1 - x)
 }
+
+export function cartesianProduct<T>(arr: T[][]): T[][] {
+  if (arr.length === 1) {
+    return arr[0].map(n => [n])
+  }
+  const result: T[][] = []
+  const rest = cartesianProduct(arr.slice(1))
+  for (const n of arr[0]) {
+    for (const r of rest) {
+      result.push([n].concat(r))
+    }
+  }
+  return result
+}

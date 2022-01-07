@@ -19,7 +19,7 @@
   export let note: Note
 
   $: sideMargin = 10 * $preferences.noteHeight
-  $: noteHeight = 0.3 * NOTE_HEIGHT * $preferences.noteHeight
+  $: noteHeight = NOTE_HEIGHT * $preferences.noteHeight
   $: rect = new PIXI.Rectangle(
     $position.calcX(lane) - marginX, $position.calcY(tick) - 0.5 * noteHeight,
     width * $preferences.laneWidth + 2 * marginX, noteHeight

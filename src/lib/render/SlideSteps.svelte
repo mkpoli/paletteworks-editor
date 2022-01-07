@@ -267,7 +267,7 @@
       $position,
       slide,
       stepsVisible,
-      0.3 * NOTE_HEIGHT * $preferences.noteHeight
+      NOTE_HEIGHT * $preferences.noteHeight
     )
   }
   $: if (graphics) {

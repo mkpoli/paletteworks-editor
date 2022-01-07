@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { COLORS, LANE_WIDTH, NOTE_HEIGHT_REAL, Z_INDEX } from '$lib/consts'
+  import { COLORS, NOTE_HEIGHT, Z_INDEX } from '$lib/consts'
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -98,7 +98,9 @@
       n.forEach(([lane, laneR]) => {
         graphics.drawRoundedRect(
           position.calcX(lane) - 0.5 * MARGIN_X,
+          position.calcY(tick) - 0.5 * NOTE_HEIGHT - 0.5 * MARGIN_Y,
           ((laneR ?? lane) - lane + 1) * $preferences.laneWidth + MARGIN_X,
+          NOTE_HEIGHT + MARGIN_Y,
           5
         ) 
       })

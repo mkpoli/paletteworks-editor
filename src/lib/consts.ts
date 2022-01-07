@@ -18,12 +18,11 @@ export const LANE_MIN = 2
 export const LANE_MAX = 13
 export const LANE_SIDE_MAX = LANE_MAX + 1
 export const LANE_COUNT = LANE_COUNT_REAL + 2
-export const LANE_AREA_WIDTH = LANE_WIDTH * LANE_COUNT
 export const LANE_FEVER = 15
 export const LANE_SKILL = 0
 export const MEASURE_HEIGHT = 300
 export const TICK_HEIGHT = 0.15625
-export const MAIN_WIDTH = MARGIN * 2 + LANE_AREA_WIDTH
+export const MAIN_WIDTH = MARGIN * 2 + 30 * LANE_COUNT
 export const SCROLLBAR_WIDTH = 13
 export const CANVAS_MINIMAP_WIDTH = MAIN_WIDTH + 0.5 * MARGIN
 export const CANVAS_WIDTH = CANVAS_MINIMAP_WIDTH + SCROLLBAR_WIDTH
@@ -34,9 +33,7 @@ export const SNAPTO_DEFAULT = 8
 
 export const NOTE_PIVOT = [0.14971751412, 0.5]
 export const NOTE_WIDTH = 43
-export const NOTE_HEIGHT = 55
-
-export const NOTE_HEIGHT_REAL = NOTE_HEIGHT * 0.5
+export const NOTE_HEIGHT = 30
 
 export const DIAMOND_PIVOT = [0.15189873417, 0.5]
 export const DIAMOND_WIDTH = 30
