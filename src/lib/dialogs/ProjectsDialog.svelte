@@ -28,7 +28,7 @@
   import type { Project } from '$lib/database'
 
   let projects: Project[] = []
-  $: projects = ($projectObservable ?? [])
+  $: projects = ($projectObservable as Project[] ?? [])
 
   $: if ($projectObservable) {
     if (projects.length == 0) {

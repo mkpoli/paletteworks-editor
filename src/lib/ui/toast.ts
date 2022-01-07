@@ -27,7 +27,7 @@ export default {
   undo: (mutation: Mutation<unknown>, history: Writable<Mutation<unknown>[]>, button: string, undo: () => void, undone: boolean) => {
     toast.push({
       component: {
-        src: UndoToast as unknown as SvelteComponent,
+        src: UndoToast as unknown as typeof SvelteComponent,
         props: {
           text: mutation.toString(),
           button,

@@ -24,7 +24,7 @@
 
   // Constants
   import { createEventDispatcher, onMount, setContext } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, MARGIN_BOTTOM, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, CANVAS_WIDTH, SCROLLBAR_WIDTH, MAIN_WIDTH } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, CANVAS_WIDTH, SCROLLBAR_WIDTH, MAIN_WIDTH } from '$lib/consts'
 
   // Functions
   import { clamp, snap } from '$lib/basic/math'
@@ -319,7 +319,7 @@
       $pointer = { x, y }
     })
 
-    app.renderer.view.addEventListener('pointermove', (event: PointerEvent) => {
+    app.renderer.view.addEventListener('pointermove', () => {
       if ($pointer.x > MAIN_WIDTH) {
         return
       }
