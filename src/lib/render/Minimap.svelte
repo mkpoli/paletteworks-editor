@@ -3,6 +3,7 @@
   import type PIXI from 'pixi.js'
   
   // Functions
+  import { debounce } from 'throttle-debounce'
   import { getContext, onDestroy, onMount } from 'svelte'
   
   // Contexts
@@ -55,7 +56,7 @@
     app.stage.removeChild(container)
   })
 
-  $: if ($position && container) drawMinimap($position, $scrollY)
+  $: if ($position && container) debounce(1500, () => drawMinimap($position, $scrollY))()
   
   function drawMinimap({ measureHeight, containerHeight }: PositionManager, scrollY: number) {
     container.removeChildren() // Clear container

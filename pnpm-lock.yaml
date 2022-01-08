@@ -7,6 +7,7 @@ specifiers:
   '@sveltejs/adapter-vercel': ^1.0.0-next.36
   '@sveltejs/kit': ^1.0.0-next.218
   '@types/core-js': ^2.5.5
+  '@types/throttle-debounce': ^2.1.0
   '@typescript-eslint/eslint-plugin': ^5.9.0
   '@typescript-eslint/parser': ^5.9.0
   '@zerodevx/svelte-toast': ^0.6.3
@@ -25,6 +26,7 @@ specifiers:
   svelte: ^3.45.0
   svelte-check: ^2.2.11
   svelte-preprocess: ^4.10.1
+  throttle-debounce: ^3.0.1
   tippy.js: ^6.3.7
   tslib: ^2.0.0
   typesafe-i18n: ^2.57.5
@@ -40,6 +42,7 @@ devDependencies:
   '@sveltejs/adapter-vercel': 1.0.0-next.36
   '@sveltejs/kit': 1.0.0-next.218_svelte@3.45.0
   '@types/core-js': 2.5.5
+  '@types/throttle-debounce': 2.1.0
   '@typescript-eslint/eslint-plugin': 5.9.0_bd2fd93dbcc607ad2f21b784bccfe0c8
   '@typescript-eslint/parser': 5.9.0_eslint@8.6.0+typescript@4.5.4
   '@zerodevx/svelte-toast': 0.6.3
@@ -57,6 +60,7 @@ devDependencies:
   svelte: 3.45.0
   svelte-check: 2.2.11_svelte@3.45.0
   svelte-preprocess: 4.10.1_svelte@3.45.0+typescript@4.5.4
+  throttle-debounce: 3.0.1
   tippy.js: 6.3.7
   tslib: 2.3.1
   typesafe-i18n: 2.57.5_typescript@4.5.4
@@ -648,6 +652,10 @@ packages:
     resolution: {integrity: sha512-iZUcRrGuz/Tbg3loODpW7vrQJkUtpY2fFSf4ELqqkApcS2TkZ1msk7ie8iZPB86lDOP8QOTTmuvWjc5S0R9OjQ==}
     dependencies:
       '@types/node': 16.9.4
+    dev: true
+
+  /@types/throttle-debounce/2.1.0:
+    resolution: {integrity: sha512-5eQEtSCoESnh2FsiLTxE121IiE60hnMqcb435fShf4bpLRjEu1Eoekht23y6zXS9Ts3l+Szu3TARnTsA0GkOkQ==}
     dev: true
 
   /@typescript-eslint/eslint-plugin/5.9.0_bd2fd93dbcc607ad2f21b784bccfe0c8:
@@ -2132,6 +2140,11 @@ packages:
 
   /text-table/0.2.0:
     resolution: {integrity: sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=}
+    dev: true
+
+  /throttle-debounce/3.0.1:
+    resolution: {integrity: sha512-dTEWWNu6JmeVXY0ZYoPuH5cRIwc0MeGbJwah9KUNYSJwommQpCzTySTpEe8Gs1J23aeWEuAobe4Ag7EHVt/LOg==}
+    engines: {node: '>=10'}
     dev: true
 
   /tippy.js/6.3.7:
