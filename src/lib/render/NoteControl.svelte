@@ -111,7 +111,7 @@
       const { reference, offset } = $resizingOffsets.get(note)!
       // if ($cursor.laneSide - offset === reference) return
       const [ lane, width ] = calcResized(reference, $cursor.laneSide - offset)
-      console.log({ reference, offset, lane, width, LmO: $cursor.laneSide - offset })
+      // console.log({ reference, offset, lane, width, LmO: $cursor.laneSide - offset })
       $resizingTargets.set(note, { lane, width })
     }
   }

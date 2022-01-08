@@ -64,8 +64,6 @@ export function dump(metadata: Meta, score: Score, comment: string) {
   })
   lines.push(``)
 
-  console.log('dumping score', score)
-
   let accumulatedTicks = 0
   const barLengthsInTicks = barLengths.map(({ measure, value }, ind, arr) => {
     const { measure: nextMeasure } = arr[ind + 1] ?? [Infinity]

@@ -50,7 +50,6 @@
   let shortcutKey: string | undefined
   let lastShortcut: string | undefined
   const handle = (event: KeyboardEvent) => {
-    console.log('handling', menuInfo)
     if (menuInfo.opened) {
       event.preventDefault()
       element.click()

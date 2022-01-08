@@ -25,7 +25,6 @@
   export let opened: boolean
   let library: Item[] = []
   let loading: boolean = false
-  $: console.log(library)
 </script>
 
 <Modal bind:opened on:opened={async () => {

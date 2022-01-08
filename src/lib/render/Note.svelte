@@ -65,7 +65,6 @@
   $: if (instance) instance.texture = TEXTURES[NOTE_TEXTURE[type]]
   $: if (instance) colorMatrixFilter.tint(tint)
   $: if (instance) alphaFilter.alpha = alpha
-  $: if (instance) console.log('width', width, ' vertices', instance.vertices, 'uvcoords', instance.uvCoords)
 
   function calcType(critical: boolean, flick: Flick, slide: boolean): Type {
     return critical

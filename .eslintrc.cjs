@@ -22,6 +22,7 @@ module.exports = {
 		'@typescript-eslint/no-non-null-assertion': 'off',
 		"no-restricted-globals": ["error", "closed", "event", "fdescribe", "name", "length", "location", "parent", "top"],
 		'no-redeclare': 'warn',
-		'no-import-assign': 'warn'
+		'no-import-assign': 'warn',
+		'no-console': ['error', { "allow": ["warn", "error"] }],
 	}
 };

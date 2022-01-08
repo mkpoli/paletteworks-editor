@@ -76,7 +76,6 @@
       event.stopPropagation()
 
       const elements = menuInfo.items.map(({ element }) => element)
-      console.log(elements)
       switch (handler.key) {
         case 'up':
           elements.rotatePrev(document.activeElement as HTMLButtonElement | HTMLAnchorElement).focus()
