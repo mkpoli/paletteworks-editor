@@ -1,54 +1,87 @@
 <script lang="ts">
   // Types
   import type PIXI from 'pixi.js'
-  
+
   // Functions
-  import { debounce } from 'throttle-debounce'
-  import { getContext, onDestroy, onMount } from 'svelte'
-  
+  import { getContext, onDestroy, onMount, createEventDispatcher, tick } from 'svelte'
+  const dispatch = createEventDispatcher<{
+    scroll: number  
+  }>()
+
   // Contexts
   const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
-  const mainContainer = getContext<PIXI.Container>('mainContainer')
-        
+
   // Stores
-  import { position, PositionManager } from '$lib/position'
+  import { position, type PositionManager } from '$lib/position'
   import { scrollY } from '$lib/editing/scrolling'
-
-  // Variables
-  let container: PIXI.Container
-
-  // Events
-  // const dispatch = createEventDispatcher<{
-  //   scrollTo: number,
-  // }>()
 
   // Props
   export let maxMeasure: number
+  export let singles: Single[]
+  export let slides: Slide[]
+  export let timeSignatures: Map<number, [number, number]>
+  export let maxTick: number
+
+  // Variables
+  let container: PIXI.Container
+  let instance: MinimapRenderer
 
   // Constants
-  import { CANVAS_MINIMAP_WIDTH, MAIN_WIDTH, MARGIN_BOTTOM, Z_INDEX } from '$lib/consts'
-  const MINIMAP_RESOLUTION = 0.15
+  import {
+    CANVAS_MINIMAP_WIDTH,
+    COLORS,
+    MAIN_WIDTH,
+    MARGIN,
+    MARGIN_BOTTOM,
+    TICK_PER_BEAT,
+    TICK_PER_MEASURE,
+    Z_INDEX,
+  } from '$lib/consts'
+  import {
+    calcType,
+    IDirectional,
+    IEase,
+    SlideNote,
+    type Note,
+    type Single,
+    type Slide,
+    type Type,
+  } from '$lib/score/beatmap'
+
+  // Functions
+  import { preferences } from '$lib/preferences'
+  import { easeInQuad, easeOutQuad, lerp } from '$lib/basic/math'
+  import { calcNoteHeight } from './note'
+
+  const MINIMAP_RESOLUTION = 0.2
   $: minimapRect = new PIXI.Rectangle(
     CANVAS_MINIMAP_WIDTH - MAIN_WIDTH * MINIMAP_RESOLUTION,
     0,
     MAIN_WIDTH * MINIMAP_RESOLUTION,
     0.5 * $position.containerHeight
   )
-  $: deltaScroll = 0.95 * $scrollY
 
   onMount(() => {
     container = new PIXI.Container()
-    container.zIndex = Z_INDEX.MINIMAP
-    container.hitArea = minimapRect
+  
     container.interactive = true
-/*     container.addEventListener('click', (event) => {
-      // dispatch('scrollTo', minimapRect.bottom - (event.global.y + 0.5 * $position.containerHeight * MINIMAP_RESOLUTION) / MINIMAP_RESOLUTION)
-      // dispatch('scrollTo', minimapRect.bottom - MINIMAP_RESOLUTION * (event.global.y + deltaScroll) - $scrollY)
-      // dispatch('scrollTo', - ((0.5 * $position.containerHeight - event.global.y) / MINIMAP_RESOLUTION - $position.containerHeight) / 0.95)
-      dispatch('scrollTo', (event.global.y - minimapRect.bottom) / MINIMAP_RESOLUTION + $position.containerHeight - 0.05 * $scrollY)
-      // console.log('clicked at (', event.global.x, event.global.y, ')')
-    }) */
+    container.hitArea = minimapRect
+    container.zIndex = Z_INDEX.MINIMAP
+    container.interactive = true
+    container.addEventListener('click', (event) => {
+      const tick = $position.calcRawTick2((event.global.y - instance.y) / MINIMAP_RESOLUTION + $scrollY)
+      console.log({tick})
+      dispatch('scroll', tick)
+    })
+
+    container.addEventListener('pointermove', (event) => {
+      const tick = $position.calcRawTick2((event.global.y - instance.y) / MINIMAP_RESOLUTION + $scrollY)
+    })
+
+    instance = new MinimapRenderer()
+    container.addChild(instance)
+    
     app.stage.addChild(container)
   })
 
@@ -56,87 +89,215 @@
     app.stage.removeChild(container)
   })
 
-  $: if ($position && container) debounce(1500, () => drawMinimap($position, $scrollY))()
-  
-  function drawMinimap({ measureHeight, containerHeight }: PositionManager, scrollY: number) {
-    container.removeChildren() // Clear container
+  class MinimapNoteRenderer extends PIXI.Graphics {
+    drawArrow(position: PositionManager, note: Note & IDirectional) {
+      const x = position.calcMidX(note.lane, note.width)
+      const y = position.calcY(note.tick) - calcNoteHeight() / 2
+      this.lineStyle(15, 'critical' in note && note.critical ? 0xf8be3a : 0xee7f9e)
 
-    const fullHeight = MARGIN_BOTTOM + maxMeasure * measureHeight + 0.5 * measureHeight - containerHeight
-    const rows = Math.ceil(fullHeight / containerHeight)
+      switch (note.flick) {
+        case 'left':
+          this.moveTo(x - 25, y - 5)
+          this.lineTo(x - 10, y - 30)
+          this.lineTo(x + 25, y - 15)
+          break
+        case 'right':
+          this.moveTo(x - 25, y - 15)
+          this.lineTo(x + 10, y - 30)
+          this.lineTo(x + 25, y - 5)
+          break
+        case 'middle':
+          this.moveTo(x - 25, y - 10)
+          this.lineTo(x, y - 30)
+          this.lineTo(x + 25, y - 10)
+          break
+      }
+    }
 
-    const screenArea = new PIXI.Graphics()
-    screenArea.beginFill(0xffffff, 0.1)
-    screenArea.drawRect(
-      minimapRect.x,
-      minimapRect.bottom - (containerHeight - scrollY) * MINIMAP_RESOLUTION - deltaScroll * MINIMAP_RESOLUTION,
-      minimapRect.width,
-      containerHeight * MINIMAP_RESOLUTION
-    )
-    screenArea.endFill()
-    container.addChild(screenArea)
+    drawNote(position: PositionManager, note: Note, type: Type) {
+      switch (type) {
+        case 'tap':
+          this.beginFill(0xe6edff)
+          this.lineStyle(6, 0x8494f6)
+          break
+        case 'critical':
+          this.beginFill(0xfffccc)
+          this.lineStyle(6, 0xfeb94b)
+          break
+        case 'flick':
+          this.beginFill(0xffeef2)
+          this.lineStyle(6, 0xf89cab)
+          break
+        case 'slide':
+          this.beginFill(0xdafdf1)
+          this.lineStyle(6, 0x5be29d)
+          break
+      }
 
-    // 0.5 * containerHeight - i * containerHeight * MINIMAP_RESOLUTION - containerHeight * MINIMAP_RESOLUTION
+      const height = calcNoteHeight()
 
-    for (let i = 0; i < rows; i++) {
-      // const color = getColor(0xFF00A0, i)
-      // const helperGraphics = new PIXI.Graphics()
-      // helperGraphics.lineStyle(2, color)
-      // container.addChild(helperGraphics)
+      this.drawRoundedRect(
+        position.calcX(note.lane),
+        position.calcY(note.tick) - height / 2,
+        $preferences.laneWidth * note.width,
+        height,
+        10
+      )
+      this.endFill()
 
-      const region = new PIXI.Rectangle(
+      if ('flick' in note && note.flick !== 'no') {
+        this.drawArrow(position, note as Note & IDirectional)
+      }
+    }
+
+    drawPath(notes: SlideNote[], critical: boolean) {
+      notes.pairwise().forEach(([origin, target]) => {
+        const origin_x_left = $position.calcX(origin.lane)
+        const origin_x_right = $position.calcX(origin.lane) + origin.width * $preferences.laneWidth
+        const origin_y = $position.calcY(origin.tick)
+
+        const target_x_left = $position.calcX(target.lane)
+        const target_x_right = $position.calcX(target.lane) + target.width * $preferences.laneWidth
+        const target_y = $position.calcY(target.tick)
+
+        const STEPS = Math.ceil((origin_y - target_y) / 10)
+
+        const pointsL = []
+        const pointsR = []
+
+        if ((origin as IEase).easeType) {
+          for (let i = 1; i < STEPS - 1; i++) {
+            const percentage = i / STEPS
+            const xL = lerp(
+              target_x_left,
+              origin_x_left,
+              ((origin as IEase).easeType === 'easeIn' ? easeOutQuad : easeInQuad)(percentage)
+            )
+            const xR = lerp(
+              target_x_right,
+              origin_x_right,
+              ((origin as IEase).easeType === 'easeIn' ? easeOutQuad : easeInQuad)(percentage)
+            )
+            const y = lerp(target_y, origin_y, percentage)
+            pointsL.push([xL, y])
+            pointsR.push([xR, y])
+          }
+        }
+
+        if (critical) {
+          this.beginFill(COLORS.COLOR_SLIDE_PATH_CRITICAL, COLORS.ALPHA_SLIDE_PATH)
+        } else {
+          this.beginFill(COLORS.COLOR_SLIDE_PATH, COLORS.ALPHA_SLIDE_PATH)
+        }
+        this.lineStyle(0)
+        this.lineTo(target_x_left, target_y)
+        this.moveTo(target_x_right, target_y)
+        for (const [x, y] of pointsR) {
+          this.lineTo(x, y)
+        }
+        this.lineTo(origin_x_right, origin_y)
+        this.lineTo(origin_x_left, origin_y)
+        for (const [x, y] of pointsL.reverse()) {
+          this.lineTo(x, y)
+        }
+        this.lineTo(target_x_left, target_y)
+        this.closePath()
+      })
+    }
+
+    drawNotes(position: PositionManager, singles: Single[], slides: Slide[]) {
+      this.clear()
+      singles.forEach((note: Single) => {
+        const { critical, flick } = note
+        this.drawNote(position, note, calcType(critical, flick, false))
+      })
+      slides.forEach((slide: Slide) => {
+        const { critical, head, tail, steps } = slide
+
+        this.drawPath([head, ...steps.filter((x) => !x.ignored), tail], critical)
+        this.drawNote(position, head, calcType(critical, 'no', true))
+        this.drawNote(position, tail, calcType(critical, tail.flick, true))
+      })
+    }
+  }
+
+  class MinimapRenderer extends PIXI.Container {
+    notes: MinimapNoteRenderer
+    grid: PIXI.Graphics
+    screenArea: PIXI.Graphics
+    constructor() {
+      super()
+
+      this.x = CANVAS_MINIMAP_WIDTH - MAIN_WIDTH * MINIMAP_RESOLUTION
+      this.scale.x = MINIMAP_RESOLUTION
+      this.scale.y = MINIMAP_RESOLUTION
+
+      const mask = new PIXI.Graphics()
+      mask.beginFill(0xffffff)
+      mask.drawRect(minimapRect.x, minimapRect.y, minimapRect.width, minimapRect.height)
+      this.mask = mask
+
+      this.screenArea = new PIXI.Graphics()
+      this.addChild(this.screenArea)
+
+
+      this.notes = new MinimapNoteRenderer()
+      this.addChild(this.notes)
+
+      this.grid = new PIXI.Graphics()
+      this.addChild(this.grid)
+    }
+
+    drawScreenArea(position: PositionManager, scrollY: number) {
+      this.screenArea.clear()
+      this.screenArea.beginFill(0xffffff, 0.1)
+      this.screenArea.drawRect(
         0,
-        - i * containerHeight - scrollY,
+        scrollY,
         MAIN_WIDTH,
-        containerHeight
+        position.containerHeight
       )
-      // helperGraphics.drawRoundedRect(
-      //   region.x + 15,
-      //   region.y - scrollY,
-      //   region.width - 30,
-      //   region.height,
-      //   5
-      // )
+      this.screenArea.endFill()
+    }
 
-      const section = new PIXI.Rectangle(
-        minimapRect.x,
-        minimapRect.bottom - 
-          MINIMAP_RESOLUTION * ((i + 1) * containerHeight + deltaScroll),
-        minimapRect.width,
-        containerHeight * MINIMAP_RESOLUTION
-      )
-      // helperGraphics.drawRect(
-      //   section.x,
-      //   section.y,
-      //   minimapRect.width,
-      //   containerHeight * MINIMAP_RESOLUTION,
-      // )
+    drawGrid(position: PositionManager) {
+      this.grid.clear()
+      // Draw beat / measures
+      let accumulatedTicks = 0;
+      [...timeSignatures].forEach(([measure, [p, q]], ind, arr) => {
+        const beatsPerMeasure = (p / q) * 4
 
-      if (section.top <= minimapRect.bottom && section.bottom >= 0) {
-        const renderTexture = app.renderer.generateTexture(mainContainer,  {
-          resolution: MINIMAP_RESOLUTION,
-          scaleMode: PIXI.SCALE_MODES.NEAREST,
-          region,
-          multisample: PIXI.MSAA_QUALITY.HIGH
-        })
-      
-        const sprite = new PIXI.Sprite()
-        sprite.x = section.x
-        sprite.y = section.y
-        sprite.width = section.width
-        sprite.height = section.height
-        sprite.texture = renderTexture
-        container.addChild(sprite)
-        
-        const mask = new PIXI.Graphics()
-        mask.beginFill(0xFFFFFF)
-        mask.drawRect(
-          minimapRect.x,
-          minimapRect.y,
-          minimapRect.width,
-          minimapRect.height
-        )
-        sprite.mask = mask
+        const [nextMeasure] = arr[ind + 1] ?? [maxMeasure + 1]
+        const startTick = accumulatedTicks
+        accumulatedTicks += (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT
+
+        const maxT = maxTick - startTick
+
+        for (let tick = 0; tick < (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT; tick++) {
+          const y = position.calcY(startTick + tick)
+          if (tick % (beatsPerMeasure * TICK_PER_BEAT) === 0) {
+            this.grid.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
+            this.grid.moveTo(MARGIN, y)
+            this.grid.lineTo(MARGIN + position.laneAreaWidth, y)
+          }
+        }
+      })
+
+      // Draw lanes
+      for (let i = 1; i < 14; i++) {
+        const x = MARGIN + i * $preferences.laneWidth
+        if (i % 2 !== 0) {
+          this.grid.lineStyle(2, COLORS.COLOR_LANE_PRIMARY, 1, 0.5)
+          this.grid.moveTo(x, position.calcY(0) + MARGIN_BOTTOM)
+          this.grid.lineTo(x, position.calcY(maxMeasure * TICK_PER_MEASURE) - MARGIN_BOTTOM)
+        }
       }
     }
   }
+
+  $: if (instance) instance.notes.drawNotes($position, singles, slides)
+  $: if (instance) instance.drawGrid($position)
+  $: if (instance) instance.pivot.y = $scrollY - MARGIN_BOTTOM + 30
+  $: if (instance) instance.drawScreenArea($position, $scrollY)
+  $: if (instance) instance.y = $position.containerHeight / 8 - 0.01 * $scrollY * 1 / $position.zoom
 </script>

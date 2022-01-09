@@ -6,7 +6,7 @@
   import { NotePlane } from './note'
 
   import type PIXI from 'pixi.js'
-  import type { Flick, Type } from '$lib/score/beatmap'
+  import { calcType, type Flick, type Type } from '$lib/score/beatmap'
 
   export let tick: number
   export let lane: number
@@ -65,16 +65,6 @@
   $: if (instance) instance.texture = TEXTURES[NOTE_TEXTURE[type]]
   $: if (instance) colorMatrixFilter.tint(tint)
   $: if (instance) alphaFilter.alpha = alpha
-
-  function calcType(critical: boolean, flick: Flick, slide: boolean): Type {
-    return critical
-            ? 'critical'
-            : flick !== 'no'
-              ? 'flick'
-              : slide
-                ? 'slide'
-                : 'tap'
-  }
 </script>
 
 <!-- FLICK ARROW -->

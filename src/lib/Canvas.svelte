@@ -847,7 +847,14 @@
     <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
     <DraggingSlide {draggingSlide} />
     {#if $preferences.minimapEnabled}
-      <Minimap {maxMeasure} on:scrollTo={({ detail }) => { $scrollY = detail }} />
+      <Minimap
+        on:scroll
+        {maxMeasure}
+        {singles}
+        {slides}
+        {timeSignatures}
+        {maxTick}
+      />
     {/if}
     <Scrollbar
       {currentTick}

@@ -93,5 +93,14 @@ export type Beatmap = {
 }
 
 export type Type = 'tap' | 'critical' | 'flick' | 'slide'
+export function calcType(critical: boolean, flick: Flick, slide: boolean): Type {
+  return critical
+          ? 'critical'
+          : flick !== 'no'
+            ? 'flick'
+            : slide
+              ? 'slide'
+              : 'tap'
+}
 
 export type Note = Single | SlideNote

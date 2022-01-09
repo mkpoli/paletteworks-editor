@@ -17,6 +17,13 @@ const SLICE_B = 80
 const SLICE_RATIO_T = SLICE_T / TEXTURE_HEIGHT
 const SLICE_RATIO_B = SLICE_B / TEXTURE_HEIGHT
 
+import { get } from 'svelte/store'
+import { preferences } from '$lib/preferences'
+
+export function calcNoteHeight(): number {
+  return get(preferences).noteHeight * 30
+}
+
 export class NotePlane extends SimplePlane {
   constructor(texture: Texture<Resource>) {
     super(texture, 6, 6)
