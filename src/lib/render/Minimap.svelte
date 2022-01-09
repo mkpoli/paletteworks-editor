@@ -90,11 +90,17 @@
   })
 
   class MinimapNoteRenderer extends PIXI.Graphics {
+    arrows: (() => void)[] = []
+
+    pushArrow(position: PositionManager, note: Note & IDirectional): void {
+      this.arrows.push(() => this.drawArrow(position, note))
+    }
+
     drawArrow(position: PositionManager, note: Note & IDirectional) {
       const x = position.calcMidX(note.lane, note.width)
       const y = position.calcY(note.tick) - calcNoteHeight() / 2
       this.lineStyle(15, 'critical' in note && note.critical ? 0xf8be3a : 0xee7f9e)
-
+  
       switch (note.flick) {
         case 'left':
           this.moveTo(x - 25, y - 5)
@@ -146,7 +152,7 @@
       this.endFill()
 
       if ('flick' in note && note.flick !== 'no') {
-        this.drawArrow(position, note as Note & IDirectional)
+        this.pushArrow(position, note as Note & IDirectional)
       }
     }
 
@@ -207,6 +213,7 @@
 
     drawNotes(position: PositionManager, singles: Single[], slides: Slide[]) {
       this.clear()
+      this.arrows = []
       singles.forEach((note: Single) => {
         const { critical, flick } = note
         this.drawNote(position, note, calcType(critical, flick, false))
@@ -218,6 +225,7 @@
         this.drawNote(position, head, calcType(critical, 'no', true))
         this.drawNote(position, tail, calcType(critical, tail.flick, true))
       })
+      this.arrows.forEach(arrow => arrow())
     }
   }
 
