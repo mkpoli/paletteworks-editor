@@ -14,6 +14,13 @@
   // Props
   export let mode: Mode
   export let currentMode: Mode
+
+  // Variables
+  let button: HTMLButtonElement
+
+  $: if (button && currentMode !== mode) {
+    button.blur()
+  }
 </script>
 
 <Tooltip
@@ -23,7 +30,7 @@
   class="tool-button"
   keys={[...MODE_SHORTCUTS_NUMERAL[mode], ...MODE_SHORTCUTS[mode]].map((key) => [key])}
 >
-  <button on:click={() => { currentMode = mode}} class:current={currentMode === mode}>
+  <button on:click={(event) => { currentMode = mode }} class:current={currentMode === mode} bind:this={button}>
     <img src={MODE_TEXTURES[mode]} alt={`${$LL.editor.modes[mode]()} Mode`} />
   </button>
 </Tooltip>
@@ -48,9 +55,15 @@
     transition: transform .2s;
   }
 
-  button:focus,
-  button.current {
+  button:focus {
     outline: none;
+  }
+
+  button:focus-visible {
+    outline: 2px solid #fff;
+  }
+
+  button.current {
     filter: brightness(1.65);
   }
 
