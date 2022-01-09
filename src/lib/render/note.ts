@@ -26,11 +26,11 @@ export function calcNoteHeight(): number {
 
 export class NotePlane extends SimplePlane {
   constructor(texture: Texture<Resource>) {
-    super(texture, 6, 6)
+    super(texture, 4, 4)
 
     this.uvCoords = new Float32Array(cartesianProduct([
-      [0, SIDE_RATIO_X, SLICE_RATIO_X, 1 - SLICE_RATIO_X, 1 - SIDE_RATIO_X, 1],
-      [0, SIDE_RATIO_Y, SLICE_RATIO_T, 1 - SLICE_RATIO_B, 1 - SIDE_RATIO_Y, 1]
+      [0, SLICE_RATIO_X, 1 - SLICE_RATIO_X, 1],
+      [0, SLICE_RATIO_T, 1 - SLICE_RATIO_B, 1]
     ]).flat())
   }
 
@@ -77,8 +77,8 @@ export class NotePlane extends SimplePlane {
     const middleB = sliceB - sideY
 
     this.vertices = new Float32Array(cartesianProduct([
-      [borderL - sideX, borderL, borderL + middleX, borderR - middleX, borderR, borderR + sideX],
-      [borderT - sideY, borderT, borderT + middleT, borderB - middleB, borderB, borderB + sideY]
+      [borderL - sideX, borderL + middleX, borderR - middleX, borderR + sideX],
+      [borderT - sideY, borderT + middleT, borderB - middleB, borderB + sideY]
     ]).flat())
   }
 }
