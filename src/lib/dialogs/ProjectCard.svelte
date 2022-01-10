@@ -25,7 +25,7 @@
   
   let menu: HTMLDivElement
 
-  export let container: HTMLDivElement
+  export let container: HTMLDivElement | undefined = undefined
 
   function renamed() {
     renaming = false

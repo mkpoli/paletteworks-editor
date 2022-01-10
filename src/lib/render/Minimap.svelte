@@ -71,7 +71,6 @@
     container.interactive = true
     container.addEventListener('click', (event) => {
       const tick = $position.calcRawTick2((event.global.y - instance.y) / MINIMAP_RESOLUTION + $scrollY)
-      console.log({tick})
       dispatch('scroll', tick)
     })
 

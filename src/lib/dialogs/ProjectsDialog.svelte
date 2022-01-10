@@ -73,7 +73,7 @@
 
   let selected: Project | null = null
 
-  let searchKeyword: string
+  let searchKeyword: string = ""
 
   const elements: HTMLDivElement[] = []
 

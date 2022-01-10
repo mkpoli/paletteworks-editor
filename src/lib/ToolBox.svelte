@@ -26,7 +26,7 @@
 
   export let currentMode: Mode
   export let snapTo: SnapTo
-  export let openMainMenu: () => void
+  export let openMainMenu: (() => void) | undefined = undefined
 
   let menu: HTMLDivElement
   import { KEYBOARD_SHORTCUTS } from '$lib/control/keyboard'

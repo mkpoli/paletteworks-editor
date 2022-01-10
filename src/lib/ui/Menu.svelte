@@ -10,7 +10,7 @@
 </script>
 
 <script lang="ts">
-  export let menu: HTMLDivElement
+  export let menu: HTMLDivElement | undefined = undefined
   import { setContext } from 'svelte'
   const menuInfo: MenuInfo = {
     opened: false,
