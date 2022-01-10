@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@iconify/svelte': ^2.1.0
   '@mszu/pixi-ssr-shim': ^1.0.1
+  '@pixi-essentials/cull': ^1.1.0
   '@pixi/events': 6.1.3
   '@sveltejs/adapter-vercel': ^1.0.0-next.36
   '@sveltejs/kit': ^1.0.0-next.218
@@ -38,6 +39,7 @@ dependencies:
 devDependencies:
   '@iconify/svelte': 2.1.0
   '@mszu/pixi-ssr-shim': 1.0.1
+  '@pixi-essentials/cull': 1.1.0
   '@pixi/events': 6.1.3
   '@sveltejs/adapter-vercel': 1.0.0-next.36
   '@sveltejs/kit': 1.0.0-next.218_svelte@3.45.0
@@ -129,6 +131,13 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
+    dev: true
+
+  /@pixi-essentials/cull/1.1.0:
+    resolution: {integrity: sha512-/IrobYs+ECZoYxGnmCbUBIcye0XX9ZRmeO9SLtOGI0DtsF+/r13OrGX42XUo8L76LMWurv78b5LdYxX33NrUNQ==}
+    peerDependencies:
+      '@pixi/display': ^6.0.0
+      '@pixi/math': ^6.0.0
     dev: true
 
   /@pixi/accessibility/6.2.1_0d73c62036669f541116e605da87f869:
