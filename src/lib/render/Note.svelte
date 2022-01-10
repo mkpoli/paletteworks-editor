@@ -30,7 +30,6 @@
   let sprite: PIXI.Sprite
 
   onMount(() => {
-    console.log('rendering note')
     sprite = new PIXI.Sprite()
     sprite.zIndex = floating ? Z_INDEX.FLOATING_NOTE : Z_INDEX.NOTE
     sprite.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
