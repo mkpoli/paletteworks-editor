@@ -92,7 +92,8 @@ export type Beatmap = {
   score: Score
 }
 
-export type Type = 'tap' | 'critical' | 'flick' | 'slide'
+export const NOTE_TYPES = ['tap', 'critical', 'flick', 'slide'] as const
+export type Type = typeof NOTE_TYPES[number]
 export function calcType(critical: boolean, flick: Flick, slide: boolean): Type {
   return critical
           ? 'critical'
