@@ -49,7 +49,7 @@
         <label for="note-height">{$LL.editor.preferences.laneWidth()}<span class="value">{preferences.laneWidth}</span></label>
         <input type="range" name="note-height" min=10 max=35 step=1 bind:value={preferences.laneWidth}/>
         <label for="note-height">{$LL.editor.preferences.noteHeight()}<span class="value">{preferences.noteHeight}x</span></label>
-        <input type="range" name="note-height" min=0.5 max=1 step=0.01 bind:value={preferences.noteHeight}/>
+        <input type="range" name="note-height" min=0.5 max=1.25 step=0.01 bind:value={preferences.noteHeight}/>
         <div class="toggles">
           <input type="checkbox" name="minimap-enabled" bind:checked={preferences.minimapEnabled}/>
           <label for="minimap-enabled">{$LL.editor.preferences.minimapEnabled()}</label>

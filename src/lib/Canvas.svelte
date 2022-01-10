@@ -4,7 +4,7 @@
   import type { Mode } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
 
-  import type {
+  import {
     Single as SingleType,
     Slide as SlideType,
     Note as NoteType,
@@ -12,6 +12,8 @@
     EaseType,
     DiamondType,
     Fever as FeverType,
+    Type,
+    NOTE_TYPES,
   } from '$lib/score/beatmap'
     
   import { hasEaseType, isSlideStep } from '$lib/score/beatmap'
@@ -23,7 +25,7 @@
   import '$lib/basic/collections'
 
   // Constants
-  import { createEventDispatcher, onMount, setContext } from 'svelte'
+  import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
   import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, CANVAS_WIDTH, SCROLLBAR_WIDTH, MAIN_WIDTH } from '$lib/consts'
 
   // Functions
@@ -48,6 +50,7 @@
   import DraggingSlide from '$lib/render/DraggingSlide.svelte'
   import Minimap from '$lib/render/Minimap.svelte'
   import Scrollbar from '$lib/render/Scrollbar.svelte'
+  import { NotePlane } from '$lib/render/note'
 
   // UI Components
   import CanvasContextMenu from '$lib/menus/CanvasContextMenu.svelte'
@@ -81,10 +84,40 @@
   export let fever: FeverType
   export let skills: Set<number>
 
+  // Generate Note Textures
+  const noteTextures = writable<Record<Type, PIXI.Texture[]>>()
+  
+  $: if (resourceLoaded) $noteTextures = generateNoteTextures({ width: $preferences.laneWidth, height: $preferences.noteHeight * 25 })
+  
+  const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+  const NOTE_TEXTURE: Record<Type, string> = {
+    tap: 'noteN.png',
+    critical: 'noteC.png',
+    flick: 'noteF.png',
+    slide: 'noteL.png',
+  }
+
+  function generateNoteTextures(unit: { width: number, height: number}): Record<Type, PIXI.Texture[]> {
+    const textures: Record<Type, PIXI.Texture[]> = {
+      'tap': [],
+      'critical': [],
+      'slide': [],
+      'flick': [],
+    }
+    for (const type of NOTE_TYPES) {
+      for (let i = 1; i <= 12; i++) {
+        textures[type].push(app.renderer.generateTexture(new NotePlane(TEXTURES[NOTE_TEXTURE[type]], unit.width * i, unit.height)))
+      }
+    }
+    return textures
+  }
+
+  // Contexts
   setContext('app', app)
   setContext('PIXI', PIXI)
   setContext('mainContainer', mainContainer)
   setContext('container', app.stage)
+  setContext('noteTextures', noteTextures)
 
   import type { TimeSignatureManager } from './timing';
 
@@ -590,6 +623,7 @@
   import { clipboardOffsets } from './editing/clipboard'
   import { altKey, ctrlKey } from './control/keyboard'
   import PastingNotes from './render/PastingNotes.svelte'
+import { writable } from 'svelte/store';
 </script>
 
 <div

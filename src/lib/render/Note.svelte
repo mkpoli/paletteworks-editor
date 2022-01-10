@@ -3,9 +3,9 @@
   import { getContext, onDestroy, onMount } from "svelte"
   import { position } from '$lib/position'
   import { preferences } from '$lib/preferences'
-  import { NotePlane } from './note'
 
   import type PIXI from 'pixi.js'
+  import type { Writable } from 'svelte/store'
   import { calcType, type Flick, type Type } from '$lib/score/beatmap'
 
   export let tick: number
@@ -20,51 +20,35 @@
 
   import Arrow from '$lib/render/Arrow.svelte'
 
-  const NOTE_TEXTURE: Record<Type, string> = {
-    tap: 'noteN.png',
-    critical: 'noteC.png',
-    flick: 'noteF.png',
-    slide: 'noteL.png',
-  }
 
   // Contexts
-  const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+  const noteTextures = getContext<Writable<Record<Type, PIXI.Texture[]>>>('noteTextures')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
   const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Variables
-  // let instance: PIXI.NineSlicePlane
-  let instance: NotePlane
+  let sprite: PIXI.Sprite
 
-  let colorMatrixFilter: InstanceType<typeof PIXI.filters.ColorMatrixFilter>
-  let alphaFilter: InstanceType<typeof PIXI.filters.AlphaFilter>
   onMount(() => {
-    const texture = TEXTURES[NOTE_TEXTURE[type]]
-    instance = new NotePlane(texture)
-
-    colorMatrixFilter = new PIXI.filters.ColorMatrixFilter()
-    
-    alphaFilter = new PIXI.filters.AlphaFilter()
-
-    instance.filters = [colorMatrixFilter, alphaFilter]
-    instance.zIndex = floating ? Z_INDEX.FLOATING_NOTE : Z_INDEX.NOTE
-    instance.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
-    mainContainer.addChild(instance)
+    console.log('rendering note')
+    sprite = new PIXI.Sprite()
+    sprite.zIndex = floating ? Z_INDEX.FLOATING_NOTE : Z_INDEX.NOTE
+    sprite.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
+    sprite.anchor.set(0.5)
+    mainContainer.addChild(sprite)
   })
 
   onDestroy(() => {
-    mainContainer.removeChild(instance)
+    mainContainer.removeChild(sprite)
   })
   
   $: x = $position.calcMidX(lane, width)
   $: y = $position.calcY(tick)
-  $: rawWidth = width * $position.laneWidth
-  $: height = $preferences.noteHeight * 30
+  $: if (sprite) sprite.position.set(x, y)
   $: type = calcType(critical, flick, slide)
-  $: if (instance) instance.update(x, y, rawWidth, height)
-  $: if (instance) instance.texture = TEXTURES[NOTE_TEXTURE[type]]
-  $: if (instance) colorMatrixFilter.tint(tint)
-  $: if (instance) alphaFilter.alpha = alpha
+  $: if (sprite) sprite.texture = $noteTextures[type][width - 1]
+  $: if (sprite) sprite.tint = tint
+  $: if (sprite) sprite.alpha = alpha
 </script>
 
 <!-- FLICK ARROW -->
