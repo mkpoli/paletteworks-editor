@@ -25,7 +25,6 @@
 
   // Contexts
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
-  const fontLoaded = getContext<Writable<boolean>>('fontLoaded')
   const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Stores
@@ -40,7 +39,7 @@
     mainContainer.addChild(graphics)
   })
 
-  $: if (graphics && $fontLoaded) {
+  $: if (graphics) {
     drawBackground($position, maxMeasure, snapTo, timeSignatures)
   }
 

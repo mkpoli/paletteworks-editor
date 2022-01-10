@@ -201,10 +201,6 @@
   }
 
   // Textures
-  import spritesheet from '$assets/spritesheet.json'
-  import spritesheetImage from '$assets/spritesheet.png'
-  import pathPNG from '$assets/notes/path.png'
-  import pathCriticalPNG from '$assets/notes/path_critical.png'
   import { cursor } from '$lib/position'
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
@@ -215,6 +211,8 @@
   setContext('fontLoaded', fontLoaded)
 
   let mainContainer: PIXI.Container
+
+  let resourceLoaded = false
 
   onMount(async () => {
     // Initialise PIXI.js
@@ -231,26 +229,31 @@
     })
     ;(app.renderer as PIXI.Renderer).addSystem(EventSystem as unknown as PIXI.ISystemConstructor<PIXI.Renderer>, 'events')
 
-    app.loader.add('font', '/fonts/Font.fnt').load(() => {
-      $fontLoaded = true
-    })
+    const loader = new PIXI.Loader()
+    loader
+      .add('font', '/assets/fonts/Font.fnt')
+      .add('spritesheet', '/assets/textures/spritesheet.json')
+      .add('path', '/assets/textures/path.png')
+      .add('path_critical', '/assets/textures/path_critical.png')
+      .load((_, resources) => {
+        const textures = resources.spritesheet.textures
+        if (!textures) {
+          throw new Error('Failed to load texture spritesheet')
+        }
+        for (const texture in textures) {
+          TEXTURES[texture] = textures[texture]
+        }
+        TEXTURES['path.png'] = resources.path.texture!
+        TEXTURES['path_critical.png'] = resources.path_critical.texture!
+        resourceLoaded = true
+      })
 
     mainContainer = new PIXI.Container()
     mainContainer.sortableChildren = true
     app.stage.addChild(mainContainer)
 
+    // TODO:
     app.stage.interactive = true
-    const baseTexture = new PIXI.BaseTexture(spritesheetImage, {})
-    const spritesheetObj = new PIXI.Spritesheet(baseTexture, spritesheet)
-
-    spritesheetObj.parse((textures?: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>) => {
-      Object.entries(textures!).forEach(([name, texture]) => {
-        TEXTURES[name] = texture
-      })
-    });
-
-    TEXTURES['path.png'] = PIXI.Texture.from(pathPNG)
-    TEXTURES['path_critical.png'] = PIXI.Texture.from(pathCriticalPNG)
 
     app.ticker.add(() => {
       if (!paused) {
@@ -890,6 +893,7 @@
     <Canvas
       {PIXI}
       {app}
+      {resourceLoaded}
       {mainContainer}
       {maxTick}
       {maxMeasure}

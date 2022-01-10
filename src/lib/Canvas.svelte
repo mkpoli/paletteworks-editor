@@ -57,6 +57,7 @@
   // Props
   export let app: PIXI.Application
   export let PIXI: typeof import('pixi.js')
+  export let resourceLoaded: boolean
   export let mainContainer: PIXI.Container
   export let currentTick: number
   export let maxTick: number
@@ -598,269 +599,271 @@
   <div
     bind:this={canvasContainer}
   >
-    <!-- PLAYHEAD -->
-    <Playhead
-      bind:currentTick
-      bind:paused
-    />
+    {#if resourceLoaded}
+      <!-- PLAYHEAD -->
+      <Playhead
+        bind:currentTick
+        bind:paused
+      />
 
-    <!-- BACKGROUND -->
-    <Grid
-      {maxMeasure}
-      {maxTick}
-      {snapTo}
-      {timeSignatures}
-    />
-
-    <!-- BPM -->
-    <BPM
-      {bpms}
-      {timeSignatures}
-    />
-
-    <!-- FEVER -->
-    <Fever {fever} />
-
-    <!-- SKILL -->
-    <Skill {skills} />
-  
-    <!-- SINGLE NOTES -->
-    {#each singles as note (note)}
-      {#if $visibility.flicks && note.flick !== 'no' || $visibility.taps && note.flick === 'no' }
-        <Single
-          bind:note
-          on:click={() => {
-            clickedOnNote = true
-            switch (currentMode) {
-              case 'select': {
-                if ($ctrlKey) {
-                  dispatch('select', { notes: [note], overwrite: false })
-                }
-                break
-              }
-              case 'flick': {
-                dispatch('updateflicks', {
-                  notes: $selectedNotes.length ? $selectedNotes : [note],
-                  flip: shiftKey
-                })
-                break
-              }
-              case 'critical': {
-                dispatch('updatecriticals', {
-                  notes: $selectedNotes.length ? $selectedNotes : [note],
-                })
-                return
-              }
-           }
-          }}
-          on:rightclick={(event) => { currentNote = event.detail.note }}
-          on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
-          on:pointerenter={() => { hoveringNote = note }}
-          on:pointerleave={() => { hoveringNote = null }}
-          moving={isLongPress && $moving && $movingNotes.includes(note)}
-          resizing={isLongPress && $resizing && $resizingNotes.includes(note)}
-        />
-      {/if}
-    {/each}
-
-    <!-- SLIDE NOTES -->
-    {#if $visibility.slides}
-      {#each slides as slide (slide)}
-        <Slide
-          bind:slide
-          stepsVisible={$visibility.slidesteps}
-          moving={isLongPress && $moving && ($movingNotes.includes(slide.head) || $movingNotes.includes(slide.tail) || slide.steps.some((step) => $movingNotes.includes(step)))}
-          on:headclick={({ detail: { note } }) => {
-            currentNote = note
-            switch(currentMode) {
-              case 'select': {
-                if ($ctrlKey) {
-                  dispatch('select', { notes: [note], overwrite: false })
-                }
-                break
-              }
-              case 'mid': {
-                if (shiftKey) {
-                  changecurve()
-                }
-                break
-              }
-              case 'flick': {
-                dispatch('updateflicks', {
-                  notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
-                  flip: shiftKey
-                })
-                break
-              }
-              case 'critical': {
-                if ($selectedNotes.length) {
-                  dispatch('updatecriticals', {
-                    notes: $selectedNotes,
-                  })
-                } else {
-                  dispatch('updateslide', {
-                    slide, modification: {
-                      critical: !slide.critical
-                    }
-                  })
-                }
-                break
-              }
-            }
-          }}
-          on:stepclick={({ detail: { note, slide } }) => {
-            switch (currentMode) {
-              case 'select': {
-                if ($ctrlKey) {
-                  dispatch('select', { notes: [note], overwrite: false })
-                }
-                break
-              }
-              case 'flick': {
-                dispatch('updateflicks', {
-                  notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
-                  flip: shiftKey
-                })
-                break
-              }
-              case 'critical': {
-                if ($selectedNotes.length) {
-                  dispatch('updatecriticals', {
-                    notes: $selectedNotes,
-                  })
-                } else {
-                  dispatch('updateslide', {
-                    slide, modification: {
-                      critical: !slide.critical
-                    }
-                  })
-                }
-                break
-              }
-              case 'mid': {
-                currentNote = note
-                if (shiftKey) {
-                  changecurve()
-                } else {
-                  changediamond()
-                }
-                break
-              }
-            }
-          }}
-          on:tailclick={({ detail: { note } }) => {
-            switch (currentMode) {
-              case 'select': {
-                if ($ctrlKey) {
-                  dispatch('select', { notes: [note], overwrite: false })
-                }
-                break
-              }
-              case 'flick': {
-                dispatch('updateflicks', {
-                  notes: $selectedNotes.length ? $selectedNotes : [note],
-                  flip: shiftKey
-                })
-                break
-              }
-              case 'critical': {
-                dispatch('updatecriticals', {
-                  notes: $selectedNotes.length ? $selectedNotes : [note],
-                })            
-                break
-              }
-            }
-          }}
-          on:pathclick={({ detail: { slide }}) => {
-            clickedOnNote = true
-            switch (currentMode) {
-              case 'flick': {
-                dispatch('updateflicks', {
-                  notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
-                  flip: shiftKey
-                })
-                break
-              }
-              case 'critical': {
-                if ($selectedNotes.length) {
-                  dispatch('updatecriticals', {
-                    notes: $selectedNotes,
-                  })
-                } else {
-                  dispatch('updateslide', {
-                    slide, modification: {
-                      critical: !slide.critical
-                    }
-                  })
-                }
-                break
-              }
-              case 'mid': {
-                if ($cursor.tick === slide.tail.tick || $cursor.tick === slide.head.tick) break
-                if (!slide.steps.some(({ tick }) => tick === $cursor.tick)) {
-                  const step = {
-                    lane: $placing.lane,
-                    width: $placing.width,
-                    tick: $cursor.tick,
-                    diamond: true,
-                    easeType: false,
-                    ignored: shiftKey
-                  }
-                  dispatch('updateslide', {
-                    slide, modification: {
-                      steps: [...slide.steps, step].sort(({ tick: a }, { tick: b }) => a - b)
-                    }
-                  })
-                }
-                break
-              }
-            }
-          }}
-          on:rightclick={(event) => { currentNote = event.detail.note }}
-          on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
-          on:pointerenter={({ detail: { note } }) => { hoveringNote = note}}
-          on:pointerleave={() => { hoveringNote = null}}
-        />
-      {/each}
-    {/if}
-
-    <!-- FLOATING ITEMS -->
-    <Floating
-      {bpms}
-      {currentMode}
-      {hoveringNote}
-    />
-
-    <!-- STACKED AREAS -->
-    <NoteError
-      {singles}
-      {slides}
-    />
-
-    <Selection
-      dragging={dragging && currentMode === 'select'}
-      rect={selectRect}
-    />
-
-    <PastingNotes/>
-    <MovingNotes {singles} {slides} moving={isLongPress && $moving} />
-    <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
-    <DraggingSlide {draggingSlide} />
-    {#if $preferences.minimapEnabled}
-      <Minimap
-        on:scroll
+      <!-- BACKGROUND -->
+      <Grid
         {maxMeasure}
+        {maxTick}
+        {snapTo}
+        {timeSignatures}
+      />
+
+      <!-- BPM -->
+      <BPM
+        {bpms}
+        {timeSignatures}
+      />
+
+      <!-- FEVER -->
+      <Fever {fever} />
+
+      <!-- SKILL -->
+      <Skill {skills} />
+    
+      <!-- SINGLE NOTES -->
+      {#each singles as note (note)}
+        {#if $visibility.flicks && note.flick !== 'no' || $visibility.taps && note.flick === 'no' }
+          <Single
+            bind:note
+            on:click={() => {
+              clickedOnNote = true
+              switch (currentMode) {
+                case 'select': {
+                  if ($ctrlKey) {
+                    dispatch('select', { notes: [note], overwrite: false })
+                  }
+                  break
+                }
+                case 'flick': {
+                  dispatch('updateflicks', {
+                    notes: $selectedNotes.length ? $selectedNotes : [note],
+                    flip: shiftKey
+                  })
+                  break
+                }
+                case 'critical': {
+                  dispatch('updatecriticals', {
+                    notes: $selectedNotes.length ? $selectedNotes : [note],
+                  })
+                  return
+                }
+            }
+            }}
+            on:rightclick={(event) => { currentNote = event.detail.note }}
+            on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
+            on:pointerenter={() => { hoveringNote = note }}
+            on:pointerleave={() => { hoveringNote = null }}
+            moving={isLongPress && $moving && $movingNotes.includes(note)}
+            resizing={isLongPress && $resizing && $resizingNotes.includes(note)}
+          />
+        {/if}
+      {/each}
+
+      <!-- SLIDE NOTES -->
+      {#if $visibility.slides}
+        {#each slides as slide (slide)}
+          <Slide
+            bind:slide
+            stepsVisible={$visibility.slidesteps}
+            moving={isLongPress && $moving && ($movingNotes.includes(slide.head) || $movingNotes.includes(slide.tail) || slide.steps.some((step) => $movingNotes.includes(step)))}
+            on:headclick={({ detail: { note } }) => {
+              currentNote = note
+              switch(currentMode) {
+                case 'select': {
+                  if ($ctrlKey) {
+                    dispatch('select', { notes: [note], overwrite: false })
+                  }
+                  break
+                }
+                case 'mid': {
+                  if (shiftKey) {
+                    changecurve()
+                  }
+                  break
+                }
+                case 'flick': {
+                  dispatch('updateflicks', {
+                    notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
+                    flip: shiftKey
+                  })
+                  break
+                }
+                case 'critical': {
+                  if ($selectedNotes.length) {
+                    dispatch('updatecriticals', {
+                      notes: $selectedNotes,
+                    })
+                  } else {
+                    dispatch('updateslide', {
+                      slide, modification: {
+                        critical: !slide.critical
+                      }
+                    })
+                  }
+                  break
+                }
+              }
+            }}
+            on:stepclick={({ detail: { note, slide } }) => {
+              switch (currentMode) {
+                case 'select': {
+                  if ($ctrlKey) {
+                    dispatch('select', { notes: [note], overwrite: false })
+                  }
+                  break
+                }
+                case 'flick': {
+                  dispatch('updateflicks', {
+                    notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
+                    flip: shiftKey
+                  })
+                  break
+                }
+                case 'critical': {
+                  if ($selectedNotes.length) {
+                    dispatch('updatecriticals', {
+                      notes: $selectedNotes,
+                    })
+                  } else {
+                    dispatch('updateslide', {
+                      slide, modification: {
+                        critical: !slide.critical
+                      }
+                    })
+                  }
+                  break
+                }
+                case 'mid': {
+                  currentNote = note
+                  if (shiftKey) {
+                    changecurve()
+                  } else {
+                    changediamond()
+                  }
+                  break
+                }
+              }
+            }}
+            on:tailclick={({ detail: { note } }) => {
+              switch (currentMode) {
+                case 'select': {
+                  if ($ctrlKey) {
+                    dispatch('select', { notes: [note], overwrite: false })
+                  }
+                  break
+                }
+                case 'flick': {
+                  dispatch('updateflicks', {
+                    notes: $selectedNotes.length ? $selectedNotes : [note],
+                    flip: shiftKey
+                  })
+                  break
+                }
+                case 'critical': {
+                  dispatch('updatecriticals', {
+                    notes: $selectedNotes.length ? $selectedNotes : [note],
+                  })
+                  break
+                }
+              }
+            }}
+            on:pathclick={({ detail: { slide }}) => {
+              clickedOnNote = true
+              switch (currentMode) {
+                case 'flick': {
+                  dispatch('updateflicks', {
+                    notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
+                    flip: shiftKey
+                  })
+                  break
+                }
+                case 'critical': {
+                  if ($selectedNotes.length) {
+                    dispatch('updatecriticals', {
+                      notes: $selectedNotes,
+                    })
+                  } else {
+                    dispatch('updateslide', {
+                      slide, modification: {
+                        critical: !slide.critical
+                      }
+                    })
+                  }
+                  break
+                }
+                case 'mid': {
+                  if ($cursor.tick === slide.tail.tick || $cursor.tick === slide.head.tick) break
+                  if (!slide.steps.some(({ tick }) => tick === $cursor.tick)) {
+                    const step = {
+                      lane: $placing.lane,
+                      width: $placing.width,
+                      tick: $cursor.tick,
+                      diamond: true,
+                      easeType: false,
+                      ignored: shiftKey
+                    }
+                    dispatch('updateslide', {
+                      slide, modification: {
+                        steps: [...slide.steps, step].sort(({ tick: a }, { tick: b }) => a - b)
+                      }
+                    })
+                  }
+                  break
+                }
+              }
+            }}
+            on:rightclick={(event) => { currentNote = event.detail.note }}
+            on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
+            on:pointerenter={({ detail: { note } }) => { hoveringNote = note}}
+            on:pointerleave={() => { hoveringNote = null}}
+          />
+        {/each}
+      {/if}
+
+      <!-- FLOATING ITEMS -->
+      <Floating
+        {bpms}
+        {currentMode}
+        {hoveringNote}
+      />
+
+      <!-- STACKED AREAS -->
+      <NoteError
         {singles}
         {slides}
-        {timeSignatures}
+      />
+
+      <Selection
+        dragging={dragging && currentMode === 'select'}
+        rect={selectRect}
+      />
+
+      <PastingNotes/>
+      <MovingNotes {singles} {slides} moving={isLongPress && $moving} />
+      <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
+      <DraggingSlide {draggingSlide} />
+      {#if $preferences.minimapEnabled}
+        <Minimap
+          on:scroll
+          {maxMeasure}
+          {singles}
+          {slides}
+          {timeSignatures}
+          {maxTick}
+        />
+      {/if}
+      <Scrollbar
+        {currentTick}
         {maxTick}
+        on:scroll={({ detail }) => { dispatch('scroll', detail) }}
       />
     {/if}
-    <Scrollbar
-      {currentTick}
-      {maxTick}
-      on:scroll={({ detail }) => { dispatch('scroll', detail) }}
-    />
   </div>
   <div class="zoom-indicator-container" style={`right: ${SCROLLBAR_WIDTH}px;`}>
     <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP}/>
