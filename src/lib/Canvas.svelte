@@ -285,20 +285,12 @@
   let grabbing = false
   let grabbingLastY = 0
 
-  import { Cull } from '@pixi-essentials/cull'
-  let cull: Cull
-
   onMount(() => {
     app.renderer.events.cursorStyles['move'] = CURSOR_STYLES.move
     app.renderer.events.cursorStyles['ew-resize'] = CURSOR_STYLES.resize
     app.renderer.events.cursorStyles['grab'] = CURSOR_STYLES.grab
 
     app.stage.sortableChildren = true
-
-    cull = new Cull().add(mainContainer)
-    app.renderer.on('prerender', () => {
-      cull.cull(app.renderer.screen)
-    })
 
     app.renderer.view.addEventListener('pointerdown', (event: PointerEvent) => {
       app.renderer.view.setPointerCapture(event.pointerId)
