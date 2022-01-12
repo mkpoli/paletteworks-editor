@@ -16,12 +16,12 @@
   $: if (opened) {
     tick().then(() => {
       dispatch('opened')
-      trap.activate()
+      trap?.activate()
     })
   } else {
     tick().then(() => {
       dispatch('closed')
-      trap.deactivate()
+      trap?.deactivate()
     })
   }
 

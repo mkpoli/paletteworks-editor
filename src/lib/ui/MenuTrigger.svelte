@@ -39,13 +39,13 @@
   function onShow() {
     menuInfo.opened = true
     opened = true
-    trap.activate()
+    trap?.activate()
   }
 
   function onHidden() {
     menuInfo.opened = false
     opened = false
-    trap.deactivate()
+    trap?.deactivate()
   }
 
   import * as focusTrap from 'focus-trap'
