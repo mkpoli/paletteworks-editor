@@ -1,6 +1,4 @@
 <script lang="ts" context="module">
-  export const ssr = false
-
   import type { EventSystem, FederatedPointerEvent as FPE } from '@pixi/events'
   declare module '@pixi/events' {
     type PointerEvents = 'pointerdown' | 'pointerup' | 'pointermove' | 'pointerenter' | 'pointerleave' | 'click' | 'pointerupoutside'
@@ -21,8 +19,11 @@
   // Polyfill
   import 'core-js/actual/array/at.js'
 
+  // State
+  import { amp, browser, dev, mode, prerendering } from '$app/env'
+
   // I18n
-  import LL from '$i18n/i18n-svelte'
+  import LL, { locale } from '$i18n/i18n-svelte'
 
   // Parts
   import ToolBox from '$lib/ToolBox.svelte'
@@ -215,6 +216,17 @@
   let resourceLoaded = false
 
   onMount(async () => {
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+      $shiftKey = event.shiftKey
+      $ctrlKey = event.ctrlKey
+      $altKey = event.altKey
+    })
+    document.addEventListener('keyup', (event: KeyboardEvent) => {
+      $shiftKey = event.shiftKey
+      $ctrlKey = event.ctrlKey
+      $altKey = event.altKey
+    })
+
     // Initialise PIXI.js
     PIXI = await import('pixi.js')
     const { EventSystem } = await import('@pixi/events')
@@ -386,16 +398,6 @@
   }
 
   import { ctrlKey, shiftKey, altKey } from '$lib/control/keyboard'
-  document.addEventListener('keydown', (event: KeyboardEvent) => {
-    $shiftKey = event.shiftKey
-    $ctrlKey = event.ctrlKey
-    $altKey = event.altKey
-  })
-  document.addEventListener('keyup', (event: KeyboardEvent) => {
-    $shiftKey = event.shiftKey
-    $ctrlKey = event.ctrlKey
-    $altKey = event.altKey
-  })
 
   import {
     AddBPM,
@@ -739,7 +741,7 @@
   $: dbg('autosaveInterval', $preferences.autosaveInterval)
   
   let autosaveIntervalTimer: number | undefined = undefined
-  $: if ($preferences.autosaveInterval !== 0) {
+  $: if (browser && $preferences.autosaveInterval !== 0) {
     clearAutosave()
     autosaveIntervalTimer = window.setInterval(autosave, $preferences.autosaveInterval * 1000)
   }
@@ -1207,6 +1209,7 @@
 />
 
 <svelte:window
+  lang={$locale}
   bind:innerHeight
   on:beforeunload={(event) => { if (updated) {
     event.preventDefault()
