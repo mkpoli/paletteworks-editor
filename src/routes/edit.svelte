@@ -215,6 +215,8 @@
 
   let resourceLoaded = false
 
+  $: if (browser) document.documentElement.setAttribute('lang', $locale)
+
   onMount(async () => {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
       $shiftKey = event.shiftKey
@@ -1209,7 +1211,6 @@
 />
 
 <svelte:window
-  lang={$locale}
   bind:innerHeight
   on:beforeunload={(event) => { if (updated) {
     event.preventDefault()
