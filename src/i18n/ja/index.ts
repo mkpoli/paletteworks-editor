@@ -37,6 +37,7 @@ const ja: BaseTranslation = {
 			shrink: "縮める (&K)",
 			download: "ダウンロード (&U)",
 			divide: "分割 (&V)",
+			combine: "結合 (&B)",
 		},
 		menuDescription: {
 			new: "新規譜面を作成",

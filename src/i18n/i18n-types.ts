@@ -150,6 +150,10 @@ export type Translation = {
 			 * 分割 (&V)
 			 */
 			'divide': string
+			/**
+			 * 結合 (&B)
+			 */
+			'combine': string
 		}
 		'menuDescription': {	
 			/**
@@ -744,6 +748,10 @@ export type TranslationFunctions = {
 			 * 分割 (&V)
 			 */
 			'divide': () => LocalizedString
+			/**
+			 * 結合 (&B)
+			 */
+			'combine': () => LocalizedString
 		}
 		'menuDescription': {	
 			/**

@@ -37,6 +37,7 @@ const en: Translation = {
 			shrink: "Shrin&k",
 			download: "Do&wnload",
 			divide: "Di&vide",
+			combine: "Com&bine",
 		},
 		menuDescription: {
 			new: 'Create a new score',

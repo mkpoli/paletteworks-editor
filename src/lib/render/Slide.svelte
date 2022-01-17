@@ -78,6 +78,7 @@
   {moving}
   on:click={() => { dispatch('tailclick', { note: tail }) }}
   on:dblclick
+  on:rightclick
   on:pointerenter={() => { dispatch('pointerenter', { note: tail })}}
   on:pointerleave={() => { dispatch('pointerleave') }}
 />

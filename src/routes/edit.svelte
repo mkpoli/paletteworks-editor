@@ -862,6 +862,29 @@
       slides, [slideA, slideB], [slide], 1, 'divide'
     ))
   }
+
+  function combineSlides(a: Slide, b: Slide, target: NoteType) {
+    const slide = {
+      head: a.head,
+      tail: b.tail,
+      steps: [
+        ...a.steps,
+        {
+          tick: target.tick,
+          lane: target.lane,
+          width: target.width,
+          diamond: false,
+          ignored: false,
+          easeType: b.head.easeType
+        },
+        ...b.steps
+      ],
+      critical: a.critical || b.critical,
+    }
+    exec(new AddRemoveSlides(
+      slides, [slide], [a, b], 1, 'combine'
+    ))
+  }
 </script>
 
 <svelte:head>
@@ -1002,6 +1025,7 @@
       on:copy={(event) => { copyNotes(event.detail.notes) }}
       on:cut={(event) => { cutNotes(event.detail.notes) }}
       on:paste={onpaste}
+      on:combine={({ detail: { slides: [slideA, slideB] }}) => combineSlides(slideA, slideB, slideA.tail)}
       on:movenotes={({ detail: { movingNotes, movingTargets, movingOrigins }}) => {
         if (movingNotes.length === 1) {
           const movingNote = movingNotes[0]
@@ -1021,26 +1045,7 @@
           }
 
           if (slideA && slideB) {
-            const slide = {
-              head: slideA.head,
-              tail: slideB.tail,
-              steps: [
-                ...slideA.steps,
-                {
-                  tick: target.tick,
-                  lane: target.lane,
-                  width: target.width,
-                  diamond: false,
-                  ignored: false,
-                  easeType: slideB.head.easeType
-                },
-                ...slideB.steps
-              ],
-              critical: slideA.critical || slideB.critical,
-            }
-            exec(new AddRemoveSlides(
-              slides, [slide], [slideA, slideB], 1, 'combine'
-            ))
+            combineSlides(slideA, slideB, target)
             return
           }
         }

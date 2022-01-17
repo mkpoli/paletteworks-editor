@@ -911,6 +911,7 @@
 <!-- CONTEXT MENU -->
 <CanvasContextMenu
   {canvasContainer}
+  {slides}
   bind:currentNote
   bind:currentSlide
   on:changecurve
@@ -925,6 +926,7 @@
   on:flippaste
   on:shrink
   on:divide
+  on:combine
 />
 
 <!-- EXPORT IMAGE DIALOG -->

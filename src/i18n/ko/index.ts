@@ -37,6 +37,7 @@ const ko: Translation = {
 			shrink: "축소(&K)",
 			download: "다운로드(&D)",
 			divide: "나누기(&V)",
+			combine: "병합(&B)",
 		},
 		menuDescription: {
 			new: '새로운 채보를 만듭니다',

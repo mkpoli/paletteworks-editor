@@ -4,7 +4,7 @@
 
   // Typing
   import type { Note, EaseType, DiamondType, Slide } from '$lib/score/beatmap'
-  import { hasEaseType, isSlideStep, toDiamondType } from '$lib/score/beatmap'
+  import { hasEaseType, isSlideStep, isSlideHead, toDiamondType } from '$lib/score/beatmap'
 
   // Menu Components
   import Menu from '$lib/ui/Menu.svelte'
@@ -44,6 +44,9 @@
     divide: {
       slide: Slide,
       lastCursor: Cursor
+    },
+    combine: {
+      slides: [Slide, Slide]
     }
   }
 
@@ -81,11 +84,60 @@
   export let canvasContainer: HTMLDivElement
   export let currentNote: Note | null
   export let currentSlide: Slide | null
+  export let slides: Slide[]
   
   let lastCursor: Cursor
 
   // Variables
   let menu: HTMLDivElement
+
+  $: overlappingSlides = calcOverlappingSlides(currentNote, $selectedNotes)
+
+  function calcOverlappingSlides(note: Note | null, selectedNotes: Note[]): [Slide, Slide] | null {
+    if (
+      selectedNotes.length === 2
+      && selectedNotes[0].tick === selectedNotes[1].tick
+      && selectedNotes[0].lane === selectedNotes[1].lane
+      && selectedNotes[0].width === selectedNotes[1].width
+    ) {
+      let slideA
+      let slideB
+
+      if (isSlideHead(selectedNotes[0])) {
+        slideA = slides.find(slide => slide.tail === selectedNotes[1])
+        slideB = slides.find(slide => slide.head === selectedNotes[0])
+      }
+      
+      if (isSlideHead(selectedNotes[1])) {
+        slideA = slides.find(slide => slide.tail === selectedNotes[0])
+        slideB = slides.find(slide => slide.head === selectedNotes[1])
+      }
+
+      if (slideA && slideB) {
+        return [slideA, slideB]
+      }
+    }
+
+    if (!note) return null
+
+    for (let slide of slides) {
+      if (slide.head === note) {
+        const partner = slides.find(
+          s => s !== slide && s.tail.tick === note.tick && s.tail.lane === note.lane && s.tail.width === note.width
+        )
+        if (partner) return [slide, partner]
+      }
+
+      if (slide.tail === note) {
+        const partner = slides.find(
+          s => s !== slide && s.head.tick === note.tick && s.head.lane === note.lane && s.head.width === note.width
+        )
+        if (partner) return [slide, partner]
+      }
+    }
+
+    return null
+  }
 </script>
 
 <Menu bind:menu>
@@ -97,6 +149,7 @@
       await tick()
       currentNote = null
       currentSlide = null
+      overlappingSlides = null
     }}
     on:show={() => {
       lastCursor = {...$cursor}
@@ -199,6 +252,14 @@
       icon="iconoir:divide-selection-2"
       text={$LL.editor.menu.divide()}
       on:click={() => { if (currentSlide) dispatch('divide', { slide: currentSlide, lastCursor }) }}
+    />
+    {/if}
+  {#if overlappingSlides}
+    <MenuDivider/>
+    <MenuItem
+      icon="mdi:vector-combine"
+      text={$LL.editor.menu.combine()}
+      on:click={() => { if (overlappingSlides) dispatch('combine', { slides: overlappingSlides }) }}
     />
   {/if}
 </Menu>

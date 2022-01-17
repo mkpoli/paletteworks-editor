@@ -37,6 +37,7 @@ const zh: Translation = {
 			shrink: "縮短 (&K)",
 			download: "下載 (&D)",
 			divide: "分割 (&V)",
+			combine: "合併 (&B)",
 		},
 		menuDescription: {
 			new: '創建新譜面',
