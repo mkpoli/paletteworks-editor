@@ -114,8 +114,10 @@
   <MenuItem icon="ic:round-content-paste-go" text={$LL.editor.menu.flippaste()} on:click={() => dispatch('flippaste')}
     disabled={!$clipboardSingles.length && !$clipboardSlides.length}
   />
-  <MenuDivider/>
-  <MenuItem icon="ic:baseline-select-all" text={$LL.editor.menu.selectall()} on:click={() => dispatch('selectall')}/>
+  {#if !$selectedNotes.length && !currentNote}
+    <MenuDivider/>
+    <MenuItem icon="ic:baseline-select-all" text={$LL.editor.menu.selectall()} on:click={() => dispatch('selectall')}/>
+  {/if}
   {#if $selectedNotes.length || currentNote}
     <MenuDivider/>
     <MenuItem icon="mdi:content-duplicate" text={$LL.editor.menu.duplicate()} on:click={() => dispatchNotes('duplicate', currentNote)} />
@@ -191,7 +193,7 @@
       on:click={() => { dispatch('shrink', { notes: $selectedNotes }) }}
     />
   {/if}
-  {#if currentSlide}
+  {#if !$selectedNotes.length && currentSlide}
     <MenuDivider/>
     <MenuItem
       icon="iconoir:divide-selection-2"
