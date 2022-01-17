@@ -36,6 +36,7 @@ const en: Translation = {
 			ignored: "I&gnored",
 			shrink: "Shrin&k",
 			download: "Do&wnload",
+			divide: "Di&vide",
 		},
 		menuDescription: {
 			new: 'Create a new score',
@@ -115,6 +116,7 @@ const en: Translation = {
 			move: "moved",
 			resize: "resized",
 			paste: "pasted",
+			divide: "divided",
 			message: "{amount} {type} {operation}",
 			target: {
 				note: 'notes',

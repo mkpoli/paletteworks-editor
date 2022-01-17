@@ -36,6 +36,7 @@ const zh: Translation = {
 			ignored: "無視 (&G)",
 			shrink: "縮短 (&K)",
 			download: "下載 (&D)",
+			divide: "分割 (&V)",
 		},
 		menuDescription: {
 			new: '創建新譜面',
@@ -115,6 +116,7 @@ const zh: Translation = {
 			set: "設置",
 			resize: "調整大小",
 			paste: "粘貼",
+			divide: "分割",
 			message: "{operation}了 {amount} 個{type}",
 			target: {
 				note: "音符",

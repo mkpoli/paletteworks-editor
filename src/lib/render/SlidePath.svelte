@@ -10,6 +10,7 @@
   import type { IEase, SlideNote } from '$lib/score/beatmap'
   import type PIXI from 'pixi.js'
   import { lerp, easeInQuad, easeOutQuad } from '$lib/basic/math'
+  import { MOUSE_BUTTON } from '$lib/control/pointer'
 
   export let notes: SlideNote[]
   export let critical: boolean
@@ -17,7 +18,8 @@
   export let moving: boolean = false
 
   const dispatch = createEventDispatcher<{
-    click: void
+    click: { event: PointerEvent }
+    rightclick: { event: PointerEvent }
     dblclick: void
   }>()
 
@@ -37,7 +39,11 @@
     planeContainer.interactive = true
     planeContainer.addEventListener('click', (event) => {
       if (event.detail === 1) {
-        dispatch('click')
+        if (event.button === MOUSE_BUTTON.LEFT) {
+          dispatch('click')
+        } else if (event.button === MOUSE_BUTTON.RIGHT) {
+          dispatch('rightclick')
+        }
       } else if (event.detail === 2) {
         dispatch('dblclick')
       }

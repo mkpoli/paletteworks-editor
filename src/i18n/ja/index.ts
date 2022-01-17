@@ -36,6 +36,7 @@ const ja: BaseTranslation = {
 			ignored: "無視 (&G)",
 			shrink: "縮める (&K)",
 			download: "ダウンロード (&U)",
+			divide: "分割 (&V)",
 		},
 		menuDescription: {
 			new: "新規譜面を作成",
@@ -120,6 +121,7 @@ const ja: BaseTranslation = {
 			move: "移動",
 			resize: "リサイズ",
 			paste: "貼り付け",
+			divide: '分割',
 			message: "{amount:number} {type: string}を{operation: string}",
 			target: {
 				note: "ノーツ",

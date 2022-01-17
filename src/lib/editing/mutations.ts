@@ -3,7 +3,7 @@ import type { Note, Single, Slide, SlideNote, SlideStep } from '$lib/score/beatm
 import { LL } from '$i18n/i18n-svelte'
 
 type TargetType = 'slide' | 'slidenote' | 'note' | 'bpm' | 'timeSignature'
-type Operation = 'append' | 'delete' | 'update' | 'set' | 'cut' | 'flip' | 'move' | 'resize' | 'paste'
+type Operation = 'append' | 'delete' | 'update' | 'set' | 'cut' | 'flip' | 'move' | 'resize' | 'paste' | 'divide'
 
 type Stringify = (amount: number, type: TargetType, operation: Operation) => string 
 
@@ -225,6 +225,29 @@ export class RemoveSlides extends SlideMutation {
   
   undo() {
     return [...this.slides, ...this.targetSlides]
+  }
+}
+
+export class AddRemoveSlides extends SlideMutation {
+  additions: Slide[]
+  deletions: Slide[]
+
+  constructor(slides: Slide[], additions: Slide[], deletions: Slide[], amount: number, operation: Operation) {
+    super(slides)
+    this.target = 'slide'
+    this.operation = operation
+    this.amount = amount
+
+    this.additions = additions
+    this.deletions = deletions
+  }
+
+  exec() {
+    return this.slides.filter((predicate) => !this.deletions.includes(predicate)).concat(this.additions)
+  }
+
+  undo() {
+    return this.slides.filter(predicate => !this.additions.includes(predicate)).concat(this.deletions)
   }
 }
 

@@ -403,6 +403,7 @@
 
   import {
     AddBPM,
+    AddRemoveSlides,
     AddSingles,
     AddSlides,
     BatchAdd,
@@ -801,6 +802,46 @@
   let openMainMenu: () => void
 
   import { visibility } from '$lib/editing/visibility'
+
+  import type { Cursor } from '$lib/position'
+  function divideSlide(slide: Slide, lastCursosr: Cursor) {
+    const { head, tail, steps, critical } = slide
+    const { tick } = lastCursosr
+
+    const { lane, width, easeType } = [...steps]
+      .sort((a, b) => a.tick - b.tick)
+      .reverse()
+      .find((step) => step.tick < tick) ?? head
+
+    const slideA: Slide = {
+      head: {...head},
+      steps: steps.filter((step) => step.tick <= tick),
+      tail: {
+        tick,
+        width,
+        lane,
+        critical: false,
+        flick: 'no'
+      },
+      critical
+    }
+
+    const slideB: Slide = {
+      head: {
+        tick,
+        width,
+        lane,
+        easeType,
+      },
+      steps: steps.filter((step) => step.tick > tick),
+      tail: {...tail},
+      critical
+    }
+
+    exec(new AddRemoveSlides(
+      slides, [slideA, slideB], [slide], 1, 'divide'
+    ))
+  }
 </script>
 
 <svelte:head>
@@ -984,6 +1025,7 @@
       on:flippaste={onflippaste}
       on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
       on:shrink={({ detail: { notes }}) => { shrinkNotes(notes) }}
+      on:divide={({ detail: { slide, lastCursor} }) => { divideSlide(slide, lastCursor) }}
     />
     <PropertyBox
       bind:currentMeasure

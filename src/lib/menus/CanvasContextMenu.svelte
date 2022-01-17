@@ -2,8 +2,9 @@
   // I18n
   import LL from '$i18n/i18n-svelte'
 
-  // Type Definitions
-  import { Note, EaseType, DiamondType, hasEaseType, isSlideStep, toDiamondType } from '$lib/score/beatmap'
+  // Typing
+  import type { Note, EaseType, DiamondType, Slide } from '$lib/score/beatmap'
+  import { hasEaseType, isSlideStep, toDiamondType } from '$lib/score/beatmap'
 
   // Menu Components
   import Menu from '$lib/ui/Menu.svelte'
@@ -40,6 +41,10 @@
     shrink: {
       notes: Note[]
     },
+    divide: {
+      slide: Slide,
+      lastCursor: Cursor
+    }
   }
 
   const dispatch = createEventDispatcher<Events>()
@@ -70,10 +75,14 @@
   // Stores
   import { selectedNotes } from '$lib/editing/selection'
   import { clipboardSingles, clipboardSlides } from '$lib/editing/clipboard'
+  import { cursor, Cursor } from '$lib/position'
 
   // Props
   export let canvasContainer: HTMLDivElement
   export let currentNote: Note | null
+  export let currentSlide: Slide | null
+  
+  let lastCursor: Cursor
 
   // Variables
   let menu: HTMLDivElement
@@ -87,6 +96,10 @@
     on:hidden={async () => {
       await tick()
       currentNote = null
+      currentSlide = null
+    }}
+    on:show={() => {
+      lastCursor = {...$cursor}
     }}
   ></MenuTrigger>
   {#if $selectedNotes.length || currentNote}
@@ -176,6 +189,14 @@
       icon="ci:shrink"
       text={$LL.editor.menu.shrink()}
       on:click={() => { dispatch('shrink', { notes: $selectedNotes }) }}
+    />
+  {/if}
+  {#if currentSlide}
+    <MenuDivider/>
+    <MenuItem
+      icon="iconoir:divide-selection-2"
+      text={$LL.editor.menu.divide()}
+      on:click={() => { if (currentSlide) dispatch('divide', { slide: currentSlide, lastCursor }) }}
     />
   {/if}
 </Menu>

@@ -31,8 +31,9 @@
   let instance: TippyInstance
 
   const dispatch = createEventDispatcher<{
-    contextmenu: void,
+    contextmenu: void
     hidden: void
+    show: void
     right: void
   }>()
 
@@ -40,6 +41,7 @@
     menuInfo.opened = true
     opened = true
     trap?.activate()
+    dispatch('show')
   }
 
   function onHidden() {

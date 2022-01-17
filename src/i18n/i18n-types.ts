@@ -146,6 +146,10 @@ export type Translation = {
 			 * ダウンロード (&U)
 			 */
 			'download': string
+			/**
+			 * 分割 (&V)
+			 */
+			'divide': string
 		}
 		'menuDescription': {	
 			/**
@@ -447,6 +451,10 @@ export type Translation = {
 			 */
 			'paste': string
 			/**
+			 * 分割
+			 */
+			'divide': string
+			/**
 			 * {amount} {type}を{operation}
 			 * @param {number} amount
 			 * @param {string} operation
@@ -728,6 +736,10 @@ export type TranslationFunctions = {
 			 * ダウンロード (&U)
 			 */
 			'download': () => LocalizedString
+			/**
+			 * 分割 (&V)
+			 */
+			'divide': () => LocalizedString
 		}
 		'menuDescription': {	
 			/**
@@ -1022,6 +1034,10 @@ export type TranslationFunctions = {
 			 * 貼り付け
 			 */
 			'paste': () => LocalizedString
+			/**
+			 * 分割
+			 */
+			'divide': () => LocalizedString
 			/**
 			 * {amount} {type}を{operation}
 			 */

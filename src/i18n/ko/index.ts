@@ -36,6 +36,7 @@ const ko: Translation = {
 			ignored: "스텝 무시(&G)",
 			shrink: "축소(&K)",
 			download: "다운로드(&D)",
+			divide: "나누기(&V)",
 		},
 		menuDescription: {
 			new: '새로운 채보를 만듭니다',
@@ -115,6 +116,7 @@ const ko: Translation = {
 			move: '이동',
 			resize: "크기 조정",
 			paste: '붙여넣기',
+			divide: '나누기',
 			message: "{amount}개의 {type}를 {operation}",
 			target: {
 				note: '노트',

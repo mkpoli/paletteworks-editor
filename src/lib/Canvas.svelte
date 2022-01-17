@@ -563,6 +563,7 @@
   import { dragging as playheadDragging } from '$lib/editing/playhead'
 
   let currentNote: NoteType | null = null
+  let currentSlide: SlideType | null = null
 
   function changecurve(type?: EaseType) {
     dispatch('changecurve', { note: currentNote, type })
@@ -623,7 +624,7 @@
   import { clipboardOffsets } from './editing/clipboard'
   import { altKey, ctrlKey } from './control/keyboard'
   import PastingNotes from './render/PastingNotes.svelte'
-import { writable } from 'svelte/store';
+  import { writable } from 'svelte/store'
 </script>
 
 <div
@@ -852,6 +853,7 @@ import { writable } from 'svelte/store';
                 }
               }
             }}
+            on:pathrightclick={(event) => { currentSlide = event.detail.slide }}
             on:rightclick={(event) => { currentNote = event.detail.note }}
             on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
             on:pointerenter={({ detail: { note } }) => { hoveringNote = note}}
@@ -908,6 +910,7 @@ import { writable } from 'svelte/store';
 <CanvasContextMenu
   {canvasContainer}
   bind:currentNote
+  bind:currentSlide
   on:changecurve
   on:changediamond
   on:delete
@@ -919,6 +922,7 @@ import { writable } from 'svelte/store';
   on:flip
   on:flippaste
   on:shrink
+  on:divide
 />
 
 <!-- EXPORT IMAGE DIALOG -->
