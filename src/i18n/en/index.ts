@@ -117,6 +117,7 @@ const en: Translation = {
 			resize: "resized",
 			paste: "pasted",
 			divide: "divided",
+			combine: "combined",
 			message: "{amount} {type} {operation}",
 			target: {
 				note: 'notes',

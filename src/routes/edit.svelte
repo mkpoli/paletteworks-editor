@@ -50,7 +50,7 @@
   import type { Note as NoteType, EaseType, SlideStep, DiamondType, Single, Fever, Slide, IDirectional, ICritical, Metadata, Score } from '$lib/score/beatmap'
 
   import { ALLOWED_SNAPPINGS } from '$lib/editing/modes'
-  import { hasEaseType, isSlideStep, toDiamondType, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
+  import { hasEaseType, isSlideStep, toDiamondType, hasFlick, hasCritical, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -982,7 +982,45 @@
       on:copy={(event) => { copyNotes(event.detail.notes) }}
       on:cut={(event) => { cutNotes(event.detail.notes) }}
       on:paste={onpaste}
-      on:movenotes={({ detail: { movingTargets, movingOrigins }}) => {
+      on:movenotes={({ detail: { movingNotes, movingTargets, movingOrigins }}) => {
+        if (
+          movingNotes.length === 1
+          && hasCritical(movingNotes[0])
+          && hasFlick(movingNotes[0])
+        ) {
+          const target = {
+            width: movingNotes[0].width,
+            ...movingTargets.get(movingNotes[0]),
+          }
+          const slideA = slides.find(({ tail }) => tail === movingNotes[0])
+          const slideB = slides.find(({ head }) => head.tick === target.tick && head.lane === target.lane && head.width === target.width)
+          console.log(slides)
+          console.log({ target, slideA, slideB })
+          if (slideA && slideB) {
+            const slide = {
+              head: slideA.head,
+              tail: slideB.tail,
+              steps: [
+                ...slideA.steps,
+                {
+                  tick: target.tick,
+                  lane: target.lane,
+                  width: target.width,
+                  diamond: false,
+                  ignored: false,
+                  easeType: slideB.head.easeType
+                },
+                ...slideB.steps
+              ],
+              critical: slideA.critical || slideB.critical,
+            }
+            exec(new AddRemoveSlides(
+              slides, [slide], [slideA, slideB], 1, 'combine'
+            ))
+            return
+          }
+        }
+
         exec(new BatchUpdate(singles, slides, movingTargets, movingOrigins, 'move'))
       }}
       on:resizenotes={({ detail: { resizingTargets, resizingOrigins }}) => {

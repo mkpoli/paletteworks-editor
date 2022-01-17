@@ -122,6 +122,7 @@ const ja: BaseTranslation = {
 			resize: "リサイズ",
 			paste: "貼り付け",
 			divide: '分割',
+			combine: '結合',
 			message: "{amount:number} {type: string}を{operation: string}",
 			target: {
 				note: "ノーツ",

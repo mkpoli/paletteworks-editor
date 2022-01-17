@@ -3,7 +3,7 @@ import type { Note, Single, Slide, SlideNote, SlideStep } from '$lib/score/beatm
 import { LL } from '$i18n/i18n-svelte'
 
 type TargetType = 'slide' | 'slidenote' | 'note' | 'bpm' | 'timeSignature'
-type Operation = 'append' | 'delete' | 'update' | 'set' | 'cut' | 'flip' | 'move' | 'resize' | 'paste' | 'divide'
+type Operation = 'append' | 'delete' | 'update' | 'set' | 'cut' | 'flip' | 'move' | 'resize' | 'paste' | 'divide' | 'combine'
 
 type Stringify = (amount: number, type: TargetType, operation: Operation) => string 
 

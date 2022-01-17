@@ -117,6 +117,7 @@ const zh: Translation = {
 			resize: "調整大小",
 			paste: "粘貼",
 			divide: "分割",
+			combine: "合併",
 			message: "{operation}了 {amount} 個{type}",
 			target: {
 				note: "音符",

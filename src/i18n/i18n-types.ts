@@ -455,6 +455,10 @@ export type Translation = {
 			 */
 			'divide': string
 			/**
+			 * 結合
+			 */
+			'combine': string
+			/**
 			 * {amount} {type}を{operation}
 			 * @param {number} amount
 			 * @param {string} operation
@@ -1038,6 +1042,10 @@ export type TranslationFunctions = {
 			 * 分割
 			 */
 			'divide': () => LocalizedString
+			/**
+			 * 結合
+			 */
+			'combine': () => LocalizedString
 			/**
 			 * {amount} {type}を{operation}
 			 */

@@ -53,6 +53,17 @@ export interface IEase {
   easeType: EaseType,
 }
 
+export type Single = INote & IDirectional & ICritical
+export type SlideHead = INote & IEase
+export type SlideStep = INote & IDiamond & IEase
+export type SlideTail = INote & IDirectional & ICritical
+export type SlideNote = SlideHead | SlideStep | SlideTail
+export type Slide = {
+  head: SlideHead
+  tail: SlideTail
+  steps: SlideStep[]
+} & ICritical
+
 export function hasEaseType(note: Note): note is Note & IEase {
   return 'easeType' in note
 }
@@ -65,16 +76,9 @@ export function hasFlick(note: Note): note is Note & IDirectional {
   return 'flick' in note
 }
 
-export type Single = INote & IDirectional & ICritical
-export type SlideHead = INote & IEase
-export type SlideStep = INote & IDiamond & IEase
-export type SlideTail = INote & IDirectional & ICritical
-export type SlideNote = SlideHead | SlideStep | SlideTail
-export type Slide = {
-  head: SlideHead
-  tail: SlideTail
-  steps: SlideStep[]
-} & ICritical
+export function hasCritical(note: Note): note is Note & ICritical {
+  return 'critical' in note
+}
 
 export type Fever = [startTick: number, endTick: number] | null
 

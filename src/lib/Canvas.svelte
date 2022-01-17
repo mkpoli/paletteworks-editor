@@ -245,6 +245,7 @@
     },
     scroll: number,
     movenotes: {
+      movingNotes: NoteType[],
       movingTargets: Map<NoteType, {
         lane: number
         tick: number
@@ -591,6 +592,7 @@
     dispatch('movenotes', {
       movingTargets: new Map($movingTargets),
       movingOrigins: new Map($movingOrigins),
+      movingNotes: $movingNotes
     })
     $movingNotes = []
   }

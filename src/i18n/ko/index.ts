@@ -117,6 +117,7 @@ const ko: Translation = {
 			resize: "크기 조정",
 			paste: '붙여넣기',
 			divide: '나누기',
+			combine: "병합",
 			message: "{amount}개의 {type}를 {operation}",
 			target: {
 				note: '노트',
