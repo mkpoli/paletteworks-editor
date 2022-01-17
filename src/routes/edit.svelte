@@ -1025,6 +1025,20 @@
           }
         }
 
+        const movingSlides = slides.filter(({ steps }) => steps.some((step) => movingNotes.includes(step)))
+        movingSlides.forEach(({ steps }) => {
+          const switched = steps
+            .map((step, index) => [index, { ...step, ...(movingTargets.get(step) ?? {}) }])
+            .sort(([, stepA], [, stepB]) => stepA.tick - stepB.tick)
+
+          switched.forEach(([index, changed], ind) => {
+            if (index !== ind) {
+              movingTargets.set(steps[ind], changed)
+              movingOrigins.set(steps[ind], {...steps[ind]})
+            }
+          })
+        })
+
         exec(new BatchUpdate(singles, slides, movingTargets, movingOrigins, 'move'))
       }}
       on:resizenotes={({ detail: { resizingTargets, resizingOrigins }}) => {
