@@ -50,7 +50,7 @@
   import type { Note as NoteType, EaseType, SlideStep, DiamondType, Single, Fever, Slide, IDirectional, ICritical, Metadata, Score } from '$lib/score/beatmap'
 
   import { ALLOWED_SNAPPINGS } from '$lib/editing/modes'
-  import { hasEaseType, isSlideStep, toDiamondType, hasFlick, hasCritical, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
+  import { hasEaseType, isSlideHead, isSlideStep, toDiamondType, hasFlick, hasCritical, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
@@ -983,19 +983,23 @@
       on:cut={(event) => { cutNotes(event.detail.notes) }}
       on:paste={onpaste}
       on:movenotes={({ detail: { movingNotes, movingTargets, movingOrigins }}) => {
-        if (
-          movingNotes.length === 1
-          && hasCritical(movingNotes[0])
-          && hasFlick(movingNotes[0])
-        ) {
+        if (movingNotes.length === 1) {
+          const movingNote = movingNotes[0]
           const target = {
-            width: movingNotes[0].width,
             ...movingTargets.get(movingNotes[0]),
+            width: movingNotes[0].width,
           }
-          const slideA = slides.find(({ tail }) => tail === movingNotes[0])
-          const slideB = slides.find(({ head }) => head.tick === target.tick && head.lane === target.lane && head.width === target.width)
-          console.log(slides)
-          console.log({ target, slideA, slideB })
+          let slideA
+          let slideB
+
+          if (hasCritical(movingNote) && hasFlick(movingNote)) {
+            slideA = slides.find(({ tail }) => tail === movingNote)
+            slideB = slides.find(({ head }) => head.tick === target.tick && head.lane === target.lane && head.width === target.width)
+          } else if (isSlideHead(movingNote)) {
+            slideA = slides.find(({ tail }) => tail.tick === target.tick && tail.lane === target.lane && tail.width === target.width)
+            slideB = slides.find(({ head }) => head === movingNote)
+          }
+
           if (slideA && slideB) {
             const slide = {
               head: slideA.head,

@@ -72,6 +72,10 @@ export function isSlideStep(note: Note): note is SlideStep {
   return 'diamond' in note && 'ignored' in note
 }
 
+export function isSlideHead(note: Note): note is SlideHead {
+  return 'easeType' in note && !('diamond' in note)
+}
+
 export function hasFlick(note: Note): note is Note & IDirectional {
   return 'flick' in note
 }
