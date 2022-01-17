@@ -646,6 +646,26 @@
       .filter((single) => notes.includes(single))
       .map((single) => ({...single}))
 
+    const oldSlides = slides
+    .filter(({ head, tail, steps }) => (
+        notes.includes(head) || notes.includes(tail)
+        || steps.some((step) => notes.includes(step))
+      ))
+
+    if (newSingles.length === 0 && oldSlides.length === 1) {
+      const slide = oldSlides[0]
+      if (notes.every((note) => slide.steps.includes(note as SlideStep))) {
+        const steps = notes as SlideStep[]
+        exec(new UpdateSlide(slides, slide, {
+          steps: [
+            ...slide.steps,
+            ...steps.map((step) => ({...step})),
+          ]
+        }))
+        return
+      }
+    }
+
     const newSlides = slides
       .filter(({ head, tail, steps }) => (
         notes.includes(head) || notes.includes(tail)
