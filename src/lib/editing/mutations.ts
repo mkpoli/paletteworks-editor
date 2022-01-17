@@ -243,11 +243,17 @@ export class AddRemoveSlides extends SlideMutation {
   }
 
   exec() {
-    return this.slides.filter((predicate) => !this.deletions.includes(predicate)).concat(this.additions)
+    return [
+      ...this.slides.filter((predicate) => !this.deletions.includes(predicate)),
+      ...this.additions.filter(predicate => !this.slides.includes(predicate))
+    ]
   }
 
   undo() {
-    return this.slides.filter(predicate => !this.additions.includes(predicate)).concat(this.deletions)
+    return [
+      ...this.slides.filter((predicate) => !this.additions.includes(predicate)),
+      ...this.deletions.filter(predicate => !this.slides.includes(predicate))
+    ]
   }
 }
 
