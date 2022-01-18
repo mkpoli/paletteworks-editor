@@ -897,7 +897,7 @@
     if (notes.length < 2) {
       return
     }
-    const sorted = notes.sort((a, b) => a.tick - b.tick)
+    const sorted = [...notes].sort((a, b) => a.tick - b.tick)
     const newSlide: Slide = {
       head: {
         ...sorted.shift()!,
