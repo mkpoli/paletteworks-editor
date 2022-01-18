@@ -106,6 +106,8 @@ const ja: BaseTranslation = {
 			preferencesSaved: '設定を保存しました',
 			deleteConfirm: '本当に削除しますか？',
 			confirmBPMDetected: '楽曲のBPMが検出されました。BPMを{bpm:number}に変更しますか？',
+			nothingToUndo: '元に戻す操作はもうありません',
+			nothingToRedo: 'やり直す操作はもうありません',
 		},
 		snapTo: {
 			snap: "{n:number}分音符",

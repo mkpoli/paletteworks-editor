@@ -106,6 +106,8 @@ const en: Translation = {
 			preferencesSaved: 'Preferences saved',
 			deleteConfirm: 'Do you want to delete it?',
 			confirmBPMDetected: 'The BPM of the audio file is {bpm} BPM. Do you want to use it?',
+			nothingToUndo: 'Nothing to undo',
+			nothingToRedo: 'Nothing to redo',
 		},
 		mutation: {
 			update: "updated",

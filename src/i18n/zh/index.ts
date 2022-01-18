@@ -106,6 +106,8 @@ const zh: Translation = {
 			preferencesSaved: '設定已保存',
 			deleteConfirm: '您確定要刪除嗎？',
 			confirmBPMDetected: '檢測到樂曲的BPM。是否要把BPM改爲{bpm}？',
+			nothingToUndo: '沒有可撤銷的操作',
+			nothingToRedo: '沒有可重做的操作',
 		},
 		mutation: {
 			update: "更新",

@@ -28,6 +28,15 @@ export default {
     }
     )
   },
+  warn: (message: string) => {
+    toast.push(message, {
+      theme: {
+        '--toastBackground': '#FFC107',
+        '--toastBarBackground': '#C79100'
+      },
+      pausable: true,
+    })
+  },
   undo: (mutation: Mutation<unknown>, history: Writable<Mutation<unknown>[]>, button: string, undo: () => void, undone: boolean) => {
     if (lastUndoToastId) {
       toast.pop(lastUndoToastId) 

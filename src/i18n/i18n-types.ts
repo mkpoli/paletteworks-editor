@@ -401,6 +401,14 @@ export type Translation = {
 			 * @param {number} bpm
 			 */
 			'confirmBPMDetected': RequiredParams1<'bpm'>
+			/**
+			 * 元に戻す操作はもうありません
+			 */
+			'nothingToUndo': string
+			/**
+			 * やり直す操作はもうありません
+			 */
+			'nothingToRedo': string
 		}
 		'snapTo': {	
 			/**
@@ -994,6 +1002,14 @@ export type TranslationFunctions = {
 			 * 楽曲のBPMが検出されました。BPMを{bpm}に変更しますか？
 			 */
 			'confirmBPMDetected': (arg: { bpm: number }) => LocalizedString
+			/**
+			 * 元に戻す操作はもうありません
+			 */
+			'nothingToUndo': () => LocalizedString
+			/**
+			 * やり直す操作はもうありません
+			 */
+			'nothingToRedo': () => LocalizedString
 		}
 		'snapTo': {	
 			/**

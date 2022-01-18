@@ -431,14 +431,20 @@
   function onundo() {
     const mutation = $mutationHistory.pop()
     $mutationHistory = $mutationHistory
-    if (!mutation) return
+    if (!mutation) {
+      toast.warn($LL.editor.messages.nothingToUndo())
+      return
+    }
     undo(mutation)
   }
 
   function onredo() {
     const mutation = $undoneHistory.pop()
     $undoneHistory = $undoneHistory
-    if (!mutation) return
+    if (!mutation) {
+      toast.warn($LL.editor.messages.nothingToRedo())
+      return
+    }
     exec(mutation)
   }
 
