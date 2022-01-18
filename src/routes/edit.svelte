@@ -102,7 +102,7 @@
   import { onMount, setContext, tick } from 'svelte'
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
-  import { average, clamp, lerp, snap } from '$lib/basic/math'
+  import { average, clamp, easeInQuad, easeOutQuad, lerp, snap } from '$lib/basic/math'
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
@@ -941,8 +941,18 @@
 
         for (let i = range[0]; i <= range[1]; i += timeSignatureManager.timeSignatureInfos[ind].beatsPerMeasure * TICK_PER_BEAT / snapTo) {
           const [a, b] = noteSections.find(([a, b]) => a.tick <= i && b.tick >= i) ?? [head, tail]
-          const left = Math.round(lerp(a.lane, b.lane, (i - a.tick) / (b.tick - a.tick)))
-          const right = Math.round(lerp(a.lane + a.width, b.lane + b.width, (i - a.tick) / (b.tick - a.tick)))
+
+          function ease(x: number) {
+            if (!('easeType' in a) || !a.easeType ) return x
+            switch (a.easeType) {
+              case 'easeIn': return easeInQuad(x)
+              case 'easeOut': return easeOutQuad(x)
+              default: return x
+            }
+          }
+
+          const left = Math.round(lerp(a.lane, b.lane, ease((i - a.tick) / (b.tick - a.tick))))
+          const right = Math.round(lerp(a.lane + a.width, b.lane + b.width, ease((i - a.tick) / (b.tick - a.tick))))
           const note = {
             tick: i,
             lane: left,
