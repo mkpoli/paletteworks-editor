@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import faunadb from 'faunadb'
 
-import { list, create } from '$lib/server/api'
+import { list, create } from './api'
 
 export default async (request: VercelRequest, response: VercelResponse) => {
   try {

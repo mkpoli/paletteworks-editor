@@ -10,9 +10,22 @@
 
   // Functions
   import { createEventDispatcher } from 'svelte'
-  import type { Item } from '$lib/server/api'
   import type { Single, Slide } from '$lib/score/beatmap'
   import toast from '$lib/ui/toast'
+
+  // Types
+  type LocaleStrings = {
+    [key: string]: string
+  }
+
+  type Item = {
+    title: LocaleStrings
+    description: LocaleStrings
+    content: {
+      singles?: Single[]
+      slides?: Slide[]
+    }
+  }
 
   const dispatch = createEventDispatcher<{
     input: {
