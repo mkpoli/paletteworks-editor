@@ -30,7 +30,8 @@
 <Modal bind:opened on:opened={async () => {
   loading = true
   try {
-    const res = await fetch('/library.json')
+    // const res = await fetch('/library.json')
+    const res = await fetch('/api/library')
     library = await res.json()
   } catch (err) {
     toast.error($LL.editor.messages.loadingLibraryFailed())
