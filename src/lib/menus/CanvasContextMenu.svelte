@@ -3,7 +3,7 @@
   import LL from '$i18n/i18n-svelte'
 
   // Typing
-  import type { Note, EaseType, DiamondType, Slide } from '$lib/score/beatmap'
+  import type { Note, EaseType, DiamondType, Slide, Single } from '$lib/score/beatmap'
   import { hasEaseType, isSlideStep, isSlideHead, toDiamondType } from '$lib/score/beatmap'
 
   // Menu Components
@@ -47,6 +47,12 @@
     },
     combine: {
       slides: [Slide, Slide]
+    },
+    toslide: {
+      notes: Note[]
+    },
+    tostream: {
+      slide: Slide
     }
   }
 
@@ -84,6 +90,7 @@
   export let canvasContainer: HTMLDivElement
   export let currentNote: Note | null
   export let currentSlide: Slide | null
+  export let singles: Single[]
   export let slides: Slide[]
   
   let lastCursor: Cursor
@@ -137,6 +144,10 @@
     }
 
     return null
+  }
+
+  function isSingle(note: Note): boolean {
+    return singles.includes(note as Single)
   }
 </script>
 
@@ -260,6 +271,22 @@
       icon="mdi:vector-combine"
       text={$LL.editor.menu.combine()}
       on:click={() => { if (overlappingSlides) dispatch('combine', { slides: overlappingSlides }) }}
+    />
+  {/if}
+  {#if $selectedNotes.length && $selectedNotes.every(isSingle)}
+    <MenuDivider/>
+    <MenuItem
+      icon="uil:exchange"
+      text={$LL.editor.menu.toslide()}
+      on:click={() => { dispatch('toslide', { notes: $selectedNotes }) }}
+    />
+  {/if}
+  {#if !$selectedNotes.length && currentSlide}
+    <MenuDivider/>
+    <MenuItem
+      icon="uil:exchange"
+      text={$LL.editor.menu.tostream()}
+      on:click={() => { if (currentSlide) dispatch('tostream', { slide: currentSlide }) }}
     />
   {/if}
 </Menu>

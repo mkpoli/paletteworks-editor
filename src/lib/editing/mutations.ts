@@ -3,7 +3,7 @@ import type { Note, Single, Slide, SlideNote, SlideStep } from '$lib/score/beatm
 import { LL } from '$i18n/i18n-svelte'
 
 type TargetType = 'slide' | 'slidenote' | 'note' | 'bpm' | 'timeSignature'
-type Operation = 'append' | 'delete' | 'update' | 'set' | 'cut' | 'flip' | 'move' | 'resize' | 'paste' | 'divide' | 'combine'
+type Operation = 'append' | 'delete' | 'update' | 'set' | 'cut' | 'flip' | 'move' | 'resize' | 'paste' | 'divide' | 'combine' | 'convert'
 
 type Stringify = (amount: number, type: TargetType, operation: Operation) => string 
 
@@ -497,6 +497,39 @@ export class BatchUpdate extends BatchMutation {
     this.originalDatas.forEach((originalData, note) => {
       Object.assign(note, originalData)
     })
+    return { singles: this.singles, slides: this.slides }
+  }
+}
+
+export class BatchAddRemove extends BatchMutation {
+  additionSingles: Single[]
+  additionSlides: Slide[]
+  deletionSingles: Single[]
+  deletionSlides: Slide[]
+  constructor(singles: Single[], slides: Slide[], additionSingles: Single[], additionSlides: Slide[], deletionSingles: Single[], deletionSlides: Slide[], amount: number, operation: Operation) {
+    super(singles, slides)
+    this.additionSingles = additionSingles
+    this.additionSlides = additionSlides
+    this.deletionSingles = deletionSingles
+    this.deletionSlides = deletionSlides
+
+    this.operation = operation
+    this.amount = amount
+  }
+
+  exec(): { singles: Single[], slides: Slide[] } {
+    this.singles = this.singles.concat(this.additionSingles.filter((single) => !this.singles.includes(single)))
+    this.slides = this.slides.concat(this.additionSlides.filter((slide) => !this.slides.includes(slide)))
+    this.singles = this.singles.filter((single) => !this.deletionSingles.includes(single))
+    this.slides = this.slides.filter((slide) => !this.deletionSlides.includes(slide))
+    return { singles: this.singles, slides: this.slides }
+  }
+
+  undo(): { singles: Single[], slides: Slide[] } {
+    this.singles = this.singles.filter((single) => !this.additionSingles.includes(single))
+    this.slides = this.slides.filter((slide) => !this.additionSlides.includes(slide))
+    this.singles = this.singles.concat(this.deletionSingles.filter((single) => !this.singles.includes(single)))
+    this.slides = this.slides.concat(this.deletionSlides.filter((slide) => !this.slides.includes(slide)))
     return { singles: this.singles, slides: this.slides }
   }
 }

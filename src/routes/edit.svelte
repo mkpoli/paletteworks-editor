@@ -102,7 +102,7 @@
   import { onMount, setContext, tick } from 'svelte'
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
-  import { average, clamp, snap } from '$lib/basic/math'
+  import { average, clamp, lerp, snap } from '$lib/basic/math'
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
@@ -407,6 +407,7 @@
     AddSingles,
     AddSlides,
     BatchAdd,
+    BatchAddRemove,
     BatchMutation,
     BatchRemove,
     BatchUpdate,
@@ -891,6 +892,72 @@
       slides, [slide], [a, b], 1, 'combine'
     ))
   }
+
+  function toSlide(notes: Single[]) {
+    if (notes.length < 2) {
+      return
+    }
+    const sorted = notes.sort((a, b) => a.tick - b.tick)
+    const newSlide: Slide = {
+      head: {
+        ...sorted.shift()!,
+        easeType: false
+      },
+      tail: {
+        ...sorted.pop()!,
+        flick: 'no',
+        critical: false
+      },
+      steps: sorted.map((note) => ({
+        ...note,
+        diamond: false,
+        ignored: false,
+        easeType: false
+      })),
+      critical: false
+    }
+    exec(new BatchAddRemove(
+      singles, slides, [], [newSlide], notes, [], 1, 'convert'
+    ))
+  }
+
+  function toStream(slide: Slide) {
+    const { head, tail, steps, critical } = slide
+    const slideNotes = [head, ...steps, tail]
+    const noteSections = slideNotes.pairwise()
+
+    const stream: Single[] = []
+
+    timeSignatureManager.getTickRanges()
+      .forEach(([from, to], ind) => {
+        if (head.tick > to || tail.tick < from) {
+          return
+        }
+
+        const range = [
+          Math.max(head.tick, from),
+          Math.min(tail.tick, to)
+        ]
+
+        for (let i = range[0]; i < range[1]; i += timeSignatureManager.timeSignatureInfos[ind].beatsPerMeasure * TICK_PER_BEAT / snapTo) {
+          const [a, b] = noteSections.find(([a, b]) => a.tick <= i && b.tick >= i) ?? [head, tail]
+          const left = Math.round(lerp(a.lane, b.lane, (i - a.tick) / (b.tick - a.tick)))
+          const right = Math.round(lerp(a.lane + a.width, b.lane + b.width, (i - a.tick) / (b.tick - a.tick)))
+          const note = {
+            tick: i,
+            lane: left,
+            width: right - left,
+            critical,
+            flick: 'no' as const
+          }
+          stream.push(note)
+        }
+
+        exec(new BatchAddRemove(
+          singles, slides, stream, [], [], [slide], 1, 'convert'
+        ))
+      })
+  }
 </script>
 
 <svelte:head>
@@ -1113,6 +1180,8 @@
       on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
       on:shrink={({ detail: { notes }}) => { shrinkNotes(notes) }}
       on:divide={({ detail: { slide, lastCursor} }) => { divideSlide(slide, lastCursor) }}
+      on:toslide={({ detail: { notes }}) => { toSlide(notes) }}
+      on:tostream={({ detail: { slide }}) => { toStream(slide) }}
     />
     <PropertyBox
       bind:currentMeasure

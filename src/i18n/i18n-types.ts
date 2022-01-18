@@ -154,6 +154,14 @@ export type Translation = {
 			 * 結合 (&B)
 			 */
 			'combine': string
+			/**
+			 * スライドに変換 (&S)
+			 */
+			'toslide': string
+			/**
+			 * ストリームに変換 (&T)
+			 */
+			'tostream': string
 		}
 		'menuDescription': {	
 			/**
@@ -471,6 +479,10 @@ export type Translation = {
 			 */
 			'combine': string
 			/**
+			 * 変換
+			 */
+			'convert': string
+			/**
 			 * {amount} {type}を{operation}
 			 * @param {number} amount
 			 * @param {string} operation
@@ -760,6 +772,14 @@ export type TranslationFunctions = {
 			 * 結合 (&B)
 			 */
 			'combine': () => LocalizedString
+			/**
+			 * スライドに変換 (&S)
+			 */
+			'toslide': () => LocalizedString
+			/**
+			 * ストリームに変換 (&T)
+			 */
+			'tostream': () => LocalizedString
 		}
 		'menuDescription': {	
 			/**
@@ -1070,6 +1090,10 @@ export type TranslationFunctions = {
 			 * 結合
 			 */
 			'combine': () => LocalizedString
+			/**
+			 * 変換
+			 */
+			'convert': () => LocalizedString
 			/**
 			 * {amount} {type}を{operation}
 			 */

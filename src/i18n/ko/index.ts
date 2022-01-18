@@ -38,6 +38,8 @@ const ko: Translation = {
 			download: "다운로드(&D)",
 			divide: "나누기(&V)",
 			combine: "병합(&B)",
+			toslide: "슬라이드로 변환(&S)",
+			tostream: "스트림로 변환(&T)",
 		},
 		menuDescription: {
 			new: '새로운 채보를 만듭니다',
@@ -121,6 +123,7 @@ const ko: Translation = {
 			paste: '붙여넣기',
 			divide: '나누기',
 			combine: "병합",
+			convert: "변환",
 			message: "{amount}개의 {type}를 {operation}",
 			target: {
 				note: '노트',

@@ -60,4 +60,11 @@ export class TimeSignatureManager {
     const { p, beatsPerMeasure } = this.find(tick) ?? this.timeSignatureInfos[0]
     return snap(tick, TICK_PER_BEAT * beatsPerMeasure / p / snapTo * 4)
   }
+
+  getTickRanges(): [number, number][] {
+    return this.timeSignatureInfos.map(({ startTick }, ind, arr) => [
+      startTick,
+      arr[ind + 1]?.startTick ?? Infinity
+    ])
+  }
 }

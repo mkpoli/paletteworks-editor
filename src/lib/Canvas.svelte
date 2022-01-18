@@ -911,6 +911,7 @@
 <!-- CONTEXT MENU -->
 <CanvasContextMenu
   {canvasContainer}
+  {singles}
   {slides}
   bind:currentNote
   bind:currentSlide
@@ -927,6 +928,8 @@
   on:shrink
   on:divide
   on:combine
+  on:toslide
+  on:tostream
 />
 
 <!-- EXPORT IMAGE DIALOG -->

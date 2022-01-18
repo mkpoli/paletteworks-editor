@@ -38,6 +38,8 @@ const en: Translation = {
 			download: "Do&wnload",
 			divide: "Di&vide",
 			combine: "Com&bine",
+			toslide: "To &Slide",
+			tostream : "To S&tream",
 		},
 		menuDescription: {
 			new: 'Create a new score',
@@ -122,6 +124,7 @@ const en: Translation = {
 			divide: "divided",
 			combine: "combined",
 			message: "{amount} {type} {operation}",
+			convert: "converted",
 			target: {
 				note: 'notes',
 				slide: 'slides',

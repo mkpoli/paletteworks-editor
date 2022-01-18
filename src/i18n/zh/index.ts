@@ -38,6 +38,8 @@ const zh: Translation = {
 			download: "下載 (&D)",
 			divide: "分割 (&V)",
 			combine: "合併 (&B)",
+			toslide: "轉換爲長條 (&S)",
+			tostream: "轉換爲連打 (&T)",
 		},
 		menuDescription: {
 			new: '創建新譜面',
@@ -121,6 +123,7 @@ const zh: Translation = {
 			paste: "粘貼",
 			divide: "分割",
 			combine: "合併",
+			convert: "轉換",
 			message: "{operation}了 {amount} 個{type}",
 			target: {
 				note: "音符",

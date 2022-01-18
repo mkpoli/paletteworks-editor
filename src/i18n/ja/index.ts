@@ -38,6 +38,8 @@ const ja: BaseTranslation = {
 			download: "ダウンロード (&U)",
 			divide: "分割 (&V)",
 			combine: "結合 (&B)",
+			toslide: "スライドに変換 (&S)",
+			tostream: "ストリームに変換 (&T)",
 		},
 		menuDescription: {
 			new: "新規譜面を作成",
@@ -126,6 +128,7 @@ const ja: BaseTranslation = {
 			paste: "貼り付け",
 			divide: '分割',
 			combine: '結合',
+			convert: '変換',
 			message: "{amount:number} {type: string}を{operation: string}",
 			target: {
 				note: "ノーツ",
