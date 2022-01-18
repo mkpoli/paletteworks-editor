@@ -939,7 +939,7 @@
           Math.min(tail.tick, to)
         ]
 
-        for (let i = range[0]; i < range[1]; i += timeSignatureManager.timeSignatureInfos[ind].beatsPerMeasure * TICK_PER_BEAT / snapTo) {
+        for (let i = range[0]; i <= range[1]; i += timeSignatureManager.timeSignatureInfos[ind].beatsPerMeasure * TICK_PER_BEAT / snapTo) {
           const [a, b] = noteSections.find(([a, b]) => a.tick <= i && b.tick >= i) ?? [head, tail]
           const left = Math.round(lerp(a.lane, b.lane, (i - a.tick) / (b.tick - a.tick)))
           const right = Math.round(lerp(a.lane + a.width, b.lane + b.width, (i - a.tick) / (b.tick - a.tick)))
