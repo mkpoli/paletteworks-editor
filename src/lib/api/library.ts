@@ -23,7 +23,7 @@ export async function list(): Promise<Item[]> {
 }
 
 export async function create(item: Item): Promise<void> {
-  const res = await fetch('/library.json', {
+  const res = await fetch(URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
