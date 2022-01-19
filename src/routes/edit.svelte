@@ -968,6 +968,9 @@
         ))
       })
   }
+
+
+  import { create } from '$lib/api/library'
 </script>
 
 <svelte:head>
@@ -1034,26 +1037,16 @@
         }
 
         try {
-          const res = await fetch('/library.json', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
+          const res = await create({
+            title: {
+              ja: title
             },
-            body: JSON.stringify({
-              title: {
-                ja: title
-              },
-              description: {
-                ja: description
-              },
-              content
-            })
+            description: {
+              ja: description
+            },
+            content
           })
-          if (res.ok) {
-            toast.success($LL.editor.messages.uploaded())
-          } else {
-            toast.error($LL.editor.messages.uploadFailed())
-          }
+          toast.success($LL.editor.messages.uploaded())
         } catch (error) {
           toast.error($LL.editor.messages.uploadFailed())
           console.error(error)

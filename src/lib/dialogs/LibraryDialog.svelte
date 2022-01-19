@@ -12,20 +12,7 @@
   import { createEventDispatcher } from 'svelte'
   import type { Single, Slide } from '$lib/score/beatmap'
   import toast from '$lib/ui/toast'
-
-  // Types
-  type LocaleStrings = {
-    [key: string]: string
-  }
-
-  type Item = {
-    title: LocaleStrings
-    description: LocaleStrings
-    content: {
-      singles?: Single[]
-      slides?: Slide[]
-    }
-  }
+  import { list, type Item } from '$lib/api/library'
 
   const dispatch = createEventDispatcher<{
     input: {
@@ -43,9 +30,7 @@
 <Modal bind:opened on:opened={async () => {
   loading = true
   try {
-    // const res = await fetch('/library.json')
-    const res = await fetch('/api/library')
-    library = await res.json()
+    library = await list()
   } catch (err) {
     toast.error($LL.editor.messages.loadingLibraryFailed())
     console.error(err)
