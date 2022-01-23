@@ -110,6 +110,7 @@ const ko: Translation = {
 			confirmBPMDetected: 'BPM이 감지되었습니다. BPM를 {bpm}(으)로 변경하시겠습니까?',
 			nothingToUndo: '실행 취소할 작업이 없습니다.',
 			nothingToRedo: '다시 실행할 작업이 없습니다.',
+			projectDeleted: '채보 {name} 가 삭제되었습니다.',
 		},
 		mutation: {
 			update: '업데이트',

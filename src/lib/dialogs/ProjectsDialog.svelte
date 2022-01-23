@@ -18,7 +18,10 @@
     new: void,
     openfile: void,
     cancel: void,
-    delete: number
+    delete: {
+      id: number,
+      name: string,
+    }
   }>()
 
   export let opened: boolean
@@ -66,8 +69,9 @@
   })
 
   function ondelete() {
-    if (selected && confirm($LL.editor?.messages?.deleteConfirm())) {
-      dispatch('delete', selected.id)
+    if (selected && confirm($LL.editor?.messages?.deleteConfirm() + '\n\n' + selected.name)) {
+      const { id, name } = selected
+      if (id) dispatch('delete', { id, name })
     }
   }
 

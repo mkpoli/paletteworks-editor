@@ -1298,12 +1298,13 @@
   on:open={onopenproject}
   on:openfile={onopenfile}
   on:new={onnewproject}
-  on:delete={({ detail }) => {
-    db.projects.delete(detail)
-    if (currentProject && currentProject.id === detail) {
+  on:delete={({ detail: { id, name } }) => {
+    db.projects.delete(id)
+    if (currentProject && currentProject.id === id) {
       currentProject = null
       initScore()
     }
+    toast.success($LL.editor.messages.projectDeleted({ name }))
   }}
 />
 

@@ -110,6 +110,7 @@ const en: Translation = {
 			confirmBPMDetected: 'The BPM of the audio file is {bpm} BPM. Do you want to use it?',
 			nothingToUndo: 'Nothing to undo',
 			nothingToRedo: 'Nothing to redo',
+			projectDeleted: 'Project {name} is deleted',
 		},
 		mutation: {
 			update: "updated",

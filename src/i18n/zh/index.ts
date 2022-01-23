@@ -110,6 +110,7 @@ const zh: Translation = {
 			confirmBPMDetected: '檢測到樂曲的BPM。是否要把BPM改爲{bpm}？',
 			nothingToUndo: '沒有可撤銷的操作',
 			nothingToRedo: '沒有可重做的操作',
+			projectDeleted: '譜面 {name} 已刪除',
 		},
 		mutation: {
 			update: "更新",

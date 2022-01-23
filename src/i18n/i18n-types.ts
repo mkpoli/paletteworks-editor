@@ -417,6 +417,11 @@ export type Translation = {
 			 * やり直す操作はもうありません
 			 */
 			'nothingToRedo': string
+			/**
+			 * 譜面 {name} を削除しました
+			 * @param {string} name
+			 */
+			'projectDeleted': RequiredParams1<'name'>
 		}
 		'snapTo': {	
 			/**
@@ -1030,6 +1035,10 @@ export type TranslationFunctions = {
 			 * やり直す操作はもうありません
 			 */
 			'nothingToRedo': () => LocalizedString
+			/**
+			 * 譜面 {name} を削除しました
+			 */
+			'projectDeleted': (arg: { name: string }) => LocalizedString
 		}
 		'snapTo': {	
 			/**

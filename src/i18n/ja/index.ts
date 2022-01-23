@@ -110,6 +110,7 @@ const ja: BaseTranslation = {
 			confirmBPMDetected: '楽曲のBPMが検出されました。BPMを{bpm:number}に変更しますか？',
 			nothingToUndo: '元に戻す操作はもうありません',
 			nothingToRedo: 'やり直す操作はもうありません',
+			projectDeleted: '譜面 {name:string} を削除しました',
 		},
 		snapTo: {
 			snap: "{n:number}分音符",
