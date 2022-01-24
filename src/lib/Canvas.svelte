@@ -893,7 +893,6 @@
           {singles}
           {slides}
           {timeSignatures}
-          {maxTick}
         />
       {/if}
       <Scrollbar

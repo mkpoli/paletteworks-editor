@@ -17,10 +17,10 @@
 
 <script lang="ts">
   // Polyfill
-  import 'core-js/actual/array/at.js'
+  import 'core-js/actual/array/at'
 
   // State
-  import { amp, browser, dev, mode, prerendering } from '$app/env'
+  import { browser } from '$app/env'
 
   // I18n
   import LL, { locale } from '$i18n/i18n-svelte'
@@ -945,7 +945,7 @@
         for (let i = range[0]; i <= range[1]; i += timeSignatureManager.timeSignatureInfos[ind].beatsPerMeasure * TICK_PER_BEAT / snapTo) {
           const [a, b] = noteSections.find(([a, b]) => a.tick <= i && b.tick >= i) ?? [head, tail]
 
-          function ease(x: number) {
+          const ease = (x: number) => {
             if (!('easeType' in a) || !a.easeType ) return x
             switch (a.easeType) {
               case 'easeIn': return easeInQuad(x)
@@ -1043,7 +1043,7 @@
         }
 
         try {
-          const res = await create({
+          await create({
             title: {
               ja: title
             },

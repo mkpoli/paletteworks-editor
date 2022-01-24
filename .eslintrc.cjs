@@ -21,8 +21,8 @@ module.exports = {
 		'@typescript-eslint/no-inferrable-types': 'off',
 		'@typescript-eslint/no-non-null-assertion': 'off',
 		"no-restricted-globals": ["error", "closed", "event", "fdescribe", "name", "length", "location", "parent", "top"],
-		'no-redeclare': 'warn',
-		'no-import-assign': 'warn',
+		'no-redeclare': 'off',
+		'no-import-assign': 'off',
 		'no-console': ['error', { "allow": ["warn", "error"] }],
 	}
 };

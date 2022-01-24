@@ -30,7 +30,7 @@
   class="tool-button"
   keys={[...MODE_SHORTCUTS_NUMERAL[mode], ...MODE_SHORTCUTS[mode]].map((key) => [key])}
 >
-  <button on:click={(event) => { currentMode = mode }} class:current={currentMode === mode} bind:this={button}>
+  <button on:click={() => { currentMode = mode }} class:current={currentMode === mode} bind:this={button}>
     <img src={MODE_TEXTURES[mode]} alt={`${$LL.editor.modes[mode]()} Mode`} />
   </button>
 </Tooltip>

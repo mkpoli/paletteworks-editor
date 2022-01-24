@@ -15,7 +15,6 @@
 
   // Types
   import type PIXI from 'pixi.js'
-  import type { Writable } from 'svelte/store'
 
   // Props
   export let maxTick: number

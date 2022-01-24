@@ -3,7 +3,7 @@
   import type PIXI from 'pixi.js'
 
   // Functions
-  import { getContext, onDestroy, onMount, createEventDispatcher, tick } from 'svelte'
+  import { getContext, onDestroy, onMount, createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher<{
     scroll: number  
   }>()
@@ -21,7 +21,6 @@
   export let singles: Single[]
   export let slides: Slide[]
   export let timeSignatures: Map<number, [number, number]>
-  export let maxTick: number
 
   // Variables
   let container: PIXI.Container
@@ -38,16 +37,16 @@
     TICK_PER_MEASURE,
     Z_INDEX,
   } from '$lib/consts'
-  import {
-    calcType,
+  import type {
     IDirectional,
     IEase,
     SlideNote,
-    type Note,
-    type Single,
-    type Slide,
-    type Type,
+    Note,
+    Single,
+    Slide,
+    Type,
   } from '$lib/score/beatmap'
+  import { calcType } from '$lib/score/beatmap'
 
   // Functions
   import { preferences } from '$lib/preferences'
@@ -74,10 +73,6 @@
       dispatch('scroll', tick)
     })
 
-    container.addEventListener('pointermove', (event) => {
-      const tick = $position.calcRawTick2((event.global.y - instance.y) / MINIMAP_RESOLUTION + $scrollY)
-    })
-
     instance = new MinimapRenderer()
     container.addChild(instance)
     
@@ -89,11 +84,7 @@
   })
 
   class MinimapNoteRenderer extends PIXI.Graphics {
-    arrows: (() => void)[] = []
-
-    pushArrow(position: PositionManager, note: Note & IDirectional): void {
-      this.arrows.push(() => this.drawArrow(position, note))
-    }
+    arrows: (Note & IDirectional)[] = []
 
     drawArrow(position: PositionManager, note: Note & IDirectional) {
       const x = position.calcMidX(note.lane, note.width)
@@ -151,7 +142,7 @@
       this.endFill()
 
       if ('flick' in note && note.flick !== 'no') {
-        this.pushArrow(position, note as Note & IDirectional)
+        this.arrows.push(note as Note & IDirectional)
       }
     }
 
@@ -224,7 +215,7 @@
         this.drawNote(position, head, calcType(critical, 'no', true))
         this.drawNote(position, tail, calcType(critical, tail.flick, true))
       })
-      this.arrows.forEach(arrow => arrow())
+      this.arrows.forEach(arrow => this.drawArrow(position, arrow))
     }
   }
 
@@ -277,8 +268,6 @@
         const [nextMeasure] = arr[ind + 1] ?? [maxMeasure + 1]
         const startTick = accumulatedTicks
         accumulatedTicks += (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT
-
-        const maxT = maxTick - startTick
 
         for (let tick = 0; tick < (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT; tick++) {
           const y = position.calcY(startTick + tick)
