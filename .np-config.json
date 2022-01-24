@@ -1,0 +1,6 @@
+{
+    "yarn": false,
+    "yolo": true,
+    "branch": "main",
+    "message": "V: Release v%s"
+}
