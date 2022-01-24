@@ -40,6 +40,7 @@ const en: Translation = {
 			combine: "Com&bine",
 			toslide: "To &Slide",
 			tostream : "To S&tream",
+			about: "&About",
 		},
 		menuDescription: {
 			new: 'Create a new score',
@@ -157,6 +158,7 @@ const en: Translation = {
 			ok: 'OK',
 			new: 'New',
 			opensus: 'Open SUS',
+			about: 'About PaletteWorks Editor',
 		},
 		preferences: {
 			autosaveInterval: 'Auto-save Interval (sec)',

@@ -40,6 +40,7 @@ const ja: BaseTranslation = {
 			combine: "結合 (&B)",
 			toslide: "スライドに変換 (&S)",
 			tostream: "ストリームに変換 (&T)",
+			about: "バージョン情報 (&A)",
 		},
 		menuDescription: {
 			new: "新規譜面を作成",
@@ -157,6 +158,7 @@ const ja: BaseTranslation = {
 			ok: "OK",
 			new: '新規作成',
 			opensus: 'SUSファイルを開く',
+			about: 'PaletteWorks Editor について',
 		},
 		preferences: {
 			autosaveInterval: '自動保存の間隔（秒）',

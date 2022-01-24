@@ -162,6 +162,10 @@ export type Translation = {
 			 * ストリームに変換 (&T)
 			 */
 			'tostream': string
+			/**
+			 * バージョン情報 (&A)
+			 */
+			'about': string
 		}
 		'menuDescription': {	
 			/**
@@ -582,6 +586,10 @@ export type Translation = {
 			 * SUSファイルを開く
 			 */
 			'opensus': string
+			/**
+			 * PaletteWorks Editor について
+			 */
+			'about': string
 		}
 		'preferences': {	
 			/**
@@ -793,6 +801,10 @@ export type TranslationFunctions = {
 			 * ストリームに変換 (&T)
 			 */
 			'tostream': () => LocalizedString
+			/**
+			 * バージョン情報 (&A)
+			 */
+			'about': () => LocalizedString
 		}
 		'menuDescription': {	
 			/**
@@ -1203,6 +1215,10 @@ export type TranslationFunctions = {
 			 * SUSファイルを開く
 			 */
 			'opensus': () => LocalizedString
+			/**
+			 * PaletteWorks Editor について
+			 */
+			'about': () => LocalizedString
 		}
 		'preferences': {	
 			/**

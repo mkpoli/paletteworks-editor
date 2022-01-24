@@ -46,6 +46,7 @@
     preferences: void,
     upload: void,
     openlibrary: void,
+    about: void
   }>()
 
   import CustomSnappingDialog from './dialogs/CustomSnappingDialog.svelte'
@@ -101,6 +102,7 @@
     <MenuItem icon="vaadin:cog" text={$LL.editor.menu.preferences()} on:click={() => dispatch('preferences')}/>
     <MenuDivider/>
     <MenuItem icon="vaadin:question-circle-o" text={$LL.editor.menu.help()} href="https://wiki.purplepalette.net/create-charts/editor/paletteworks" />
+    <MenuItem icon="vaadin:info-circle-o" text={$LL.editor.menu.about()} on:click={() => { dispatch('about') } }/>
   </Menu>
 
   <div class="tool-container">

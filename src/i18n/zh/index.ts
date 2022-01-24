@@ -40,6 +40,7 @@ const zh: Translation = {
 			combine: "合併 (&B)",
 			toslide: "轉換爲長條 (&S)",
 			tostream: "轉換爲連打 (&T)",
+			about: "關於 (&A)",
 		},
 		menuDescription: {
 			new: '創建新譜面',
@@ -157,6 +158,7 @@ const zh: Translation = {
 			ok: '確定',
 			new: '新建',
 			opensus: '打開SUS',
+			about: '關於 PaletteWorks Editor',
 		},
 		preferences: {
 			autosaveInterval: '自動保存間隔（秒)',

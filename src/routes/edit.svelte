@@ -977,6 +977,9 @@
 
 
   import { create } from '$lib/api/library'
+
+  let aboutDialogOpened = false
+  import AboutDialog from '$lib/dialogs/AboutDialog.svelte'
 </script>
 
 <svelte:head>
@@ -991,6 +994,7 @@
       bind:currentMode
       bind:snapTo
       bind:openMainMenu={openMainMenu}
+      on:about={() => {aboutDialogOpened = true }}
       on:export={onexport}
       on:image={() => { imageDialogOpened = true }}
       on:copy={() => { copyNotes($selectedNotes) }}
@@ -1445,6 +1449,8 @@
     () => { toast.error($LL.editor.messages.unknownFileType()) }
   )}
 />
+
+<AboutDialog bind:opened={aboutDialogOpened} />
 
 <SvelteToast/>
 

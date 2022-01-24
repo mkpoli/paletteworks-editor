@@ -40,6 +40,7 @@ const ko: Translation = {
 			combine: "병합(&B)",
 			toslide: "슬라이드로 변환(&S)",
 			tostream: "스트림로 변환(&T)",
+			about: "정보(&A)",
 		},
 		menuDescription: {
 			new: '새로운 채보를 만듭니다',
@@ -157,6 +158,7 @@ const ko: Translation = {
 			ok: '확인',
 			new: '새로 만들기',
 			opensus: 'SUS 파일 열기',
+			about: 'PaletteWorks Editor 정보',
 		},
 		preferences: {
 			autosaveInterval: '자동 저장 간격 (초)',
