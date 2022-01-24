@@ -100,7 +100,7 @@
     </MenuItem>
     <MenuItem icon="vaadin:cog" text={$LL.editor.menu.preferences()} on:click={() => dispatch('preferences')}/>
     <MenuDivider/>
-    <MenuItem icon="vaadin:question-circle-o" text={$LL.editor.menu.help()} href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks" />
+    <MenuItem icon="vaadin:question-circle-o" text={$LL.editor.menu.help()} href="https://wiki.purplepalette.net/create-charts/editor/paletteworks" />
   </Menu>
 
   <div class="tool-container">
