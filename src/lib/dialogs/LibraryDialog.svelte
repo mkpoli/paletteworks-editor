@@ -32,7 +32,7 @@
   try {
     library = await list()
   } catch (err) {
-    toast.error($LL.editor.messages.loadingLibraryFailed())
+    toast.error($LL.editor.messages.library.loadingFailed())
     console.error(err)
   } finally {
     loading = false

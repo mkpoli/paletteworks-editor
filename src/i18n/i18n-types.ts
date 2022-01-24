@@ -361,10 +361,6 @@ export type Translation = {
 			 */
 			'saved': string
 			/**
-			 * アップロードするノーツが選択されていません
-			 */
-			'uploadNotSelectedError': string
-			/**
 			 * タイトルを入力してください
 			 */
 			'inputTitlePrompt': string
@@ -377,14 +373,6 @@ export type Translation = {
 			 */
 			'inputEmptyError': string
 			/**
-			 * アップロードしました
-			 */
-			'uploaded': string
-			/**
-			 * アップロードに失敗しました
-			 */
-			'uploadFailed': string
-			/**
 			 * 本当にエディターを閉じますか
 			 */
 			'exitConfirm': string
@@ -392,10 +380,6 @@ export type Translation = {
 			 * 不明なファイルタイプです
 			 */
 			'unknownFileType': string
-			/**
-			 * ライブラリの読み込みに失敗しました。
-			 */
-			'loadingLibraryFailed': string
 			/**
 			 * 設定を保存しました
 			 */
@@ -422,12 +406,30 @@ export type Translation = {
 			 * @param {string} name
 			 */
 			'projectDeleted': RequiredParams1<'name'>
-			/**
-			 * ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？
-		
-		ライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。
-			 */
-			'libraryUploadTooLongConfirm': string
+			'library': {	
+				/**
+				 * ライブラリの読み込みに失敗しました。
+				 */
+				'loadingFailed': string
+				/**
+				 * ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？
+			
+			ライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。
+				 */
+				'uploadTooLongConfirm': string
+				/**
+				 * アップロードするノーツが選択されていません
+				 */
+				'uploadNotSelectedError': string
+				/**
+				 * アップロードしました
+				 */
+				'uploadSuccess': string
+				/**
+				 * アップロードに失敗しました
+				 */
+				'uploadFailed': string
+			}
 		}
 		'snapTo': {	
 			/**
@@ -986,10 +988,6 @@ export type TranslationFunctions = {
 			 */
 			'saved': () => LocalizedString
 			/**
-			 * アップロードするノーツが選択されていません
-			 */
-			'uploadNotSelectedError': () => LocalizedString
-			/**
 			 * タイトルを入力してください
 			 */
 			'inputTitlePrompt': () => LocalizedString
@@ -1002,14 +1000,6 @@ export type TranslationFunctions = {
 			 */
 			'inputEmptyError': () => LocalizedString
 			/**
-			 * アップロードしました
-			 */
-			'uploaded': () => LocalizedString
-			/**
-			 * アップロードに失敗しました
-			 */
-			'uploadFailed': () => LocalizedString
-			/**
 			 * 本当にエディターを閉じますか
 			 */
 			'exitConfirm': () => LocalizedString
@@ -1017,10 +1007,6 @@ export type TranslationFunctions = {
 			 * 不明なファイルタイプです
 			 */
 			'unknownFileType': () => LocalizedString
-			/**
-			 * ライブラリの読み込みに失敗しました。
-			 */
-			'loadingLibraryFailed': () => LocalizedString
 			/**
 			 * 設定を保存しました
 			 */
@@ -1045,12 +1031,30 @@ export type TranslationFunctions = {
 			 * 譜面 {name} を削除しました
 			 */
 			'projectDeleted': (arg: { name: string }) => LocalizedString
-			/**
-			 * ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？
-		
-		ライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。
-			 */
-			'libraryUploadTooLongConfirm': () => LocalizedString
+			'library': {	
+				/**
+				 * ライブラリの読み込みに失敗しました。
+				 */
+				'loadingFailed': () => LocalizedString
+				/**
+				 * ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？
+			
+			ライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。
+				 */
+				'uploadTooLongConfirm': () => LocalizedString
+				/**
+				 * アップロードするノーツが選択されていません
+				 */
+				'uploadNotSelectedError': () => LocalizedString
+				/**
+				 * アップロードしました
+				 */
+				'uploadSuccess': () => LocalizedString
+				/**
+				 * アップロードに失敗しました
+				 */
+				'uploadFailed': () => LocalizedString
+			}
 		}
 		'snapTo': {	
 			/**

@@ -1002,10 +1002,10 @@
       on:preferences={() => { preferencesDialogOpened = true }}
       on:upload={async () => { 
         if (!$selectedNotes.length) {
-          toast.error('アップロードするにはまずアップロードしたいノーツを選択してください')
+          toast.error($LL.editor.messages.library.uploadNotSelectedError())
           return
         }
-        if ($selectedNotes.length > 20 && !confirm($LL.editor.messages.libraryUploadTooLongConfirm())) {
+        if ($selectedNotes.length > 20 && !confirm($LL.editor.messages.library.uploadTooLongConfirm())) {
           return
         }
         const selectedSingles = singles.filter((note) => $selectedNotes.includes(note))
@@ -1052,9 +1052,9 @@
             },
             content
           })
-          toast.success($LL.editor.messages.uploaded())
+          toast.success($LL.editor.messages.library.uploadSuccess())
         } catch (error) {
-          toast.error($LL.editor.messages.uploadFailed())
+          toast.error($LL.editor.messages.library.uploadFailed())
           console.error(error)
         }
       }}
