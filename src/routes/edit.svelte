@@ -17,7 +17,7 @@
 
 <script lang="ts">
   // Polyfill
-  import 'core-js/actual/array/at'
+  import 'core-js/actual/array/at.js'
 
   // State
   import { browser } from '$app/env'
