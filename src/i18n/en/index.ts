@@ -111,6 +111,7 @@ const en: Translation = {
 			nothingToUndo: 'Nothing to undo',
 			nothingToRedo: 'Nothing to redo',
 			projectDeleted: 'Project {name} is deleted',
+			libraryUploadTooLongConfirm: 'The notes you are uploading are more than 20. Do you really want to upload them?\n\nThe notes will ONLY be available INSIDE PaletteWorks Editor.'
 		},
 		mutation: {
 			update: "updated",

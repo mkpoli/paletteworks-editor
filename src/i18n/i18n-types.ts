@@ -422,6 +422,12 @@ export type Translation = {
 			 * @param {string} name
 			 */
 			'projectDeleted': RequiredParams1<'name'>
+			/**
+			 * ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？
+		
+		ライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。
+			 */
+			'libraryUploadTooLongConfirm': string
 		}
 		'snapTo': {	
 			/**
@@ -1039,6 +1045,12 @@ export type TranslationFunctions = {
 			 * 譜面 {name} を削除しました
 			 */
 			'projectDeleted': (arg: { name: string }) => LocalizedString
+			/**
+			 * ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？
+		
+		ライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。
+			 */
+			'libraryUploadTooLongConfirm': () => LocalizedString
 		}
 		'snapTo': {	
 			/**

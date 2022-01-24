@@ -1005,6 +1005,9 @@
           toast.error('アップロードするにはまずアップロードしたいノーツを選択してください')
           return
         }
+        if ($selectedNotes.length > 20 && !confirm($LL.editor.messages.libraryUploadTooLongConfirm())) {
+          return
+        }
         const selectedSingles = singles.filter((note) => $selectedNotes.includes(note))
         const selectedSlides = slides.filter(({ head, tail, steps }) => $selectedNotes.includes(head) || $selectedNotes.includes(tail) || steps.some((step) => $selectedNotes.includes(step)))
         const minTick = Math.min(...[

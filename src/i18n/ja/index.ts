@@ -111,6 +111,7 @@ const ja: BaseTranslation = {
 			nothingToUndo: '元に戻す操作はもうありません',
 			nothingToRedo: 'やり直す操作はもうありません',
 			projectDeleted: '譜面 {name:string} を削除しました',
+			libraryUploadTooLongConfirm: 'ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？\n\nライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。',
 		},
 		snapTo: {
 			snap: "{n:number}分音符",
