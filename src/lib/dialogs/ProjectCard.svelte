@@ -68,7 +68,7 @@
       <dt>{$LL.editor.panel.title()}</dt>
       <dd>{project.metadata.title}</dd>
       <dt>{$LL.editor.panel.artist()}</dt>
-      <dd>{project.metadata.title}</dd>
+      <dd>{project.metadata.artist}</dd>
       <dt>{$LL.editor.panel.updatedTime()}</dt>
       <dd>{project.updated}</dd>
     </dl>
