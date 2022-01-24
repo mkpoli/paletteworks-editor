@@ -20,7 +20,7 @@
     cancel: void,
     delete: {
       id: number,
-      name: string,
+      name: string | null,
     }
   }>()
 
@@ -101,7 +101,7 @@
     }
   }
 
-  $: filtered = projects.filter(({ name }) => searchKeyword ? name.toLocaleLowerCase().includes(searchKeyword.toLocaleLowerCase()) : true)
+  $: filtered = projects.filter(({ name }) => searchKeyword ? (name?.toLocaleLowerCase().includes(searchKeyword.toLocaleLowerCase()) ?? 'Untitled') : true)
 </script>
 
 <Modal
@@ -135,7 +135,7 @@
       <span slot="tail">{filtered?.length ?? 0}/{projects?.length ?? 0}</span>
     </TextInput>
     <div class="project-container" bind:this={container}> 
-      {#each filtered as project, index}
+      {#each filtered as project, index (project.id)}
         <ProjectCard
           {project}
           selected={selected === project}

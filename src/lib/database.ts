@@ -1,7 +1,7 @@
 import type { Metadata, Score } from '$lib/score/beatmap'
 export interface Project {
   id?: number
-  name: string
+  name: string | null
   created: Date
   updated: Date
   metadata: Metadata

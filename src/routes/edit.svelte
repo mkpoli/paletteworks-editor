@@ -505,7 +505,8 @@
   }
 
   async function savecurrent(message: string) {
-    db.projects.update(currentProject!.id!, {
+    if (!currentProject) throw new Error('Saving without current project')
+    db.projects.update(currentProject.id!, {
       updated: new Date(),
       metadata, score: {
         singles,
@@ -516,6 +517,7 @@
         timeSignatures
       },
       music,
+      name: (currentProject.name ?? metadata.title) || null,
       preview: await renderPreview()
     })
     updated = false
@@ -540,15 +542,16 @@
   let projectsDialogOpened = true
   let currentProject: Project | null = null
   $: dbg('currentProject.id', currentProject?.id)
+  $: dbg('currentProject.name', currentProject?.name)
 
   async function onnewproject() {
     if (currentProject) {
-      savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name }))
+      savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name ?? 'Untitled' }))
     }
     initScore()
     await tick()
     const project: Project = {
-      name: 'Untitled',
+      name: null,
       created: new Date(),
       updated: new Date(),
       metadata,
@@ -571,7 +574,7 @@
 
   function onopenproject({ detail: { project }}: CustomEvent<{ project: Project }>) {
     if (currentProject) {
-      savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name }))
+      savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name ?? 'Untitled' }))
     }
 
     initScore()
@@ -611,7 +614,7 @@
     toast.success($LL.editor.messages.loadingSUSSuccess({ filename }))
     await tick()
     const project: Project = {
-      name: metadata.title || filename.replace(/\.[^/.]+$/, '') || 'Untitled',
+      name: metadata.title || filename.replace(/\.[^/.]+$/, '') || null,
       created: new Date(),
       updated: new Date(),
       metadata,
@@ -1304,7 +1307,7 @@
       currentProject = null
       initScore()
     }
-    toast.success($LL.editor.messages.projectDeleted({ name }))
+    toast.success($LL.editor.messages.projectDeleted({ name: name ?? 'Untitled' }))
   }}
 />
 
