@@ -603,6 +603,9 @@
     const { name: filename } = file 
     const res = await fetch(URL.createObjectURL(file))
     const text = await res.text()
+
+    initScore()
+
     try {
       ({ metadata, score: { singles, slides, bpms, fever, skills, timeSignatures } } = loadSUS(text))
     } catch (e) {
