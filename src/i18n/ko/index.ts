@@ -108,6 +108,7 @@ const ko: Translation = {
 			nothingToUndo: '실행 취소할 작업이 없습니다.',
 			nothingToRedo: '다시 실행할 작업이 없습니다.',
 			projectDeleted: '채보 {name} 가 삭제되었습니다.',
+			noProjectOpened: '채보가 열려있지 않습니다.',
 			library: {
 				loadingFailed: '컬렉션을 불러오는 중 오류가 발생했습니다.',
 				uploadTooLongConfirm: '컬렉션에 업로드할 노트가 20개를 초과하였습니다. 정말 업로드하시겠습니까?\n\n컬렉션에 업로드하면 PaletteWorks Editor 외에는 반영되지 않습니다.',

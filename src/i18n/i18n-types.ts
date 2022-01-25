@@ -410,6 +410,10 @@ export type Translation = {
 			 * @param {string} name
 			 */
 			'projectDeleted': RequiredParams1<'name'>
+			/**
+			 * 開かれている譜面はありません
+			 */
+			'noProjectOpened': string
 			'library': {	
 				/**
 				 * ライブラリの読み込みに失敗しました。
@@ -1043,6 +1047,10 @@ export type TranslationFunctions = {
 			 * 譜面 {name} を削除しました
 			 */
 			'projectDeleted': (arg: { name: string }) => LocalizedString
+			/**
+			 * 開かれている譜面はありません
+			 */
+			'noProjectOpened': () => LocalizedString
 			'library': {	
 				/**
 				 * ライブラリの読み込みに失敗しました。

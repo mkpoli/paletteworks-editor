@@ -108,6 +108,7 @@ const en: Translation = {
 			nothingToUndo: 'Nothing to undo',
 			nothingToRedo: 'Nothing to redo',
 			projectDeleted: 'Project {name} is deleted',
+			noProjectOpened: 'No project is opened',
 			library: {
 				loadingFailed: 'Failed to load library.',
 				uploadTooLongConfirm: 'The notes you are uploading are more than 20. Do you really want to upload them?\n\nThe notes will ONLY be available INSIDE PaletteWorks Editor.',

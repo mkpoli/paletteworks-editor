@@ -308,8 +308,13 @@
   let lastPointerTick: number = 0
 
   function onexport() {
+    if (!currentProject) {
+      toast.error($LL.editor.messages.noProjectOpened())
+      return
+    }
+
     const sus = dumpSUS(metadata, { singles, slides, bpms, fever, skills, timeSignatures })
-    download(toBlob(sus), `${currentProject?.name ?? 'Untitled'}-${new Date().toISOString().replace(':', '-')}.sus`)
+    download(toBlob(sus), `${currentProject.name ?? 'Untitled'}-${new Date().toISOString().replace(':', '-')}.sus`)
   }
 
   let imageDialogOpened: boolean = false

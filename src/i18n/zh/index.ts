@@ -108,6 +108,7 @@ const zh: Translation = {
 			nothingToUndo: '沒有可撤銷的操作',
 			nothingToRedo: '沒有可重做的操作',
 			projectDeleted: '譜面 {name} 已刪除',
+			noProjectOpened: '沒有打開的譜面',
 			library: {
 				loadingFailed: '載入梗庫時出錯',
 				uploadTooLongConfirm: '要上傳到梗庫的音符數量超過 20。您確定要上傳嗎？\n\n上傳到梗庫的內容僅可以在 PaletteWorks Editor 內部使用。',
