@@ -38,6 +38,7 @@
     Z_INDEX,
   } from '$lib/consts'
   import type {
+    ICritical,
     IDirectional,
     IEase,
     SlideNote,
@@ -84,9 +85,9 @@
   })
 
   class MinimapNoteRenderer extends PIXI.Graphics {
-    arrows: (Note & IDirectional)[] = []
+    arrows: (Note & IDirectional & ICritical)[] = []
 
-    drawArrow(position: PositionManager, note: Note & IDirectional) {
+    drawArrow(position: PositionManager, note: Note & IDirectional & ICritical) {
       const x = position.calcMidX(note.lane, note.width)
       const y = position.calcY(note.tick) - calcNoteHeight() / 2
       this.lineStyle(15, 'critical' in note && note.critical ? 0xf8be3a : 0xee7f9e)
@@ -142,7 +143,15 @@
       this.endFill()
 
       if ('flick' in note && note.flick !== 'no') {
-        this.arrows.push(note as Note & IDirectional)
+        const { lane, tick, width, flick } = note
+
+        this.arrows.push({
+          lane,
+          tick,
+          width,
+          flick,
+          critical: type === 'critical',
+        })
       }
     }
 
@@ -213,7 +222,7 @@
 
         this.drawPath([head, ...steps.filter((x) => !x.ignored), tail], critical)
         this.drawNote(position, head, calcType(critical, 'no', true))
-        this.drawNote(position, tail, calcType(critical, tail.flick, true))
+        this.drawNote(position, tail, calcType(critical || tail.critical, tail.flick, true))
       })
       this.arrows.forEach(arrow => this.drawArrow(position, arrow))
     }
