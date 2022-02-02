@@ -4,7 +4,7 @@ const ja: BaseTranslation = {
 	editor: {
 		menu: {
 			file: "ファイル (&F)",
-			library: "ライブラリ (&L)",
+			library: "素材集 (&L)",
 			edit: "編集 (&E)",
 			preferences: "設定 (&P)",
 			help: "ヘルプ (&H)",
@@ -21,7 +21,7 @@ const ja: BaseTranslation = {
 			paste: "貼り付け (&P)",
 			flippaste: "反転貼り付け (&F)",
 			listall: "一覧 (&A)",
-			upload: "アップロード (&U)",
+			upload: "追加 (&U)",
 			language: "言語 (&G)",
 			rename: 'リネーム (&R)',
 			delete: '削除 (&D)',
@@ -110,11 +110,11 @@ const ja: BaseTranslation = {
 			projectDeleted: '譜面 {name:string} を削除しました',
 			noProjectOpened: '開かれている譜面はありません',
 			library: {
-				loadingFailed: 'ライブラリの読み込みに失敗しました。',
-				uploadTooLongConfirm: 'ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？\n\nライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。',
-				uploadNotSelectedError: 'アップロードするノーツが選択されていません',
-				uploadSuccess: 'アップロードしました',
-				uploadFailed: 'アップロードに失敗しました',
+				loadingFailed: '素材集の読み込みに失敗しました。',
+				uploadTooLongConfirm: '素材集に追加しようとするノーツが 20 を超えています。本当に追加しますか？\n\n⚠素材集は譜面をアップロードする所ではないため、フル尺の譜面を追加しないでください！⚠\n譜面をアップロードするには、「ヘルプ」をご参照ください。',
+				uploadNotSelectedError: '素材集に追加するノーツが選択されていません',
+				uploadSuccess: '素材を追加しました',
+				uploadFailed: '素材の追加が失敗しました',
 			}
 		},
 		snapTo: {
@@ -149,7 +149,7 @@ const ja: BaseTranslation = {
 			timeSignatureTitle: "拍子設定",
 			customSnappingTitle: "カスタム分音符",
 			imageTitle: "画像出力",
-			libraryTitle: "ライブラリ",
+			libraryTitle: "素材集",
 			preferencesTitle: '環境設定',
 			projectsTitle: '譜面一覧',
 			append: "追加",

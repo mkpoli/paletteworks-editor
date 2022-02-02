@@ -4,7 +4,7 @@ const ko: Translation = {
 	editor: {
 		menu: {
 			file: "파일(&F)",
-			library: "컬렉션(&L)",
+			library: "소재 컬렉션(&L)",
 			edit: "편집(&E)",
 			preferences: "설정(&P)",
 			help: "도움말(&H)",
@@ -111,7 +111,7 @@ const ko: Translation = {
 			noProjectOpened: '채보가 열려있지 않습니다.',
 			library: {
 				loadingFailed: '컬렉션을 불러오는 중 오류가 발생했습니다.',
-				uploadTooLongConfirm: '컬렉션에 업로드할 노트가 20개를 초과하였습니다. 정말 업로드하시겠습니까?\n\n컬렉션에 업로드하면 PaletteWorks Editor 외에는 반영되지 않습니다.',
+				uploadTooLongConfirm: '컬렉션에 업로드할 노트가 20개를 초과하였습니다. 정말 업로드하시겠습니까?\n\n⚠소재 컬렉션은 채보를 업로드하는 곳이 아니므로, 풀척의 채보를 추가하지 마십시오! ⚠\n채보를 업로드하려면 “도움말”을 참조십시오.',
 				uploadNotSelectedError: '업로드할 노트를 선택하지 않았습니다.',
 				uploadSuccess: '업로드되었습니다.',
 				uploadFailed: '업로드 중 오류가 발생했습니다.',
@@ -149,7 +149,7 @@ const ko: Translation = {
 			timeSignatureTitle: '박자 설정',
 			customSnappingTitle: '사용자 설정 분음표',
 			imageTitle: '이미지로 내보내기',
-			libraryTitle: '컬렉션',
+			libraryTitle: '소재 컬렉션',
 			preferencesTitle: '환경설정',
 			projectsTitle: '채보 목록',
 			append: '추가',

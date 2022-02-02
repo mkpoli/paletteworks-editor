@@ -111,7 +111,7 @@ const zh: Translation = {
 			noProjectOpened: '沒有打開的譜面',
 			library: {
 				loadingFailed: '載入梗庫時出錯',
-				uploadTooLongConfirm: '要上傳到梗庫的音符數量超過 20。您確定要上傳嗎？\n\n上傳到梗庫的內容僅可以在 PaletteWorks Editor 內部使用。',
+				uploadTooLongConfirm: '要上傳到梗庫的音符數量超過 20。您確定要上傳嗎？\n\n⚠梗庫不是上傳譜面的地方、請不要把完整譜面上傳到這裏！⚠\n如果您想上傳譜面，請參考「幫助」。',
 				uploadNotSelectedError: '請先選擇要上傳的音符',
 				uploadSuccess: '上傳成功',
 				uploadFailed: '上傳失敗',

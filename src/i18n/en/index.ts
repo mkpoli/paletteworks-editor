@@ -111,7 +111,7 @@ const en: Translation = {
 			noProjectOpened: 'No project is opened',
 			library: {
 				loadingFailed: 'Failed to load library.',
-				uploadTooLongConfirm: 'The notes you are uploading are more than 20. Do you really want to upload them?\n\nThe notes will ONLY be available INSIDE PaletteWorks Editor.',
+				uploadTooLongConfirm: 'The notes you are uploading are more than 20. Do you really want to upload them?\n\n⚠ DO NOT upload the full scores here. This is not for uploading scores！ ⚠\nIf you want to upload a score, please refer to “Help”.',
 				uploadNotSelectedError: 'Please select some notes to upload.',
 				uploadSuccess: 'The notes are successfully uploaded.',
 				uploadFailed: 'Upload failed.',

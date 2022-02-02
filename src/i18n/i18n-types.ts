@@ -19,7 +19,7 @@ export type Translation = {
 			 */
 			'file': string
 			/**
-			 * ライブラリ (&L)
+			 * 素材集 (&L)
 			 */
 			'library': string
 			/**
@@ -87,7 +87,7 @@ export type Translation = {
 			 */
 			'listall': string
 			/**
-			 * アップロード (&U)
+			 * 追加 (&U)
 			 */
 			'upload': string
 			/**
@@ -416,25 +416,26 @@ export type Translation = {
 			'noProjectOpened': string
 			'library': {	
 				/**
-				 * ライブラリの読み込みに失敗しました。
+				 * 素材集の読み込みに失敗しました。
 				 */
 				'loadingFailed': string
 				/**
-				 * ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？
+				 * 素材集に追加しようとするノーツが 20 を超えています。本当に追加しますか？
 			
-			ライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。
+			⚠素材集は譜面をアップロードする所ではないため、フル尺の譜面を追加しないでください！⚠
+			譜面をアップロードするには、「ヘルプ」をご参照ください。
 				 */
 				'uploadTooLongConfirm': string
 				/**
-				 * アップロードするノーツが選択されていません
+				 * 素材集に追加するノーツが選択されていません
 				 */
 				'uploadNotSelectedError': string
 				/**
-				 * アップロードしました
+				 * 素材を追加しました
 				 */
 				'uploadSuccess': string
 				/**
-				 * アップロードに失敗しました
+				 * 素材の追加が失敗しました
 				 */
 				'uploadFailed': string
 			}
@@ -551,7 +552,7 @@ export type Translation = {
 			 */
 			'imageTitle': string
 			/**
-			 * ライブラリ
+			 * 素材集
 			 */
 			'libraryTitle': string
 			/**
@@ -662,7 +663,7 @@ export type TranslationFunctions = {
 			 */
 			'file': () => LocalizedString
 			/**
-			 * ライブラリ (&L)
+			 * 素材集 (&L)
 			 */
 			'library': () => LocalizedString
 			/**
@@ -730,7 +731,7 @@ export type TranslationFunctions = {
 			 */
 			'listall': () => LocalizedString
 			/**
-			 * アップロード (&U)
+			 * 追加 (&U)
 			 */
 			'upload': () => LocalizedString
 			/**
@@ -1053,25 +1054,26 @@ export type TranslationFunctions = {
 			'noProjectOpened': () => LocalizedString
 			'library': {	
 				/**
-				 * ライブラリの読み込みに失敗しました。
+				 * 素材集の読み込みに失敗しました。
 				 */
 				'loadingFailed': () => LocalizedString
 				/**
-				 * ライブラリにアップロードするノーツが 20 を超えています。本当にアップロードしますか？
+				 * 素材集に追加しようとするノーツが 20 を超えています。本当に追加しますか？
 			
-			ライブラリにアップロードしても、PaletteWorks Editor 以外の所に反映されません。
+			⚠素材集は譜面をアップロードする所ではないため、フル尺の譜面を追加しないでください！⚠
+			譜面をアップロードするには、「ヘルプ」をご参照ください。
 				 */
 				'uploadTooLongConfirm': () => LocalizedString
 				/**
-				 * アップロードするノーツが選択されていません
+				 * 素材集に追加するノーツが選択されていません
 				 */
 				'uploadNotSelectedError': () => LocalizedString
 				/**
-				 * アップロードしました
+				 * 素材を追加しました
 				 */
 				'uploadSuccess': () => LocalizedString
 				/**
-				 * アップロードに失敗しました
+				 * 素材の追加が失敗しました
 				 */
 				'uploadFailed': () => LocalizedString
 			}
@@ -1184,7 +1186,7 @@ export type TranslationFunctions = {
 			 */
 			'imageTitle': () => LocalizedString
 			/**
-			 * ライブラリ
+			 * 素材集
 			 */
 			'libraryTitle': () => LocalizedString
 			/**
