@@ -111,7 +111,7 @@ const ko: Translation = {
 			noProjectOpened: '채보가 열려있지 않습니다.',
 			library: {
 				loadingFailed: '컬렉션을 불러오는 중 오류가 발생했습니다.',
-				uploadTooLongConfirm: '컬렉션에 업로드할 노트가 20개를 초과하였습니다. 정말 업로드하시겠습니까?\n\n⚠소재 컬렉션은 채보를 업로드하는 곳이 아니므로, 채보 전체를 추가하지 마십시오! ⚠\n채보를 업로드하려면 “도움말”을 참조하세요.',
+				uploadTooLongConfirm: '컬렉션에 업로드할 노트가 20개를 초과하였습니다. 정말 업로드하시겠습니까?\n\n⚠패턴 컬렉션은 채보를 업로드하는 곳이 아니므로, 채보 전체를 추가하지 마십시오! ⚠\n채보를 업로드하려면 “도움말”을 참조하세요.',
 				uploadNotSelectedError: '업로드할 노트를 선택하지 않았습니다.',
 				uploadSuccess: '업로드되었습니다.',
 				uploadFailed: '업로드 중 오류가 발생했습니다.',
