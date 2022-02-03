@@ -2,7 +2,7 @@
   export let value: string | number
   export let inputElement: HTMLInputElement | undefined = undefined
   export let disabled: boolean = false
-  export let type: 'text' | 'number' = 'text'
+  export let type: 'text' | 'number' | 'search' = 'text'
 </script>
 
 <div class={[$$props.class, "input-container"].join(' ')}>
@@ -11,6 +11,8 @@
     <input type="text" bind:value={value} bind:this={inputElement} on:keydown {disabled}>
   {:else if type === 'number'}
     <input type="number" bind:value={value} bind:this={inputElement} on:keydown {disabled}>
+  {:else if type === 'search'}
+    <input type="search" bind:value={value} bind:this={inputElement} on:keydown {disabled}>
   {/if}
   <slot name="tail"/>
   <slot name="action"></slot>

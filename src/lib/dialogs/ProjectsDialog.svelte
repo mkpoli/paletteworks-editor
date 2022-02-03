@@ -129,6 +129,7 @@
     </div>
     <TextInput
       class="search"
+      type="search"
       bind:value={searchKeyword}
     >
       <Icon slot="head" icon="ic:outline-search"/>
