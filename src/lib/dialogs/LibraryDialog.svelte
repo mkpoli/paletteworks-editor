@@ -221,7 +221,6 @@
     padding: 1em;
     display: grid;
     gap: 2em;
-    grid-template-columns: repeat(7, 3em);
     grid-template-areas:
       "h h . . . . x"
       "t t t t t t t"
@@ -248,6 +247,7 @@
 
   [slot=presentation] .items {
     grid-area: t;
+    width: clamp(50vw, 8em, 100vw);
     height: 50vh;
     overflow-y: auto;
     display: grid;
@@ -292,7 +292,7 @@
     border: none;
     border-radius: 0;
     box-shadow: none;
-    background: linear-gradient(122deg, rgba(255,87,171,1) 0%, rgba(207,50,168,1) 42%, rgba(199,64,255,1) 100%);
+    background: linear-gradient(160deg, rgba(255,87,171,1) 0%, rgba(204,54,114,1) 100%);
   }
 
   .image-container {
