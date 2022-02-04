@@ -12,7 +12,7 @@
   }
 </script>
 
-<div class={[$$props.class, "input-container"].join(' ')}>
+<div class={[$$props.class, "input-container"].join(' ')} on:click={() => { inputElement?.focus() }}>
   <slot name="head" />
   {#if type === 'number'}
     <input
