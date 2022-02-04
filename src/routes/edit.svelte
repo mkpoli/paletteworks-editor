@@ -238,7 +238,7 @@
       width: CANVAS_WIDTH,
       height: innerHeight,
       antialias: true,
-      resolution: RESOLUTION,
+      resolution: window.devicePixelRatio || RESOLUTION,
       backgroundAlpha: 0
     })
     ;(app.renderer as PIXI.Renderer).addSystem(EventSystem as unknown as PIXI.ISystemConstructor<PIXI.Renderer>, 'events')
