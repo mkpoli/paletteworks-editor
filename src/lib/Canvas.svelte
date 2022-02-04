@@ -938,8 +938,17 @@
   {maxMeasure}
 />
 
-<style>
-  .canvas-container {
+<style lang="postcss">
+  :global(html) {
+    height: -webkit-fill-available;
+  }
+
+  :global(body) {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  .canvas-container { 
     height: 100vh;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -955,6 +964,6 @@
     padding: 1em;
     display: flex;    
     flex-direction: column;
-    justify-content: end;
+    justify-content: flex-end;
   }
 </style>
