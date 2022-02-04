@@ -51,6 +51,8 @@
 
   let historyDiv: HTMLDivElement
 
+  let hidden: boolean = false
+
   $: if ($mutationHistory) {
     tick().then(() => {
       historyDiv.scrollTo(0, historyDiv.scrollHeight)
@@ -66,7 +68,14 @@
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`
   }
 </script>
-<div class="panel-container">
+<div class="panel-hider" class:hidden>
+  <div>
+    <button on:click={() => { hidden = !hidden }}>
+      <Icon icon={hidden ? 'codicon:triangle-left' : 'codicon:triangle-right'}></Icon>
+    </button>
+  </div>
+</div>
+<div class="panel-container" class:hidden>
   <div class="panel">
     <h2>{$LL.editor.panel.control()}</h2>
       <div style="display: flex; gap: 0.5em;">
@@ -243,6 +252,60 @@
 </div>
 
 <style>
+.panel-hider {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 1em;
+}
+
+.panel-hider > div > button {
+  appearance: none;
+  border: none;
+  background: none;
+  
+  padding: 0;
+  position: relative;
+  left: -0.5em;
+  height: 100%;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.panel-hider > div {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 7em;
+  width: 0;
+  text-align: center;
+  border-left: 1em solid rgba(0, 0, 0, 0.3);
+	border-top: 1em solid transparent;
+	border-bottom: 1em solid transparent;
+}
+
+.panel-hider > div:hover {
+  border-left: 1em solid rgba(0, 0, 0, 0.2);
+}
+
+.panel-hider.hidden > div {
+	border-top: 1em solid transparent;
+  border-right: 1em solid rgba(0, 0, 0, 0.3);
+	border-bottom: 1em solid transparent;
+  border-left: none;
+}
+
+.panel-hider.hidden > div > button {
+  left: 0.5em;
+}
+
+.panel-container.hidden {
+  margin-right: -100%;
+}
+
 :global(.statistics) {
   font-size: 1.2em;
   display: flex;
@@ -306,6 +369,7 @@ ul .value {
   grid-template: repeat(2, 1fr) / repeat(2, 1fr);
   height: 100vh;
   padding: 0.85em;
+  padding-left: 0.25em;
   gap: 0.65em 0.85em;
   overflow-y: auto;
   overflow-x: hidden;
