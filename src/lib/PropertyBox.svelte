@@ -256,8 +256,32 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 1em;
+
+  width: 2em;
 }
+
+.panel-hider > div {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+  height: 9em;
+  width: 0;
+  text-align: center;
+
+  --border-trep-height: 1.5em;
+
+  --border-rect: var(--border-trep-height) solid rgba(0, 0, 0, 0.3);
+  --border-rect-hover: var(--border-trep-height) solid rgba(0, 0, 0, 0.25);
+  --border-side: var(--border-trep-height) solid transparent;
+
+  border-left: var(--border-rect);
+	border-top: var(--border-side);
+	border-bottom:  var(--border-side);
+}
+
 
 .panel-hider > div > button {
   appearance: none;
@@ -266,44 +290,27 @@
   
   padding: 0;
   position: relative;
-  left: -0.5em;
+  left: calc(var(--border-trep-height) / -2);
   height: 100%;
 
-  justify-content: center;
-  align-items: center;
-}
-
-.panel-hider > div {
-  position: absolute;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 7em;
-  width: 0;
-  text-align: center;
-  border-left: 1em solid rgba(0, 0, 0, 0.3);
-	border-top: 1em solid transparent;
-	border-bottom: 1em solid transparent;
+  align-items: center;
 }
 
 .panel-hider > div:hover {
-  border-left: 1em solid rgba(0, 0, 0, 0.2);
+  border-left: var(--border-rect-hover);
 }
 
 .panel-hider.hidden > div {
-	border-top: 1em solid transparent;
-  border-right: 1em solid rgba(0, 0, 0, 0.3);
-	border-bottom: 1em solid transparent;
+	border-top: var(--border-side);
+  border-right: var(--border-rect);
+	border-bottom: var(--border-side);
   border-left: none;
 }
 
 .panel-hider.hidden > div > button {
   left: 0.5em;
-}
-
-.panel-container.hidden {
-  margin-right: -100%;
 }
 
 :global(.statistics) {
@@ -373,6 +380,14 @@ ul .value {
   gap: 0.65em 0.85em;
   overflow-y: auto;
   overflow-x: hidden;
+  transform: all 1s ease-in-out;
+}
+
+
+.panel-container.hidden {
+  width: 0;
+  overflow: hidden;
+  padding: 0;
 }
 
 @media (max-width: 1280px) {
