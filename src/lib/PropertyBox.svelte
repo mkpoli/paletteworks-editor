@@ -405,6 +405,7 @@ ul .value {
   gap: 1em;
   padding: 1em 1.5em;
   justify-content: flex-start;
+  max-width: 25em;
 }
 
 h2 {
