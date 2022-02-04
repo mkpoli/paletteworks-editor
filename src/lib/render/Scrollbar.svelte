@@ -2,7 +2,6 @@
   import { clamp } from '$lib/basic/math'
 
   import {
-    CANVAS_WIDTH,
     COLORS,
     MARGIN_BOTTOM,
     SCROLLBAR_WIDTH,
@@ -43,10 +42,13 @@
   let dragging = false
   let pointerOffset = 0
 
+  $: if (scrollbar) {
+    scrollbar.x = $position.containerWidth - SCROLLBAR_WIDTH
+  }
+
   onMount(() => {
     scrollbar = new PIXI.Container()
     scrollbar.interactive = true
-    scrollbar.x = CANVAS_WIDTH - SCROLLBAR_WIDTH
     scrollbar.hitArea = new PIXI.Rectangle(
       0,
       0,

@@ -27,21 +27,38 @@ export class PositionManager {
   laneAreaWidth: number
   measureHeight: number
   containerHeight: number
+  containerWidth: number
+  contanierLeft: number
 
-  constructor(measureHeight: number, containerHeight: number, zoom: number, laneWidth: number) {
+  constructor(measureHeight: number, containerHeight: number, containerWidth: number, zoom: number, laneWidth: number) {
     this.measureHeight = measureHeight
     this.containerHeight = containerHeight
+    this.containerWidth = containerWidth
     this.zoom = zoom
     this.laneWidth = laneWidth
     this.laneAreaWidth = laneWidth * LANE_COUNT
+
+    this.contanierLeft = (this.containerWidth / 2 - (this.laneAreaWidth + 2 * MARGIN) / 2)
   }
 
   calcX(lane: number): number {
-    return MARGIN + (lane - 1) * this.laneWidth
+    return MARGIN + this.contanierLeft + (lane - 1) * this.laneWidth
   }
   
   calcMidX(lane: number, width: number): number {
-    return MARGIN + (lane - 1 + width / 2) * this.laneWidth
+    return this.calcX(lane) + this.laneWidth * width / 2
+  }
+
+  calcFixedX(lane: number): number {
+    return MARGIN + (lane - 1) * this.laneWidth
+  }
+
+  calcFixedMidX(lane: number, width: number): number {
+    return this.calcFixedX(lane) + this.laneWidth * width / 2
+  }
+
+  calcLeft(): number {
+    return this.calcX(1)
   }
 
   calcDistanceY(ticks: number): number {
@@ -57,7 +74,7 @@ export class PositionManager {
   }
 
   calcRawLane(x: number): number {
-    return (x - MARGIN) / this.laneWidth + 1
+    return (x - MARGIN - this.contanierLeft) / this.laneWidth + 1
   }
 
   calcLane(x: number): number {

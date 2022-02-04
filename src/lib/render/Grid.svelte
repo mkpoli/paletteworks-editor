@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
     COLORS,
-    MARGIN,
     MARGIN_BOTTOM,
     TEXT_MARGIN,
     TICK_PER_BEAT,
@@ -52,6 +51,8 @@
     graphics.removeChildren()
     graphics.clear()
 
+    const left = position.calcX(1)
+
     // Draw beat / measures
     let accumulatedTicks = 0
     let accumulatedMeasures = 0
@@ -69,8 +70,8 @@
         const y = position.calcY(startTick + tick)
         if (tick % (beatsPerMeasure * TICK_PER_BEAT) === 0) {
           graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
-          graphics.moveTo(MARGIN, y)
-          graphics.lineTo(MARGIN + position.laneAreaWidth, y)
+          graphics.moveTo(left, y)
+          graphics.lineTo(left + position.laneAreaWidth, y)
 
           // const number = (accumulatedBeats + i) / beatsPerMeasure
           const text = new PIXI.BitmapText(`#${accumulatedMeasures + 1}`, {
@@ -78,26 +79,26 @@
             tint: 0xFFFFFF,
           })
           accumulatedMeasures += 1
-          text.x = MARGIN - TEXT_MARGIN
+          text.x = left - TEXT_MARGIN
           text.y = y
           text.anchor.x = 1
           text.anchor.y = 0.5
           graphics.addChild(text)
         } else if (tick < maxT && tick % (TICK_PER_BEAT * beatsPerMeasure / p) === 0) {
           graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
-          graphics.moveTo(MARGIN + $preferences.laneWidth, y)
-          graphics.lineTo(MARGIN + position.laneAreaWidth - $preferences.laneWidth, y)
+          graphics.moveTo(left + $preferences.laneWidth, y)
+          graphics.lineTo(left + position.laneAreaWidth - $preferences.laneWidth, y)
         } else if (tick < maxT && snapTo < 192 && tick % (TICK_PER_BEAT * beatsPerMeasure / p / snapTo * 4) === 0) {
           graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
-          graphics.moveTo(MARGIN + $preferences.laneWidth, y)
-          graphics.lineTo(MARGIN + position.laneAreaWidth - $preferences.laneWidth, y)
+          graphics.moveTo(left + $preferences.laneWidth, y)
+          graphics.lineTo(left + position.laneAreaWidth - $preferences.laneWidth, y)
         }
       }
     })
 
     // Draw lanes
     for (let i = 1; i < 14; i++) {
-      const x = MARGIN + i * $preferences.laneWidth
+      const x = left + i * $preferences.laneWidth
       const primary = i % 2 !== 0
 
       if (primary) {

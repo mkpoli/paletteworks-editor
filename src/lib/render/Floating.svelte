@@ -13,7 +13,6 @@
   import COLORS from '$lib/colors'
   import {
     TEXT_MARGIN,
-    MARGIN,
     Z_INDEX,
   } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'
@@ -98,6 +97,8 @@
     graphics.clear()
     graphics.removeChildren()
 
+    const x = $position.calcX(1)
+
     switch (currentMode) {
       case 'bpm': {
         const text = new PIXI.BitmapText(hasBPM ? `↑ BPM` : `+ BPM`, {
@@ -105,12 +106,12 @@
           tint: COLORS.COLOR_BPM,
         })
         text.anchor.set(0.5, 0.5)
-        text.setTransform(MARGIN + $position.laneAreaWidth + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
+        text.setTransform(x + $position.laneAreaWidth + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
         graphics.addChild(text)
 
         if (!hasBPM) {
           graphics.lineStyle(2, COLORS.COLOR_BPM, 1)
-          drawDashedLine(graphics, MARGIN, y, MARGIN + $position.laneAreaWidth, y)
+          drawDashedLine(graphics, x, y, x + $position.laneAreaWidth, y)
         }
         break
       }
@@ -120,12 +121,12 @@
           tint: COLORS.COLOR_TIME_SIGNATURE,
         })
         text.anchor.set(0.5, 0.5)
-        text.setTransform(MARGIN + $position.laneAreaWidth + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
+        text.setTransform($position.calcX(1) + $position.laneAreaWidth + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
         graphics.addChild(text)
 
         if (!hasBPM) {
           graphics.lineStyle(2, COLORS.COLOR_TIME_SIGNATURE, 1)
-          drawDashedLine(graphics, MARGIN, y, MARGIN + $position.laneAreaWidth, y)
+          drawDashedLine(graphics, x, y, x + $position.laneAreaWidth, y)
         }
         break
       }

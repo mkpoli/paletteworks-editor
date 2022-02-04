@@ -33,12 +33,14 @@
       }
     })
 
+    const left = position.calcLeft()
+
     skills.forEach((skill) => {
       const sprite = skillSprites.get(skill) ?? skillSprites.set(skill, new PIXI.Sprite(TEXTURE)).get(skill)!
       sprite.scale.set(0.5)
       sprite.anchor.set(0, 0.5)
       sprite.zIndex = Z_INDEX.GAMESCRIPT
-      sprite.x = MARGIN + position.laneAreaWidth + SKILL_GAP
+      sprite.x = left + position.laneAreaWidth + SKILL_GAP
       sprite.y = position.calcY(skill)
       mainContainer.addChild(sprite)
     })

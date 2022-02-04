@@ -28,11 +28,12 @@
 
   // Constants
   import {
-    CANVAS_MINIMAP_WIDTH,
     COLORS,
     MAIN_WIDTH,
-    MARGIN,
     MARGIN_BOTTOM,
+    MINIMAP_RESOLUTION,
+    MINIMAP_WIDTH,
+    SCROLLBAR_WIDTH,
     TICK_PER_BEAT,
     TICK_PER_MEASURE,
     Z_INDEX,
@@ -54,11 +55,10 @@
   import { easeInQuad, easeOutQuad, lerp } from '$lib/basic/math'
   import { calcNoteHeight } from './note'
 
-  const MINIMAP_RESOLUTION = 0.2
   $: minimapRect = new PIXI.Rectangle(
-    CANVAS_MINIMAP_WIDTH - MAIN_WIDTH * MINIMAP_RESOLUTION,
+    $position.containerWidth - SCROLLBAR_WIDTH - MINIMAP_WIDTH,
     0,
-    MAIN_WIDTH * MINIMAP_RESOLUTION,
+    MINIMAP_WIDTH,
     0.5 * $position.containerHeight
   )
 
@@ -66,9 +66,7 @@
     container = new PIXI.Container()
   
     container.interactive = true
-    container.hitArea = minimapRect
     container.zIndex = Z_INDEX.MINIMAP
-    container.interactive = true
     container.addEventListener('click', (event) => {
       const tick = $position.calcRawTick2((event.global.y - instance.y) / MINIMAP_RESOLUTION + $scrollY)
       dispatch('scroll', tick)
@@ -88,7 +86,7 @@
     arrows: (Note & IDirectional & ICritical)[] = []
 
     drawArrow(position: PositionManager, note: Note & IDirectional & ICritical) {
-      const x = position.calcMidX(note.lane, note.width)
+      const x = position.calcFixedMidX(note.lane, note.width)
       const y = position.calcY(note.tick) - calcNoteHeight() / 2
       this.lineStyle(15, 'critical' in note && note.critical ? 0xf8be3a : 0xee7f9e)
   
@@ -134,7 +132,7 @@
       const height = calcNoteHeight()
 
       this.drawRoundedRect(
-        position.calcX(note.lane),
+        position.calcFixedX(note.lane),
         position.calcY(note.tick) - height / 2,
         $preferences.laneWidth * note.width,
         height,
@@ -157,12 +155,12 @@
 
     drawPath(notes: SlideNote[], critical: boolean) {
       notes.pairwise().forEach(([origin, target]) => {
-        const origin_x_left = $position.calcX(origin.lane)
-        const origin_x_right = $position.calcX(origin.lane) + origin.width * $preferences.laneWidth
+        const origin_x_left = $position.calcFixedX(origin.lane)
+        const origin_x_right = $position.calcFixedX(origin.lane) + origin.width * $preferences.laneWidth
         const origin_y = $position.calcY(origin.tick)
 
-        const target_x_left = $position.calcX(target.lane)
-        const target_x_right = $position.calcX(target.lane) + target.width * $preferences.laneWidth
+        const target_x_left = $position.calcFixedX(target.lane)
+        const target_x_right = $position.calcFixedX(target.lane) + target.width * $preferences.laneWidth
         const target_y = $position.calcY(target.tick)
 
         const STEPS = Math.ceil((origin_y - target_y) / 10)
@@ -235,18 +233,13 @@
     constructor() {
       super()
 
-      this.x = CANVAS_MINIMAP_WIDTH - MAIN_WIDTH * MINIMAP_RESOLUTION
       this.scale.x = MINIMAP_RESOLUTION
       this.scale.y = MINIMAP_RESOLUTION
 
-      const mask = new PIXI.Graphics()
-      mask.beginFill(0xffffff)
-      mask.drawRect(minimapRect.x, minimapRect.y, minimapRect.width, minimapRect.height)
-      this.mask = mask
+      this.mask = new PIXI.Graphics()
 
       this.screenArea = new PIXI.Graphics()
       this.addChild(this.screenArea)
-
 
       this.notes = new MinimapNoteRenderer()
       this.addChild(this.notes)
@@ -255,19 +248,28 @@
       this.addChild(this.grid)
     }
 
+    updateMask(rect: PIXI.Rectangle) {
+      const mask = this.mask as PIXI.Graphics
+      mask.clear()
+      mask.beginFill(0xffffff)
+      mask.drawRect(rect.x, rect.y, rect.width, rect.height)
+    }
+
     drawScreenArea(position: PositionManager, scrollY: number) {
       this.screenArea.clear()
       this.screenArea.beginFill(0xffffff, 0.1)
       this.screenArea.drawRect(
         0,
         scrollY,
-        MAIN_WIDTH,
+        position.calcLeft() + MAIN_WIDTH,
         position.containerHeight
       )
       this.screenArea.endFill()
     }
 
     drawGrid(position: PositionManager) {
+      const left = position.calcFixedX(1)
+
       this.grid.clear()
       // Draw beat / measures
       let accumulatedTicks = 0;
@@ -282,15 +284,15 @@
           const y = position.calcY(startTick + tick)
           if (tick % (beatsPerMeasure * TICK_PER_BEAT) === 0) {
             this.grid.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
-            this.grid.moveTo(MARGIN, y)
-            this.grid.lineTo(MARGIN + position.laneAreaWidth, y)
+            this.grid.moveTo(left, y)
+            this.grid.lineTo(left + position.laneAreaWidth, y)
           }
         }
       })
 
       // Draw lanes
       for (let i = 1; i < 14; i++) {
-        const x = MARGIN + i * $preferences.laneWidth
+        const x = left + i * $preferences.laneWidth
         if (i % 2 !== 0) {
           this.grid.lineStyle(2, COLORS.COLOR_LANE_PRIMARY, 1, 0.5)
           this.grid.moveTo(x, position.calcY(0) + MARGIN_BOTTOM)
@@ -300,9 +302,12 @@
     }
   }
 
+  $: if (container && minimapRect) container.hitArea = minimapRect
+  $: if (instance && minimapRect) instance.updateMask(minimapRect)
   $: if (instance) instance.notes.drawNotes($position, singles, slides)
   $: if (instance) instance.drawGrid($position)
   $: if (instance) instance.pivot.y = $scrollY - MARGIN_BOTTOM + 30
   $: if (instance) instance.drawScreenArea($position, $scrollY)
+  $: if (instance) instance.x = $position.containerWidth - MINIMAP_WIDTH
   $: if (instance) instance.y = $position.containerHeight / 8 - 0.01 * $scrollY * 1 / $position.zoom
 </script>

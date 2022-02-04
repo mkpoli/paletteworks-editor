@@ -88,7 +88,6 @@
 
   // Constants
   import {
-    CANVAS_WIDTH,
     TICK_PER_MEASURE,
     TICK_PER_BEAT,
     RESOLUTION,
@@ -96,6 +95,7 @@
     ZOOM_DEFAULT,
     ZOOM_MIN,
     MEASURE_HEIGHT,
+    MARGIN,
   } from '$lib/consts'
 
   // Functions
@@ -152,9 +152,6 @@
     return [...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
   }
 
-  // Resize on window resize
-  $: app?.renderer.resize(CANVAS_WIDTH, innerHeight)
-  
   // Timing (BPM / Measures / Ticks)
   $: $sortedBPMs = [...bpms].sort(([tickA,], [tickB,]) => tickA - tickB)
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
@@ -202,7 +199,7 @@
   }
 
   // Textures
-  import { cursor } from '$lib/position'
+  import { cursor, position } from '$lib/position'
 
   let TEXTURES: Record<string, PIXI.Texture> = {}
   setContext('TEXTURES', TEXTURES)
@@ -235,8 +232,6 @@
     delete PIXI.Renderer.__plugins.interaction
 
     app = new PIXI.Application({
-      width: CANVAS_WIDTH,
-      height: innerHeight,
       antialias: true,
       resolution: window.devicePixelRatio || RESOLUTION,
       backgroundAlpha: 0
@@ -768,11 +763,13 @@
 
   async function renderPreview(): Promise<Blob> {
     const renderTexture = PIXI.RenderTexture.create({
-      width: CANVAS_WIDTH,
-      height: innerHeight,
-      resolution: 0.25
+      width: $position.laneAreaWidth + 2 * MARGIN,
+      height: $position.containerHeight,
+      resolution: 0.5
     })
-    app.renderer.render(app.stage, { renderTexture })
+    app.renderer.render(app.stage, {
+      renderTexture, transform: new PIXI.Matrix(undefined, undefined, undefined, undefined, - $position.calcLeft() + MARGIN, 0)
+    })
     const canvas = app.renderer.plugins.extract.canvas(renderTexture)
     return await new Promise(resolve => canvas.toBlob(resolve))
   }
@@ -993,7 +990,7 @@
 
 <input type="file" bind:files={scoreFiles} style="display: none" bind:this={fileInput} accept=".sus" />
 
-<main class="cursor-select" style={`grid-template-columns: auto ${CANVAS_WIDTH}px auto auto;`}>
+<main class="cursor-select">
   {#if app}
     <ToolBox
       bind:currentMode
@@ -1470,7 +1467,7 @@
 
   /* Main */
   main {
-    display: grid;
+    display: flex;
     height: 100vh;
   }
 

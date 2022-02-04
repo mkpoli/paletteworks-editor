@@ -48,19 +48,19 @@
     mainContainer.removeChild(graphics)
   })
 
-  $: graphics && drawPlayhead($position.calcY(currentTick))
+  $: graphics && drawPlayhead($position.calcX(1), $position.calcY(currentTick))
 
   import playheadImage from '$assets/playhead.png'
   import { drawDashedLine } from "./renderer"
-  function drawPlayhead(y: number) {
+  function drawPlayhead(x: number, y: number) {
     graphics.clear()
     graphics.removeChildren()
     graphics.lineStyle(2, COLORS.COLOR_PLAYHEAD, 1)
     const playhead = PIXI.Sprite.from(playheadImage)
     playhead.anchor.set(1, 0.5)
-    playhead.setTransform(MARGIN, y)
+    playhead.setTransform(x, y)
     graphics.addChild(playhead)
-    drawDashedLine(graphics, MARGIN, y, MARGIN + $position.laneAreaWidth, y, 2, 2)
+    drawDashedLine(graphics, x, y, x + $position.laneAreaWidth, y, 2, 2)
     return 
   }
 </script>

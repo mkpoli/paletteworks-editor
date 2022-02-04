@@ -2,7 +2,6 @@
   // Constants
   import {
     COLORS,
-    MARGIN,
     TEXT_MARGIN,
     TICK_PER_BEAT,
     Z_INDEX
@@ -14,7 +13,7 @@
 
   // Types
   import type PIXI from 'pixi.js'
-import { preferences } from '$lib/preferences';
+  import { preferences } from '$lib/preferences'
 
   // Props
   export let bpms: Map<number, number>
@@ -43,14 +42,16 @@ import { preferences } from '$lib/preferences';
     graphics.clear()
     graphics.removeChildren()
 
+    const left = position.calcX(1)
+
     graphics.lineStyle(1, COLORS.COLOR_BPM, 0.95)
     // Draw BPMs
     bpms.forEach((bpm, tick) => {
       const newY = position.calcY(tick)
 
       // Draw BPM LINES
-      graphics.moveTo(MARGIN, newY)
-      graphics.lineTo(MARGIN + position.laneAreaWidth, newY)
+      graphics.moveTo(left, newY)
+      graphics.lineTo(left + position.laneAreaWidth, newY)
 
       // Draw BPM Texts
       const text = graphics.addChild(new PIXI.BitmapText(`♩=${bpm}`, {
@@ -59,7 +60,7 @@ import { preferences } from '$lib/preferences';
       }))
       text.anchor.set(0.5, 0.5)
 
-      text.setTransform(MARGIN + position.laneAreaWidth + $preferences.laneWidth + TEXT_MARGIN, newY)
+      text.setTransform(left + position.laneAreaWidth + $preferences.laneWidth + TEXT_MARGIN, newY)
     })
 
     graphics.lineStyle(1, COLORS.COLOR_TIME_SIGNATURE, 0.95)
@@ -72,15 +73,15 @@ import { preferences } from '$lib/preferences';
       accumulatedTicks += (nextMeasure - measure) * (beatPerMeasure / beatLength * 4) * TICK_PER_BEAT
  
       // Draw Time Signature LINES
-      graphics.moveTo(MARGIN, newY)
-      graphics.lineTo(MARGIN + position.laneAreaWidth, newY)
+      graphics.moveTo(left, newY)
+      graphics.lineTo(left + position.laneAreaWidth, newY)
       // Draw Time Signature Texts
       const text = graphics.addChild(new PIXI.BitmapText(`${beatPerMeasure}/${beatLength}`, {
         tint: COLORS.COLOR_TIME_SIGNATURE,
         fontName: 'Font',
       }))
       text.anchor.set(0.5, 0.5)
-      text.setTransform(MARGIN - 2 * TEXT_MARGIN, newY - 30)
+      text.setTransform(left - 2 * TEXT_MARGIN, newY - 30)
     })
   }
 </script>

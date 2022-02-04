@@ -26,7 +26,7 @@
 
   // Constants
   import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, CANVAS_WIDTH, SCROLLBAR_WIDTH, MAIN_WIDTH } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, SCROLLBAR_WIDTH, MARGIN, MAIN_WIDTH, MINIMAP_WIDTH } from '$lib/consts'
 
   // Functions
   import { clamp, snap } from '$lib/basic/math'
@@ -84,6 +84,12 @@
   export let fever: FeverType
   export let skills: Set<number>
 
+    
+  // Resize on window resize
+  let canvasWidth: number = 0
+  let minWidth: number = 700
+  $: app?.renderer.resize(canvasWidth, innerHeight)
+
   // Generate Note Textures
   const noteTextures = writable<Record<Type, PIXI.Texture[]>>()
   
@@ -124,7 +130,16 @@
   $: measureHeight = MEASURE_HEIGHT * zoom
 
   import { PositionManager, position, pointer, cursor, placing } from '$lib/position'
-  $: $position = new PositionManager(measureHeight, innerHeight, zoom, $preferences.laneWidth)
+
+  let screenHeight: number
+  let screenWidth: number
+
+  app.renderer.on('resize', (width, height) => {
+    screenWidth = width
+    screenHeight = height
+  })
+
+  $: $position = new PositionManager(measureHeight, screenHeight, screenWidth, zoom, $preferences.laneWidth)
   $: $cursor = {
     lane: $position.calcLane($pointer.x),
     tick: timeSignatureManager.snap($position.calcScrolledTick($pointer.y, scrollTick), snapTo),
@@ -286,7 +301,19 @@
   let grabbing = false
   let grabbingLastY = 0
 
+  $: right = $position.calcLeft() + $position.laneAreaWidth + MARGIN
+
+  function setMinWidth() {
+    minWidth = ($position.calcLeft() + $position.laneAreaWidth + MINIMAP_WIDTH + SCROLLBAR_WIDTH) / app.renderer.resolution
+  }
+
   onMount(() => {
+    app.renderer.on('resize', () => {
+      setMinWidth()
+    })
+
+    setMinWidth()
+
     app.renderer.events.cursorStyles['move'] = CURSOR_STYLES.move
     app.renderer.events.cursorStyles['ew-resize'] = CURSOR_STYLES.resize
     app.renderer.events.cursorStyles['grab'] = CURSOR_STYLES.grab
@@ -300,7 +327,7 @@
       }, 150)
       clickedOnNote = false
 
-      if ($pointer.x > MAIN_WIDTH) {
+      if ($pointer.x > right) {
         return
       }
 
@@ -355,7 +382,7 @@
     })
 
     app.renderer.view.addEventListener('pointermove', () => {
-      if ($pointer.x > MAIN_WIDTH) {
+      if ($pointer.x > right) {
         return
       }
 
@@ -397,7 +424,7 @@
       clearTimeout(clickTimer)
       isLongPress = false
 
-      if ($pointer.x > MAIN_WIDTH) {
+      if ($pointer.x > right) {
         return
       }
      
@@ -514,7 +541,7 @@
     })
 
     app.renderer.view.addEventListener('click', async (event: MouseEvent) => {
-      if ($pointer.x > MAIN_WIDTH) {
+      if ($pointer.x > right) {
         return
       }
 
@@ -631,7 +658,8 @@
 
 <div
   class="canvas-container"
-  style={`width: ${CANVAS_WIDTH}px;`}
+  style={`min-width: ${minWidth}px;`}
+  bind:clientWidth={canvasWidth}
 >
   <div
     bind:this={canvasContainer}
