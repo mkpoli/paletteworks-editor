@@ -389,7 +389,7 @@ ul .value {
   flex-direction: column;
   gap: 1em;
   padding: 1em 1.5em;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 h2 {
