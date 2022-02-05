@@ -433,6 +433,10 @@
         return
       }
 
+      if (event.button !== MOUSE_BUTTON.LEFT) {
+        return
+      }
+
       if (!$moving && !$resizing) {
         const { lane, width } = $placing
         if (currentMode === 'tap') {
