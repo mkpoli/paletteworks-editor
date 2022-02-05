@@ -109,6 +109,14 @@ const ko: Translation = {
 			nothingToRedo: '다시 실행할 작업이 없습니다.',
 			projectDeleted: '채보 {name} 가 삭제되었습니다.',
 			noProjectOpened: '채보가 열려있지 않습니다.',
+			confirm: '정말 실행하시겠습니까?',
+			database: {
+				confirmImport: '정말 데이터베이스를 가져오시겠습니까? 모든 데이터가 덮어씁니다.',
+				importSuccess: '데이터베이스를 가져왔습니다.',
+				importFailed: '데이터베이스 가져오기에 실패했습니다.',
+				exportSuccess: '데이터베이스를 내보냈습니다.',
+				exportFailed: '데이터베이스 내보내기에 실패했습니다.',
+			},			
 			library: {
 				loadingFailed: '컬렉션을 불러오는 중 오류가 발생했습니다.',
 				uploadTooLongConfirm: '컬렉션에 업로드할 노트가 20개를 초과하였습니다. 정말 업로드하시겠습니까?\n\n⚠패턴 컬렉션은 채보를 업로드하는 곳이 아니므로, 채보 전체를 추가하지 마십시오! ⚠\n채보를 업로드하려면 “도움말”을 참조하세요.',

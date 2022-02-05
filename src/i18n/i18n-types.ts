@@ -414,6 +414,32 @@ export type Translation = {
 			 * 開かれている譜面はありません
 			 */
 			'noProjectOpened': string
+			/**
+			 * 本当に実行しますか？
+			 */
+			'confirm': string
+			'database': {	
+				/**
+				 * 本当にデータベースをインポートしますか？すべてのデータが上書きされます。
+				 */
+				'confirmImport': string
+				/**
+				 * データベースをインポートしました
+				 */
+				'importSuccess': string
+				/**
+				 * データベースのインポートに失敗しました
+				 */
+				'importFailed': string
+				/**
+				 * データベースをエクスポートしました
+				 */
+				'exportSuccess': string
+				/**
+				 * データベースのエクスポートに失敗しました
+				 */
+				'exportFailed': string
+			}
 			'library': {	
 				/**
 				 * 素材集の読み込みに失敗しました。
@@ -1052,6 +1078,32 @@ export type TranslationFunctions = {
 			 * 開かれている譜面はありません
 			 */
 			'noProjectOpened': () => LocalizedString
+			/**
+			 * 本当に実行しますか？
+			 */
+			'confirm': () => LocalizedString
+			'database': {	
+				/**
+				 * 本当にデータベースをインポートしますか？すべてのデータが上書きされます。
+				 */
+				'confirmImport': () => LocalizedString
+				/**
+				 * データベースをインポートしました
+				 */
+				'importSuccess': () => LocalizedString
+				/**
+				 * データベースのインポートに失敗しました
+				 */
+				'importFailed': () => LocalizedString
+				/**
+				 * データベースをエクスポートしました
+				 */
+				'exportSuccess': () => LocalizedString
+				/**
+				 * データベースのエクスポートに失敗しました
+				 */
+				'exportFailed': () => LocalizedString
+			}
 			'library': {	
 				/**
 				 * 素材集の読み込みに失敗しました。

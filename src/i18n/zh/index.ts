@@ -109,6 +109,14 @@ const zh: Translation = {
 			nothingToRedo: '沒有可重做的操作',
 			projectDeleted: '譜面 {name} 已刪除',
 			noProjectOpened: '沒有打開的譜面',
+			confirm: '您真的確定嗎？',
+			database: {
+				confirmImport: '您確定要導入資料庫嗎？所有的資料將被覆蓋。',
+				importSuccess: '資料庫導入成功',
+				importFailed: '資料庫導入失敗',
+				exportSuccess: '資料庫導出成功',
+				exportFailed: '資料庫導出失敗',
+			},
 			library: {
 				loadingFailed: '載入梗庫時出錯',
 				uploadTooLongConfirm: '要上傳到梗庫的音符數量超過 20。您確定要上傳嗎？\n\n⚠梗庫不是上傳譜面的地方、請不要把完整譜面上傳到這裏！⚠\n如果您想上傳譜面，請參考「幫助」。',

@@ -109,6 +109,14 @@ const en: Translation = {
 			nothingToRedo: 'Nothing to redo',
 			projectDeleted: 'Project {name} is deleted',
 			noProjectOpened: 'No project is opened',
+			confirm: 'Are you really sure?',
+			database: {
+				confirmImport: 'Do you really want to import the database file? All current data will be lost.',
+				importSuccess: 'Successfully imported',
+				importFailed: 'Import failed',
+				exportSuccess: 'Successfully exported',
+				exportFailed: 'Export failed',
+			},
 			library: {
 				loadingFailed: 'Failed to load library.',
 				uploadTooLongConfirm: 'The notes you are uploading are more than 20. Do you really want to upload them?\n\n⚠ DO NOT upload the full scores here. This is not for uploading scores！ ⚠\nIf you want to upload a score, please refer to “Help”.',

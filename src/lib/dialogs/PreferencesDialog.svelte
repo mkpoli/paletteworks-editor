@@ -16,11 +16,13 @@
 
   export let opened: boolean
   import { db } from '$lib/database'
+  import { exportDB, importInto } from 'dexie-export-import'
 
   import toast from "$lib/ui/toast"
 
   import { preferences as _preferences } from '$lib/preferences'
   import type { Preferences } from '$lib/preferences'
+  import { download, dropHandler } from '$lib/basic/file'
 
   let preferences: Preferences
 </script>
@@ -29,7 +31,23 @@
   bind:opened
   on:opened={() => { preferences = $_preferences }}
 >
-  <div slot="presentation">
+  <div
+    slot="presentation"
+    on:dragover|preventDefault
+    on:drop|preventDefault={dropHandler('application/json', (file) => {
+      if (!confirm($LL.editor.messages.database.confirmImport())) return
+      if (!confirm($LL.editor.messages.confirm())) return
+      importInto(db, file, {
+        clearTablesBeforeImport: true,
+      }).then(() => {
+        toast.success($LL.editor.messages.database.importSuccess())
+        dispatch('cancel')
+      }).catch((err) => {
+        toast.error($LL.editor.messages.database.importFailed())
+        console.error(err)
+      })
+    }, () => { toast.error($LL.editor.messages.unknownFileType()) })}
+  >
     {#if preferences}
       <h2>{$LL.editor.dialog.preferencesTitle()}</h2>
       <div class="close">
@@ -56,8 +74,24 @@
         </div>
       </div>
       <Button
+        class="export"
+        icon="mdi:database-export-outline"
+        on:click={async () => {
+          try {
+            const blob = await exportDB(db)
+            download(blob, 'db.json')
+            toast.success($LL.editor.messages.database.exportSuccess())
+          } catch (error) {
+            toast.error($LL.editor.messages.database.exportFailed())
+            console.log(error)
+          }
+        }}
+      >
+        {$LL.editor.dialog.export()}
+      </Button>
+      <Button
         class="ok"
-        icon={'ic:sharp-edit'}
+        icon="ic:sharp-edit"
         on:click={() => {
           Object.entries(preferences).forEach(([key, value]) => {
             db.preferences.put({ key, value })
@@ -86,7 +120,7 @@
       "t t t t t t"
       "t t t t t t"
       "t t t t t t"
-      ". . . . o o"
+      "e e . . o o"
   }
 
   .form {
@@ -118,6 +152,10 @@
   [slot=presentation] :global(.ok) {
     grid-area: o;
     background: linear-gradient(180deg, #009C70 0%, #008080 100%);
+  }
+
+  [slot=presentation] :global(.export) {
+    grid-area: e;
   }
 
   .close {

@@ -109,6 +109,14 @@ const ja: BaseTranslation = {
 			nothingToRedo: 'やり直す操作はもうありません',
 			projectDeleted: '譜面 {name:string} を削除しました',
 			noProjectOpened: '開かれている譜面はありません',
+			confirm: '本当に実行しますか？',
+			database: {
+				confirmImport: '本当にデータベースをインポートしますか？すべてのデータが上書きされます。',
+				importSuccess: 'データベースをインポートしました',
+				importFailed: 'データベースのインポートに失敗しました',
+				exportSuccess: 'データベースをエクスポートしました',
+				exportFailed: 'データベースのエクスポートに失敗しました',
+			},
 			library: {
 				loadingFailed: '素材集の読み込みに失敗しました。',
 				uploadTooLongConfirm: '素材集に追加しようとするノーツが 20 を超えています。本当に追加しますか？\n\n⚠素材集は譜面をアップロードする所ではないため、フル尺の譜面を追加しないでください！⚠\n譜面をアップロードするには、「ヘルプ」をご参照ください。',
