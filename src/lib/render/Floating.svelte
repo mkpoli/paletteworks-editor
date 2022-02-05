@@ -22,13 +22,13 @@
   // Props
   export let currentMode: Mode
   export let bpms: Map<number, number>
-  export let hoveringNote: NoteType | null
 
   // Components
   import Note from '$lib/render/Note.svelte'
 
   // Stores
   import { pointer, cursor } from '$lib/position'
+  import { hoveringNote } from '$lib/editing/selection'
 
   // Functions
   import { hasFlick } from '$lib/score/beatmap'
@@ -133,11 +133,11 @@
     }
   }
 
-  $: lane = hoveringNote ? hoveringNote.lane : $placing.lane
-  $: width = hoveringNote ? hoveringNote.width : $placing.width
-  $: tick = hoveringNote ? hoveringNote.tick : $cursor.tick
+  $: lane = $hoveringNote ? $hoveringNote.lane : $placing.lane
+  $: width = $hoveringNote ? $hoveringNote.width : $placing.width
+  $: tick = $hoveringNote ? $hoveringNote.tick : $cursor.tick
 
-  $: hoveringNoteFlick = hoveringNote && hasFlick(hoveringNote) ? hoveringNote.flick : 'no'
+  $: hoveringNoteFlick = $hoveringNote && hasFlick($hoveringNote) ? $hoveringNote.flick : 'no'
   $: flick = currentMode === 'flick'
           ? FLICK_TYPES.rotateNext(hoveringNoteFlick)
           : hoveringNoteFlick

@@ -631,7 +631,8 @@
     onresizeend()
   }
 
-  let hoveringNote: NoteType | null = null
+  import { hoveringNote } from '$lib/editing/selection'
+  $: dbg('$hoveringNote', `(${$hoveringNote?.lane}, ${$hoveringNote?.tick})`)
 
   function onresizeend() {
     if ($resizingNotes.every((note) => {
@@ -722,8 +723,8 @@
             }}
             on:rightclick={(event) => { currentNote = event.detail.note }}
             on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
-            on:pointerenter={() => { hoveringNote = note }}
-            on:pointerleave={() => { hoveringNote = null }}
+            on:pointerenter={() => { $hoveringNote = note }}
+            on:pointerleave={() => { $hoveringNote = null }}
             moving={isLongPress && $moving && $movingNotes.includes(note)}
             resizing={isLongPress && $resizing && $resizingNotes.includes(note)}
           />
@@ -886,8 +887,8 @@
             on:pathrightclick={(event) => { currentSlide = event.detail.slide }}
             on:rightclick={(event) => { currentNote = event.detail.note }}
             on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
-            on:pointerenter={({ detail: { note } }) => { hoveringNote = note}}
-            on:pointerleave={() => { hoveringNote = null}}
+            on:pointerenter={({ detail: { note } }) => { $hoveringNote = note}}
+            on:pointerleave={() => { $hoveringNote = null}}
           />
         {/each}
       {/if}
@@ -896,7 +897,6 @@
       <Floating
         {bpms}
         {currentMode}
-        {hoveringNote}
       />
 
       <!-- STACKED AREAS -->

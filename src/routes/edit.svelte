@@ -127,7 +127,7 @@
   // $: empty = singles.length === 0 && slides.length === 0 && (bpms.size === 0 || bpms.size === 1 && bpms.get(0) === 120)
 
   // Stores
-  import { selectedNotes } from '$lib/editing/selection'
+  import { hoveringNote, selectedNotes } from '$lib/editing/selection'
   import { clipboardSlides, clipboardSingles, clipboardOffsets, pasted, flippasted } from '$lib/editing/clipboard'
 
   // Sound
@@ -1374,7 +1374,13 @@
   on:open={onopen}
   on:new={onnewproject}
   on:switch={({ detail: mode }) => { currentMode = mode }}
-  on:delete={() => { deleteNotes($selectedNotes) }}
+  on:delete={() => {
+    if ($selectedNotes.length > 0) {
+      deleteNotes($selectedNotes)
+    } else if ($hoveringNote) {
+      deleteNotes([$hoveringNote])
+    }
+  }}
   on:copy={() => { copyNotes($selectedNotes) }}
   on:cut={() => { cutNotes($selectedNotes) }}
   on:paste={onpaste}
