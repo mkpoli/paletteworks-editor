@@ -703,6 +703,8 @@
                 case 'select': {
                   if ($ctrlKey) {
                     dispatch('select', { notes: [note], overwrite: false })
+                  } else if ($altKey) {
+                    dispatch('delete', { notes: [note] })
                   }
                   break
                 }
@@ -744,6 +746,8 @@
                 case 'select': {
                   if ($ctrlKey) {
                     dispatch('select', { notes: [note], overwrite: false })
+                  } else if ($altKey) {
+                    dispatch('delete', { notes: [note] })
                   }
                   break
                 }
@@ -781,6 +785,8 @@
                 case 'select': {
                   if ($ctrlKey) {
                     dispatch('select', { notes: [note], overwrite: false })
+                  } else if ($altKey) {
+                    dispatch('delete', { notes: [note] })
                   }
                   break
                 }
@@ -821,6 +827,8 @@
                 case 'select': {
                   if ($ctrlKey) {
                     dispatch('select', { notes: [note], overwrite: false })
+                  } else if ($altKey) {
+                    dispatch('delete', { notes: [note] })
                   }
                   break
                 }
@@ -842,6 +850,12 @@
             on:pathclick={({ detail: { slide }}) => {
               clickedOnNote = true
               switch (currentMode) {
+                case 'select': {
+                  if ($altKey) {
+                    dispatch('delete', { notes: [slide.head] })
+                  }
+                  break
+                }
                 case 'flick': {
                   dispatch('updateflicks', {
                     notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
