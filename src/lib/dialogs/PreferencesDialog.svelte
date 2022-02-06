@@ -3,28 +3,35 @@
   import LL from '$i18n/i18n-svelte'
 
   // UI Components
-  import Button from "$lib/ui/Button.svelte"
-  import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
-  import Modal from "$lib/ui/Modal.svelte"
+  import Button from '$lib/ui/Button.svelte'
+  import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
+  import Modal from '$lib/ui/Modal.svelte'
 
   // Events
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher, onMount } from 'svelte'
   const dispatch = createEventDispatcher<{
     ok: void
-    cancel: void,
+    cancel: void
   }>()
 
   export let opened: boolean
   import { db } from '$lib/database'
-  import { exportDB, importInto } from 'dexie-export-import'
 
-  import toast from "$lib/ui/toast"
+  import toast from '$lib/ui/toast'
 
   import { preferences as _preferences } from '$lib/preferences'
   import type { Preferences } from '$lib/preferences'
   import { download, dropHandler } from '$lib/basic/file'
+  import type * as DexieExportImport from 'dexie-export-import'
 
   let preferences: Preferences
+
+  let exportDB: typeof DexieExportImport.exportDB
+  let importInto: typeof DexieExportImport.importInto
+
+  onMount(async () => {
+    ({ exportDB, importInto } = await import('dexie-export-import'))
+  })
 </script>
 
 <Modal
@@ -97,7 +104,8 @@
             db.preferences.put({ key, value })
           })
           toast.success($LL.editor.messages.preferencesSaved())
-          dispatch('ok'); opened = false
+          dispatch('ok')
+          opened = false
         }}
       >
         {$LL.editor.dialog.ok()}
