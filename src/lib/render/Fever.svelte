@@ -1,5 +1,6 @@
 <script lang="ts">
-  import feverPNG from '$assets/fever.png'
+  import feverStartPNG from '$assets/fever_start.png'
+  import feverEndPNG from '$assets/fever_end.png'
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -26,10 +27,8 @@
   let graphics: PIXI.Graphics
 
   onMount(async () => {
-    const TEXTURE = PIXI.Texture.from(feverPNG)
-
-    feverStart = new PIXI.Sprite(TEXTURE)
-    feverEnd = new PIXI.Sprite(TEXTURE)
+    feverStart = new PIXI.Sprite(PIXI.Texture.from(feverStartPNG))
+    feverEnd = new PIXI.Sprite(PIXI.Texture.from(feverEndPNG))
     feverStart.zIndex = Z_INDEX.GAMESCRIPT
     feverEnd.zIndex = Z_INDEX.GAMESCRIPT
     feverStart.scale.set(0.5)
