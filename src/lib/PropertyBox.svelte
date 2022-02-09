@@ -380,7 +380,6 @@ ul .value {
   gap: 0.65em 0.85em;
   overflow-y: auto;
   overflow-x: hidden;
-  transform: all 1s ease-in-out;
 }
 
 
