@@ -36,8 +36,7 @@
     feverEnd.scale.set(0.5)
     feverStart.anchor.set(0, 0.5)
     feverEnd.anchor.set(0, 0.5)
-    feverStart.x = MARGIN + $position.laneAreaWidth + FEVER_GAP
-    feverEnd.x = MARGIN + $position.laneAreaWidth + FEVER_GAP
+
     graphics = new PIXI.Graphics()
   })
 
@@ -45,6 +44,9 @@
 
   function drawFever(position: PositionManager) {
     const [startTick, endTick] = fever!
+    const left = position.calcLeft()
+    feverStart.x = left + position.laneAreaWidth + FEVER_GAP
+    feverEnd.x = left + position.laneAreaWidth + FEVER_GAP
     feverStart.y = position.calcY(startTick)
     feverEnd.y = position.calcY(endTick)
   }
