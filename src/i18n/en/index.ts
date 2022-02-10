@@ -171,7 +171,7 @@ const en: Translation = {
 			delete: 'Delete',
 			ok: 'OK',
 			new: 'New',
-			opensus: 'Open SUS',
+			openscore: 'Open Score File',
 			about: 'About PaletteWorks Editor',
 		},
 		preferences: {

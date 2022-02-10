@@ -171,7 +171,7 @@ const zh: Translation = {
 			delete: '刪除',
 			ok: '確定',
 			new: '新建',
-			opensus: '打開SUS',
+			openscore: '打開譜面文件',
 			about: '關於 PaletteWorks Editor',
 		},
 		preferences: {

@@ -171,7 +171,7 @@ const ja: BaseTranslation = {
 			delete: "削除",
 			ok: "OK",
 			new: '新規作成',
-			opensus: 'SUSファイルを開く',
+			openscore: '譜面ファイルを開く',
 			about: 'PaletteWorks Editor について',
 		},
 		preferences: {

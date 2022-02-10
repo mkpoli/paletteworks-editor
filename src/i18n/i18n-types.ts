@@ -629,9 +629,9 @@ export type Translation = {
 			 */
 			'new': string
 			/**
-			 * SUSファイルを開く
+			 * 譜面ファイルを開く
 			 */
-			'opensus': string
+			'openscore': string
 			/**
 			 * PaletteWorks Editor について
 			 */
@@ -1303,9 +1303,9 @@ export type TranslationFunctions = {
 			 */
 			'new': () => LocalizedString
 			/**
-			 * SUSファイルを開く
+			 * 譜面ファイルを開く
 			 */
-			'opensus': () => LocalizedString
+			'openscore': () => LocalizedString
 			/**
 			 * PaletteWorks Editor について
 			 */

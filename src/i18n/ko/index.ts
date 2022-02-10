@@ -171,7 +171,7 @@ const ko: Translation = {
 			delete: '삭제',
 			ok: '확인',
 			new: '새로 만들기',
-			opensus: 'SUS 파일 열기',
+			openscore: '채보 파일 열기',
 			about: 'PaletteWorks Editor 정보',
 		},
 		preferences: {

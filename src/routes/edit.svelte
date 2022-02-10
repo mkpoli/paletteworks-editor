@@ -599,13 +599,23 @@
   let fileInput: HTMLInputElement
   let scoreFiles: FileList
 
-  $: if (scoreFiles && scoreFiles[0]) onfileopened(scoreFiles[0])
+  $: if (scoreFiles && scoreFiles[0]) loadFile(scoreFiles[0]) 
 
   function onopenfile() {
     fileInput.click()
   }
 
-  async function onfileopened(file: File) {
+  async function loadFile(file: File) {
+    if (file.name.endsWith('.sus')) {
+      loadSUSFile(file)
+    } else if (file.name.endsWith(PROJECT_FILE_EXTENSION)) {
+      loadPWSFile(file)
+    } else {
+      toast.error($LL.editor.messages.unknownFileType())
+    }
+  }
+
+  async function loadSUSFile(file: File) {
     const { name: filename } = file 
     const res = await fetch(URL.createObjectURL(file))
     const text = await res.text()
@@ -643,6 +653,16 @@
 
     await tick()
     projectsDialogOpened = false
+  }
+
+  async function loadPWSFile(file: File) {
+    try {
+      const project = await deserialiseProject(file)
+      await importProject(project)
+      toast.success($LL.editor.messages.project.importSuccess({ name: project.name ?? 'Untitled'}))
+    } catch (err) {
+      toast.error($LL.editor.messages.project.importFailed())
+    }
   }
 
   function onopen() {
@@ -994,7 +1014,7 @@
   <title>PaletteWorks Editor</title>
 </svelte:head>
 
-<input type="file" bind:files={scoreFiles} style="display: none" bind:this={fileInput} accept=".sus" />
+<input type="file" bind:files={scoreFiles} style="display: none" bind:this={fileInput} accept=".sus,.pws" />
 
 <main class="cursor-select">
   {#if app}
@@ -1448,21 +1468,8 @@
   }}}
   on:dragover|preventDefault
   on:drop|preventDefault={dropHandlerMultiple([
-    { accept: '.sus', callback(file) { onfileopened(file) } },
-    {
-      accept: PROJECT_FILE_EXTENSION,
-      callback(file) {
-        deserialiseProject(file)
-          .then(async (project) => {
-            try {
-              await importProject(project)
-              toast.success($LL.editor.messages.project.importSuccess({ name: project.name ?? 'Untitled'}))
-            } catch (err) {
-              toast.error($LL.editor.messages.project.importFailed())
-            }
-          }) 
-      }
-    },
+    { accept: '.sus', callback(file) { loadSUSFile(file) } },
+    { accept: PROJECT_FILE_EXTENSION, callback(file) { loadPWSFile(file) } },
     { accept: 'audio/*', callback(file) {
       musicLoadedFromFile = true
       if (currentProject) {

@@ -166,7 +166,7 @@
         opened = false
       }}
     >
-      {$LL.editor.dialog.opensus()}
+      {$LL.editor.dialog.openscore()}
     </Button>
     <Button
       class="new"
