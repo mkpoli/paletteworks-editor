@@ -15,7 +15,8 @@
     rename: { name: string }
     delete: void,
     open: void,
-    select: void
+    select: void,
+    export: void
   }>()
 
   export let project: Project
@@ -104,6 +105,12 @@
     icon="ic:sharp-edit"
     text={$LL.editor.menu.rename()}
     on:click={async () => { renaming = true; await tick(); renameInput.focus() }}
+  />
+  <MenuDivider/>
+  <MenuItem
+    icon="mdi:export"
+    text={$LL.editor.menu.export()}
+    on:click={() => { dispatch('export') }}
   />
   <MenuDivider/>
   <MenuItem

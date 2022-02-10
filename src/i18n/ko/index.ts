@@ -41,6 +41,7 @@ const ko: Translation = {
 			toslide: "슬라이드로 변환(&S)",
 			tostream: "스트림로 변환(&T)",
 			about: "정보(&A)",
+			export: "내보내기(&E)",
 		},
 		menuDescription: {
 			new: '새로운 채보를 만듭니다',
@@ -123,6 +124,10 @@ const ko: Translation = {
 				uploadNotSelectedError: '업로드할 노트를 선택하지 않았습니다.',
 				uploadSuccess: '업로드되었습니다.',
 				uploadFailed: '업로드 중 오류가 발생했습니다.',
+			},
+			project: {
+				importSuccess: '채보 {name} 를 가져왔습니다.',
+				importFailed: '채보 가져오기에 실패했습니다.',
 			}
 		},
 		mutation: {

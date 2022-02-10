@@ -85,6 +85,7 @@ export function hasCritical(note: Note): note is Note & ICritical {
 }
 
 export type Fever = [startTick: number, endTick: number] | null
+export type TimeSignature = [beats: number, beatType: number] | null
 
 export type Score = {
   singles: Single[]
@@ -92,7 +93,40 @@ export type Score = {
   bpms: Map<number, number>
   fever: Fever,
   skills: Set<number>,
-  timeSignatures: Map<number, [number, number]>,
+  timeSignatures: Map<number, TimeSignature>,
+}
+
+export interface SerialisedScore {
+  singles: Single[]
+  slides: Slide[]
+  bpms: [number, number][]
+  fever: Fever
+  skills: number[]
+  timeSignatures: [number, TimeSignature][]
+}
+
+export function serialiseScore(score: Score): SerialisedScore {
+  const { singles, slides, bpms, fever, skills, timeSignatures } = score
+  return {
+    singles,
+    slides,
+    bpms: [...bpms],
+    fever,
+    skills: [...skills],
+    timeSignatures: [...timeSignatures]
+  }
+}
+
+export function deserialiseScore(serialisedScore: SerialisedScore): Score {
+  const { singles, slides, bpms, fever, skills, timeSignatures } = serialisedScore
+  return {
+    singles,
+    slides,
+    bpms: new Map(bpms),
+    fever,
+    skills: new Set(skills),
+    timeSignatures: new Map(timeSignatures)
+  }
 }
 
 export type Beatmap = {

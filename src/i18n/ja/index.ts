@@ -41,6 +41,7 @@ const ja: BaseTranslation = {
 			toslide: "スライドに変換 (&S)",
 			tostream: "ストリームに変換 (&T)",
 			about: "バージョン情報 (&A)",
+			export: "エクスポート (&E)",
 		},
 		menuDescription: {
 			new: "新規譜面を作成",
@@ -123,6 +124,10 @@ const ja: BaseTranslation = {
 				uploadNotSelectedError: '素材集に追加するノーツが選択されていません',
 				uploadSuccess: '素材を追加しました',
 				uploadFailed: '素材の追加が失敗しました',
+			},
+			project: {
+				importSuccess: '譜面「{name:string}」をインポートしました',
+				importFailed: '譜面のインポートに失敗しました',
 			}
 		},
 		snapTo: {

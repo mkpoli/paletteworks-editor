@@ -166,6 +166,10 @@ export type Translation = {
 			 * バージョン情報 (&A)
 			 */
 			'about': string
+			/**
+			 * エクスポート (&E)
+			 */
+			'export': string
 		}
 		'menuDescription': {	
 			/**
@@ -464,6 +468,17 @@ export type Translation = {
 				 * 素材の追加が失敗しました
 				 */
 				'uploadFailed': string
+			}
+			'project': {	
+				/**
+				 * 譜面「{name}」をインポートしました
+				 * @param {string} name
+				 */
+				'importSuccess': RequiredParams1<'name'>
+				/**
+				 * 譜面のインポートに失敗しました
+				 */
+				'importFailed': string
 			}
 		}
 		'snapTo': {	
@@ -836,6 +851,10 @@ export type TranslationFunctions = {
 			 * バージョン情報 (&A)
 			 */
 			'about': () => LocalizedString
+			/**
+			 * エクスポート (&E)
+			 */
+			'export': () => LocalizedString
 		}
 		'menuDescription': {	
 			/**
@@ -1128,6 +1147,16 @@ export type TranslationFunctions = {
 				 * 素材の追加が失敗しました
 				 */
 				'uploadFailed': () => LocalizedString
+			}
+			'project': {	
+				/**
+				 * 譜面「{name}」をインポートしました
+				 */
+				'importSuccess': (arg: { name: string }) => LocalizedString
+				/**
+				 * 譜面のインポートに失敗しました
+				 */
+				'importFailed': () => LocalizedString
 			}
 		}
 		'snapTo': {	

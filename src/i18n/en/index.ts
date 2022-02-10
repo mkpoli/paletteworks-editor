@@ -41,6 +41,7 @@ const en: Translation = {
 			toslide: "To &Slide",
 			tostream : "To S&tream",
 			about: "&About",
+			export: "&Export",
 		},
 		menuDescription: {
 			new: 'Create a new score',
@@ -123,6 +124,10 @@ const en: Translation = {
 				uploadNotSelectedError: 'Please select some notes to upload.',
 				uploadSuccess: 'The notes are successfully uploaded.',
 				uploadFailed: 'Upload failed.',
+			},
+			project: {
+				importSuccess: '{name} imported.',
+				importFailed: 'Import failed',
 			}
 		},
 		mutation: {

@@ -1,3 +1,5 @@
+import type { TimeSignature } from '$lib/score/beatmap'
+
 import { writable } from 'svelte/store'
 import { snap } from './basic/math'
 import { TICK_PER_BEAT } from './consts'
@@ -15,8 +17,6 @@ export function accumulateDuration(targetTick: number, bpms: [tick: number, bpm:
       acc + (ind < arr.length - 1 ? tick2secs(arr[ind + 1][0] - tick, tpb, +bpm) : tick2secs(targetTick - tick, tpb, +bpm))
     , 0)
 }
-
-export type TimeSignature = [number, number]
 
 export type TimeSignatureInfo = {
   measure: number, startTick: number, beatsPerMeasure: number, p: number, q: number,

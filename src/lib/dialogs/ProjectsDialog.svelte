@@ -27,8 +27,10 @@
   export let opened: boolean
   export let currentProject: Project | null
 
-  import { db, projects as projectObservable } from '$lib/database'
+  import { db, projects as projectObservable, PROJECT_FILE_EXTENSION, seriliseProject } from '$lib/database'
   import type { Project } from '$lib/database'
+
+  import { download } from '$lib/basic/file'
 
   let projects: Project[] = []
   $: projects = ($projectObservable as Project[] ?? [])
@@ -102,6 +104,7 @@
   }
 
   $: filtered = projects.filter(({ name }) => searchKeyword ? (name?.toLocaleLowerCase().includes(searchKeyword.toLocaleLowerCase()) ?? 'Untitled') : true)
+
 </script>
 
 <Modal
@@ -113,9 +116,6 @@
     }
   }}
 >
-  <template slot="activator">
-    
-  </template>
   <div slot="presentation">
     <h2>{$LL.editor.dialog?.projectsTitle()}</h2>
     <div class="close">
@@ -150,6 +150,9 @@
           on:delete={ondelete}
           on:select={() => {
             selected = project
+          }}
+          on:export={async () => {
+            download(await seriliseProject(project), project.name + PROJECT_FILE_EXTENSION)
           }}
           bind:container={elements[index]}
         />

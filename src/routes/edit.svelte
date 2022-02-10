@@ -535,7 +535,7 @@
     currentTick = 0
   }
   
-  import { db } from '$lib/database'
+  import { db, deserialiseProject, PROJECT_FILE_EXTENSION } from '$lib/database'
 
   import type { Project } from '$lib/database'
   import ProjectsDialog from '$lib/dialogs/ProjectsDialog.svelte'
@@ -572,7 +572,7 @@
     projectsDialogOpened = false
   }
 
-  function onopenproject({ detail: { project }}: CustomEvent<{ project: Project }>) {
+  async function openProject(project: Project): Promise<void> {
     if (currentProject) {
       savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name ?? 'Untitled' }))
     }
@@ -588,6 +588,12 @@
     music = project.music ?? null
 
     currentProject = project
+  }
+
+  async function importProject(project: Project): Promise<void> {
+    const id = await db.projects.add(project)
+    openProject((await db.projects.get(id))!)
+    projectsDialogOpened = false    
   }
 
   let fileInput: HTMLInputElement
@@ -795,7 +801,7 @@
   }
 
   import PreferencesDialog from '$lib/dialogs/PreferencesDialog.svelte'
-  import { sortedBPMs, TimeSignature, TimeSignatureManager } from '$lib/timing'
+  import { sortedBPMs, TimeSignatureManager } from '$lib/timing'
   let preferencesDialogOpened = false
 
   function shrinkNotes(notes: NoteType[]) {
@@ -1310,7 +1316,7 @@
 <ProjectsDialog
   {currentProject}
   bind:opened={projectsDialogOpened}
-  on:open={onopenproject}
+  on:open={async ({ detail: { project }}) => { await openProject(project) }}
   on:openfile={onopenfile}
   on:new={onnewproject}
   on:delete={({ detail: { id, name } }) => {
@@ -1443,6 +1449,20 @@
   on:dragover|preventDefault
   on:drop|preventDefault={dropHandlerMultiple([
     { accept: '.sus', callback(file) { onfileopened(file) } },
+    {
+      accept: PROJECT_FILE_EXTENSION,
+      callback(file) {
+        deserialiseProject(file)
+          .then(async (project) => {
+            try {
+              await importProject(project)
+              toast.success($LL.editor.messages.project.importSuccess({ name: project.name ?? 'Untitled'}))
+            } catch (err) {
+              toast.error($LL.editor.messages.project.importFailed())
+            }
+          }) 
+      }
+    },
     { accept: 'audio/*', callback(file) {
       musicLoadedFromFile = true
       if (currentProject) {

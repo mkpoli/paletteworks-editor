@@ -41,6 +41,7 @@ const zh: Translation = {
 			toslide: "轉換爲長條 (&S)",
 			tostream: "轉換爲連打 (&T)",
 			about: "關於 (&A)",
+			export: "導出 (&E)",
 		},
 		menuDescription: {
 			new: '創建新譜面',
@@ -123,6 +124,10 @@ const zh: Translation = {
 				uploadNotSelectedError: '請先選擇要上傳的音符',
 				uploadSuccess: '上傳成功',
 				uploadFailed: '上傳失敗',
+			},
+			project: {
+				importSuccess: '譜面「{name}」導入成功',
+				importFailed: '譜面導入失敗',
 			}
 		},
 		mutation: {
