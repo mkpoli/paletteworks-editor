@@ -77,7 +77,12 @@
         bgmLoading = false
         musicDuration = buffer.duration + offset
 
-        dispatch('bpmdetected', detect(buffer))
+        try {
+          const bpm = detect(buffer)
+          dispatch('bpmdetected', bpm)
+        } catch (e) {
+          console.error(e)
+        }
 
         if (!paused) {
           restartScheduler()
