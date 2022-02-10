@@ -85,7 +85,7 @@ export function hasCritical(note: Note): note is Note & ICritical {
 }
 
 export type Fever = [startTick: number, endTick: number] | null
-export type TimeSignature = [beats: number, beatType: number] | null
+export type TimeSignature = [beats: number, beatType: number]
 
 export type Score = {
   singles: Single[]

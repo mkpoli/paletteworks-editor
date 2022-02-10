@@ -47,7 +47,7 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Note as NoteType, EaseType, SlideStep, DiamondType, Single, Fever, Slide, IDirectional, ICritical, Metadata, Score } from '$lib/score/beatmap'
+  import type { Note as NoteType, EaseType, SlideStep, DiamondType, Single, Fever, Slide, IDirectional, ICritical, Metadata, Score, TimeSignature } from '$lib/score/beatmap'
 
   import { ALLOWED_SNAPPINGS } from '$lib/editing/modes'
   import { hasEaseType, isSlideHead, isSlideStep, toDiamondType, hasFlick, hasCritical, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
