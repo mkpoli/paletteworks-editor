@@ -11,7 +11,7 @@
   import type { Fever } from '$lib/score/beatmap'
 
   // Constants
-  import { MARGIN, Z_INDEX } from '$lib/consts'
+  import { Z_INDEX } from '$lib/consts'
   const FEVER_GAP = 5
 
   // Props

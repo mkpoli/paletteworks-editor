@@ -26,7 +26,7 @@
 
   // Constants
   import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, SCROLLBAR_WIDTH, MARGIN, MAIN_WIDTH, MINIMAP_WIDTH } from '$lib/consts'
+  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, SCROLLBAR_WIDTH, MARGIN, MINIMAP_WIDTH } from '$lib/consts'
 
   // Functions
   import { clamp, snap } from '$lib/basic/math'

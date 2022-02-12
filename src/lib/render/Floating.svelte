@@ -7,7 +7,6 @@
   // Types
   import type PIXI from 'pixi.js' 
   import type { Mode } from '$lib/editing/modes'
-  import type { Note as NoteType } from '$lib/score/beatmap'
 
   // Consts
   import COLORS from '$lib/colors'

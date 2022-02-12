@@ -13,7 +13,7 @@
   const mainContainer = getContext<PIXI.Container>('mainContainer')
 
   // Constants
-  import { MARGIN, Z_INDEX } from '$lib/consts'
+  import { Z_INDEX } from '$lib/consts'
   const SKILL_GAP = 5
   const TEXTURE = PIXI.Texture.from(skillPNG)
 

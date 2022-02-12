@@ -1,6 +1,6 @@
 <script lang="ts">
   // Constants
-  import { COLORS, MARGIN, Z_INDEX } from '$lib/consts'
+  import { COLORS, Z_INDEX } from '$lib/consts'
 
   // Stores
   import { cursor, position } from '$lib/position'
