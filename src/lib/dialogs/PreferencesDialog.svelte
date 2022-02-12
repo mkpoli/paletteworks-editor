@@ -90,7 +90,7 @@
             toast.success($LL.editor.messages.database.exportSuccess())
           } catch (error) {
             toast.error($LL.editor.messages.database.exportFailed())
-            console.log(error)
+            console.error(error)
           }
         }}
       >

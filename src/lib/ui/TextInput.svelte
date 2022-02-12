@@ -7,7 +7,6 @@
   export let type: 'text' | 'number' | 'search' = 'text'
 
   function clearValue() {
-    console.log('clearValue')
     value = ''
   }
 </script>
