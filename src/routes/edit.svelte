@@ -17,7 +17,7 @@
 
 <script lang="ts">
   // Polyfill
-  import 'core-js/actual/array/at.js'
+  import at from 'core-js/actual/array/at.js'
 
   // State
   import { browser } from '$app/env'
@@ -161,7 +161,7 @@
   function calcMaxMeasure(bpms: Map<number, number>, duration: number = 3 * 60) {
     const bpmEntries = [...bpms.entries()]
       .sort(([tickA,], [tickB,]) => tickA - tickB)
-    const [lastTick, lastBPM] = bpmEntries.at(-1) ?? [0, 120]
+    const [lastTick, lastBPM] = at(bpmEntries, -1) ?? [0, 120]
     const durationToLastBPM = bpmEntries
       .reduce((acc, [tick, bpm], ind, arr) => {
         const nextElement = arr[ind + 1]
@@ -746,7 +746,7 @@
     })
     const criticalSlides = [...criticalSlideSet]
     if (criticalNotes.length === 0 && criticalSlides.length === 0) return
-    let oldcritical = criticalNotes.at(0)?.critical ?? criticalSlides[0].critical ?? false
+    let oldcritical = criticalNotes[0]?.critical ?? criticalSlides[0].critical ?? false
     exec(new BatchUpdateCombinated(
       singles, slides,
       new Map(criticalNotes.map((note) => [note, { critical: !oldcritical }])),
