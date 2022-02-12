@@ -29,6 +29,7 @@ specifiers:
   pixi.js: ~6.2.1
   postcss-viewport-height-correction: ^1.1.1
   sus-analyzer: ^2.2.4
+  sus-io: ^1.0.4
   svelte: ^3.46.2
   svelte-check: ^2.3.0
   svelte-preprocess: ^4.10.2
@@ -69,6 +70,7 @@ devDependencies:
   pixi.js: 6.2.1
   postcss-viewport-height-correction: 1.1.1
   sus-analyzer: 2.2.4
+  sus-io: 1.0.4
   svelte: 3.46.2
   svelte-check: 2.3.0_svelte@3.46.2
   svelte-preprocess: 4.10.2_svelte@3.46.2+typescript@4.5.4
@@ -2193,6 +2195,10 @@ packages:
   /sus-analyzer/2.2.4:
     resolution: {integrity: sha512-37Tq8aXKI4xYh2SJIvv2cAR4Qcb/mxjWvjfDBehMB+uxzeR8dSuvkrAWaPL7bQbkGuxCdgRkm6kapoH1/bQzzw==}
     engines: {node: '>=8.3.0'}
+    dev: true
+
+  /sus-io/1.0.4:
+    resolution: {integrity: sha512-apGiq1ueh1R4dhRzH1sEjMUy1vy8DPfAWYSDApHEkVIEXYiAxgje+C6MNKEmpgCi0fvI+sIkFnyxIy5q0KW5iw==}
     dev: true
 
   /svelte-check/2.3.0_svelte@3.46.2:

@@ -1,23 +1,28 @@
-import type { Note, Timing, Score as SusScore, Meta } from '$lib/score/sus/susdata'
+
+import { parse, stringify } from 'sus-io'
+import type {
+  Score as SusScore,
+  Metadata as SusMetadata,
+  ScoreData as SusScoreData,
+  Note
+} from 'sus-io'
+
 import type { Flick, Single, Slide, SlideTail, SlideStep, SlideHead, Metadata, Score, Beatmap } from './beatmap'
 
-import { analyze, getMetaData } from '$lib/score/sus/analyze'
-import { dump } from '$lib/score/sus/generate'
 import { LANE_FEVER, LANE_SKILL } from '$lib/consts'
 import { gcd } from '$lib/basic/math'
-
-export function getScoreData(sus: string): SusScore {
-  const TICKS_PER_BIT = 480
-  return analyze(sus, TICKS_PER_BIT)
-}
 
 function getKey(note: Note) {
   return `${note.tick}-${note.lane}`
 }
 
-export function convertMetaData(meta: Meta): Metadata {
-  const { title, artist, designer, waveOffset } = meta
-  return { title, artist, author: designer, offset: waveOffset }
+export function convertMetaData(metadata: SusMetadata): Metadata {
+  return {
+    title: metadata.title ?? '',
+    artist: metadata.title ?? '',
+    author: metadata.designer ?? '',
+    offset: metadata.waveoffset ?? 0,
+  }
 }
 
 export function convertScoreData(score: SusScore): Score {
@@ -30,7 +35,7 @@ export function convertScoreData(score: SusScore): Score {
   const skills = new Set<number>()
 
   const slideKeys = new Set<string>()
-  score.slideNotes.forEach((slide) => {
+  score.slides.forEach((slide) => {
     slide.forEach((note) => {
       const key = getKey(note)
       switch (note.type) {
@@ -44,7 +49,7 @@ export function convertScoreData(score: SusScore): Score {
     })
   })
 
-  score.directionalNotes.forEach((note) => {
+  score.directionals.forEach((note) => {
     const key = getKey(note)
     switch (note.type) {
       case 1:
@@ -65,7 +70,7 @@ export function convertScoreData(score: SusScore): Score {
         break
     }
   })
-  score.tapNotes.forEach((note) => {
+  score.taps.forEach((note) => {
     const key = getKey(note)
     switch (note.type) {
       case 2:
@@ -83,7 +88,7 @@ export function convertScoreData(score: SusScore): Score {
   let feverStartTick: number | null = null
   let feverEndTick: number | null = null
 
-  score.tapNotes
+  score.taps
     .filter((note) => {
       if (note.lane === LANE_FEVER && note.width === 1) {
         if (note.type === 1) {
@@ -121,7 +126,7 @@ export function convertScoreData(score: SusScore): Score {
     })
 
   const slides: Slide[] = [];
-  score.slideNotes.forEach((slide) => {
+  score.slides.forEach((slide) => {
     const key = slide.map(getKey).join('|')
     if (slideKeys.has(key)) return
     slideKeys.add(key)
@@ -197,10 +202,10 @@ export function convertScoreData(score: SusScore): Score {
     })
   })
 
-  const bpms = new Map<number, number>(score.bpms.map(({ tick, value }) => [tick, value]))
+  const bpms = new Map<number, number>(score.bpms)
 
   const timeSignatures = new Map<number, [number, number]>(
-    score.barLengths.map(({ measure, value }) => [measure, simplify4(value, 4)])
+    score.barLengths.map(([measure, value]) => [measure, simplify4(value, 4)])
   )
 
   return {
@@ -223,9 +228,11 @@ function simplify4(numerator: number, denominator: number): [number, number] {
 }
 
 
+
 export function loadSUS(sus: string): Beatmap {
-  const metadata = convertMetaData(getMetaData(sus))
-  const score = convertScoreData(getScoreData(sus))
+  const susScore = parse(sus)
+  const metadata = convertMetaData(susScore.metadata)
+  const score = convertScoreData(susScore)
   return { metadata, score }
 }
 
@@ -234,11 +241,11 @@ const FLICK_TO_TYPE = {
   'left': 3,
   'right': 4,
 }
-export function exportScoreData(score: Score): SusScore {
+export function exportScoreData(score: Score): SusScoreData {
   const tapNotes: Note[] = []
   const directionalNotes: Note[] = []
   const slideNotes: Note[][] = []
-  const bpmNotes: Timing[] = []
+  const bpmNotes: [tick: number, bpm: number][] = []
   
   const { singles, slides, bpms, fever, skills, timeSignatures } = score
 
@@ -350,32 +357,44 @@ export function exportScoreData(score: Score): SusScore {
   })
 
   bpms.forEach((value, tick) => {
-    bpmNotes.push({ tick, value })
+    bpmNotes.push([tick, value])
   })
 
   if (bpmNotes.length === 0) {
-    bpmNotes.push({ tick: 0, value: 120 })
+    bpmNotes.push([0, 120])
   }
 
-  const sortKey = ({ tick: a }: Note | Timing, { tick: b }: Note | Timing) => a - b
-
-  tapNotes.sort(sortKey)
+  tapNotes.sort(({ tick: a }, { tick: b }) => a - b)
   slideNotes.sort(({ 0: { tick: a } }, { 0: { tick : b } }) => a - b)
-  directionalNotes.sort(sortKey)
-  bpmNotes.sort(sortKey)
+  directionalNotes.sort(({ tick: a }, { tick: b }) => a - b)
+  bpmNotes.sort(([a], [b]) => a - b)
   
   const barLengths = [...timeSignatures]
-    .map(([measure, [p, q]]) => ({ measure, value: p / q * 4 }))
-    .sort((a, b) => a.measure - b.measure)
+    .map(([measure, [p, q]]) => [measure, p / q * 4] as [measure: number, length: number])
+    .sort((a, b) => a[0] - b[0])
 
-  return { tapNotes, directionalNotes, slideNotes, bpms: bpmNotes, barLengths }
+  return {
+    taps: tapNotes,
+    directionals: directionalNotes,
+    slides: slideNotes,
+    bpms: bpmNotes,
+    barLengths
+  }
 }
 
 export function dumpSUS(metadata: Metadata, score: Score): string {
   const { title, artist, author, offset } = metadata
-  const susScore: SusScore = exportScoreData(score)
-  return dump(
-    { title, artist, designer: author, waveOffset: offset }, susScore,
-    `This file was generated by PaletteWorks Editor v${ process.env.PACKAGE_VERSION }`
-  )
+  const scoreData: SusScoreData = exportScoreData(score)
+  return stringify({
+    metadata: {
+      title,
+      artist,
+      designer: author,
+      waveoffset: offset,
+      requests: [
+        "ticks_per_beat 480"
+      ]
+    },
+    ...scoreData
+  }, `This file was generated by PaletteWorks Editor v${ process.env.PACKAGE_VERSION }`)
 }

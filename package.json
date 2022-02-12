@@ -41,6 +41,7 @@
     "pixi.js": "~6.2.1",
     "postcss-viewport-height-correction": "^1.1.1",
     "sus-analyzer": "^2.2.4",
+    "sus-io": "^1.0.4",
     "svelte": "^3.46.2",
     "svelte-check": "^2.3.0",
     "svelte-preprocess": "^4.10.2",
