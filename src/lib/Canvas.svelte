@@ -969,6 +969,7 @@
   on:selectall
   on:duplicate
   on:flip
+  on:vflip
   on:flippaste
   on:shrink
   on:divide

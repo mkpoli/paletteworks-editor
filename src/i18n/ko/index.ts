@@ -28,6 +28,7 @@ const ko: Translation = {
 			deleteall: '모두 삭제(&D)',
 			duplicate: "복제(&U)",
 			flip: "좌우 반전(&F)",
+			vflip: "상하 반전(&V)",
 			straight: "직선(&S)",
 			curvein: "커브 인(&I)",
 			curveout: "커브 아웃(&O)",

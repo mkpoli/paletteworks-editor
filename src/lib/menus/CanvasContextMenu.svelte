@@ -38,6 +38,9 @@
     flip: {
       notes: Note[]
     },
+    vflip: {
+      notes: Note[]
+    },
     shrink: {
       notes: Note[]
     },
@@ -85,6 +88,7 @@
   import { selectedNotes } from '$lib/editing/selection'
   import { clipboardSingles, clipboardSlides } from '$lib/editing/clipboard'
   import { cursor, Cursor } from '$lib/position'
+  import { getSlideNotes } from '$lib/editing/slides'
 
   // Props
   export let canvasContainer: HTMLDivElement
@@ -186,9 +190,24 @@
     <MenuDivider/>
     <MenuItem icon="mdi:content-duplicate" text={$LL.editor.menu.duplicate()} on:click={() => dispatchNotes('duplicate', currentNote)} />
   {/if}
+
+  <!-- Flip (Mirroring) -->
   {#if $selectedNotes.length}
+    <MenuDivider/>
     <MenuItem icon="mdi:flip-horizontal" text={$LL.editor.menu.flip()} on:click={() => dispatch('flip', { notes: $selectedNotes })} />
+    {#if $selectedNotes.length >= 2}
+      <MenuItem icon="mdi:flip-vertical" text={$LL.editor.menu.vflip()} on:click={() => dispatch('vflip', { notes: $selectedNotes })} />
+    {/if}
+  {:else if currentSlide}
+    <MenuDivider/>
+    <MenuItem icon="mdi:flip-horizontal" text={$LL.editor.menu.flip()} on:click={() => { if (currentSlide) dispatch('flip', { notes: getSlideNotes(currentSlide) }) }} />  
+    <MenuItem icon="mdi:flip-vertical" text={$LL.editor.menu.vflip()} on:click={() => { if (currentSlide) dispatch('vflip', { notes: getSlideNotes(currentSlide) }) }}
+    />
+  {:else if currentNote}
+    <MenuDivider/>
+    <MenuItem icon="mdi:flip-horizontal" text={$LL.editor.menu.flip()} on:click={() => { if (currentNote) dispatch('flip', { notes: [currentNote] }) }} />  
   {/if}
+
   {#if !$selectedNotes.length && currentNote !== null && 'easeType' in currentNote}
     <MenuDivider/>
     <MenuItem icon="custom:straight" text={$LL.editor.menu.straight()} on:click={() => { changecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>

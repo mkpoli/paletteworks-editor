@@ -106,7 +106,7 @@
   import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
-  import { flipNotes } from '$lib/editing/flip'
+  import { flipNotes, vflipNotes } from '$lib/editing/flip'
 
   import '$lib/basic/collections'
 
@@ -1219,7 +1219,8 @@
       }}
       on:updateflicks={onupdateflicks}
       on:updatecriticals={onupdatecriticals}
-      on:flip={({ detail: { notes }}) => exec(flipNotes(singles, slides, notes))}
+      on:flip={({ detail: { notes }}) => { exec(flipNotes(singles, slides, notes)) }}
+      on:vflip={({ detail: { notes }}) => { console.log('vflipping'); exec(vflipNotes(singles, slides, notes)) }}
       on:flippaste={onflippaste}
       on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
       on:shrink={({ detail: { notes }}) => { shrinkNotes(notes) }}
@@ -1416,6 +1417,7 @@
   on:playpause={onplaypause}
   on:duplicate={() => { duplicateNotes($selectedNotes) }}
   on:flip={() => { exec(flipNotes(singles, slides, $selectedNotes)) }}
+  on:vflip={() => { exec(vflipNotes(singles, slides, $selectedNotes)) }}
   on:flippaste={onflippaste}
   on:selectall={onselectall}
   on:unselectall={unselectall}

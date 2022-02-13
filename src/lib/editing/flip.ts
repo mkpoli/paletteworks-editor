@@ -41,3 +41,17 @@ export function flipNotes(singles: Single[], slides: Slide[], notes: Note[]): Ba
   ))
   return new BatchUpdate(singles, slides, flipTargets, flipOrigins, 'flip')
 }
+
+export function vflipNotes(singles: Single[], slides: Slide[], notes: Note[]): BatchUpdate {
+  const [minTick, maxTick] = notes.reduce(([min, max], note) => {
+    return [Math.min(min, note.tick), Math.max(max, note.tick)]
+  }, [Number.MAX_SAFE_INTEGER, 0])
+
+  const flipTargets = new Map(notes.map((note) => 
+    [note, { tick: maxTick - note.tick + minTick }]
+  ))
+  const flipOrigins = new Map(notes.map((note) =>
+    [note, { tick: note.tick }]
+  ))
+  return new BatchUpdate(singles, slides, flipTargets, flipOrigins, 'flip')
+}

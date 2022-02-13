@@ -28,6 +28,7 @@ const ja: BaseTranslation = {
 			deleteall: 'すべて削除 (&A)',
 			duplicate: "複製 (&D)",
 			flip: "左右反転 (&H)",
+			vflip: "上下反転 (&V)",
 			straight: "直線 (&S)",
 			curvein: "加速 (&I)",
 			curveout: "減速 (&O)",

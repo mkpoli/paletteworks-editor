@@ -115,6 +115,10 @@ export type Translation = {
 			 */
 			'flip': string
 			/**
+			 * 上下反転 (&V)
+			 */
+			'vflip': string
+			/**
 			 * 直線 (&S)
 			 */
 			'straight': string
@@ -799,6 +803,10 @@ export type TranslationFunctions = {
 			 * 左右反転 (&H)
 			 */
 			'flip': () => LocalizedString
+			/**
+			 * 上下反転 (&V)
+			 */
+			'vflip': () => LocalizedString
 			/**
 			 * 直線 (&S)
 			 */
