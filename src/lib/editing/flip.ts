@@ -1,18 +1,18 @@
 import type { Note, Single, Slide } from "$lib/score/beatmap"
 
-import { LANE_MAX } from "$lib/consts"
+import { LANE_SUS_MAX } from "$lib/consts"
 import { flipFlick } from "$lib/editing/flick"
 import { BatchUpdate } from "$lib/editing/mutations"
 
-export function flipLane(lane: number): number {
-  return LANE_MAX + 1 - lane
+export function flipLane(lane: number, width: number): number {
+  return LANE_SUS_MAX - lane - width
 }
 
 export function flippedNote(note: Note): Note {
   return {
     ...note,
     ...('flick' in note ? { flick: flipFlick(note.flick) } : {}),
-    lane: flipLane(note.lane),
+    lane: flipLane(note.lane, note.width),
   }
 }
 
