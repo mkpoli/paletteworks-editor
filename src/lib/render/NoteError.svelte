@@ -41,10 +41,22 @@
     graphics.alpha = 0.85 * Math.max(0, Math.sin(time) + 0.38196601125)
   }
 
-  $: drawErrorArea($position, singles, slides)
+  $: drawErrorAreas($position, singles, slides)
 
+  function drawErrorArea(position: PositionManager, lane: number, laneR: number, tick: number) {
 
-  function drawErrorArea(
+    const MARGIN_X = 10
+    const MARGIN_Y = 8
+    graphics.drawRoundedRect(
+      position.calcX(lane) - 0.5 * MARGIN_X,
+      position.calcY(tick) - 0.5 * NOTE_HEIGHT - 0.5 * MARGIN_Y,
+      ((laneR ?? lane) - lane + 1) * $preferences.laneWidth + MARGIN_X,
+      NOTE_HEIGHT + MARGIN_Y,
+      5
+    )
+  }
+
+  function drawErrorAreas(
     position: PositionManager,
     singles: Single[], slides: Slide[]
   ) {
@@ -52,18 +64,20 @@
 
     graphics.removeChildren()
     graphics.clear()
+    graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED)
 
     let tickTable = new Map<number, Note[]>()
-
     ;[...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
       .forEach((note) => {
         tickTable.set(note.tick, [...(tickTable.get(note.tick) ?? []), note])
       })
 
-    graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED)
+
+    // Draw duplication and outside
     ;[...tickTable.entries()].forEach(([tick, notes]) => {
+
       const area: number[] = new Array(16).fill(0)
-      area[0] = area[1] = area[14] = area[15] = 1
+      area[0] = area[1] = area[14] = area[15] = 1 // Default 1 to outside area so if note exist it gets to 2 > 1
       notes.forEach(({ lane: laneL, width }) => {
         const laneR = laneL + width - 1
         for (let i = 0; i < 16; i++) {
@@ -72,9 +86,6 @@
           }
         }
       })
-
-      const MARGIN_X = 10
-      const MARGIN_Y = 8
 
       const n = area
         .map((v, i) => v > 1 ? i : undefined)
@@ -95,16 +106,20 @@
           return acc
         }, [] as number[][])
 
-      n.forEach(([lane, laneR]) => {
-        graphics.drawRoundedRect(
-          position.calcX(lane) - 0.5 * MARGIN_X,
-          position.calcY(tick) - 0.5 * NOTE_HEIGHT - 0.5 * MARGIN_Y,
-          ((laneR ?? lane) - lane + 1) * $preferences.laneWidth + MARGIN_X,
-          NOTE_HEIGHT + MARGIN_Y,
-          5
-        ) 
-      })
+      // Draw
+      n.forEach(([lane, laneR]) => { drawErrorArea(position, lane, laneR, tick) })
     })
+
+    // Draw invalid steps
+    slides
+      .forEach(({ head, tail, steps }) => {
+        for (const step of steps) {
+          if (step.tick < head.tick || step.tick > tail.tick) {
+            drawErrorArea(position, step.lane, step.lane + step.width - 1, step.tick)
+          }
+        }
+      })
+
     graphics.endFill()
   }
 </script>
