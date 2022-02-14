@@ -24,5 +24,6 @@ module.exports = {
 		'no-redeclare': 'off',
 		'no-import-assign': 'off',
 		'no-console': ['error', { "allow": ["warn", "error"] }],
+		'array-callback-return': 'error',
 	}
 };
