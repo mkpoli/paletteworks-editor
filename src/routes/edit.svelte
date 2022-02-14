@@ -904,29 +904,6 @@
     ))
   }
 
-  function combineSlides(a: Slide, b: Slide, target: NoteType) {
-    const slide = {
-      head: a.head,
-      tail: b.tail,
-      steps: [
-        ...a.steps,
-        {
-          tick: target.tick,
-          lane: target.lane,
-          width: target.width,
-          diamond: false,
-          ignored: false,
-          easeType: b.head.easeType
-        },
-        ...b.steps
-      ],
-      critical: a.critical || b.critical,
-    }
-    exec(new AddRemoveSlides(
-      slides, [slide], [a, b], 1, 'combine'
-    ))
-  }
-
   function toSlide(notes: Single[]) {
     if (notes.length < 2) {
       return
@@ -1008,6 +985,9 @@
 
   let aboutDialogOpened = false
   import AboutDialog from '$lib/dialogs/AboutDialog.svelte'
+
+  import { moveNotes } from '$lib/editing/moving'
+  import { combineSlides } from '$lib/editing/slides'
 </script>
 
 <svelte:head>
@@ -1142,47 +1122,8 @@
       on:copy={(event) => { copyNotes(event.detail.notes) }}
       on:cut={(event) => { cutNotes(event.detail.notes) }}
       on:paste={onpaste}
-      on:combine={({ detail: { slides: [slideA, slideB] }}) => combineSlides(slideA, slideB, slideA.tail)}
-      on:movenotes={({ detail: { movingNotes, movingTargets, movingOrigins }}) => {
-        if (movingNotes.length === 1) {
-          const movingNote = movingNotes[0]
-          const target = {
-            ...movingTargets.get(movingNotes[0]),
-            width: movingNotes[0].width,
-          }
-          let slideA
-          let slideB
-
-          if (hasCritical(movingNote) && hasFlick(movingNote)) {
-            slideA = slides.find(({ tail }) => tail === movingNote)
-            slideB = slides.find(({ head }) => head.tick === target.tick && head.lane === target.lane && head.width === target.width)
-          } else if (isSlideHead(movingNote)) {
-            slideA = slides.find(({ tail }) => tail.tick === target.tick && tail.lane === target.lane && tail.width === target.width)
-            slideB = slides.find(({ head }) => head === movingNote)
-          }
-
-          if (slideA && slideB) {
-            combineSlides(slideA, slideB, target)
-            return
-          }
-        }
-
-        const movingSlides = slides.filter(({ steps }) => steps.some((step) => movingNotes.includes(step)))
-        movingSlides.forEach(({ steps }) => {
-          const switched = steps
-            .map((step, index) => [index, { ...step, ...(movingTargets.get(step) ?? {}) }])
-            .sort(([, stepA], [, stepB]) => stepA.tick - stepB.tick)
-
-          switched.forEach(([index, changed], ind) => {
-            if (index !== ind) {
-              movingTargets.set(steps[ind], changed)
-              movingOrigins.set(steps[ind], {...steps[ind]})
-            }
-          })
-        })
-
-        exec(new BatchUpdate(singles, slides, movingTargets, movingOrigins, 'move'))
-      }}
+      on:combine={({ detail: { slides: [slideA, slideB] }}) => { exec(combineSlides(slides, slideA, slideB, slideA.tail)) }}
+      on:movenotes={() => { exec(moveNotes(singles, slides)) }}
       on:resizenotes={({ detail: { resizingTargets, resizingOrigins }}) => {
         exec(new BatchUpdate(singles, slides, resizingTargets, resizingOrigins, 'resize'))
       }}

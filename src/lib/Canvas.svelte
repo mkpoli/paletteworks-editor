@@ -608,24 +608,9 @@
   let clickedOnNote: boolean = false
 
   // Moving
-  import { moving, movingNotes, movingOrigins, movingTargets } from '$lib/editing/moving'
-
+  import { moving, movingNotes } from '$lib/editing/moving'
   $: if (!$moving) {
-    onmoveend()
-  }
-
-  function onmoveend() {
-    if ($movingNotes.every((note) => {
-      const target = $movingTargets.get(note)!
-      const origin = $movingOrigins.get(note)!
-      return target.lane === origin.lane && target.tick === origin.tick
-    })) return
-    dispatch('movenotes', {
-      movingTargets: new Map($movingTargets),
-      movingOrigins: new Map($movingOrigins),
-      movingNotes: $movingNotes
-    })
-    $movingNotes = []
+    dispatch('movenotes')
   }
 
   // Resizing
