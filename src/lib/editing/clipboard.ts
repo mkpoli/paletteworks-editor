@@ -35,6 +35,6 @@ export function pasted(cursor: Cursor): { singles: Single[], slides: Slide[] } {
 }
 
 export function flippasted(cursor: Cursor): { singles: Single[], slides: Slide[] } {
-  const { singles, slides } = pasted({ ...cursor, lane: flipLane(cursor.lane) });
+  const { singles, slides } = pasted({ ...cursor, lane: flipLane(cursor.lane, 1) });
   return flipped(singles, slides)
 }
