@@ -155,6 +155,32 @@ export class UpdateSingle extends SingleMutation {
   }
 }
 
+export class UpdateSingles extends SingleMutation {
+  modifications: Map<Single, Partial<Single>>
+  originaldatas: Map<Single, Partial<Single>>
+  constructor(singles: Single[], modifications: Map<Single, Partial<Single>>, operation: Operation) {
+    super(singles)
+    this.target = 'note'
+    this.operation = operation
+    this.amount = modifications.size
+
+    this.modifications = modifications
+    this.originaldatas = new Map([...modifications].map(([note, data]) =>
+      [note, Object.fromEntries(Object.keys(data).map((key) => [key, note[key as keyof Single]]))])
+    )
+  }
+
+  exec(): Single[] {
+    this.modifications.forEach((data, note) => Object.assign(note, data))
+    return this.singles
+  }
+
+  undo(): Single[] {
+    this.originaldatas.forEach((data, note) => Object.assign(note, data))
+    return this.singles
+  }
+}
+
 export class RemoveSingles extends SingleMutation {
   targetNotes: Single[]
   constructor(singles: Single[], oldNotes: Single[]) {
@@ -557,6 +583,31 @@ export class BatchUpdateCombinated extends BatchMutation {
   undo() {
     this.updateSlides.undo()
     this.batchUpdate.undo()
+    return { singles: this.singles, slides: this.slides }
+  }
+}
+
+export class CombinedMutation extends BatchMutation {
+  mutations: (SingleMutation | SlideMutation | BatchMutation)[]
+  constructor(singles: Single[], slides: Slide[], mutations: (SingleMutation | SlideMutation | BatchMutation)[], target: TargetType, amount: number, operation: Operation) {
+    super(singles, slides)
+    this.mutations = mutations
+    this.operation = operation
+    this.amount = amount
+    this.target = target
+  }
+
+  exec(): { singles: Single[], slides: Slide[] } {
+    this.mutations.forEach((mutation) => {
+      mutation.exec()
+    })
+    return { singles: this.singles, slides: this.slides }
+  }
+
+  undo(): { singles: Single[], slides: Slide[] } {
+    [...this.mutations].reverse().forEach((mutation) => {
+      mutation.undo()
+    })
     return { singles: this.singles, slides: this.slides }
   }
 }

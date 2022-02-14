@@ -1,30 +1,25 @@
 import { writable, get } from 'svelte/store'
 import { hasCritical, hasFlick, isSlideHead } from '$lib/score/beatmap'
-import type { Note, Single, Slide } from '$lib/score/beatmap'
-import { AddRemoveSlides, BatchUpdate } from '$lib/editing/mutations'
-import { combineSlides } from '$lib/editing/slides'
+import type { Note, Single, Slide, INote } from '$lib/score/beatmap'
+import { AddRemoveSlides, CombinedMutation, UpdateSingles, UpdateSlides } from '$lib/editing/mutations'
+import { combineSlides, getSlideNotes } from '$lib/editing/slides'
 
 export type MoveEvent = CustomEvent<{
   lane: number, tick: number, note: Note
 }>
 
+import type { LaneTick } from '$lib/position'
+
 export const moving = writable<boolean>(false)
 export const movingNotes = writable<Note[]>([])
-export const movingTargets = writable(new Map<Note, {
-  lane: number, tick: number
-}>())
-export const movingOrigins = writable(new Map<Note, {
-  lane: number, tick: number
-}>())
-export const movingOffsets = writable(new Map<Note, {
-  lane: number, tick: number
-}>())
+export const movingTargets = writable(new Map<Note, LaneTick>())
+export const movingOrigins = writable(new Map<Note, LaneTick>())
+export const movingOffsets = writable(new Map<Note, LaneTick>())
 
-export function moveNotes(singles: Single[], slides: Slide[]): BatchUpdate | AddRemoveSlides {
-  const notes = get(movingNotes)
-  const targets = new Map(get(movingTargets))
-  const origins = new Map(get(movingOrigins))
+export function moveNotes(singles: Single[], slides: Slide[]): CombinedMutation | AddRemoveSlides {
+  const notes = [...get(movingNotes)]
   movingNotes.set([])
+  const targets: Map<Note, LaneTick> = new Map(get(movingTargets))
 
   // -- Check if combining --
   if (notes.length === 1) {
@@ -49,20 +44,41 @@ export function moveNotes(singles: Single[], slides: Slide[]): BatchUpdate | Add
     }
   }
 
-  // Check if steps reversed
-  const movingSlides = slides.filter(({ steps }) => steps.some((step) => notes.includes(step)))
-  movingSlides.forEach(({ steps }) => {
-    const switched = steps
-      .map((step, index) => [index, { ...step, ...(targets.get(step) ?? {}) }] as [number, { lane: number, tick: number }])
-      .sort(([, stepA], [, stepB]) => stepA.tick - stepB.tick)
+  const movingSlides = slides.filter((slide) =>
+    getSlideNotes(slide).some((note) => notes.includes(note))
+  )
 
-    switched.forEach(([index, changed], ind) => {
-      if (index !== ind) {
-        targets.set(steps[ind], changed)
-        origins.set(steps[ind], {...steps[ind]})
+  const slideModifications: Map<Slide, Partial<Slide>> = new Map(
+    movingSlides.map((slide) => {
+      const { head, tail, steps } = {
+        ...slide,
+        head: { ...slide.head, ...(targets.get(slide.head) ?? []) },
+        tail: { ...slide.tail, ...(targets.get(slide.tail) ?? []) },
+        steps: slide.steps.map((step) => ({
+          ...step,
+          ...(targets.get(step) ?? [])
+        })).sort((a, b) => a.tick - b.tick)
       }
-    })
-  })
 
-  return new BatchUpdate(singles, slides, targets, origins, 'move')
+      const pickINote = ({ lane, tick, width }: INote) => ({ lane, tick, width })
+
+      return [slide, {
+        head: head.tick > tail.tick ? { ...head, ...pickINote(tail) } : head,
+        tail: head.tick > tail.tick ? { ...tail, ...pickINote(head) } : tail,
+        steps
+      }]
+    })
+  )
+  const slideOriginaldatas: Map<Slide, Partial<Slide>> = new Map(
+    [...slideModifications].map(([slide]) => [slide, {
+      head: slide.head,
+      tail: slide.tail,
+      steps: slide.steps
+    }])
+  )
+
+  return new CombinedMutation(singles, slides, [
+    new UpdateSingles(singles, new Map([...targets].filter(([note]) => singles.includes(note as Single)) as [Single, Partial<Single>][]), 'move'),
+    new UpdateSlides(slides, slideModifications, slideOriginaldatas)
+  ], 'note', notes.length, 'move')
 }
