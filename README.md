@@ -28,6 +28,7 @@ pnpm run typesafe-i18n
 - **D** for **D**ocumentation (Documentation, README, etc.)
 - **S** for **S**tyle (Styling, Visual Design Adjustments, etc.)
 - **V** for **V**ersion (Versioning, Dependencies, Licensing, etc.)
+- **C** for **C**onfiguration (Building, Linting, CLI Tooling, etc.)
 - **I** for **I**18n (Translation, Localisation, etc.)
 
 ## Acknowledgements / 謝辞 / 致謝 / 사사(謝辭)
