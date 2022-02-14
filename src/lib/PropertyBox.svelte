@@ -81,6 +81,7 @@
       <div style="display: flex; gap: 0.5em;">
         <TextInput
           bind:value={currentMeasure}
+          on:keydown={(e) => { if (e.key === 'Enter') { dispatch('goto') } }}
         >
           <Icon icon="fontisto:hashtag" slot="head" style="flex-shrink: 0;"></Icon>
           <span style="white-space: nowrap;" slot="tail">{$LL.editor.panel.measure()}</span>
@@ -197,7 +198,7 @@
           <Tooltip
             placement="bottom"
             keys={KEYBOARD_SHORTCUTS.undo}
-          > 
+          >
             <Button icon="ic:round-undo" on:click={() => dispatch('undo')} class="history-button">{$LL.editor.panel.undo()}</Button>
           </Tooltip>
           <Tooltip
@@ -214,7 +215,7 @@
         </div>
       </TabContent>
     </Tabs>
-  </div>  
+  </div>
   <div class="panel">
     <h2>{$LL.editor.panel.music()}</h2>
     <label for="music">
@@ -287,7 +288,7 @@
   appearance: none;
   border: none;
   background: none;
-  
+
   padding: 0;
   position: relative;
   left: calc(var(--border-trep-height) / -2);
