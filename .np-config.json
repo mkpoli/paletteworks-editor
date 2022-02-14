@@ -1,6 +1,7 @@
 {
-    "yarn": false,
-    "yolo": true,
-    "branch": "main",
-    "message": "V: Release v%s"
+  "yarn": false,
+  "cleanup": false,
+  "branch": "main",
+  "testScript": "check",
+  "message": "V: Release v%s"
 }
