@@ -71,7 +71,7 @@
 
       const newY = position.calcY(accumulatedTicks)
       accumulatedTicks += (nextMeasure - measure) * (beatPerMeasure / beatLength * 4) * TICK_PER_BEAT
- 
+
       // Draw Time Signature LINES
       graphics.moveTo(left, newY)
       graphics.lineTo(left + position.laneAreaWidth, newY)

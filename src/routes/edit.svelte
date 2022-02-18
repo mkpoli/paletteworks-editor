@@ -29,7 +29,7 @@
   import ToolBox from '$lib/ToolBox.svelte'
   import Canvas from '$lib/Canvas.svelte'
   import PropertyBox from '$lib/PropertyBox.svelte'
-  
+
   // UI Components
   import ControlHandler from '$lib/control/ControlHandler.svelte'
   import AudioManager from '$lib/audio/AudioManager.svelte'
@@ -526,7 +526,7 @@
     scrollTick = 0
     currentTick = 0
   }
-  
+
   import { db, deserialiseProject, PROJECT_FILE_EXTENSION } from '$lib/database'
 
   import type { Project } from '$lib/database'
@@ -585,13 +585,13 @@
   async function importProject(project: Project): Promise<void> {
     const id = await db.projects.add(project)
     openProject((await db.projects.get(id))!)
-    projectsDialogOpened = false    
+    projectsDialogOpened = false
   }
 
   let fileInput: HTMLInputElement
   let scoreFiles: FileList
 
-  $: if (scoreFiles && scoreFiles[0]) loadFile(scoreFiles[0]) 
+  $: if (scoreFiles && scoreFiles[0]) loadFile(scoreFiles[0])
 
   function onopenfile() {
     fileInput.click()
@@ -608,7 +608,7 @@
   }
 
   async function loadSUSFile(file: File) {
-    const { name: filename } = file 
+    const { name: filename } = file
     const res = await fetch(URL.createObjectURL(file))
     const text = await res.text()
 
@@ -744,7 +744,7 @@
       new Map(criticalNotes.map((note) => [note, { critical: !oldcritical }])),
       new Map(criticalNotes.map((note) => [note, { critical: note.critical }])),
       new Map(criticalSlides.map((slide) => [slide, { critical: !oldcritical }])),
-      new Map(criticalSlides.map((slide) => [slide, { critical: slide.critical }])),  
+      new Map(criticalSlides.map((slide) => [slide, { critical: slide.critical }])),
       'update'
     ))
   }
@@ -795,7 +795,7 @@
   import { preferences } from '$lib/preferences'
 
   $: dbg('autosaveInterval', $preferences.autosaveInterval)
-  
+
   let autosaveIntervalTimer: number | undefined = undefined
   $: if (browser && $preferences.autosaveInterval !== 0) {
     clearAutosave()
@@ -831,7 +831,7 @@
     loopTo = snap(maxTick + TICK_PER_MEASURE, TICK_PER_MEASURE)
     loop = true
   }
-  
+
   function doLoop() {
     goto(loopFrom)
   }
@@ -1007,7 +1007,7 @@
       on:selectall={onselectall}
       on:unselectall={unselectall}
       on:preferences={() => { preferencesDialogOpened = true }}
-      on:upload={async () => { 
+      on:upload={async () => {
         if (!$selectedNotes.length) {
           toast.error($LL.editor.messages.library.uploadNotSelectedError())
           return
