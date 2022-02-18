@@ -103,7 +103,7 @@
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
   import { average, clamp, easeInQuad, easeOutQuad, lerp, snap } from '$lib/basic/math'
-  import { download, toBlob, dropHandlerMultiple } from '$lib/basic/file'
+  import { download, toBlob, dropHandlerMultiple, formatFilename } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
   import { flipNotes, vflipNotes } from '$lib/editing/flip'
@@ -309,7 +309,13 @@
     }
 
     const sus = dumpSUS(metadata, { singles, slides, bpms, fever, skills, timeSignatures })
-    download(toBlob(sus), `${currentProject.name ?? 'Untitled'}-${new Date().toISOString().replace(':', '-')}.sus`)
+    const formatData = {
+      project: currentProject.name ?? 'Untitled',
+      title: metadata.title,
+      artist: metadata.artist,
+      author: metadata.author,
+    }
+    download(toBlob(sus), formatFilename($preferences.fileSaveName, formatData))
   }
 
   let imageDialogOpened: boolean = false
@@ -534,6 +540,9 @@
   import ProjectsDialog from '$lib/dialogs/ProjectsDialog.svelte'
   let projectsDialogOpened = true
   let currentProject: Project | null = null
+
+  setContext('currentProject', currentProject)
+
   $: dbg('currentProject.id', currentProject?.id)
   $: dbg('currentProject.name', currentProject?.name)
 

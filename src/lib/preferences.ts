@@ -9,6 +9,7 @@ export const DEFAULT_PREFERENCES = {
   minimapEnabled: true,
   laneWidth: 30,
   multiTapWarningEnabled: true,
+  fileSaveName: '{project}-{datetime}.sus'
 }
 
 export type Preferences = typeof DEFAULT_PREFERENCES

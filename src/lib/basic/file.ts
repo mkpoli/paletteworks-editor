@@ -45,3 +45,28 @@ export function dropHandlerMultiple(handlers: { accept: string, callback: (file:
     onerror()
   }
 }
+
+export type FormatData = {
+  project: string,
+  title: string,
+  artist: string,
+  author: string,
+}
+export const SUPPORTED_FORMAT_KEYWORDS = ['project', 'title', 'artist', 'author', 'datetime', 'date']
+export function formatFilename(format: string, data: FormatData): string {
+  return format.replace(/{([^}]+)}/g, (match, key: string | undefined) => {
+    switch (key) {
+      case 'project':
+      case 'title':
+      case 'artist':
+      case 'author':
+        return data[key]
+      case 'datetime':
+        return new Date().toISOString().replace(/:/g, '-')
+      case 'date':
+        return new Date().toISOString().split('T')[0]
+      default:
+        return match
+    }
+  })
+}

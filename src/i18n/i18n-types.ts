@@ -666,6 +666,14 @@ export type Translation = {
 			 * 三つ以上同時押し警告を表示する
 			 */
 			'multiTapWarningEnabled': string
+			/**
+			 * 譜面ファイルの保存名
+			 */
+			'fileSaveName': string
+			/**
+			 * 現在サポートされているキーワードは以下の通りです
+			 */
+			'fileSaveNameTooltip': string
 		}
 		'modes': {	
 			/**
@@ -1348,6 +1356,14 @@ export type TranslationFunctions = {
 			 * 三つ以上同時押し警告を表示する
 			 */
 			'multiTapWarningEnabled': () => LocalizedString
+			/**
+			 * 譜面ファイルの保存名
+			 */
+			'fileSaveName': () => LocalizedString
+			/**
+			 * 現在サポートされているキーワードは以下の通りです
+			 */
+			'fileSaveNameTooltip': () => LocalizedString
 		}
 		'modes': {	
 			/**

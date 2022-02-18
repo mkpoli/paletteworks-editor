@@ -182,6 +182,8 @@ const ja: BaseTranslation = {
 			noteHeight: 'ノーツの高さ',
 			minimapEnabled: 'ミニマップ（プレビュー表示）を表示する',
       multiTapWarningEnabled: '三つ以上同時押し警告を表示する',
+      fileSaveName: '譜面ファイルの保存名',
+      fileSaveNameTooltip: '現在サポートされているキーワードは以下の通りです'
 		},
 		modes: {
 			select: "選択",

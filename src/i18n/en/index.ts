@@ -182,6 +182,8 @@ const en: Translation = {
 			noteHeight: 'Note Height',
 			minimapEnabled: 'Enable Minimap (Score Outline)',
       multiTapWarningEnabled: 'Enable multiple-tap (3 or above) warning',
+      fileSaveName: 'File Save Name',
+      fileSaveNameTooltip: 'Currently supported keywords:',
 		},
 		modes: {
 			select: "Select",

@@ -182,6 +182,8 @@ const ko: Translation = {
 			noteHeight: '노트 높이',
 			minimapEnabled: '미니맵 (채보의 미리보기) 활성화',
       multiTapWarningEnabled: '3점 이상의 동시치기 알림 활성화',
+      fileSaveName: '파일 저장 시 이름',
+      fileSaveNameTooltip: '현재 지원되는 키워드는 다음과 같습니다.'
 		},
 		modes: {
 			select: "선택",

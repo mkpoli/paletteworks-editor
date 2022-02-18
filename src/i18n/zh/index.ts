@@ -182,6 +182,8 @@ const zh: Translation = {
 			noteHeight: '音符高度',
 			minimapEnabled: '啓用小地圖（預覽）',
       multiTapWarningEnabled: '啓用三點以上同時點擊警告',
+      fileSaveName: '譜面文件名',
+      fileSaveNameTooltip: '目前可以使用的關鍵字如下',
 		},
 		modes: {
 			select: "選擇",

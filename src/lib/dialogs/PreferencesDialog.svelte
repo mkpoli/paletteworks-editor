@@ -8,21 +8,23 @@
   import Modal from '$lib/ui/Modal.svelte'
 
   // Events
-  import { createEventDispatcher, onMount } from 'svelte'
+  import { createEventDispatcher, getContext, onMount } from 'svelte'
   const dispatch = createEventDispatcher<{
     ok: void
     cancel: void
   }>()
 
   export let opened: boolean
-  import { db } from '$lib/database'
+  import { db, type Project } from '$lib/database'
 
   import toast from '$lib/ui/toast'
 
   import { preferences as _preferences } from '$lib/preferences'
   import type { Preferences } from '$lib/preferences'
-  import { download, dropHandler } from '$lib/basic/file'
+  import { download, dropHandler, formatFilename, SUPPORTED_FORMAT_KEYWORDS } from '$lib/basic/file'
   import type * as DexieExportImport from 'dexie-export-import'
+  import Icon from '@iconify/svelte';
+  import Tooltip from '$lib/ui/Tooltip.svelte';
 
   let preferences: Preferences
 
@@ -31,6 +33,14 @@
 
   onMount(async () => {
     ({ exportDB, importInto } = await import('dexie-export-import'))
+  })
+
+  let exampleFilename: string
+  $: if (preferences) exampleFilename = formatFilename(preferences.fileSaveName, {
+    project: getContext<Project | null>('currentProject')?.name ?? 'Untitled',
+    title: getContext<Project | null>('currentProject')?.metadata?.title ?? 'Title',
+    artist: getContext<Project | null>('currentProject')?.metadata?.artist ?? 'Artist',
+    author: getContext<Project | null>('currentProject')?.metadata?.author ?? 'Author',
   })
 </script>
 
@@ -75,6 +85,18 @@
         <input type="range" name="note-height" min=10 max=35 step=1 bind:value={preferences.laneWidth}/>
         <label for="note-height">{$LL.editor.preferences.noteHeight()}<span class="value">{preferences.noteHeight}x</span></label>
         <input type="range" name="note-height" min=0.5 max=1.25 step=0.01 bind:value={preferences.noteHeight}/>
+        <label for="file-save-name">{$LL.editor.preferences.fileSaveName()}
+          <Tooltip
+            placement="top"
+          >
+            <div slot="description">
+              <span>{$LL.editor.preferences.fileSaveNameTooltip()}</span><br /><span>{SUPPORTED_FORMAT_KEYWORDS.join(', ')}</span>
+            </div>
+            <Icon icon="mdi:help-circle-outline" />
+          </Tooltip>
+        </label>
+        <input type="text" name="file-save-name" bind:value={preferences.fileSaveName}/>
+        <label for="file-save-name">（{exampleFilename}）</label>
         <div class="toggles">
           <input type="checkbox" name="minimap-enabled" bind:checked={preferences.minimapEnabled}/>
           <label for="minimap-enabled">{$LL.editor.preferences.minimapEnabled()}</label>

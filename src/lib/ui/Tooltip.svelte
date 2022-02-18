@@ -40,6 +40,7 @@
   {#if keys}
     <KeyboardShortcut {keys} />
   {/if}
+  <slot name="description"/>
 </div>
 
 <style>
