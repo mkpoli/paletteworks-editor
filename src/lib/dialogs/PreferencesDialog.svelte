@@ -79,8 +79,8 @@
       >
         <label for="autosave-interval">{$LL.editor.preferences.autosaveInterval()}</label>
         <input type="number" name="autosave-interval" min=0 bind:value={preferences.autosaveInterval}/>
-        <label for="scroll-speed">{$LL.editor.preferences.scrollSpeed()}</label>
-        <input type="number" name="scroll-speed" min=0.01 bind:value={preferences.scrollSpeed}/>
+        <label for="scroll-speed">{$LL.editor.preferences.scrollSpeed()}<span class="value">{preferences.scrollSpeed}x</span></label>
+        <input type="range" name="scroll-speed" min=0.00 max=20 step=0.1 bind:value={preferences.scrollSpeed}/>
         <label for="note-height">{$LL.editor.preferences.laneWidth()}<span class="value">{preferences.laneWidth}</span></label>
         <input type="range" name="note-height" min=10 max=35 step=1 bind:value={preferences.laneWidth}/>
         <label for="note-height">{$LL.editor.preferences.noteHeight()}<span class="value">{preferences.noteHeight}x</span></label>
@@ -96,7 +96,7 @@
           </Tooltip>
         </label>
         <input type="text" name="file-save-name" bind:value={preferences.fileSaveName}/>
-        <label for="file-save-name">（{exampleFilename}）</label>
+        <label for="file-save-name" class="example">{exampleFilename}</label>
         <div class="toggles">
           <input type="checkbox" name="minimap-enabled" bind:checked={preferences.minimapEnabled}/>
           <label for="minimap-enabled">{$LL.editor.preferences.minimapEnabled()}</label>
@@ -145,7 +145,6 @@
     gap: 2em;
     /* grid-template: 1fr auto / auto 1fr auto ; */
     grid-template-columns: repeat(6, 3.2em);
-    grid-template-rows: repeat(5, 3.2em);
     grid-template-areas:
       "h h h . . x"
       "t t t t t t"
@@ -201,5 +200,14 @@
   .form label {
     display: flex;
     justify-content: space-between;
+  }
+
+  label:not(:first-of-type) {
+    margin-top: 0.2em;
+  }
+
+  label.example {
+    padding: 0 var(--input-padding-horizontal);
+    font-style: italic;
   }
 </style>
