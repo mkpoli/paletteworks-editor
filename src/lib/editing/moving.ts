@@ -16,7 +16,7 @@ export const movingTargets = writable(new Map<Note, LaneTick>())
 export const movingOrigins = writable(new Map<Note, LaneTick>())
 export const movingOffsets = writable(new Map<Note, LaneTick>())
 
-export function moveNotes(singles: Single[], slides: Slide[]): CombinedMutation | AddRemoveSlides {
+export function moveNotes(singles: Single[], slides: Slide[]): CombinedMutation | AddRemoveSlides | null {
   const notes = [...get(movingNotes)]
   movingNotes.set([])
   const targets: Map<Note, LaneTick> = new Map(get(movingTargets))
@@ -42,6 +42,11 @@ export function moveNotes(singles: Single[], slides: Slide[]): CombinedMutation 
     if (slideA && slideB) {
       return combineSlides(slides, slideA, slideB, target)
     }
+  }
+
+  // -- Check if anything changes position --
+  if ([...targets].every(([note, target]) => note.lane === target.lane && note.tick === target.tick)) {
+    return null
   }
 
   const movingSlides = slides.filter((slide) =>
