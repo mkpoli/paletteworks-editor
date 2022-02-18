@@ -1,7 +1,7 @@
 {
   "yarn": false,
   "cleanup": false,
+  "test": false,
   "branch": "main",
-  "testScript": "check",
   "message": "V: Release v%s"
 }
