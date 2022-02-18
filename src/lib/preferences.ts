@@ -5,9 +5,9 @@ import { writable } from 'svelte/store'
 export const DEFAULT_PREFERENCES = {
   autosaveInterval: 10,
   scrollSpeed: 1,
-  noteHeight: 1,
+  noteHeight: 0.85,
   minimapEnabled: true,
-  laneWidth: 30,
+  laneWidth: 26,
   multiTapWarningEnabled: true,
   fileSaveName: '{project}-{datetime}.sus'
 }
