@@ -50,7 +50,7 @@
   import type { Note as NoteType, EaseType, SlideStep, DiamondType, Single, Fever, Slide, IDirectional, ICritical, Metadata, Score, TimeSignature } from '$lib/score/beatmap'
 
   import { ALLOWED_SNAPPINGS } from '$lib/editing/modes'
-  import { hasEaseType, isSlideHead, isSlideStep, toDiamondType, hasFlick, hasCritical, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
+  import { hasEaseType, isSlideStep, toDiamondType, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
