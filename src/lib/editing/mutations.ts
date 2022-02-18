@@ -462,7 +462,7 @@ export class BatchUpdate extends BatchMutation {
   modifications: Map<Note, Partial<Note>>
   originalDatas: Map<Note, Partial<Note>>
 
-  constructor(singles: Single[], slides: Slide[], modifications: Map<Note, Partial<Note>>, originalDatas: Map<Note, Partial<Note>>, operation: Operation) {
+  constructor(singles: Single[], slides: Slide[], modifications: Map<Note, Partial<Note>>, originalDatas: Map<Note, Partial<Note>>, operation: Operation = 'update') {
     super(singles, slides, operation, modifications.size, 'note')
     this.modifications = modifications
     this.originalDatas = originalDatas
@@ -509,29 +509,6 @@ export class BatchAddRemove extends BatchMutation {
     this.slides = this.slides.filter((slide) => !this.additionSlides.includes(slide))
     this.singles = [...this.singles, ...this.deletionSingles.filter((single) => !this.singles.includes(single))]
     this.slides = [...this.slides, ...this.deletionSlides.filter((slide) => !this.slides.includes(slide))]
-    return { singles: this.singles, slides: this.slides }
-  }
-}
-
-export class BatchUpdateCombinated extends BatchMutation {
-  batchUpdate: BatchUpdate
-  updateSlides: UpdateSlides
-
-  constructor(singles: Single[], slides: Slide[], noteModifications: Map<Note, Partial<Note>>, noteOriginalDatas: Map<Note, Partial<Note>>, slideModifications: Map<Slide, Partial<Slide>>, slideOriginalDatas: Map<Slide, Partial<Slide>>, operation: Operation) {
-    super(singles, slides, operation, noteModifications.size + slideModifications.size, 'note')
-    this.batchUpdate = new BatchUpdate(singles, slides, noteModifications, noteOriginalDatas, operation)
-    this.updateSlides = new UpdateSlides(slides, slideModifications, slideOriginalDatas)
-  }
-
-  exec() {
-    this.batchUpdate.exec()
-    this.updateSlides.exec()
-    return { singles: this.singles, slides: this.slides }
-  }
-
-  undo() {
-    this.updateSlides.undo()
-    this.batchUpdate.undo()
     return { singles: this.singles, slides: this.slides }
   }
 }

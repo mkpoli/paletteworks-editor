@@ -403,8 +403,8 @@
     BatchMutation,
     BatchRemove,
     BatchUpdate,
-    BatchUpdateCombinated,
     BPMMutation,
+    CombinedMutation,
     Mutation,
     RemoveBPM,
     RemoveTimeSignature,
@@ -417,6 +417,7 @@
     UpdateSlide,
     UpdateSlideNote,
     UpdateSlideNotes,
+    UpdateSlides,
   } from '$lib/editing/mutations'
 
   import { mutationHistory, undoneHistory } from '$lib/editing/history';
@@ -739,14 +740,20 @@
     const criticalSlides = [...criticalSlideSet]
     if (criticalNotes.length === 0 && criticalSlides.length === 0) return
     let oldcritical = criticalNotes[0]?.critical ?? criticalSlides[0].critical ?? false
-    exec(new BatchUpdateCombinated(
+
+    exec(new CombinedMutation(
       singles, slides,
-      new Map(criticalNotes.map((note) => [note, { critical: !oldcritical }])),
-      new Map(criticalNotes.map((note) => [note, { critical: note.critical }])),
-      new Map(criticalSlides.map((slide) => [slide, { critical: !oldcritical }])),
-      new Map(criticalSlides.map((slide) => [slide, { critical: slide.critical }])),
-      'update'
-    ))
+      [
+        new BatchUpdate(singles, slides,
+          new Map(criticalNotes.map((note) => [note, { critical: !oldcritical }])),
+          new Map(criticalNotes.map((note) => [note, { critical: note.critical }])),
+        ),
+        new UpdateSlides(slides,
+          new Map(criticalSlides.map((slide) => [slide, { critical: !oldcritical }])),
+          new Map(criticalSlides.map((slide) => [slide, { critical: slide.critical }])),
+        ),
+      ], 'note', criticalNotes.length + criticalSlides.length, 'update')
+    )
   }
 
   function onselectall() {
