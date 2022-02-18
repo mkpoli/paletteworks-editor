@@ -113,6 +113,15 @@
     // Draw invalid steps
     slides
       .forEach(({ head, tail, steps }) => {
+        // find duplicated step with the same tick
+        const duplicatedSteps = steps
+          .map((step, i) => [step, i] as [Note, number])
+          .filter(([step, i], _, arr) => arr.slice(i + 1).some(([step2, j]) => step.tick === step2.tick))
+          .map(([step, i]) => step)
+        for (const step of duplicatedSteps) {
+          drawErrorArea(position, step.lane, step.lane + step.width - 1, step.tick)
+        }
+
         for (const step of steps) {
           if (step.tick < head.tick || step.tick > tail.tick) {
             drawErrorArea(position, step.lane, step.lane + step.width - 1, step.tick)
