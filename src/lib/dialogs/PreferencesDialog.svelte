@@ -19,7 +19,7 @@
 
   import toast from '$lib/ui/toast'
 
-  import { preferences as _preferences } from '$lib/preferences'
+  import { DEFAULT_PREFERENCES, preferences as _preferences } from '$lib/preferences'
   import type { Preferences } from '$lib/preferences'
   import { download, dropHandler, formatFilename, SUPPORTED_FORMAT_KEYWORDS } from '$lib/basic/file'
   import type * as DexieExportImport from 'dexie-export-import'
@@ -42,6 +42,10 @@
     artist: getContext<Project | null>('currentProject')?.metadata?.artist ?? 'Artist',
     author: getContext<Project | null>('currentProject')?.metadata?.author ?? 'Author',
   })
+
+  function restore(property: keyof Preferences) {
+    (preferences[property] as any) = DEFAULT_PREFERENCES[property]
+  }
 </script>
 
 <Modal
@@ -77,15 +81,15 @@
       <div
         class="form"
       >
-        <label for="autosave-interval">{$LL.editor.preferences.autosaveInterval()}</label>
-        <input type="number" name="autosave-interval" min=0 bind:value={preferences.autosaveInterval}/>
-        <label for="scroll-speed">{$LL.editor.preferences.scrollSpeed()}<span class="value">{preferences.scrollSpeed}x</span></label>
-        <input type="range" name="scroll-speed" min=0.00 max=20 step=0.1 bind:value={preferences.scrollSpeed}/>
-        <label for="note-height">{$LL.editor.preferences.laneWidth()}<span class="value">{preferences.laneWidth}</span></label>
-        <input type="range" name="note-height" min=10 max=35 step=1 bind:value={preferences.laneWidth}/>
-        <label for="note-height">{$LL.editor.preferences.noteHeight()}<span class="value">{preferences.noteHeight}x</span></label>
-        <input type="range" name="note-height" min=0.5 max=1.25 step=0.01 bind:value={preferences.noteHeight}/>
-        <label for="file-save-name">{$LL.editor.preferences.fileSaveName()}
+        <label for="autosave-interval" on:dblclick={() => restore('autosaveInterval')}>{$LL.editor.preferences.autosaveInterval()}</label>
+        <input type="number" name="autosave-interval" id="autosave-interval" min=0 bind:value={preferences.autosaveInterval}/>
+        <label for="scroll-speed" on:dblclick={() => restore('scrollSpeed')}>{$LL.editor.preferences.scrollSpeed()}<span class="value">{preferences.scrollSpeed}x</span></label>
+        <input type="range" name="scroll-speed" id="scroll-speed" min=0.00 max=20 step=0.1 bind:value={preferences.scrollSpeed}/>
+        <label for="lane-width" on:dblclick={() => restore('laneWidth')}>{$LL.editor.preferences.laneWidth()}<span class="value">{preferences.laneWidth}</span></label>
+        <input type="range" name="lane-width" id="lane-width" min=10 max=35 step=1 bind:value={preferences.laneWidth}/>
+        <label for="note-height" on:dblclick={() => restore('noteHeight')}>{$LL.editor.preferences.noteHeight()}<span class="value">{preferences.noteHeight}x</span></label>
+        <input type="range" name="note-height" id="note-height" min=0.5 max=1.25 step=0.01 bind:value={preferences.noteHeight}/>
+        <label for="file-save-name" on:dblclick={() => restore('fileSaveName')}>{$LL.editor.preferences.fileSaveName()}
           <Tooltip
             placement="top"
           >
@@ -96,7 +100,7 @@
           </Tooltip>
         </label>
         <input type="text" name="file-save-name" bind:value={preferences.fileSaveName}/>
-        <label for="file-save-name" class="example">{exampleFilename}</label>
+        <span class="example">{exampleFilename}</span>
         <div class="toggles">
           <input type="checkbox" name="minimap-enabled" bind:checked={preferences.minimapEnabled}/>
           <label for="minimap-enabled">{$LL.editor.preferences.minimapEnabled()}</label>
@@ -206,7 +210,7 @@
     margin-top: 0.2em;
   }
 
-  label.example {
+  .example {
     padding: 0 var(--input-padding-horizontal);
     font-style: italic;
   }
