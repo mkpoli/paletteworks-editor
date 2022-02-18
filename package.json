@@ -33,6 +33,7 @@
     "dexie": "^3.2.0",
     "dexie-export-import": "^1.0.3",
     "eslint": "^8.7.0",
+    "eslint-plugin-no-array-concat": "^0.1.2",
     "eslint-plugin-svelte3": "^3.4.0",
     "filesize": "^8.0.6",
     "focus-trap": "^6.7.2",

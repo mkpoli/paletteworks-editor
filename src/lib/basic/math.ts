@@ -26,9 +26,9 @@ type ArrayLengthMutationKeys = 'splice' | 'push' | 'pop' | 'shift' | 'unshift'
 type FixedLengthArray<T, L extends number, TObj = [T, ...Array<T>]> =
   Pick<TObj, Exclude<keyof TObj, ArrayLengthMutationKeys>>
   & {
-    readonly length: L 
+    readonly length: L
     [ I : number ] : T
-    [Symbol.iterator]: () => IterableIterator<T>   
+    [Symbol.iterator]: () => IterableIterator<T>
   }
 
 /**
@@ -61,6 +61,7 @@ export function cartesianProduct<T>(arr: T[][]): T[][] {
   const rest = cartesianProduct(arr.slice(1))
   for (const n of arr[0]) {
     for (const r of rest) {
+      // eslint-disable-next-line no-array-concat/no-array-concat
       result.push([n].concat(r))
     }
   }

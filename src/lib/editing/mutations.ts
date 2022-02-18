@@ -497,8 +497,8 @@ export class BatchAddRemove extends BatchMutation {
   }
 
   exec(): { singles: Single[], slides: Slide[] } {
-    this.singles = this.singles.concat(this.additionSingles.filter((single) => !this.singles.includes(single)))
-    this.slides = this.slides.concat(this.additionSlides.filter((slide) => !this.slides.includes(slide)))
+    this.singles = [...this.singles, ...this.additionSingles.filter((single) => !this.singles.includes(single))]
+    this.slides = [...this.slides, ...this.additionSlides.filter((slide) => !this.slides.includes(slide))]
     this.singles = this.singles.filter((single) => !this.deletionSingles.includes(single))
     this.slides = this.slides.filter((slide) => !this.deletionSlides.includes(slide))
     return { singles: this.singles, slides: this.slides }
@@ -507,8 +507,8 @@ export class BatchAddRemove extends BatchMutation {
   undo(): { singles: Single[], slides: Slide[] } {
     this.singles = this.singles.filter((single) => !this.additionSingles.includes(single))
     this.slides = this.slides.filter((slide) => !this.additionSlides.includes(slide))
-    this.singles = this.singles.concat(this.deletionSingles.filter((single) => !this.singles.includes(single)))
-    this.slides = this.slides.concat(this.deletionSlides.filter((slide) => !this.slides.includes(slide)))
+    this.singles = [...this.singles, ...this.deletionSingles.filter((single) => !this.singles.includes(single))]
+    this.slides = [...this.slides, ...this.deletionSlides.filter((slide) => !this.slides.includes(slide))]
     return { singles: this.singles, slides: this.slides }
   }
 }

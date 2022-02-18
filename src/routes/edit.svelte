@@ -346,19 +346,11 @@
     )
     const center = { lane: Math.round(lane), tick: timeSignatureManager.snap(tick, snapTo) }
 
-    // const graphics = new PIXI.Graphics
-    // graphics.beginFill(0xffffff, 0.5)
-    // graphics.drawCircle(
-    //   $position.calcX(center.lane),
-    //   $position.calcY(center.tick),
-    //   10
-    // )
-    // mainContainer.addChild(graphics)
-
-    $clipboardSlides
-      .flatMap(({ head, tail, steps }) => [head, tail, ...steps])
-      .concat($clipboardSingles)
-      .forEach((note) => {
+    ;[
+      ...$clipboardSingles,
+      ...$clipboardSlides
+        .flatMap(({ head, tail, steps }) => [head, tail, ...steps])
+    ].forEach((note) => {
         $clipboardOffsets.set(note, {
           lane: center.lane - note.lane,
           tick: center.tick - note.tick
@@ -370,7 +362,7 @@
     copyNotes(notes)
     deleteNotes(notes, true)
   }
-  
+
   function onpaste() {
     const { singles: pastedSingles, slides: pastedSlides } = pasted($cursor)
 

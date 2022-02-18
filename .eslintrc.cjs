@@ -2,7 +2,7 @@ module.exports = {
 	root: true,
 	parser: '@typescript-eslint/parser',
 	extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
-	plugins: ['svelte3', '@typescript-eslint'],
+	plugins: ['svelte3', '@typescript-eslint', 'no-array-concat'],
 	ignorePatterns: ['*.cjs'],
 	overrides: [{ files: ['*.svelte'], processor: 'svelte3/svelte3' }],
 	settings: {
@@ -10,7 +10,8 @@ module.exports = {
 	},
 	parserOptions: {
 		sourceType: 'module',
-		ecmaVersion: 2019
+		ecmaVersion: 2019,
+    project: './tsconfig.json'
 	},
 	env: {
 		browser: true,
@@ -25,5 +26,6 @@ module.exports = {
 		'no-import-assign': 'off',
 		'no-console': ['error', { "allow": ["warn", "error"] }],
 		'array-callback-return': 'error',
+    'no-array-concat/no-array-concat': 'error',
 	}
 };
