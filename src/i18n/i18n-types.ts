@@ -662,6 +662,10 @@ export type Translation = {
 			 * ミニマップ（プレビュー表示）を表示する
 			 */
 			'minimapEnabled': string
+			/**
+			 * 三つ以上同時押し警告を表示する
+			 */
+			'multiTapWarningEnabled': string
 		}
 		'modes': {	
 			/**
@@ -1340,6 +1344,10 @@ export type TranslationFunctions = {
 			 * ミニマップ（プレビュー表示）を表示する
 			 */
 			'minimapEnabled': () => LocalizedString
+			/**
+			 * 三つ以上同時押し警告を表示する
+			 */
+			'multiTapWarningEnabled': () => LocalizedString
 		}
 		'modes': {	
 			/**

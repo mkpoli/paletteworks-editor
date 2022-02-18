@@ -78,6 +78,8 @@
         <div class="toggles">
           <input type="checkbox" name="minimap-enabled" bind:checked={preferences.minimapEnabled}/>
           <label for="minimap-enabled">{$LL.editor.preferences.minimapEnabled()}</label>
+          <input type="checkbox" name="warning-enabled" bind:checked={preferences.multiTapWarningEnabled}/>
+          <label for="warning-enabled">{$LL.editor.preferences.multiTapWarningEnabled()}</label>
         </div>
       </div>
       <Button

@@ -44,7 +44,6 @@
   $: drawErrorAreas($position, singles, slides)
 
   function drawErrorArea(position: PositionManager, lane: number, laneR: number, tick: number) {
-
     const MARGIN_X = 10
     const MARGIN_Y = 8
     graphics.drawRoundedRect(
@@ -64,7 +63,6 @@
 
     graphics.removeChildren()
     graphics.clear()
-    graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED)
 
     let tickTable = new Map<number, Note[]>()
     ;[...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
@@ -73,9 +71,24 @@
       })
 
 
+    // Draw multiple point warning
+    if ($preferences.multiTapWarningEnabled) {
+      for (const [tick, notes] of tickTable) {
+        const judgementNotes = notes.filter((note) => singles.includes(note as Single) || slides.some((slide) => slide.head === note || slide.tail === note))
+        if (judgementNotes.length >= 3) {
+          for (const note of judgementNotes) {
+            graphics.beginFill(COLORS.COLOR_WARNING, COLORS.ALPHA_WARNING)
+            drawErrorArea(position, note.lane, note.lane + note.width - 1, tick)
+            graphics.endFill()
+          }
+        }
+      }
+    }
+
+    graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED)
+
     // Draw duplication and outside
     ;[...tickTable.entries()].forEach(([tick, notes]) => {
-
       const area: number[] = new Array(16).fill(0)
       area[0] = area[1] = area[14] = area[15] = 1 // Default 1 to outside area so if note exist it gets to 2 > 1
       notes.forEach(({ lane: laneL, width }) => {

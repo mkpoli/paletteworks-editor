@@ -181,6 +181,7 @@ const en: Translation = {
 			laneWidth: 'Lane Width',
 			noteHeight: 'Note Height',
 			minimapEnabled: 'Enable Minimap (Score Outline)',
+      multiTapWarningEnabled: 'Enable multiple-tap (3 or above) warning',
 		},
 		modes: {
 			select: "Select",

@@ -118,7 +118,7 @@ const ko: Translation = {
 				importFailed: '데이터베이스 가져오기에 실패했습니다.',
 				exportSuccess: '데이터베이스를 내보냈습니다.',
 				exportFailed: '데이터베이스 내보내기에 실패했습니다.',
-			},			
+			},
 			library: {
 				loadingFailed: '컬렉션을 불러오는 중 오류가 발생했습니다.',
 				uploadTooLongConfirm: '컬렉션에 업로드할 노트가 20개를 초과하였습니다. 정말 업로드하시겠습니까?\n\n⚠패턴 컬렉션은 채보를 업로드하는 곳이 아니므로, 채보 전체를 추가하지 마십시오! ⚠\n채보를 업로드하려면 “도움말”을 참조하세요.',
@@ -181,6 +181,7 @@ const ko: Translation = {
 			laneWidth: '레인 폭',
 			noteHeight: '노트 높이',
 			minimapEnabled: '미니맵 (채보의 미리보기) 활성화',
+      multiTapWarningEnabled: '3점 이상의 동시치기 알림 활성화',
 		},
 		modes: {
 			select: "선택",

@@ -181,6 +181,7 @@ const ja: BaseTranslation = {
 			laneWidth: 'レーンの幅',
 			noteHeight: 'ノーツの高さ',
 			minimapEnabled: 'ミニマップ（プレビュー表示）を表示する',
+      multiTapWarningEnabled: '三つ以上同時押し警告を表示する',
 		},
 		modes: {
 			select: "選択",

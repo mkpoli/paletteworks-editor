@@ -180,7 +180,8 @@ const zh: Translation = {
 			scrollSpeed: '滾動速度（倍）',
 			laneWidth: '軌道寬度',
 			noteHeight: '音符高度',
-			minimapEnabled: '啟用小地圖（預覽）',
+			minimapEnabled: '啓用小地圖（預覽）',
+      multiTapWarningEnabled: '啓用三點以上同時點擊警告',
 		},
 		modes: {
 			select: "選擇",
