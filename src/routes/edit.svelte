@@ -442,7 +442,7 @@
     exec(mutation)
   }
 
-  function exec(mutation: Mutation<unknown>) {
+  function exec(mutation: Mutation<unknown>　| null) {
     if (mutation === null || mutation.amount === 0) return
     $undoneHistory = $undoneHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
