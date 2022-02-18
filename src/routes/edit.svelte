@@ -727,7 +727,7 @@
   }
 
   function onupdatecriticals({ detail: { notes }}: CustomEvent<{ notes: NoteType[] }>) {
-    const criticalNotes = new Array<NoteType & ICritical>()
+    let criticalNotes = new Array<NoteType & ICritical>()
     const criticalSlideSet = new Set<Slide>()
     notes.forEach((note) => {
       if ('critical' in note) {
@@ -740,6 +740,10 @@
     const criticalSlides = [...criticalSlideSet]
     if (criticalNotes.length === 0 && criticalSlides.length === 0) return
     let oldcritical = criticalNotes[0]?.critical ?? criticalSlides[0].critical ?? false
+
+    // -- Exclude SlideTails if the head is also selected (because in this case user probably rather want to make the whole slide critical) --
+    const headSelectedSlides = criticalSlides.filter(({ head }) => notes.includes(head as NoteType))
+    headSelectedSlides.forEach(({ tail }) => criticalNotes = criticalNotes.filter((note) => note !== tail))
 
     exec(new CombinedMutation(
       singles, slides,
