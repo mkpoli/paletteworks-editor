@@ -1,7 +1,7 @@
 {
   "name": "palette-works",
   "private": true,
-  "version": "1.7.2",
+  "version": "1.8.0",
   "scripts": {
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
