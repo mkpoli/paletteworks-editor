@@ -24,6 +24,7 @@ pnpm run typesafe-i18n
 ```
 
 - **F** for **F**eature (Additions, Fixes, Ajustments of functionalities, etc.)
+- **T** for **T**esting (New tests / specs, Test refactoring, etc.)
 - **R** for **R**efactor (Adjustments of code structure, naming, typing, comments, etc.)
 - **D** for **D**ocumentation (Documentation, README, etc.)
 - **S** for **S**tyle (Styling, Visual Design Adjustments, etc.)
