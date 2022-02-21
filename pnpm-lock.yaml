@@ -4,8 +4,11 @@ specifiers:
   '@iconify/svelte': ^2.1.1
   '@mszu/pixi-ssr-shim': ^1.0.1
   '@pixi/events': 6.1.3
-  '@sveltejs/adapter-vercel': ^1.0.0-next.37
-  '@sveltejs/kit': ^1.0.0-next.232
+  '@sveltejs/adapter-static': ^1.0.0-next.28
+  '@sveltejs/adapter-vercel': ^1.0.0-next.43
+  '@sveltejs/kit': ^1.0.0-next.278
+  '@tauri-apps/api': ^1.0.0-rc.1
+  '@tauri-apps/cli': ^1.0.0-rc.5
   '@types/core-js': ^2.5.5
   '@types/jest': ^27.4.0
   '@types/msgpack-lite': ^0.1.8
@@ -24,8 +27,8 @@ specifiers:
   eslint-plugin-no-array-concat: ^0.1.2
   eslint-plugin-svelte3: ^3.4.0
   faunadb: ^4.4.1
-  filesize: ^8.0.6
-  focus-trap: ^6.7.2
+  filesize: ^8.0.7
+  focus-trap: ^6.7.3
   hotkeys-js: ^3.8.7
   jest: ^27.5.1
   msgpack-lite: ^0.1.26
@@ -41,18 +44,21 @@ specifiers:
   tippy.js: ^6.3.7
   ts-jest: ^27.1.3
   tslib: ^2.0.0
-  typesafe-i18n: ^2.58.0
+  typesafe-i18n: ^2.60.2
   typescript: ^4.5.4
 
 dependencies:
-  faunadb: 4.4.1
+  '@tauri-apps/api': 1.0.0-rc.1
+  faunadb: 4.5.2
 
 devDependencies:
   '@iconify/svelte': 2.1.1
   '@mszu/pixi-ssr-shim': 1.0.1
   '@pixi/events': 6.1.3
-  '@sveltejs/adapter-vercel': 1.0.0-next.37
-  '@sveltejs/kit': 1.0.0-next.232_svelte@3.46.2
+  '@sveltejs/adapter-static': 1.0.0-next.28
+  '@sveltejs/adapter-vercel': 1.0.0-next.43
+  '@sveltejs/kit': 1.0.0-next.278_svelte@3.46.4
+  '@tauri-apps/cli': 1.0.0-rc.5
   '@types/core-js': 2.5.5
   '@types/jest': 27.4.0
   '@types/msgpack-lite': 0.1.8
@@ -1169,8 +1175,14 @@ packages:
       '@sinonjs/commons': 1.8.3
     dev: true
 
-  /@sveltejs/adapter-vercel/1.0.0-next.37:
-    resolution: {integrity: sha512-SfaaakXjk6sBmSGozdrUQIsB3cFdo47ZFFEHMlPOScvXuAY8VPc1jCbGEQPadKW9Txf9xDuu6trm41OYztC+RA==}
+  /@sveltejs/adapter-static/1.0.0-next.28:
+    resolution: {integrity: sha512-c4xLyeSwnbGQxe4f1SLpHTbxZDm3TEr43scR3tOlVgQN+mnAL9aDdl3nTtdzWmrUDmDEmY4GriAwLyFLZuINLw==}
+    dependencies:
+      tiny-glob: 0.2.9
+    dev: true
+
+  /@sveltejs/adapter-vercel/1.0.0-next.43:
+    resolution: {integrity: sha512-Es0xSWJJVHRUH7z4yvWjst03ZHcK115S7WjamN3acbxmR4ESSGFjuxQzODMnbeWFFipk1hQYv56ffvXYr5XaJA==}
     dependencies:
       esbuild: 0.13.15
     dev: true
@@ -1215,6 +1227,100 @@ packages:
       vite: 2.7.10
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@tauri-apps/api/1.0.0-rc.1:
+    resolution: {integrity: sha512-VBUOmfT8ea02JB/Qr+FHeaLnug5BRA7ro2pX47q0GZCbZsU9b+iPnOXl0ShJwT0melR7B6iamyhDwkHStMVfQA==}
+    engines: {node: '>= 12.13.0', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
+    dependencies:
+      type-fest: 2.11.2
+    dev: false
+
+  /@tauri-apps/cli-darwin-arm64/1.0.0-rc.5:
+    resolution: {integrity: sha512-X+3EIAUGfoL8uE6PBADZC8FcUISe4JPQCxXgaVv6ehoZGoCh/pFJF7AvBGTQxbnvngqM7Xce4Lmh63Io2/5ggw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@tauri-apps/cli-darwin-x64/1.0.0-rc.5:
+    resolution: {integrity: sha512-fEpgOdAvKdq9C5/yip8RnwP1VS+nRrtKdzzplu4jY6njDVH/Vom8mg+EfXkCY5RveCaoskJMFgUvt10IGeZHBA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@tauri-apps/cli-linux-arm-gnueabihf/1.0.0-rc.5:
+    resolution: {integrity: sha512-V7sWSBrpLyvkQxpkHIM8JltYqQhiTpThySDjO8POtrTqkRwM5BXORcCYhxTAKCedecfYK/RNUJ6Q0t7+3jS6DQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@tauri-apps/cli-linux-arm64-gnu/1.0.0-rc.5:
+    resolution: {integrity: sha512-HhM+2FInxtUAI/41LF4fDEzmhLQUq6DOoo7fLN94vgWlhsPyWZoDGP9pA043XbO86+4OX5JZUW1SnTVXMwEaMA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@tauri-apps/cli-linux-arm64-musl/1.0.0-rc.5:
+    resolution: {integrity: sha512-DhHdKOhf3+peA/sM0c9CpxK89cp8GVwOB5osFW55fxBZbD0mJFeL2SzjkgfGFqFu6Ci/ZiibQGfEp8XTC8OsYA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@tauri-apps/cli-linux-x64-gnu/1.0.0-rc.5:
+    resolution: {integrity: sha512-pZzsOHRGG/mdcn7fF/yOIOdeVzGxZUtZqvlGSd90ZM9Ps3//uYGCBHoNTbeSwp/V6+D0KVDaSCbm9lYlHoXcdA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@tauri-apps/cli-linux-x64-musl/1.0.0-rc.5:
+    resolution: {integrity: sha512-COwWCbOhEjBlzGRGTa0ESO4/AiC0cBZ2UEPExRn++S+kWSPJ2vsyMdCLu3hiMy1ABSIRcQ4Vc68M1iVkLhOHHw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@tauri-apps/cli-win32-x64-msvc/1.0.0-rc.5:
+    resolution: {integrity: sha512-zzizUmPWvnWjj+IUCk36kVjS9j1Bg5JmnwOW5QdX26+a64q5vocmVimCgrfZ5STw3sDFXE++S55ghpzhhH5o+g==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@tauri-apps/cli/1.0.0-rc.5:
+    resolution: {integrity: sha512-Q3D0R5YdZRA5EcL206hwwKCyXpet2mRDcfaRTU/IXwF73bS4AMja+JdAGfO2cyHuSvXd+b//Cgbei2zCG8M6hw==}
+    engines: {node: '>= 10'}
+    hasBin: true
+    optionalDependencies:
+      '@tauri-apps/cli-darwin-arm64': 1.0.0-rc.5
+      '@tauri-apps/cli-darwin-x64': 1.0.0-rc.5
+      '@tauri-apps/cli-linux-arm-gnueabihf': 1.0.0-rc.5
+      '@tauri-apps/cli-linux-arm64-gnu': 1.0.0-rc.5
+      '@tauri-apps/cli-linux-arm64-musl': 1.0.0-rc.5
+      '@tauri-apps/cli-linux-x64-gnu': 1.0.0-rc.5
+      '@tauri-apps/cli-linux-x64-musl': 1.0.0-rc.5
+      '@tauri-apps/cli-win32-x64-msvc': 1.0.0-rc.5
     dev: true
 
   /@tootallnate/once/1.1.2:
@@ -2804,6 +2910,10 @@ packages:
       type-fest: 0.20.2
     dev: true
 
+  /globalyzer/0.1.0:
+    resolution: {integrity: sha512-40oNTM9UfG6aBmuKxk/giHn5nQ8RVz/SS4Ir6zgzOv9/qC3kKZ9v4etGTcJbEl/NyVQH7FGU7d+X1egr57Md2Q==}
+    dev: true
+
   /globby/11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
@@ -2814,6 +2924,10 @@ packages:
       ignore: 5.2.0
       merge2: 1.4.1
       slash: 3.0.0
+    dev: true
+
+  /globrex/0.1.2:
+    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
     dev: true
 
   /graceful-fs/4.2.9:
@@ -4781,6 +4895,13 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
+  /tiny-glob/0.2.9:
+    resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==}
+    dependencies:
+      globalyzer: 0.1.0
+      globrex: 0.1.2
+    dev: true
+
   /tippy.js/6.3.7:
     resolution: {integrity: sha512-E1d3oP2emgJ9dRQZdf3Kkn0qJgI6ZLpyS5z6ZkY1DF3kaQaBsGZsndEpHwx+eC+tYM41HaSNvNtLx8tU57FzTQ==}
     dependencies:
@@ -4913,6 +5034,11 @@ packages:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
     engines: {node: '>=10'}
     dev: true
+
+  /type-fest/2.11.2:
+    resolution: {integrity: sha512-reW2Y2Mpn0QNA/5fvtm5doROLwDPu2zOm5RtY7xQQS05Q7xgC8MOZ3yPNaP9m/s/sNjjFQtHo7VCNqYW2iI+Ig==}
+    engines: {node: '>=12.20'}
+    dev: false
 
   /typedarray-to-buffer/3.1.5:
     resolution: {integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==}

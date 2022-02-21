@@ -1,0 +1,82 @@
+{
+  "package": {
+    "productName": "paletteworks",
+    "version": "0.1.0"
+  },
+  "build": {
+    "distDir": "../build",
+    "devPath": "http://localhost:3000",
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
+    "withGlobalTauri": true
+  },
+  "tauri": {
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "li.mkpo.paletteworks",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "resources": [],
+      "externalBin": [],
+      "copyright": "mkpoli 2021-2022",
+      "category": "Productivity",
+      "shortDescription": "A score editor for Project Sekai: Colourful Stage feat. Hatsune Miku",
+      "longDescription": "This is a score editor for Project Sekai: Colorful Stage feat. Hatsune Miku. It aims to provide a better user experience to create custom maps.",
+      "deb": {
+        "depends": [],
+        "useBootstrapper": false
+      },
+      "macOS": {
+        "frameworks": [],
+        "minimumSystemVersion": "",
+        "useBootstrapper": false,
+        "exceptionDomain": "",
+        "signingIdentity": null,
+        "providerShortName": null,
+        "entitlements": null
+      },
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": "",
+        "wix": {
+          "language": ["en-US", "zh-CN", "zh-TW", "ja-JP", "ko-KR"],
+        }
+      }
+    },
+    "updater": {
+      "active": false
+    },
+    "allowlist": {
+      "http": {
+        "all": true,
+        "request": true,
+        "scope": ["https://paletteworks.mkpo.li/*"]
+      },
+      "dialog": {
+        "all": true
+      },
+      "shell": {
+        "open": true
+      }
+    },
+    "windows": [
+      {
+        "title": "PaletteWorks Editor",
+        "width": 1024,
+        "height": 768,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  }
+}

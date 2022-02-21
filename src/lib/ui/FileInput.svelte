@@ -23,7 +23,7 @@
 
   const dispatch = createEventDispatcher<{
     open: File
-  }>()    
+  }>()
 
   let fileList: FileList
 
@@ -68,7 +68,7 @@
 <Menu bind:menu>
   <MenuTrigger slot="trigger" contextArea={container} {menu}/>
   {#if file}
-    <MenuItem text={$LL.editor.menu.download()} icon="mdi:download" on:click={() => { if (file) download(file, file.name) }} />
+    <MenuItem text={$LL.editor.menu.download()} icon="mdi:download" on:click={async () => { if (file) await download(file, file.name) }} />
     <MenuDivider/>
     <MenuItem text={$LL.editor.menu.delete()} icon="mdi:delete" on:click={() => { if (confirm($LL.editor.messages.deleteConfirm())) { input.value = ''; file = null } }} />
   {/if}

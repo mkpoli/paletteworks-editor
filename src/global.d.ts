@@ -7,6 +7,10 @@ interface ImportMeta {
   }
 }
 
+declare interface Window {
+  __TAURI__
+}
+
 declare module 'bpm-detective' {
   declare function detect(data: AudioBuffer): number
   export default detect

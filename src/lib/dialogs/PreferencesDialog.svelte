@@ -114,7 +114,7 @@
         on:click={async () => {
           try {
             const blob = await exportDB(db)
-            download(blob, 'db.json')
+            await download(blob, 'db.json')
             toast.success($LL.editor.messages.database.exportSuccess())
           } catch (error) {
             toast.error($LL.editor.messages.database.exportFailed())

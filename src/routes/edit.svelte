@@ -302,7 +302,7 @@
   let bpmDialogValue: number = 120
   let lastPointerTick: number = 0
 
-  function onexport() {
+  async function onexport() {
     if (!currentProject) {
       toast.error($LL.editor.messages.noProjectOpened())
       return
@@ -315,7 +315,7 @@
       artist: metadata.artist,
       author: metadata.author,
     }
-    download(toBlob(sus), formatFilename($preferences.fileSaveName, formatData))
+    await download(toBlob(sus), formatFilename($preferences.fileSaveName, formatData))
   }
 
   let imageDialogOpened: boolean = false

@@ -1,0 +1,46 @@
+name: Build tauri
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  publish-tauri:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16
+    - name: install Rust stable
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: install webkit2gtk (ubuntu only)
+      if: matrix.platform == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y webkit2gtk-4.0
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2.1.1
+      with:
+        version: 6.0.2
+        run_install: true
+    - name: install app dependencies and build it
+      run: pnpm build
+    - uses: tauri-apps/tauri-action@v0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+        releaseName: "PaletteWorks Editor v__VERSION__"
+        releaseBody: "アセッツからダウンロードしてインストールしてください。See the assets to download this version and install."
+        releaseDraft: true
+        prerelease: false
