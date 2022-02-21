@@ -6,6 +6,14 @@
   import editing from '$assets/homepage/editing.png'
   import soundeffects from '$assets/homepage/soundeffects.png'
   import filesupport from '$assets/homepage/filesupport.png'
+  import { onMount } from "svelte"
+  import { goto } from "$app/navigation"
+
+  onMount(() => {
+    if (window.__TAURI__) {
+      goto('/edit')
+    }
+  })
 </script>
 
 <svelte:head>
@@ -47,7 +55,7 @@
 </section>
 
 <section class="contact">
-  
+
 </section>
 </main>
 
@@ -71,7 +79,7 @@
     overflow-y: auto;
     height: 100vh;
   }
-  
+
   header {
     display: flex;
     justify-content: center;
@@ -111,7 +119,7 @@
   nav a:visited {
     color: var(--color-text-darker);
   }
-  
+
   nav a:hover {
     color: var(--color-text-lighter);
   }

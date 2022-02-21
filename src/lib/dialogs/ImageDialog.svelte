@@ -31,7 +31,7 @@
   const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
   const mainContainer = getContext<PIXI.Container>('mainContainer')
-      
+
   let container: HTMLDivElement
   let preview: HTMLCanvasElement
 
@@ -47,7 +47,7 @@
       width: COLUMN_WIDTH * columns, height: COLUMN_HEIGHT,
       resolution
     })
-    
+
     for (let i = 0; i < columns; i++) {
       app.renderer.render(mainContainer, {
         renderTexture, clear: false,
@@ -73,17 +73,18 @@
     generatePreview()
   }
 
-  function downloadImage() {
+  async function downloadImage() {
     const canvas = generateCanvas(0.35)
-    canvas.toBlob((blob: Blob | null) => {
-      download(blob!, `${new Date().toISOString().replace(':', '-')}.png`)
+    const blob = await new Promise<Blob | null>((resolve, reject) => {
+      canvas.toBlob(resolve, 'image/png')
     })
+    await download(blob!, `${new Date().toISOString().replace(':', '-')}.png`)
   }
 </script>
 
 <Modal bind:opened>
   <template slot="activator">
-    
+
   </template>
   <div slot="presentation">
     <h2>{$LL.editor.dialog.imageTitle()}</h2>
@@ -106,11 +107,11 @@
     <Button
       class="ok"
       icon='ic:baseline-photo-camera'
-      on:click={() => { downloadImage(); opened = false }}
+      on:click={async () => { downloadImage(); opened = false }}
     >
       {$LL.editor.dialog.export()}
     </Button>
-  </div> 
+  </div>
 </Modal>
 
 <style>

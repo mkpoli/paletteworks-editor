@@ -1,12 +1,29 @@
 import { default as accepted } from 'attr-accept'
 
-export function download(b: Blob, filename: string) {
-  const a = document.createElement('a')
-  document.body.append(a)
-  a.download = filename
-  a.href = URL.createObjectURL(b)
-  a.click()
-  a.remove()
+export async function download(b: Blob, filename: string): Promise<void> {
+  if (!window.__TAURI__) {
+    const a = document.createElement('a')
+    document.body.append(a)
+    a.download = filename
+    a.href = URL.createObjectURL(b)
+    a.click()
+    a.remove()
+  } else {
+    const { tauri, dialog } = await import('@tauri-apps/api')
+    const defaultSavePath = window.localStorage.getItem('default-save-path')
+    const path = await dialog.save({
+      defaultPath: defaultSavePath ? defaultSavePath + filename : filename,
+    })
+    await tauri.invoke('write_file', {
+      path,
+      data: [...new Uint8Array(await b.arrayBuffer())]
+    })
+    window.localStorage.setItem('default-save-path', path.slice(0, path.lastIndexOf('/')))
+    // await fs.writeBinaryFile({
+    //   contents: ,
+    //   path,
+    // })
+  }
 }
 
 export function toBlob(content: string) {

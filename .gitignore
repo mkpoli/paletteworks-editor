@@ -12,3 +12,7 @@ temp/*
 
 .vscode
 .vercel
+
+coverage
+
+build

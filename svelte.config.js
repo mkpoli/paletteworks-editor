@@ -1,6 +1,8 @@
 import preprocess from 'svelte-preprocess'
 import path from 'path'
 import vercel from '@sveltejs/adapter-vercel'
+import static_ from '@sveltejs/adapter-static'
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
@@ -9,8 +11,7 @@ const config = {
 
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
-    target: '#svelte',
-    adapter: vercel(),
+    adapter: process.env.TAURI_CONFIG ? static_() : vercel(),
     vite: {
       assetsInclude: [
         '**/*.fnt',

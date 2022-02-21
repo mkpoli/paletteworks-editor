@@ -84,7 +84,7 @@
   const elements: HTMLDivElement[] = []
 
   let firstOpen: boolean = true
-  
+
   $: if (elements.length !== 0) {
     if (firstOpen) {
       tick().then(() => {
@@ -135,12 +135,12 @@
       <Icon slot="head" icon="ic:outline-search"/>
       <span slot="tail">{filtered?.length ?? 0}/{projects?.length ?? 0}</span>
     </TextInput>
-    <div class="project-container" bind:this={container}> 
+    <div class="project-container" bind:this={container}>
       {#each filtered as project, index (project.id)}
         <ProjectCard
           {project}
           selected={selected === project}
-          on:rename={() => { 
+          on:rename={() => {
             db.projects.put(project)
           }}
           on:open={() => {
@@ -152,7 +152,7 @@
             selected = project
           }}
           on:export={async () => {
-            download(await seriliseProject(project), project.name + PROJECT_FILE_EXTENSION)
+            await download(await seriliseProject(project), project.name + PROJECT_FILE_EXTENSION)
           }}
           bind:container={elements[index]}
         />
