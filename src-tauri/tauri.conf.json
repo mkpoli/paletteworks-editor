@@ -46,7 +46,7 @@
         "digestAlgorithm": "sha256",
         "timestampUrl": "",
         "wix": {
-          "language": ["en-US", "zh-CN", "zh-TW", "ja-JP", "ko-KR"],
+          "language": ["en-US", "zh-CN", "zh-TW", "ja-JP", "ko-KR"]
         }
       }
     },
