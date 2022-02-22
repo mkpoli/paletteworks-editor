@@ -35,7 +35,7 @@ jobs:
         run_install: true
     - name: install app dependencies and build it
       run: pnpm build
-    - uses: tauri-apps/tauri-action@v0
+    - uses: jdukewich/tauri-action@fix-windows-bundling
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
