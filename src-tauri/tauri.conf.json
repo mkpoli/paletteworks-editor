@@ -46,6 +46,8 @@
         "digestAlgorithm": "sha256",
         "timestampUrl": "",
         "wix": {
+          "bannerPath": "./resources/banner.png",
+          "dialogImagePath": "./resources/welcome.png",
           "language": ["en-US", "zh-CN", "zh-TW", "jp-JP", "ko-KO"]
         }
       }
@@ -74,7 +76,8 @@
         "height": 768,
         "resizable": true,
         "fullscreen": false,
-        "fileDropEnabled": false
+        "fileDropEnabled": false,
+        "maximized": true
       }
     ],
     "security": {
