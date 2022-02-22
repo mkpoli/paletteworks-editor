@@ -17,6 +17,11 @@ pnpm run dev -- --open
 pnpm run typesafe-i18n
 ```
 
+### Tauri Build
+```bash
+pnpm run tauri dev
+```
+
 ### Commit Message Naming Convention / コミットメッセージ命名規則 / 提交消息命名规则 / 커밋 메시지 명명 규칙 (커밋 메시지 命名 規則)
 
 ```regex
