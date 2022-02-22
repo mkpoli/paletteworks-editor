@@ -8,12 +8,6 @@
   import filesupport from '$assets/homepage/filesupport.png'
   import { onMount } from "svelte"
   import { goto } from "$app/navigation"
-
-  onMount(() => {
-    if (window.__TAURI__) {
-      goto('/edit')
-    }
-  })
 </script>
 
 <svelte:head>
