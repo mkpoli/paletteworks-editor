@@ -6,8 +6,6 @@
   import editing from '$assets/homepage/editing.png'
   import soundeffects from '$assets/homepage/soundeffects.png'
   import filesupport from '$assets/homepage/filesupport.png'
-  import { onMount } from "svelte"
-  import { goto } from "$app/navigation"
 </script>
 
 <svelte:head>
