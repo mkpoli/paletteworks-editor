@@ -11,8 +11,9 @@
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "eslint --ignore-path .gitignore .",
     "typesafe-i18n": "typesafe-i18n",
-    "version": "np",
-    "release": "run-s check lint test version"
+    "version": "npm version",
+    "version:tauri": "node ./scripts/version-tauri.js",
+    "release": "run-s check lint test version version:tauri"
   },
   "license": "MIT",
   "devDependencies": {
