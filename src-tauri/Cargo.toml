@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "paletteworks"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
-default-run = "app"
+description = "A score editor for Project Sekai: Colourful Stage feat. Hatsune Miku"
+authors = ["mkpoli <mkpoli@mkpo.li>"]
+license = "MIT"
+repository = "https://github.com/mkpoli/paletteworks-editor"
+default-run = "paletteworks"
 edition = "2021"
 rust-version = "1.57"
 
