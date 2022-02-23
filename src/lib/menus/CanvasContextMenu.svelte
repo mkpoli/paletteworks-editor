@@ -64,11 +64,11 @@
   type EventsForNotes = {
     [K in keyof Events]: Events[K] extends { notes: Note[] } ? K : never
   }[keyof Events]
-  function dispatchNotes(event: EventsForNotes, note: Note | null) {
-    if (note) {
-      dispatch(event, { notes: [note] })
-    } else {
+  function dispatchNotes(event: EventsForNotes) {
+    if ($selectedNotes.length > 0) {
       dispatch(event, { notes: $selectedNotes })
+    } else if (currentNote !== null) {
+      dispatch(event, { notes: [currentNote] })
     }
   }
 
@@ -170,11 +170,17 @@
       lastCursor = {...$cursor}
     }}
   ></MenuTrigger>
+
+  <!-- Deletion -->
   {#if $selectedNotes.length || currentNote}
-    <MenuItem icon="mdi:delete" text={ currentNote ? $LL.editor.menu.delete() : $LL.editor.menu.deleteall()} on:click={() => dispatchNotes('delete', currentNote)} />
+    <MenuItem icon="mdi:delete" text={ currentNote ? $LL.editor.menu.delete() : $LL.editor.menu.deleteall()} on:click={() => dispatchNotes('delete')} />
+  {/if}
+
+  <!-- Clipboard -->
+  {#if $selectedNotes.length || currentNote}
     <MenuDivider/>
-    <MenuItem icon="ic:content-cut" text={$LL.editor.menu.cut()} on:click={() => dispatchNotes('cut', currentNote)} />
-    <MenuItem icon="mdi:content-copy" text={$LL.editor.menu.copy()} on:click={() => dispatchNotes('copy', currentNote)} />
+    <MenuItem icon="ic:content-cut" text={$LL.editor.menu.cut()} on:click={() => dispatchNotes('cut')} />
+    <MenuItem icon="mdi:content-copy" text={$LL.editor.menu.copy()} on:click={() => dispatchNotes('copy')} />
   {/if}
   <MenuItem icon="mdi:content-paste" text={$LL.editor.menu.paste()} on:click={() => dispatch('paste')}
     disabled={!$clipboardSingles.length && !$clipboardSlides.length}
@@ -182,17 +188,17 @@
   <MenuItem icon="ic:round-content-paste-go" text={$LL.editor.menu.flippaste()} on:click={() => dispatch('flippaste')}
     disabled={!$clipboardSingles.length && !$clipboardSlides.length}
   />
+
+  <!-- Selection -->
   {#if !$selectedNotes.length && !currentNote}
     <MenuDivider/>
     <MenuItem icon="ic:baseline-select-all" text={$LL.editor.menu.selectall()} on:click={() => dispatch('selectall')}/>
   {/if}
 
-  {#if $selectedNotes.length}
+  <!-- Duplication -->
+  {#if $selectedNotes.length || currentNote}
     <MenuDivider/>
-    <MenuItem icon="mdi:content-duplicate" text={$LL.editor.menu.duplicate()} on:click={() => dispatch('duplicate', { notes: $selectedNotes })} />
-  {:else if currentNote !== null}
-    <MenuDivider/>
-    <MenuItem icon="mdi:content-duplicate" text={$LL.editor.menu.duplicate()} on:click={() => dispatch('duplicate', { notes: [currentNote] })} />
+    <MenuItem icon="mdi:content-duplicate" text={$LL.editor.menu.duplicate()} on:click={() => dispatchNotes('duplicate')} />
   {/if}
 
   <!-- Flip (Mirroring) -->
@@ -212,6 +218,7 @@
     <MenuItem icon="mdi:flip-horizontal" text={$LL.editor.menu.flip()} on:click={() => { if (currentNote) dispatch('flip', { notes: [currentNote] }) }} />
   {/if}
 
+  <!-- Slide Notes -->
   {#if !$selectedNotes.length && currentNote !== null && 'easeType' in currentNote}
     <MenuDivider/>
     <MenuItem icon="custom:straight" text={$LL.editor.menu.straight()} on:click={() => { changecurve(false); currentNote = currentNote }} checked={currentNote.easeType === false}/>
@@ -280,6 +287,8 @@
       on:click={() => { dispatch('shrink', { notes: $selectedNotes }) }}
     />
   {/if}
+
+  <!-- Slide -->
   {#if !$selectedNotes.length && currentSlide}
     <MenuDivider/>
     <MenuItem
@@ -296,6 +305,8 @@
       on:click={() => { if (overlappingSlides) dispatch('combine', { slides: overlappingSlides }) }}
     />
   {/if}
+
+  <!-- Slide <-> Stream -->
   {#if $selectedNotes.length && $selectedNotes.every(isSingle)}
     <MenuDivider/>
     <MenuItem
