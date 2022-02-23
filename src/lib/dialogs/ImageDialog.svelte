@@ -75,7 +75,7 @@
 
   async function downloadImage() {
     const canvas = generateCanvas(0.35)
-    const blob = await new Promise<Blob | null>((resolve, reject) => {
+    const blob = await new Promise<Blob | null>((resolve) => {
       canvas.toBlob(resolve, 'image/png')
     })
     await download(blob!, `${new Date().toISOString().replace(':', '-')}.png`)
