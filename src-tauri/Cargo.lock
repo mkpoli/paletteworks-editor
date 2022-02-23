@@ -1934,7 +1934,7 @@ dependencies = [
 
 [[package]]
 name = "paletteworks"
-version = "0.1.0"
+version = "1.9.8"
 dependencies = [
  "serde",
  "serde_json",
