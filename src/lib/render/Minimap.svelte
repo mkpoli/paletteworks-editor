@@ -5,7 +5,7 @@
   // Functions
   import { getContext, onDestroy, onMount, createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher<{
-    scroll: number  
+    scroll: number
   }>()
 
   // Contexts
@@ -54,6 +54,7 @@
   import { preferences } from '$lib/preferences'
   import { easeInQuad, easeOutQuad, lerp } from '$lib/basic/math'
   import { calcNoteHeight } from './note'
+  import { MinimapNoteRendererBase, MinimapRendererBase } from './minimap';
 
   $: minimapRect = new PIXI.Rectangle(
     $position.containerWidth - SCROLLBAR_WIDTH - MINIMAP_WIDTH,
@@ -64,7 +65,7 @@
 
   onMount(() => {
     container = new PIXI.Container()
-  
+
     container.interactive = true
     container.zIndex = Z_INDEX.MINIMAP
     container.addEventListener('click', (event) => {
@@ -74,7 +75,7 @@
 
     instance = new MinimapRenderer()
     container.addChild(instance)
-    
+
     app.stage.addChild(container)
   })
 
@@ -82,14 +83,12 @@
     app.stage.removeChild(container)
   })
 
-  class MinimapNoteRenderer extends PIXI.Graphics {
-    arrows: (Note & IDirectional & ICritical)[] = []
-
+  class MinimapNoteRenderer extends MinimapNoteRendererBase {
     drawArrow(position: PositionManager, note: Note & IDirectional & ICritical) {
       const x = position.calcFixedMidX(note.lane, note.width)
       const y = position.calcY(note.tick) - calcNoteHeight() / 2
       this.lineStyle(15, 'critical' in note && note.critical ? 0xf8be3a : 0xee7f9e)
-  
+
       switch (note.flick) {
         case 'left':
           this.moveTo(x - 25, y - 5)
@@ -226,26 +225,18 @@
     }
   }
 
-  class MinimapRenderer extends PIXI.Container {
-    notes: MinimapNoteRenderer
-    grid: PIXI.Graphics
-    screenArea: PIXI.Graphics
+  class MinimapRenderer extends MinimapRendererBase {
     constructor() {
-      super()
+      super(
+        new MinimapNoteRenderer(),
+        new PIXI.Graphics(),
+        new PIXI.Graphics(),
+      )
 
       this.scale.x = MINIMAP_RESOLUTION
       this.scale.y = MINIMAP_RESOLUTION
 
       this.mask = new PIXI.Graphics()
-
-      this.screenArea = new PIXI.Graphics()
-      this.addChild(this.screenArea)
-
-      this.notes = new MinimapNoteRenderer()
-      this.addChild(this.notes)
-
-      this.grid = new PIXI.Graphics()
-      this.addChild(this.grid)
     }
 
     updateMask(rect: PIXI.Rectangle) {
