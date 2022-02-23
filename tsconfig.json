@@ -33,5 +33,5 @@
 			"node_modules/@types"
 		],
 	},
-	"include": ["**/*.d.ts", "**/*.js", "**/*.ts", "**/*.svelte"],
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"],
 }
