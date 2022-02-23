@@ -96,7 +96,7 @@
   export let currentSlide: Slide | null
   export let singles: Single[]
   export let slides: Slide[]
-  
+
   let lastCursor: Cursor
 
   // Variables
@@ -118,7 +118,7 @@
         slideA = slides.find(slide => slide.tail === selectedNotes[1])
         slideB = slides.find(slide => slide.head === selectedNotes[0])
       }
-      
+
       if (isSlideHead(selectedNotes[1])) {
         slideA = slides.find(slide => slide.tail === selectedNotes[0])
         slideB = slides.find(slide => slide.head === selectedNotes[1])
@@ -186,9 +186,13 @@
     <MenuDivider/>
     <MenuItem icon="ic:baseline-select-all" text={$LL.editor.menu.selectall()} on:click={() => dispatch('selectall')}/>
   {/if}
-  {#if $selectedNotes.length || currentNote}
+
+  {#if $selectedNotes.length}
     <MenuDivider/>
-    <MenuItem icon="mdi:content-duplicate" text={$LL.editor.menu.duplicate()} on:click={() => dispatchNotes('duplicate', currentNote)} />
+    <MenuItem icon="mdi:content-duplicate" text={$LL.editor.menu.duplicate()} on:click={() => dispatch('duplicate', { notes: $selectedNotes })} />
+  {:else if currentNote !== null}
+    <MenuDivider/>
+    <MenuItem icon="mdi:content-duplicate" text={$LL.editor.menu.duplicate()} on:click={() => dispatch('duplicate', { notes: [currentNote] })} />
   {/if}
 
   <!-- Flip (Mirroring) -->
@@ -200,12 +204,12 @@
     {/if}
   {:else if currentSlide}
     <MenuDivider/>
-    <MenuItem icon="mdi:flip-horizontal" text={$LL.editor.menu.flip()} on:click={() => { if (currentSlide) dispatch('flip', { notes: getSlideNotes(currentSlide) }) }} />  
+    <MenuItem icon="mdi:flip-horizontal" text={$LL.editor.menu.flip()} on:click={() => { if (currentSlide) dispatch('flip', { notes: getSlideNotes(currentSlide) }) }} />
     <MenuItem icon="mdi:flip-vertical" text={$LL.editor.menu.vflip()} on:click={() => { if (currentSlide) dispatch('vflip', { notes: getSlideNotes(currentSlide) }) }}
     />
   {:else if currentNote}
     <MenuDivider/>
-    <MenuItem icon="mdi:flip-horizontal" text={$LL.editor.menu.flip()} on:click={() => { if (currentNote) dispatch('flip', { notes: [currentNote] }) }} />  
+    <MenuItem icon="mdi:flip-horizontal" text={$LL.editor.menu.flip()} on:click={() => { if (currentNote) dispatch('flip', { notes: [currentNote] }) }} />
   {/if}
 
   {#if !$selectedNotes.length && currentNote !== null && 'easeType' in currentNote}
