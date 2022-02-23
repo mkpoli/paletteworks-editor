@@ -1,5 +1,7 @@
 <script lang="ts">
   import LL, { setLocale, locale } from '$i18n/i18n-svelte'
+  import { loadLocaleAsync } from '$i18n/i18n-util.async'
+
   import { locales } from '$i18n/i18n-util'
   import { LANGUAGE_ENDONYMS } from '$i18n/metadata'
 
@@ -50,6 +52,7 @@
   }>()
 
   import CustomSnappingDialog from './dialogs/CustomSnappingDialog.svelte'
+
   let customSnappingDialogOpened: boolean = false
   let customSnappingDialogValue: number = 0
   $: customSnappingDialogValue = snapTo
@@ -96,7 +99,7 @@
     <MenuDivider/>
     <MenuItem icon="ion:earth" text={$LL.editor.menu.language()}>
       {#each locales as l}
-        <MenuItem icon="ion:language-outline" text={`${l} - ${LANGUAGE_ENDONYMS[l]}`} on:click={async () => setLocale(l)} checked={$locale === l} />
+        <MenuItem icon="ion:language-outline" text={`${l} - ${LANGUAGE_ENDONYMS[l]}`} on:click={async () => { await loadLocaleAsync(l); setLocale(l) }} checked={$locale === l} />
       {/each}
     </MenuItem>
     <MenuItem icon="vaadin:cog" text={$LL.editor.menu.preferences()} on:click={() => dispatch('preferences')}/>
@@ -165,7 +168,7 @@
     width: 100%;
     padding: 1em;
     border: none;
-  
+
     display: flex;
     align-items: center;
     justify-content: space-between;

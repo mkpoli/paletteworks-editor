@@ -11,29 +11,33 @@ export type Locales =
 	| 'ko'
 	| 'zh'
 
-export type Translation = {
-	'editor': {	
-		'menu': {	
+export type Translation = RootTranslation
+
+export type Translations = RootTranslation
+
+type RootTranslation = {
+	editor: {
+		menu: {
 			/**
 			 * ファイル (&F)
 			 */
-			'file': string
+			file: string
 			/**
 			 * 素材集 (&L)
 			 */
-			'library': string
+			library: string
 			/**
 			 * 編集 (&E)
 			 */
-			'edit': string
+			edit: string
 			/**
 			 * 設定 (&P)
 			 */
-			'preferences': string
+			preferences: string
 			/**
 			 * ヘルプ (&H)
 			 */
-			'help': string
+			help: string
 			/**
 			 * 新規 (&N)
 			 */
@@ -41,63 +45,63 @@ export type Translation = {
 			/**
 			 * 開く (&O)
 			 */
-			'open': string
+			open: string
 			/**
 			 * 譜面保存 (&S)
 			 */
-			'save': string
+			save: string
 			/**
 			 * 画像出力 (&I)
 			 */
-			'image': string
+			image: string
 			/**
 			 * 元に戻す (&U)
 			 */
-			'undo': string
+			undo: string
 			/**
 			 * やり直し (&R)
 			 */
-			'redo': string
+			redo: string
 			/**
 			 * すべて選択 (&A)
 			 */
-			'selectall': string
+			selectall: string
 			/**
 			 * 選択解除 (&U)
 			 */
-			'unselectall': string
+			unselectall: string
 			/**
 			 * 切り取り (&X)
 			 */
-			'cut': string
+			cut: string
 			/**
 			 * コピー (&C)
 			 */
-			'copy': string
+			copy: string
 			/**
 			 * 貼り付け (&P)
 			 */
-			'paste': string
+			paste: string
 			/**
 			 * 反転貼り付け (&F)
 			 */
-			'flippaste': string
+			flippaste: string
 			/**
 			 * 一覧 (&A)
 			 */
-			'listall': string
+			listall: string
 			/**
 			 * 追加 (&U)
 			 */
-			'upload': string
+			upload: string
 			/**
 			 * 言語 (&G)
 			 */
-			'language': string
+			language: string
 			/**
 			 * リネーム (&R)
 			 */
-			'rename': string
+			rename: string
 			/**
 			 * 削除 (&D)
 			 */
@@ -105,77 +109,77 @@ export type Translation = {
 			/**
 			 * すべて削除 (&A)
 			 */
-			'deleteall': string
+			deleteall: string
 			/**
 			 * 複製 (&D)
 			 */
-			'duplicate': string
+			duplicate: string
 			/**
 			 * 左右反転 (&H)
 			 */
-			'flip': string
+			flip: string
 			/**
 			 * 上下反転 (&V)
 			 */
-			'vflip': string
+			vflip: string
 			/**
 			 * 直線 (&S)
 			 */
-			'straight': string
+			straight: string
 			/**
 			 * 加速 (&I)
 			 */
-			'curvein': string
+			curvein: string
 			/**
 			 * 減速 (&O)
 			 */
-			'curveout': string
+			curveout: string
 			/**
 			 * 可視 (&B)
 			 */
-			'visible': string
+			visible: string
 			/**
 			 * 不可視 (&N)
 			 */
-			'invisible': string
+			invisible: string
 			/**
 			 * 無視 (&G)
 			 */
-			'ignored': string
+			ignored: string
 			/**
 			 * 縮める (&K)
 			 */
-			'shrink': string
+			shrink: string
 			/**
 			 * ダウンロード (&U)
 			 */
-			'download': string
+			download: string
 			/**
 			 * 分割 (&V)
 			 */
-			'divide': string
+			divide: string
 			/**
 			 * 結合 (&B)
 			 */
-			'combine': string
+			combine: string
 			/**
 			 * スライドに変換 (&S)
 			 */
-			'toslide': string
+			toslide: string
 			/**
 			 * ストリームに変換 (&T)
 			 */
-			'tostream': string
+			tostream: string
 			/**
 			 * バージョン情報 (&A)
 			 */
-			'about': string
+			about: string
 			/**
 			 * エクスポート (&E)
 			 */
 			'export': string
 		}
-		'menuDescription': {	
+		menuDescription: {
 			/**
 			 * 新規譜面を作成
 			 */
@@ -183,336 +187,336 @@ export type Translation = {
 			/**
 			 * 譜面一覧を開く
 			 */
-			'open': string
+			open: string
 			/**
 			 * SUSファイルに出力
 			 */
-			'save': string
+			save: string
 			/**
 			 * 譜面の画像化
 			 */
-			'image': string
+			image: string
 			/**
 			 * 前の操作を取り消す
 			 */
-			'undo': string
+			undo: string
 			/**
 			 * 取り消した操作をやり直す
 			 */
-			'redo': string
+			redo: string
 			/**
 			 * すべてのノーツを選択
 			 */
-			'selectall': string
+			selectall: string
 		}
-		'panel': {	
+		panel: {
 			/**
 			 * （小節）
 			 */
-			'measure': string
+			measure: string
 			/**
 			 * 合計コンボ
 			 */
-			'totalcombo': string
+			totalcombo: string
 			/**
 			 * 選択された
 			 */
-			'totalselected': string
+			totalselected: string
 			/**
 			 * 頭出し
 			 */
-			'skipstart': string
+			skipstart: string
 			/**
 			 * 再生／一時停止
 			 */
-			'playpause': string
+			playpause: string
 			/**
 			 * 戻る
 			 */
-			'skipback': string
+			skipback: string
 			/**
 			 * スクロール方式
 			 */
-			'scrollmode': string
+			scrollmode: string
 			/**
 			 * 基本情報
 			 */
-			'metadata': string
+			metadata: string
 			/**
 			 * タイトル
 			 */
-			'title': string
+			title: string
 			/**
 			 * アーティスト
 			 */
-			'artist': string
+			artist: string
 			/**
 			 * 譜面作者
 			 */
-			'author': string
+			author: string
 			/**
 			 * 統計
 			 */
-			'statistics': string
+			statistics: string
 			/**
 			 * 履歴
 			 */
-			'history': string
+			history: string
 			/**
 			 * 元に戻す
 			 */
-			'undo': string
+			undo: string
 			/**
 			 * やり直し
 			 */
-			'redo': string
+			redo: string
 			/**
 			 * 開く
 			 */
-			'open': string
+			open: string
 			/**
 			 * マスター音量
 			 */
-			'master': string
+			master: string
 			/**
 			 * SE 音量
 			 */
-			'sfxvolume': string
+			sfxvolume: string
 			/**
 			 * 音楽情報
 			 */
-			'music': string
+			music: string
 			/**
 			 * 音楽ファイル
 			 */
-			'musicfile': string
+			musicfile: string
 			/**
 			 * コントロール
 			 */
-			'control': string
+			control: string
 			/**
 			 * 更新時刻
 			 */
-			'updatedTime': string
+			updatedTime: string
 			/**
 			 * オフセット
 			 */
-			'offset': string
+			offset: string
 			/**
 			 * 秒
 			 */
-			'seconds': string
-			'visibility': {	
+			seconds: string
+			visibility: {
 				/**
 				 * タップ
 				 */
-				'taps': string
+				taps: string
 				/**
 				 * フリック
 				 */
-				'flicks': string
+				flicks: string
 				/**
 				 * スライド
 				 */
-				'slides': string
+				slides: string
 				/**
 				 * 中継点
 				 */
-				'slidesteps': string
+				slidesteps: string
 				/**
 				 * すべて
 				 */
-				'all': string
+				all: string
 			}
 		}
-		'scrollmode': {	
+		scrollmode: {
 			/**
 			 * 上下スクロール
 			 */
-			'page': string
+			page: string
 			/**
 			 * 固定スクロール
 			 */
-			'smooth': string
+			smooth: string
 			/**
 			 * スクロールしない
 			 */
-			'none': string
+			none: string
 		}
-		'messages': {	
+		messages: {
 			/**
 			 * 数値を入力してください
 			 */
-			'nonNumeralInputError': string
+			nonNumeralInputError: string
 			/**
 			 * {from}から{to}までの数値を入力してください
 			 * @param {number} from
 			 * @param {number} to
 			 */
-			'outOfRangeInputError': RequiredParams2<'from', 'to'>
+			outOfRangeInputError: RequiredParams2<'from', 'to'>
 			/**
 			 * {project} として保存されました。
 			 * @param {string} project
 			 */
-			'projectSavedAs': RequiredParams1<'project'>
+			projectSavedAs: RequiredParams1<'project'>
 			/**
 			 * SUSファイル {filename} を読み込みました
 			 * @param {string} filename
 			 */
-			'loadingSUSSuccess': RequiredParams1<'filename'>
+			loadingSUSSuccess: RequiredParams1<'filename'>
 			/**
 			 * SUSファイルを読み込む際にエラーが発生しました
 			 */
-			'loadingSUSError': string
+			loadingSUSError: string
 			/**
 			 * 譜面が自動保存されました
 			 */
-			'autoSaved': string
+			autoSaved: string
 			/**
 			 * 譜面が保存されました
 			 */
-			'saved': string
+			saved: string
 			/**
 			 * タイトルを入力してください
 			 */
-			'inputTitlePrompt': string
+			inputTitlePrompt: string
 			/**
 			 * 説明を入力してください
 			 */
-			'inputDescriptionPrompt': string
+			inputDescriptionPrompt: string
 			/**
 			 * タイトルや説明を入力してください
 			 */
-			'inputEmptyError': string
+			inputEmptyError: string
 			/**
 			 * 本当にエディターを閉じますか
 			 */
-			'exitConfirm': string
+			exitConfirm: string
 			/**
 			 * 不明なファイルタイプです
 			 */
-			'unknownFileType': string
+			unknownFileType: string
 			/**
 			 * 設定を保存しました
 			 */
-			'preferencesSaved': string
+			preferencesSaved: string
 			/**
 			 * 本当に削除しますか？
 			 */
-			'deleteConfirm': string
+			deleteConfirm: string
 			/**
 			 * 楽曲のBPMが検出されました。BPMを{bpm}に変更しますか？
 			 * @param {number} bpm
 			 */
-			'confirmBPMDetected': RequiredParams1<'bpm'>
+			confirmBPMDetected: RequiredParams1<'bpm'>
 			/**
 			 * 元に戻す操作はもうありません
 			 */
-			'nothingToUndo': string
+			nothingToUndo: string
 			/**
 			 * やり直す操作はもうありません
 			 */
-			'nothingToRedo': string
+			nothingToRedo: string
 			/**
 			 * 譜面 {name} を削除しました
 			 * @param {string} name
 			 */
-			'projectDeleted': RequiredParams1<'name'>
+			projectDeleted: RequiredParams1<'name'>
 			/**
 			 * 開かれている譜面はありません
 			 */
-			'noProjectOpened': string
+			noProjectOpened: string
 			/**
 			 * 本当に実行しますか？
 			 */
-			'confirm': string
-			'database': {	
+			confirm: string
+			database: {
 				/**
 				 * 本当にデータベースをインポートしますか？すべてのデータが上書きされます。
 				 */
-				'confirmImport': string
+				confirmImport: string
 				/**
 				 * データベースをインポートしました
 				 */
-				'importSuccess': string
+				importSuccess: string
 				/**
 				 * データベースのインポートに失敗しました
 				 */
-				'importFailed': string
+				importFailed: string
 				/**
 				 * データベースをエクスポートしました
 				 */
-				'exportSuccess': string
+				exportSuccess: string
 				/**
 				 * データベースのエクスポートに失敗しました
 				 */
-				'exportFailed': string
+				exportFailed: string
 			}
-			'library': {	
+			library: {
 				/**
 				 * 素材集の読み込みに失敗しました。
 				 */
-				'loadingFailed': string
+				loadingFailed: string
 				/**
 				 * 素材集に追加しようとするノーツが 20 を超えています。本当に追加しますか？
-			
+		
 			⚠素材集は譜面をアップロードする所ではないため、フル尺の譜面を追加しないでください！⚠
 			譜面をアップロードするには、「ヘルプ」をご参照ください。
 				 */
-				'uploadTooLongConfirm': string
+				uploadTooLongConfirm: string
 				/**
 				 * 素材集に追加するノーツが選択されていません
 				 */
-				'uploadNotSelectedError': string
+				uploadNotSelectedError: string
 				/**
 				 * 素材を追加しました
 				 */
-				'uploadSuccess': string
+				uploadSuccess: string
 				/**
 				 * 素材の追加が失敗しました
 				 */
-				'uploadFailed': string
+				uploadFailed: string
 			}
-			'project': {	
+			project: {
 				/**
 				 * 譜面「{name}」をインポートしました
 				 * @param {string} name
 				 */
-				'importSuccess': RequiredParams1<'name'>
+				importSuccess: RequiredParams1<'name'>
 				/**
 				 * 譜面のインポートに失敗しました
 				 */
-				'importFailed': string
+				importFailed: string
 			}
 		}
-		'snapTo': {	
+		snapTo: {
 			/**
 			 * {n}分音符
 			 * @param {number} n
 			 */
-			'snap': RequiredParams1<'n'>
+			snap: RequiredParams1<'n'>
 			/**
 			 * 分音符（1 ~ 1920）
 			 */
-			'snapWithRange': string
+			snapWithRange: string
 			/**
 			 * カスタム
 			 */
-			'custom': string
+			custom: string
 		}
-		'mutation': {	
+		mutation: {
 			/**
 			 * 更新
 			 */
-			'update': string
+			update: string
 			/**
 			 * 追加
 			 */
-			'append': string
+			append: string
 			/**
 			 * カット
 			 */
-			'cut': string
+			cut: string
 			/**
 			 * 削除
 			 */
@@ -520,102 +524,102 @@ export type Translation = {
 			/**
 			 * 設定
 			 */
-			'set': string
+			set: string
 			/**
 			 * 反転
 			 */
-			'flip': string
+			flip: string
 			/**
 			 * 移動
 			 */
-			'move': string
+			move: string
 			/**
 			 * リサイズ
 			 */
-			'resize': string
+			resize: string
 			/**
 			 * 貼り付け
 			 */
-			'paste': string
+			paste: string
 			/**
 			 * 分割
 			 */
-			'divide': string
+			divide: string
 			/**
 			 * 結合
 			 */
-			'combine': string
+			combine: string
 			/**
 			 * 変換
 			 */
-			'convert': string
+			convert: string
 			/**
 			 * {amount} {type}を{operation}
 			 * @param {number} amount
 			 * @param {string} operation
 			 * @param {string} type
 			 */
-			'message': RequiredParams3<'amount', 'operation', 'type'>
-			'target': {	
+			message: RequiredParams3<'amount', 'operation', 'type'>
+			target: {
 				/**
 				 * ノーツ
 				 */
-				'note': string
+				note: string
 				/**
 				 * スライド
 				 */
-				'slide': string
+				slide: string
 				/**
 				 * スライドノート
 				 */
-				'slidenote': string
+				slidenote: string
 				/**
 				 * 拍子
 				 */
-				'timeSignature': string
+				timeSignature: string
 				/**
 				 * BPM
 				 */
-				'bpm': string
+				bpm: string
 			}
 		}
-		'dialog': {	
+		dialog: {
 			/**
 			 * BPM設定
 			 */
-			'bpmTitle': string
+			bpmTitle: string
 			/**
 			 * 拍子設定
 			 */
-			'timeSignatureTitle': string
+			timeSignatureTitle: string
 			/**
 			 * カスタム分音符
 			 */
-			'customSnappingTitle': string
+			customSnappingTitle: string
 			/**
 			 * 画像出力
 			 */
-			'imageTitle': string
+			imageTitle: string
 			/**
 			 * 素材集
 			 */
-			'libraryTitle': string
+			libraryTitle: string
 			/**
 			 * 環境設定
 			 */
-			'preferencesTitle': string
+			preferencesTitle: string
 			/**
 			 * 譜面一覧
 			 */
-			'projectsTitle': string
+			projectsTitle: string
 			/**
 			 * 追加
 			 */
-			'append': string
+			append: string
 			/**
 			 * 変更
 			 */
-			'change': string
+			change: string
 			/**
 			 * 出力
 			 */
@@ -627,7 +631,7 @@ export type Translation = {
 			/**
 			 * OK
 			 */
-			'ok': string
+			ok: string
 			/**
 			 * 新規作成
 			 */
@@ -635,106 +639,106 @@ export type Translation = {
 			/**
 			 * 譜面ファイルを開く
 			 */
-			'openscore': string
+			openscore: string
 			/**
 			 * PaletteWorks Editor について
 			 */
-			'about': string
+			about: string
 		}
-		'preferences': {	
+		preferences: {
 			/**
 			 * 自動保存の間隔（秒）
 			 */
-			'autosaveInterval': string
+			autosaveInterval: string
 			/**
 			 * スクロールの早さ（倍）
 			 */
-			'scrollSpeed': string
+			scrollSpeed: string
 			/**
 			 * レーンの幅
 			 */
-			'laneWidth': string
+			laneWidth: string
 			/**
 			 * ノーツの高さ
 			 */
-			'noteHeight': string
+			noteHeight: string
 			/**
 			 * ミニマップ（プレビュー表示）を表示する
 			 */
-			'minimapEnabled': string
+			minimapEnabled: string
 			/**
 			 * 三つ以上同時押し警告を表示する
 			 */
-			'multiTapWarningEnabled': string
+			multiTapWarningEnabled: string
 			/**
 			 * 譜面ファイルの保存名
 			 */
-			'fileSaveName': string
+			fileSaveName: string
 			/**
 			 * 現在サポートされているキーワードは以下の通りです
 			 */
-			'fileSaveNameTooltip': string
+			fileSaveNameTooltip: string
 		}
-		'modes': {	
+		modes: {
 			/**
 			 * 選択
 			 */
-			'select': string
+			select: string
 			/**
 			 * タップ
 			 */
-			'tap': string
+			tap: string
 			/**
 			 * スライド
 			 */
-			'slide': string
+			slide: string
 			/**
 			 * 中継点
 			 */
-			'mid': string
+			mid: string
 			/**
 			 * フリック
 			 */
-			'flick': string
+			flick: string
 			/**
 			 * クリティカル
 			 */
-			'critical': string
+			critical: string
 			/**
 			 * BPM
 			 */
-			'bpm': string
+			bpm: string
 			/**
 			 * 拍子
 			 */
-			'timeSignature': string
+			timeSignature: string
 		}
 	}
 }
 
 export type TranslationFunctions = {
-	'editor': {	
-		'menu': {	
+	editor: {
+		menu: {
 			/**
 			 * ファイル (&F)
 			 */
-			'file': () => LocalizedString
+			file: () => LocalizedString
 			/**
 			 * 素材集 (&L)
 			 */
-			'library': () => LocalizedString
+			library: () => LocalizedString
 			/**
 			 * 編集 (&E)
 			 */
-			'edit': () => LocalizedString
+			edit: () => LocalizedString
 			/**
 			 * 設定 (&P)
 			 */
-			'preferences': () => LocalizedString
+			preferences: () => LocalizedString
 			/**
 			 * ヘルプ (&H)
 			 */
-			'help': () => LocalizedString
+			help: () => LocalizedString
 			/**
 			 * 新規 (&N)
 			 */
@@ -742,63 +746,63 @@ export type TranslationFunctions = {
 			/**
 			 * 開く (&O)
 			 */
-			'open': () => LocalizedString
+			open: () => LocalizedString
 			/**
 			 * 譜面保存 (&S)
 			 */
-			'save': () => LocalizedString
+			save: () => LocalizedString
 			/**
 			 * 画像出力 (&I)
 			 */
-			'image': () => LocalizedString
+			image: () => LocalizedString
 			/**
 			 * 元に戻す (&U)
 			 */
-			'undo': () => LocalizedString
+			undo: () => LocalizedString
 			/**
 			 * やり直し (&R)
 			 */
-			'redo': () => LocalizedString
+			redo: () => LocalizedString
 			/**
 			 * すべて選択 (&A)
 			 */
-			'selectall': () => LocalizedString
+			selectall: () => LocalizedString
 			/**
 			 * 選択解除 (&U)
 			 */
-			'unselectall': () => LocalizedString
+			unselectall: () => LocalizedString
 			/**
 			 * 切り取り (&X)
 			 */
-			'cut': () => LocalizedString
+			cut: () => LocalizedString
 			/**
 			 * コピー (&C)
 			 */
-			'copy': () => LocalizedString
+			copy: () => LocalizedString
 			/**
 			 * 貼り付け (&P)
 			 */
-			'paste': () => LocalizedString
+			paste: () => LocalizedString
 			/**
 			 * 反転貼り付け (&F)
 			 */
-			'flippaste': () => LocalizedString
+			flippaste: () => LocalizedString
 			/**
 			 * 一覧 (&A)
 			 */
-			'listall': () => LocalizedString
+			listall: () => LocalizedString
 			/**
 			 * 追加 (&U)
 			 */
-			'upload': () => LocalizedString
+			upload: () => LocalizedString
 			/**
 			 * 言語 (&G)
 			 */
-			'language': () => LocalizedString
+			language: () => LocalizedString
 			/**
 			 * リネーム (&R)
 			 */
-			'rename': () => LocalizedString
+			rename: () => LocalizedString
 			/**
 			 * 削除 (&D)
 			 */
@@ -806,77 +810,77 @@ export type TranslationFunctions = {
 			/**
 			 * すべて削除 (&A)
 			 */
-			'deleteall': () => LocalizedString
+			deleteall: () => LocalizedString
 			/**
 			 * 複製 (&D)
 			 */
-			'duplicate': () => LocalizedString
+			duplicate: () => LocalizedString
 			/**
 			 * 左右反転 (&H)
 			 */
-			'flip': () => LocalizedString
+			flip: () => LocalizedString
 			/**
 			 * 上下反転 (&V)
 			 */
-			'vflip': () => LocalizedString
+			vflip: () => LocalizedString
 			/**
 			 * 直線 (&S)
 			 */
-			'straight': () => LocalizedString
+			straight: () => LocalizedString
 			/**
 			 * 加速 (&I)
 			 */
-			'curvein': () => LocalizedString
+			curvein: () => LocalizedString
 			/**
 			 * 減速 (&O)
 			 */
-			'curveout': () => LocalizedString
+			curveout: () => LocalizedString
 			/**
 			 * 可視 (&B)
 			 */
-			'visible': () => LocalizedString
+			visible: () => LocalizedString
 			/**
 			 * 不可視 (&N)
 			 */
-			'invisible': () => LocalizedString
+			invisible: () => LocalizedString
 			/**
 			 * 無視 (&G)
 			 */
-			'ignored': () => LocalizedString
+			ignored: () => LocalizedString
 			/**
 			 * 縮める (&K)
 			 */
-			'shrink': () => LocalizedString
+			shrink: () => LocalizedString
 			/**
 			 * ダウンロード (&U)
 			 */
-			'download': () => LocalizedString
+			download: () => LocalizedString
 			/**
 			 * 分割 (&V)
 			 */
-			'divide': () => LocalizedString
+			divide: () => LocalizedString
 			/**
 			 * 結合 (&B)
 			 */
-			'combine': () => LocalizedString
+			combine: () => LocalizedString
 			/**
 			 * スライドに変換 (&S)
 			 */
-			'toslide': () => LocalizedString
+			toslide: () => LocalizedString
 			/**
 			 * ストリームに変換 (&T)
 			 */
-			'tostream': () => LocalizedString
+			tostream: () => LocalizedString
 			/**
 			 * バージョン情報 (&A)
 			 */
-			'about': () => LocalizedString
+			about: () => LocalizedString
 			/**
 			 * エクスポート (&E)
 			 */
 			'export': () => LocalizedString
 		}
-		'menuDescription': {	
+		menuDescription: {
 			/**
 			 * 新規譜面を作成
 			 */
@@ -884,328 +888,328 @@ export type TranslationFunctions = {
 			/**
 			 * 譜面一覧を開く
 			 */
-			'open': () => LocalizedString
+			open: () => LocalizedString
 			/**
 			 * SUSファイルに出力
 			 */
-			'save': () => LocalizedString
+			save: () => LocalizedString
 			/**
 			 * 譜面の画像化
 			 */
-			'image': () => LocalizedString
+			image: () => LocalizedString
 			/**
 			 * 前の操作を取り消す
 			 */
-			'undo': () => LocalizedString
+			undo: () => LocalizedString
 			/**
 			 * 取り消した操作をやり直す
 			 */
-			'redo': () => LocalizedString
+			redo: () => LocalizedString
 			/**
 			 * すべてのノーツを選択
 			 */
-			'selectall': () => LocalizedString
+			selectall: () => LocalizedString
 		}
-		'panel': {	
+		panel: {
 			/**
 			 * （小節）
 			 */
-			'measure': () => LocalizedString
+			measure: () => LocalizedString
 			/**
 			 * 合計コンボ
 			 */
-			'totalcombo': () => LocalizedString
+			totalcombo: () => LocalizedString
 			/**
 			 * 選択された
 			 */
-			'totalselected': () => LocalizedString
+			totalselected: () => LocalizedString
 			/**
 			 * 頭出し
 			 */
-			'skipstart': () => LocalizedString
+			skipstart: () => LocalizedString
 			/**
 			 * 再生／一時停止
 			 */
-			'playpause': () => LocalizedString
+			playpause: () => LocalizedString
 			/**
 			 * 戻る
 			 */
-			'skipback': () => LocalizedString
+			skipback: () => LocalizedString
 			/**
 			 * スクロール方式
 			 */
-			'scrollmode': () => LocalizedString
+			scrollmode: () => LocalizedString
 			/**
 			 * 基本情報
 			 */
-			'metadata': () => LocalizedString
+			metadata: () => LocalizedString
 			/**
 			 * タイトル
 			 */
-			'title': () => LocalizedString
+			title: () => LocalizedString
 			/**
 			 * アーティスト
 			 */
-			'artist': () => LocalizedString
+			artist: () => LocalizedString
 			/**
 			 * 譜面作者
 			 */
-			'author': () => LocalizedString
+			author: () => LocalizedString
 			/**
 			 * 統計
 			 */
-			'statistics': () => LocalizedString
+			statistics: () => LocalizedString
 			/**
 			 * 履歴
 			 */
-			'history': () => LocalizedString
+			history: () => LocalizedString
 			/**
 			 * 元に戻す
 			 */
-			'undo': () => LocalizedString
+			undo: () => LocalizedString
 			/**
 			 * やり直し
 			 */
-			'redo': () => LocalizedString
+			redo: () => LocalizedString
 			/**
 			 * 開く
 			 */
-			'open': () => LocalizedString
+			open: () => LocalizedString
 			/**
 			 * マスター音量
 			 */
-			'master': () => LocalizedString
+			master: () => LocalizedString
 			/**
 			 * SE 音量
 			 */
-			'sfxvolume': () => LocalizedString
+			sfxvolume: () => LocalizedString
 			/**
 			 * 音楽情報
 			 */
-			'music': () => LocalizedString
+			music: () => LocalizedString
 			/**
 			 * 音楽ファイル
 			 */
-			'musicfile': () => LocalizedString
+			musicfile: () => LocalizedString
 			/**
 			 * コントロール
 			 */
-			'control': () => LocalizedString
+			control: () => LocalizedString
 			/**
 			 * 更新時刻
 			 */
-			'updatedTime': () => LocalizedString
+			updatedTime: () => LocalizedString
 			/**
 			 * オフセット
 			 */
-			'offset': () => LocalizedString
+			offset: () => LocalizedString
 			/**
 			 * 秒
 			 */
-			'seconds': () => LocalizedString
-			'visibility': {	
+			seconds: () => LocalizedString
+			visibility: {
 				/**
 				 * タップ
 				 */
-				'taps': () => LocalizedString
+				taps: () => LocalizedString
 				/**
 				 * フリック
 				 */
-				'flicks': () => LocalizedString
+				flicks: () => LocalizedString
 				/**
 				 * スライド
 				 */
-				'slides': () => LocalizedString
+				slides: () => LocalizedString
 				/**
 				 * 中継点
 				 */
-				'slidesteps': () => LocalizedString
+				slidesteps: () => LocalizedString
 				/**
 				 * すべて
 				 */
-				'all': () => LocalizedString
+				all: () => LocalizedString
 			}
 		}
-		'scrollmode': {	
+		scrollmode: {
 			/**
 			 * 上下スクロール
 			 */
-			'page': () => LocalizedString
+			page: () => LocalizedString
 			/**
 			 * 固定スクロール
 			 */
-			'smooth': () => LocalizedString
+			smooth: () => LocalizedString
 			/**
 			 * スクロールしない
 			 */
-			'none': () => LocalizedString
+			none: () => LocalizedString
 		}
-		'messages': {	
+		messages: {
 			/**
 			 * 数値を入力してください
 			 */
-			'nonNumeralInputError': () => LocalizedString
+			nonNumeralInputError: () => LocalizedString
 			/**
 			 * {from}から{to}までの数値を入力してください
 			 */
-			'outOfRangeInputError': (arg: { from: number, to: number }) => LocalizedString
+			outOfRangeInputError: (arg: { from: number, to: number }) => LocalizedString
 			/**
 			 * {project} として保存されました。
 			 */
-			'projectSavedAs': (arg: { project: string }) => LocalizedString
+			projectSavedAs: (arg: { project: string }) => LocalizedString
 			/**
 			 * SUSファイル {filename} を読み込みました
 			 */
-			'loadingSUSSuccess': (arg: { filename: string }) => LocalizedString
+			loadingSUSSuccess: (arg: { filename: string }) => LocalizedString
 			/**
 			 * SUSファイルを読み込む際にエラーが発生しました
 			 */
-			'loadingSUSError': () => LocalizedString
+			loadingSUSError: () => LocalizedString
 			/**
 			 * 譜面が自動保存されました
 			 */
-			'autoSaved': () => LocalizedString
+			autoSaved: () => LocalizedString
 			/**
 			 * 譜面が保存されました
 			 */
-			'saved': () => LocalizedString
+			saved: () => LocalizedString
 			/**
 			 * タイトルを入力してください
 			 */
-			'inputTitlePrompt': () => LocalizedString
+			inputTitlePrompt: () => LocalizedString
 			/**
 			 * 説明を入力してください
 			 */
-			'inputDescriptionPrompt': () => LocalizedString
+			inputDescriptionPrompt: () => LocalizedString
 			/**
 			 * タイトルや説明を入力してください
 			 */
-			'inputEmptyError': () => LocalizedString
+			inputEmptyError: () => LocalizedString
 			/**
 			 * 本当にエディターを閉じますか
 			 */
-			'exitConfirm': () => LocalizedString
+			exitConfirm: () => LocalizedString
 			/**
 			 * 不明なファイルタイプです
 			 */
-			'unknownFileType': () => LocalizedString
+			unknownFileType: () => LocalizedString
 			/**
 			 * 設定を保存しました
 			 */
-			'preferencesSaved': () => LocalizedString
+			preferencesSaved: () => LocalizedString
 			/**
 			 * 本当に削除しますか？
 			 */
-			'deleteConfirm': () => LocalizedString
+			deleteConfirm: () => LocalizedString
 			/**
 			 * 楽曲のBPMが検出されました。BPMを{bpm}に変更しますか？
 			 */
-			'confirmBPMDetected': (arg: { bpm: number }) => LocalizedString
+			confirmBPMDetected: (arg: { bpm: number }) => LocalizedString
 			/**
 			 * 元に戻す操作はもうありません
 			 */
-			'nothingToUndo': () => LocalizedString
+			nothingToUndo: () => LocalizedString
 			/**
 			 * やり直す操作はもうありません
 			 */
-			'nothingToRedo': () => LocalizedString
+			nothingToRedo: () => LocalizedString
 			/**
 			 * 譜面 {name} を削除しました
 			 */
-			'projectDeleted': (arg: { name: string }) => LocalizedString
+			projectDeleted: (arg: { name: string }) => LocalizedString
 			/**
 			 * 開かれている譜面はありません
 			 */
-			'noProjectOpened': () => LocalizedString
+			noProjectOpened: () => LocalizedString
 			/**
 			 * 本当に実行しますか？
 			 */
-			'confirm': () => LocalizedString
-			'database': {	
+			confirm: () => LocalizedString
+			database: {
 				/**
 				 * 本当にデータベースをインポートしますか？すべてのデータが上書きされます。
 				 */
-				'confirmImport': () => LocalizedString
+				confirmImport: () => LocalizedString
 				/**
 				 * データベースをインポートしました
 				 */
-				'importSuccess': () => LocalizedString
+				importSuccess: () => LocalizedString
 				/**
 				 * データベースのインポートに失敗しました
 				 */
-				'importFailed': () => LocalizedString
+				importFailed: () => LocalizedString
 				/**
 				 * データベースをエクスポートしました
 				 */
-				'exportSuccess': () => LocalizedString
+				exportSuccess: () => LocalizedString
 				/**
 				 * データベースのエクスポートに失敗しました
 				 */
-				'exportFailed': () => LocalizedString
+				exportFailed: () => LocalizedString
 			}
-			'library': {	
+			library: {
 				/**
 				 * 素材集の読み込みに失敗しました。
 				 */
-				'loadingFailed': () => LocalizedString
+				loadingFailed: () => LocalizedString
 				/**
 				 * 素材集に追加しようとするノーツが 20 を超えています。本当に追加しますか？
-			
+		
 			⚠素材集は譜面をアップロードする所ではないため、フル尺の譜面を追加しないでください！⚠
 			譜面をアップロードするには、「ヘルプ」をご参照ください。
 				 */
-				'uploadTooLongConfirm': () => LocalizedString
+				uploadTooLongConfirm: () => LocalizedString
 				/**
 				 * 素材集に追加するノーツが選択されていません
 				 */
-				'uploadNotSelectedError': () => LocalizedString
+				uploadNotSelectedError: () => LocalizedString
 				/**
 				 * 素材を追加しました
 				 */
-				'uploadSuccess': () => LocalizedString
+				uploadSuccess: () => LocalizedString
 				/**
 				 * 素材の追加が失敗しました
 				 */
-				'uploadFailed': () => LocalizedString
+				uploadFailed: () => LocalizedString
 			}
-			'project': {	
+			project: {
 				/**
 				 * 譜面「{name}」をインポートしました
 				 */
-				'importSuccess': (arg: { name: string }) => LocalizedString
+				importSuccess: (arg: { name: string }) => LocalizedString
 				/**
 				 * 譜面のインポートに失敗しました
 				 */
-				'importFailed': () => LocalizedString
+				importFailed: () => LocalizedString
 			}
 		}
-		'snapTo': {	
+		snapTo: {
 			/**
 			 * {n}分音符
 			 */
-			'snap': (arg: { n: number }) => LocalizedString
+			snap: (arg: { n: number }) => LocalizedString
 			/**
 			 * 分音符（1 ~ 1920）
 			 */
-			'snapWithRange': () => LocalizedString
+			snapWithRange: () => LocalizedString
 			/**
 			 * カスタム
 			 */
-			'custom': () => LocalizedString
+			custom: () => LocalizedString
 		}
-		'mutation': {	
+		mutation: {
 			/**
 			 * 更新
 			 */
-			'update': () => LocalizedString
+			update: () => LocalizedString
 			/**
 			 * 追加
 			 */
-			'append': () => LocalizedString
+			append: () => LocalizedString
 			/**
 			 * カット
 			 */
-			'cut': () => LocalizedString
+			cut: () => LocalizedString
 			/**
 			 * 削除
 			 */
@@ -1213,99 +1217,99 @@ export type TranslationFunctions = {
 			/**
 			 * 設定
 			 */
-			'set': () => LocalizedString
+			set: () => LocalizedString
 			/**
 			 * 反転
 			 */
-			'flip': () => LocalizedString
+			flip: () => LocalizedString
 			/**
 			 * 移動
 			 */
-			'move': () => LocalizedString
+			move: () => LocalizedString
 			/**
 			 * リサイズ
 			 */
-			'resize': () => LocalizedString
+			resize: () => LocalizedString
 			/**
 			 * 貼り付け
 			 */
-			'paste': () => LocalizedString
+			paste: () => LocalizedString
 			/**
 			 * 分割
 			 */
-			'divide': () => LocalizedString
+			divide: () => LocalizedString
 			/**
 			 * 結合
 			 */
-			'combine': () => LocalizedString
+			combine: () => LocalizedString
 			/**
 			 * 変換
 			 */
-			'convert': () => LocalizedString
+			convert: () => LocalizedString
 			/**
 			 * {amount} {type}を{operation}
 			 */
-			'message': (arg: { amount: number, operation: string, type: string }) => LocalizedString
-			'target': {	
+			message: (arg: { amount: number, operation: string, type: string }) => LocalizedString
+			target: {
 				/**
 				 * ノーツ
 				 */
-				'note': () => LocalizedString
+				note: () => LocalizedString
 				/**
 				 * スライド
 				 */
-				'slide': () => LocalizedString
+				slide: () => LocalizedString
 				/**
 				 * スライドノート
 				 */
-				'slidenote': () => LocalizedString
+				slidenote: () => LocalizedString
 				/**
 				 * 拍子
 				 */
-				'timeSignature': () => LocalizedString
+				timeSignature: () => LocalizedString
 				/**
 				 * BPM
 				 */
-				'bpm': () => LocalizedString
+				bpm: () => LocalizedString
 			}
 		}
-		'dialog': {	
+		dialog: {
 			/**
 			 * BPM設定
 			 */
-			'bpmTitle': () => LocalizedString
+			bpmTitle: () => LocalizedString
 			/**
 			 * 拍子設定
 			 */
-			'timeSignatureTitle': () => LocalizedString
+			timeSignatureTitle: () => LocalizedString
 			/**
 			 * カスタム分音符
 			 */
-			'customSnappingTitle': () => LocalizedString
+			customSnappingTitle: () => LocalizedString
 			/**
 			 * 画像出力
 			 */
-			'imageTitle': () => LocalizedString
+			imageTitle: () => LocalizedString
 			/**
 			 * 素材集
 			 */
-			'libraryTitle': () => LocalizedString
+			libraryTitle: () => LocalizedString
 			/**
 			 * 環境設定
 			 */
-			'preferencesTitle': () => LocalizedString
+			preferencesTitle: () => LocalizedString
 			/**
 			 * 譜面一覧
 			 */
-			'projectsTitle': () => LocalizedString
+			projectsTitle: () => LocalizedString
 			/**
 			 * 追加
 			 */
-			'append': () => LocalizedString
+			append: () => LocalizedString
 			/**
 			 * 変更
 			 */
-			'change': () => LocalizedString
+			change: () => LocalizedString
 			/**
 			 * 出力
 			 */
@@ -1317,7 +1321,7 @@ export type TranslationFunctions = {
 			/**
 			 * OK
 			 */
-			'ok': () => LocalizedString
+			ok: () => LocalizedString
 			/**
 			 * 新規作成
 			 */
@@ -1325,79 +1329,79 @@ export type TranslationFunctions = {
 			/**
 			 * 譜面ファイルを開く
 			 */
-			'openscore': () => LocalizedString
+			openscore: () => LocalizedString
 			/**
 			 * PaletteWorks Editor について
 			 */
-			'about': () => LocalizedString
+			about: () => LocalizedString
 		}
-		'preferences': {	
+		preferences: {
 			/**
 			 * 自動保存の間隔（秒）
 			 */
-			'autosaveInterval': () => LocalizedString
+			autosaveInterval: () => LocalizedString
 			/**
 			 * スクロールの早さ（倍）
 			 */
-			'scrollSpeed': () => LocalizedString
+			scrollSpeed: () => LocalizedString
 			/**
 			 * レーンの幅
 			 */
-			'laneWidth': () => LocalizedString
+			laneWidth: () => LocalizedString
 			/**
 			 * ノーツの高さ
 			 */
-			'noteHeight': () => LocalizedString
+			noteHeight: () => LocalizedString
 			/**
 			 * ミニマップ（プレビュー表示）を表示する
 			 */
-			'minimapEnabled': () => LocalizedString
+			minimapEnabled: () => LocalizedString
 			/**
 			 * 三つ以上同時押し警告を表示する
 			 */
-			'multiTapWarningEnabled': () => LocalizedString
+			multiTapWarningEnabled: () => LocalizedString
 			/**
 			 * 譜面ファイルの保存名
 			 */
-			'fileSaveName': () => LocalizedString
+			fileSaveName: () => LocalizedString
 			/**
 			 * 現在サポートされているキーワードは以下の通りです
 			 */
-			'fileSaveNameTooltip': () => LocalizedString
+			fileSaveNameTooltip: () => LocalizedString
 		}
-		'modes': {	
+		modes: {
 			/**
 			 * 選択
 			 */
-			'select': () => LocalizedString
+			select: () => LocalizedString
 			/**
 			 * タップ
 			 */
-			'tap': () => LocalizedString
+			tap: () => LocalizedString
 			/**
 			 * スライド
 			 */
-			'slide': () => LocalizedString
+			slide: () => LocalizedString
 			/**
 			 * 中継点
 			 */
-			'mid': () => LocalizedString
+			mid: () => LocalizedString
 			/**
 			 * フリック
 			 */
-			'flick': () => LocalizedString
+			flick: () => LocalizedString
 			/**
 			 * クリティカル
 			 */
-			'critical': () => LocalizedString
+			critical: () => LocalizedString
 			/**
 			 * BPM
 			 */
-			'bpm': () => LocalizedString
+			bpm: () => LocalizedString
 			/**
 			 * 拍子
 			 */
-			'timeSignature': () => LocalizedString
+			timeSignature: () => LocalizedString
 		}
 	}
 }

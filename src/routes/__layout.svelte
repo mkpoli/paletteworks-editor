@@ -1,9 +1,15 @@
 <script context="module" lang="ts">
-	import { initI18n } from '$i18n/i18n-svelte'
+  import type { Locales } from '$i18n/i18n-types'
 	import type { Load } from '@sveltejs/kit'
+  import { loadLocaleAsync } from '$i18n/i18n-util.async'
   export const load: Load = async ({ session }) => {
-    await initI18n(session.locale)
-    return {}
+    const locale = (session as any).locale
+    await loadLocaleAsync(locale)
+    return {
+      props: {
+        locale
+      }
+    }
   }
   // import type { Locales } from '$i18n/i18n-types'
 	// import { replaceLocaleInUrl } from '../utils'
@@ -31,9 +37,13 @@
 	// }
 </script>
 
-<script>
+<script lang="ts">
   import '@mszu/pixi-ssr-shim'
   import '$lib/style.css'
+
+  import { setLocale } from '$i18n/i18n-svelte'
+  export let locale: Locales
+  setLocale(locale)
 </script>
 
 <slot />
