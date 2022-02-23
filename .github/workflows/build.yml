@@ -41,6 +41,6 @@ jobs:
       with:
         tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
         releaseName: "PaletteWorks Editor v__VERSION__"
-        releaseBody: "アセッツからダウンロードしてインストールしてください。See the assets to download this version and install."
+        releaseBody: "**Assets** からダウンロードしてインストールしてください。\n請從 **Assets** 文件下載安裝。\n**Assets** 에서 다운로드하여 설치하십시오.\nSee the **Assets** to download this version and install.\n**Assets**\n\n**Windows** .exe / .msi\n**Linux** .AppImage / .deb\n**macOS** .dmg"
         releaseDraft: true
         prerelease: false
