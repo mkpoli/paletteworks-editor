@@ -30,6 +30,7 @@
     "@iconify/svelte": "^2.1.2",
     "@mszu/pixi-ssr-shim": "^1.0.2",
     "@pixi/events": "6.2.2",
+    "@rstacruz/bump-cli": "^2.0.1",
     "@sveltejs/adapter-static": "^1.0.0-next.28",
     "@sveltejs/adapter-vercel": "^1.0.0-next.43",
     "@sveltejs/kit": "^1.0.0-next.278",

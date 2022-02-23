@@ -4,6 +4,7 @@ specifiers:
   '@iconify/svelte': ^2.1.2
   '@mszu/pixi-ssr-shim': ^1.0.2
   '@pixi/events': 6.2.2
+  '@rstacruz/bump-cli': ^2.0.1
   '@sveltejs/adapter-static': ^1.0.0-next.28
   '@sveltejs/adapter-vercel': ^1.0.0-next.43
   '@sveltejs/kit': ^1.0.0-next.278
@@ -56,6 +57,7 @@ devDependencies:
   '@iconify/svelte': 2.1.2
   '@mszu/pixi-ssr-shim': 1.0.2
   '@pixi/events': 6.2.2
+  '@rstacruz/bump-cli': 2.0.1
   '@sveltejs/adapter-static': 1.0.0-next.28
   '@sveltejs/adapter-vercel': 1.0.0-next.43
   '@sveltejs/kit': 1.0.0-next.278_svelte@3.46.4
@@ -1165,6 +1167,14 @@ packages:
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.1
+    dev: true
+
+  /@rstacruz/bump-cli/2.0.1:
+    resolution: {integrity: sha512-SYc0KkIrlkORuL8dcRwPZZRsnGUVRfUwrACvH7nrrMVOQZ7pwuCaFkhry+4notIsdry9U8Qq8yBx4ERxLMnTjg==}
+    hasBin: true
+    dependencies:
+      minimist: 1.2.5
+      semver: 7.3.5
     dev: true
 
   /@sinonjs/commons/1.8.3:
