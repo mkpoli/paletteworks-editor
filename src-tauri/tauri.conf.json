@@ -70,7 +70,7 @@
     },
     "windows": [
       {
-        "url": "/edit",
+        "url": "/edit.html",
         "title": "PaletteWorks Editor",
         "width": 1024,
         "height": 768,
