@@ -9,7 +9,7 @@
     "test": "jest",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "eslint --ignore-path .gitignore .",
+    "lint": "eslint --ignore-path .gitignore src",
     "typesafe-i18n": "typesafe-i18n",
     "version": "np",
     "version:tauri": "node ./scripts/version-tauri.js",
