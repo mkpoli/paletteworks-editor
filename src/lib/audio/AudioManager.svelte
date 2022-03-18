@@ -64,7 +64,6 @@
   }
 
   import detect from 'bpm-detective'
-import { debug } from 'svelte/internal';
   $: onchangemusic(music)
   function onchangemusic(music: File | null) {
     stopScheduler()
