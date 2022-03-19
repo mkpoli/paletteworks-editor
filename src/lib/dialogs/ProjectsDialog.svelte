@@ -73,7 +73,7 @@
   })
 
   async function ondelete() {
-    if (selected && await confirm($LL.editor?.messages?.deleteConfirm() + '\n\n' + selected.name)) {
+    if (selected && await confirm($LL.editor?.messages?.deleteConfirm() + '\n\n' + (selected.name ?? 'Untitled'))) {
       const { id, name } = selected
       if (id) dispatch('delete', { id, name })
     }

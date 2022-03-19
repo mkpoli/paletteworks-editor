@@ -23,7 +23,7 @@
   export let selected: boolean
 
   let renaming: boolean = true
-  
+
   let menu: HTMLDivElement
 
   export let container: HTMLDivElement | undefined = undefined
@@ -34,7 +34,7 @@
   }
 
   $: if (!selected) renaming = false
-  
+
   let renameInput: HTMLInputElement
 
   let tooltipTarget: HTMLDivElement
@@ -88,7 +88,7 @@
         bind:this={renameInput}
       />
     {:else}
-      {project.name}
+      {project.name || 'Untitled'}
     {/if}
   </div>
 </div>
@@ -138,7 +138,7 @@
   .project:hover {
     color: var(--color-text-main);
   }
-  
+
   .project:focus {
     outline: none;
     color: var(--color-selected);
@@ -157,7 +157,7 @@
     overflow: hidden;
     border-radius: 1em;
   }
-  
+
   .project:hover .preview {
     border: 2px solid var(--color-text-main);
   }
