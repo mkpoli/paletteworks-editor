@@ -6,6 +6,7 @@
   import Button from '$lib/ui/Button.svelte'
   import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
   import Modal from '$lib/ui/Modal.svelte'
+  import { confirm } from '$lib/dialogs'
 
   // Events
   import { createEventDispatcher, getContext, onMount } from 'svelte'
@@ -55,9 +56,9 @@
   <div
     slot="presentation"
     on:dragover|preventDefault
-    on:drop|preventDefault={dropHandler('application/json', (file) => {
-      if (!confirm($LL.editor.messages.database.confirmImport())) return
-      if (!confirm($LL.editor.messages.confirm())) return
+    on:drop|preventDefault={dropHandler('application/json', async (file) => {
+      if (!(await confirm($LL.editor.messages.database.confirmImport()))) return
+      if (!(await confirm($LL.editor.messages.confirm()))) return
       importInto(db, file, {
         clearTablesBeforeImport: true,
       }).then(() => {

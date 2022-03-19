@@ -11,6 +11,8 @@
   import TextInput from "$lib/ui/TextInput.svelte"
   import ProjectCard from '$lib/dialogs/ProjectCard.svelte'
 
+  import { confirm } from '$lib/dialogs'
+
   // Events
   import { createEventDispatcher, tick } from "svelte"
   const dispatch = createEventDispatcher<{
@@ -65,13 +67,13 @@
           elements[projects.indexOf(filtered.rotateNext(selected))].focus()
           break
         case 'delete':
-          ondelete()
+          ondelete().then()
       }
     }
   })
 
-  function ondelete() {
-    if (selected && confirm($LL.editor?.messages?.deleteConfirm() + '\n\n' + selected.name)) {
+  async function ondelete() {
+    if (selected && await confirm($LL.editor?.messages?.deleteConfirm() + '\n\n' + selected.name)) {
       const { id, name } = selected
       if (id) dispatch('delete', { id, name })
     }

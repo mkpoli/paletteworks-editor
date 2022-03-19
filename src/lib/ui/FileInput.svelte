@@ -13,6 +13,8 @@
   import toast from '$lib/ui/toast'
   import { download, dropHandler } from '$lib/basic/file'
 
+  import { confirm } from '$lib/dialogs'
+
   export let file: File | null
   export let accept: string
   export let name: string
@@ -70,7 +72,7 @@
   {#if file}
     <MenuItem text={$LL.editor.menu.download()} icon="mdi:download" on:click={async () => { if (file) await download(file, file.name) }} />
     <MenuDivider/>
-    <MenuItem text={$LL.editor.menu.delete()} icon="mdi:delete" on:click={() => { if (confirm($LL.editor.messages.deleteConfirm())) { input.value = ''; file = null } }} />
+    <MenuItem text={$LL.editor.menu.delete()} icon="mdi:delete" on:click={async () => { if (await confirm($LL.editor.messages.deleteConfirm())) { input.value = ''; file = null } }} />
   {/if}
 </Menu>
 

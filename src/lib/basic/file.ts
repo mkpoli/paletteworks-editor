@@ -31,17 +31,17 @@ export function toBlob(content: string) {
   return blob
 }
 
-export function dropHandler(accept: string, callback: (file: File) => void, onerror: () => void): (event: DragEvent) => void {
-  return (event: DragEvent) => {
+export function dropHandler(accept: string, callback: (file: File) => void | Promise<void>, onerror: () => void | Promise<void>): (event: DragEvent) => Promise<void> {
+  return async (event: DragEvent) => {
     if (!event.dataTransfer || event.dataTransfer.items.length === 0) return
     const item = event.dataTransfer.items[0]
     if (item.kind !== 'file') return
     const file = item.getAsFile()
     event.stopPropagation()
     if (file && accepted(file, accept)) {
-      callback(file)
+      await callback(file)
     } else {
-      onerror()
+      await onerror()
     }
   }
 }

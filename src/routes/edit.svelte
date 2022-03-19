@@ -37,6 +37,8 @@
   import BpmDialog from '$lib/dialogs/BPMDialog.svelte'
   import LibraryDialog from '$lib/dialogs/LibraryDialog.svelte'
 
+  import { confirm } from '$lib/dialogs'
+
   let libraryDialogOpened = false
 
   // Toast
@@ -1032,7 +1034,7 @@
           toast.error($LL.editor.messages.library.uploadNotSelectedError())
           return
         }
-        if ($selectedNotes.length > 20 && !confirm($LL.editor.messages.library.uploadTooLongConfirm())) {
+        if ($selectedNotes.length > 20 && !(await confirm($LL.editor.messages.library.uploadTooLongConfirm()))) {
           return
         }
         const selectedSingles = singles.filter((note) => $selectedNotes.includes(note))
@@ -1401,12 +1403,12 @@
   offset={metadata.offset}
   bind:gotoTick
   bind:soundQueue
-  on:bpmdetected={({ detail: bpm }) => {
+  on:bpmdetected={async ({ detail: bpm }) => {
     if (!musicLoadedFromFile) return
     if (isNaN(bpm)) return
     if (bpms.get(0) === bpm) return
 
-    if (confirm($LL.editor.messages.confirmBPMDetected({ bpm }))) {
+    if (await confirm($LL.editor.messages.confirmBPMDetected({ bpm }))) {
       exec(new SetBPM(bpms, 0, bpm))
     }
 
