@@ -73,12 +73,16 @@
     slideNotes.pairwise().forEach(([origin, target]) => {
       const origin_x_left = $position.calcX(origin.lane) + SHRINK_WIDTH
       const origin_x_right =
-        $position.calcX(origin.lane) + origin.width * $preferences.laneWidth - SHRINK_WIDTH
+        $position.calcX(origin.lane) +
+        origin.width * $preferences.laneWidth -
+        SHRINK_WIDTH
       const origin_y = $position.calcY(origin.tick)
 
       const target_x_left = $position.calcX(target.lane) + SHRINK_WIDTH
       const target_x_right =
-        $position.calcX(target.lane) + target.width * $preferences.laneWidth - SHRINK_WIDTH
+        $position.calcX(target.lane) +
+        target.width * $preferences.laneWidth -
+        SHRINK_WIDTH
       const target_y = $position.calcY(target.tick)
 
       const STEPS = Math.ceil((origin_y - target_y) / 10)
@@ -87,29 +91,37 @@
       const uvs = []
 
       const SIDE_WIDTH = 7
-      
+
       if ((origin as IEase).easeType) {
         for (let i = 0; i < STEPS; i++) {
           const percentage = i / STEPS
           const xL = lerp(
             target_x_left,
             origin_x_left,
-            ((origin as IEase).easeType === 'easeIn' ? easeOutQuad : easeInQuad)(
-              percentage
-            )
+            ((origin as IEase).easeType === 'easeIn'
+              ? easeOutQuad
+              : easeInQuad)(percentage)
           )
           const xR = lerp(
             target_x_right,
             origin_x_right,
-            ((origin as IEase).easeType === 'easeIn' ? easeOutQuad: easeInQuad)(
-              percentage
-            )
+            ((origin as IEase).easeType === 'easeIn'
+              ? easeOutQuad
+              : easeInQuad)(percentage)
           )
-          
 
           const y = lerp(target_y, origin_y, percentage)
           points.push(xL - SIDE_WIDTH, y, xL, y, xR, y, xR + SIDE_WIDTH, y)
-          uvs.push(0, percentage, SIDE_RATIO, percentage, 1 - SIDE_RATIO, percentage, 1, percentage)
+          uvs.push(
+            0,
+            percentage,
+            SIDE_RATIO,
+            percentage,
+            1 - SIDE_RATIO,
+            percentage,
+            1,
+            percentage
+          )
         }
       }
 
@@ -139,25 +151,27 @@
           origin_x_right + SIDE_WIDTH,
           origin_y,
         ])
-      plane.geometry.getBuffer('aTextureCoord').update([
-        0,
-        0,
-        SIDE_RATIO,
-        0,
-        1 - SIDE_RATIO,
-        0,
-        1,
-        0,
-        ...uvs,
-        0,
-        1,
-        SIDE_RATIO,
-        1,
-        1 - SIDE_RATIO,
-        1,
-        1,
-        1,
-      ])
+      plane.geometry
+        .getBuffer('aTextureCoord')
+        .update([
+          0,
+          0,
+          SIDE_RATIO,
+          0,
+          1 - SIDE_RATIO,
+          0,
+          1,
+          0,
+          ...uvs,
+          0,
+          1,
+          SIDE_RATIO,
+          1,
+          1 - SIDE_RATIO,
+          1,
+          1,
+          1,
+        ])
       planeContainer.addChild(plane)
     })
   }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ClickableIcon from "$lib/ui/ClickableIcon.svelte";
+  import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
 
   export let zoom: number
   export let min: number
@@ -17,15 +17,19 @@
   <ClickableIcon
     icon="system-uicons:zoom-in"
     height={ICON_HEIGHT}
-    on:click={(event) => { onclick(event, 1) }}
+    on:click={(event) => {
+      onclick(event, 1)
+    }}
   />
   <div class="zoom-range-container">
-    <input type="range" bind:value={zoom} min={min} max={max} step={step}>
+    <input type="range" bind:value={zoom} {min} {max} {step} />
   </div>
   <ClickableIcon
     icon="system-uicons:zoom-out"
     height={ICON_HEIGHT}
-    on:click={(event) => { onclick(event, -1) }}
+    on:click={(event) => {
+      onclick(event, -1)
+    }}
   />
   <div class="zoom-number">
     {zoom.toFixed(1)}x
@@ -64,7 +68,7 @@
 
   .zoom-range-container:focus-within {
     border-radius: 5px;
-    box-shadow: 0 0 0 1px  #FFFFFF;
+    box-shadow: 0 0 0 1px #ffffff;
   }
 
   input {

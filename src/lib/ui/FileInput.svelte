@@ -1,4 +1,4 @@
-<script lang='ts'>
+<script lang="ts">
   import LL from '$i18n/i18n-svelte'
 
   import TextInput from '$lib/ui/TextInput.svelte'
@@ -47,32 +47,66 @@
   let menu: HTMLDivElement
 </script>
 
-<input type="file" bind:files={fileList} {accept} {name} bind:this={input}>
+<input type="file" bind:files={fileList} {accept} {name} bind:this={input} />
 
 <div
   class="file-container"
   bind:this={container}
-  on:dragover|preventDefault|capture={() => { /* empty */ }}
-  on:drop|preventDefault|capture={dropHandler(accept, (dropped) => { file = dropped; dispatch('open', file) }, () => { toast.error($LL.editor.messages.unknownFileType()) })}
+  on:dragover|preventDefault|capture={() => {
+    /* empty */
+  }}
+  on:drop|preventDefault|capture={dropHandler(
+    accept,
+    (dropped) => {
+      file = dropped
+      dispatch('open', file)
+    },
+    () => {
+      toast.error($LL.editor.messages.unknownFileType())
+    }
+  )}
 >
   {#if file}
     <TextInput value={file.name} disabled>
       <div slot="head">
         <Icon icon={fileIcon} />
       </div>
-      <Button {loading} class="action" slot="tail" icon={openIcon} on:click={onclick}></Button>
+      <Button
+        {loading}
+        class="action"
+        slot="tail"
+        icon={openIcon}
+        on:click={onclick}
+      />
     </TextInput>
   {:else}
-    <Button {loading} icon={openIcon} on:click={onclick} style="width: 100%;">{text}</Button>
+    <Button {loading} icon={openIcon} on:click={onclick} style="width: 100%;"
+      >{text}</Button
+    >
   {/if}
 </div>
 
 <Menu bind:menu>
-  <MenuTrigger slot="trigger" contextArea={container} {menu}/>
+  <MenuTrigger slot="trigger" contextArea={container} {menu} />
   {#if file}
-    <MenuItem text={$LL.editor.menu.download()} icon="mdi:download" on:click={async () => { if (file) await download(file, file.name) }} />
-    <MenuDivider/>
-    <MenuItem text={$LL.editor.menu.delete()} icon="mdi:delete" on:click={async () => { if (await confirm($LL.editor.messages.deleteConfirm())) { input.value = ''; file = null } }} />
+    <MenuItem
+      text={$LL.editor.menu.download()}
+      icon="mdi:download"
+      on:click={async () => {
+        if (file) await download(file, file.name)
+      }}
+    />
+    <MenuDivider />
+    <MenuItem
+      text={$LL.editor.menu.delete()}
+      icon="mdi:delete"
+      on:click={async () => {
+        if (await confirm($LL.editor.messages.deleteConfirm())) {
+          input.value = ''
+          file = null
+        }
+      }}
+    />
   {/if}
 </Menu>
 

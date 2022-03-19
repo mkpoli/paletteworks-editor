@@ -18,18 +18,24 @@
       .map((single) => ({ ...single, ...$resizingTargets.get(single) }))
 
     resizingSlides = slides
-      .filter((slide) =>
-        $resizingNotes.includes(slide.head) || $resizingNotes.includes(slide.tail) || slide.steps.some((step) => $resizingNotes.includes(step))
+      .filter(
+        (slide) =>
+          $resizingNotes.includes(slide.head) ||
+          $resizingNotes.includes(slide.tail) ||
+          slide.steps.some((step) => $resizingNotes.includes(step))
       )
       .map((slide) => {
         return {
           ...slide,
           head: { ...slide.head, ...$resizingTargets.get(slide.head) },
-          tail: { ... slide.tail, ...$resizingTargets.get(slide.tail) },
-          steps: slide.steps.map((step) => ({ ...step, ...$resizingTargets.get(step) }))
+          tail: { ...slide.tail, ...$resizingTargets.get(slide.tail) },
+          steps: slide.steps.map((step) => ({
+            ...step,
+            ...$resizingTargets.get(step),
+          })),
         }
       })
-  
+
     if (resizing) {
       setTimeout(updateresizing, 50)
     }
@@ -41,8 +47,5 @@
 </script>
 
 {#if resizing}
-  <FloatingNotes
-    singles={resizingSingles}
-    slides={resizingSlides}
-  />
+  <FloatingNotes singles={resizingSingles} slides={resizingSlides} />
 {/if}

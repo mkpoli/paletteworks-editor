@@ -17,17 +17,23 @@
       .filter((single) => $movingNotes.includes(single))
       .map((single) => ({ ...single, ...$movingTargets.get(single) }))
     movingSlides = slides
-    .filter((slide) =>
-      $movingNotes.includes(slide.head) || $movingNotes.includes(slide.tail) || slide.steps.some((step) => $movingNotes.includes(step))
-    )
-    .map((slide) => {
-      return {
-        ...slide,
-        head: { ...slide.head, ...$movingTargets.get(slide.head) },
-        tail: { ... slide.tail, ...$movingTargets.get(slide.tail) },
-        steps: slide.steps.map((step) => ({ ...step, ...$movingTargets.get(step) }))
-      }
-    })
+      .filter(
+        (slide) =>
+          $movingNotes.includes(slide.head) ||
+          $movingNotes.includes(slide.tail) ||
+          slide.steps.some((step) => $movingNotes.includes(step))
+      )
+      .map((slide) => {
+        return {
+          ...slide,
+          head: { ...slide.head, ...$movingTargets.get(slide.head) },
+          tail: { ...slide.tail, ...$movingTargets.get(slide.tail) },
+          steps: slide.steps.map((step) => ({
+            ...step,
+            ...$movingTargets.get(step),
+          })),
+        }
+      })
     if (moving) {
       setTimeout(updateMoving, 50)
     }
@@ -39,8 +45,5 @@
 </script>
 
 {#if moving}
-  <FloatingNotes
-    singles={movingSingles}
-    slides={movingSlides}
-  />
+  <FloatingNotes singles={movingSingles} slides={movingSlides} />
 {/if}

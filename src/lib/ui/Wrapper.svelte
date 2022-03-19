@@ -5,12 +5,9 @@
 </script>
 
 {#if wrap}
-  <svelte:component
-    this={component}
-    {...$$restProps}
-  >
-    <slot></slot>
+  <svelte:component this={component} {...$$restProps}>
+    <slot />
   </svelte:component>
 {:else}
-  <slot></slot>
+  <slot />
 {/if}

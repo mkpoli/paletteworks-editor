@@ -1,10 +1,10 @@
 <script lang="ts" context="module">
   export type MenuInfo = {
-    opened: boolean,
-    submenuOpened: boolean,
+    opened: boolean
+    submenuOpened: boolean
     items: {
-      element: HTMLButtonElement | HTMLAnchorElement,
-      hasSubMenu: boolean,
+      element: HTMLButtonElement | HTMLAnchorElement
+      hasSubMenu: boolean
     }[]
   }
 </script>
@@ -15,14 +15,14 @@
   const menuInfo: MenuInfo = {
     opened: false,
     submenuOpened: false,
-    items: []
+    items: [],
   }
   setContext<MenuInfo>('menu-info', menuInfo)
 </script>
 
-<slot name="trigger"></slot>
+<slot name="trigger" />
 <div class="menu-container" style={$$props.style} bind:this={menu}>
-  <slot></slot>
+  <slot />
 </div>
 
 <style>

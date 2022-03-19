@@ -1,4 +1,4 @@
-<hr>
+<hr />
 
 <style>
   hr {

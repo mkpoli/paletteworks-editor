@@ -21,14 +21,30 @@
   $: sideMargin = 10 * $preferences.noteHeight
   $: noteHeight = NOTE_HEIGHT * $preferences.noteHeight
   $: rect = new PIXI.Rectangle(
-    $position.calcX(lane) - marginX, $position.calcY(tick) - 0.5 * noteHeight,
-    width * $preferences.laneWidth + 2 * marginX, noteHeight
+    $position.calcX(lane) - marginX,
+    $position.calcY(tick) - 0.5 * noteHeight,
+    width * $preferences.laneWidth + 2 * marginX,
+    noteHeight
   )
 
   // Stores
-  import { moving, movingNotes, movingOrigins, movingTargets, movingOffsets } from '$lib/editing/moving'
+  import {
+    moving,
+    movingNotes,
+    movingOrigins,
+    movingTargets,
+    movingOffsets,
+  } from '$lib/editing/moving'
   import { cursor, position } from '$lib/position'
-  import { calcResized, resizing, resizingNotes, resizingOffsets, resizingOrigins, resizingTargets, resizingOriginNote } from '$lib/editing/resizing'
+  import {
+    calcResized,
+    resizing,
+    resizingNotes,
+    resizingOffsets,
+    resizingOrigins,
+    resizingTargets,
+    resizingOriginNote,
+  } from '$lib/editing/resizing'
   import { selectedNotes } from '$lib/editing/selection'
   import { preferences } from '$lib/preferences'
 
@@ -39,11 +55,11 @@
 
   // Event
   const dispatch = createEventDispatcher<{
-    click: { note: Note },
-    rightclick: { note: Note },
-    dblclick: { note: Note },
-    pointerenter: void,
-    pointerleave: void,
+    click: { note: Note }
+    rightclick: { note: Note }
+    dblclick: { note: Note }
+    pointerenter: void
+    pointerleave: void
   }>()
 
   // Variables
@@ -63,15 +79,15 @@
     $movingNotes.forEach((movingNote) => {
       $movingOffsets.set(movingNote, {
         lane: $cursor.lane - movingNote.lane,
-        tick: $cursor.tick - movingNote.tick
+        tick: $cursor.tick - movingNote.tick,
       })
       $movingOrigins.set(movingNote, {
         lane: movingNote.lane,
-        tick: movingNote.tick
+        tick: movingNote.tick,
       })
       $movingTargets.set(movingNote, {
         lane: movingNote.lane,
-        tick: movingNote.tick
+        tick: movingNote.tick,
       })
     })
   }
@@ -81,7 +97,7 @@
       const { lane, tick } = $movingOffsets.get(note)!
       $movingTargets.set(note, {
         lane: $cursor.lane - lane,
-        tick: $cursor.tick - tick
+        tick: $cursor.tick - tick,
       })
     }
   }
@@ -94,7 +110,10 @@
       $resizingOriginNote = note
       $resizingOrigins = new Map()
       $resizingTargets = new Map()
-      $resizingNotes = $selectedNotes.length && $selectedNotes.includes(note) ? $selectedNotes : [note]
+      $resizingNotes =
+        $selectedNotes.length && $selectedNotes.includes(note)
+          ? $selectedNotes
+          : [note]
       $resizingNotes.forEach((note) => {
         const reference = right ? note.lane : note.lane + note.width
         const mutating = right ? note.lane + note.width : note.lane
@@ -110,7 +129,7 @@
     if ($resizing && $resizingNotes.includes(note)) {
       const { reference, offset } = $resizingOffsets.get(note)!
       // if ($cursor.laneSide - offset === reference) return
-      const [ lane, width ] = calcResized(reference, $cursor.laneSide - offset)
+      const [lane, width] = calcResized(reference, $cursor.laneSide - offset)
       // console.log({ reference, offset, lane, width, LmO: $cursor.laneSide - offset })
       $resizingTargets.set(note, { lane, width })
     }
@@ -178,18 +197,23 @@
   function drawBorder() {
     graphics.lineStyle(3, COLORS.COLOR_SELECTION, 1)
     graphics.drawRoundedRect(
-      rect.x - SELECTION_MARGIN, rect.y - SELECTION_MARGIN,
-      rect.width + 2 * SELECTION_MARGIN, rect.height + 2 * SELECTION_MARGIN, 10
+      rect.x - SELECTION_MARGIN,
+      rect.y - SELECTION_MARGIN,
+      rect.width + 2 * SELECTION_MARGIN,
+      rect.height + 2 * SELECTION_MARGIN,
+      10
     )
   }
 
   const CONTROL_SIZE = 10
   function drawControl(graphics: PIXI.Graphics, x: number, y: number) {
     graphics.lineStyle(2, COLORS.COLOR_SELECTION, 1)
-    graphics.beginFill(0xFFFFFF)
+    graphics.beginFill(0xffffff)
     graphics.drawRect(
-      x - CONTROL_SIZE / 2, y - CONTROL_SIZE / 2,
-      CONTROL_SIZE, CONTROL_SIZE
+      x - CONTROL_SIZE / 2,
+      y - CONTROL_SIZE / 2,
+      CONTROL_SIZE,
+      CONTROL_SIZE
     )
     graphics.endFill()
   }
@@ -199,19 +223,36 @@
     controlL.clear()
     controlR.clear()
     middle.hitArea = new PIXI.Rectangle(
-      rect.x + sideMargin, rect.y, rect.width - 2 * sideMargin, rect.height
+      rect.x + sideMargin,
+      rect.y,
+      rect.width - 2 * sideMargin,
+      rect.height
     )
     controlL.hitArea = new PIXI.Rectangle(
-      rect.x - sideMargin, rect.y, sideMargin * 2, rect.height
+      rect.x - sideMargin,
+      rect.y,
+      sideMargin * 2,
+      rect.height
     )
     controlR.hitArea = new PIXI.Rectangle(
-      rect.right - sideMargin, rect.y, sideMargin * 2, rect.height
+      rect.right - sideMargin,
+      rect.y,
+      sideMargin * 2,
+      rect.height
     )
 
     if (draw) {
       drawBorder()
-      drawControl(controlL, rect.left - SELECTION_MARGIN, rect.top + rect.height / 2)
-      drawControl(controlR, rect.right + SELECTION_MARGIN, rect.top + rect.height / 2)
+      drawControl(
+        controlL,
+        rect.left - SELECTION_MARGIN,
+        rect.top + rect.height / 2
+      )
+      drawControl(
+        controlR,
+        rect.right + SELECTION_MARGIN,
+        rect.top + rect.height / 2
+      )
     }
   }
 </script>

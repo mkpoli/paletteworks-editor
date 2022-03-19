@@ -1,9 +1,9 @@
 import type { EFFECT_SOUNDS } from '$lib/consts'
 export type Sound = keyof typeof EFFECT_SOUNDS
 export type AudioEvent = {
-  time: number,
-  sound: Sound | 'bgm',
-  loopTo?: number,
+  time: number
+  sound: Sound | 'bgm'
+  loopTo?: number
   startFrom?: number
 }
 
@@ -27,21 +27,27 @@ export class AudioScheduler {
   timerID: number
   startTimeOffset: number
 
-  constructor(audioContext: AudioContext, audioNodes: AudioBufferSourceNode[], {
-    scheduleInterval =  50,  // in milliseconds
-    scheduleLookahead = 100, // in milliseconds
-    events = [],
-    callback = () => { /* empty */ }
-  }: SchedulerOption) {
+  constructor(
+    audioContext: AudioContext,
+    audioNodes: AudioBufferSourceNode[],
+    {
+      scheduleInterval = 50, // in milliseconds
+      scheduleLookahead = 100, // in milliseconds
+      events = [],
+      callback = () => {
+        /* empty */
+      },
+    }: SchedulerOption
+  ) {
     this.audioContext = audioContext
-    this.audioNodes = audioNodes               // keep track of all created audio nodes so they can be stopped
-    this.scheduleInterval = scheduleInterval   // schedule new events at this interval
+    this.audioNodes = audioNodes // keep track of all created audio nodes so they can be stopped
+    this.scheduleInterval = scheduleInterval // schedule new events at this interval
     this.scheduleLookahead = scheduleLookahead // schedule new events this far into the future
-    this.events = events                       // an events object that must at least contain the time property for each event
-    this.callback = callback                   // a function used to play the events
-  
-    this.eventsIndexNeedle = 0                  // a needle used to go through the events index by index
-    this.timerID = -1                 // used by clearTimeout() to identify the setTimeout timer
+    this.events = events // an events object that must at least contain the time property for each event
+    this.callback = callback // a function used to play the events
+
+    this.eventsIndexNeedle = 0 // a needle used to go through the events index by index
+    this.timerID = -1 // used by clearTimeout() to identify the setTimeout timer
     this.startTimeOffset = 0 // the offset between the time at audioContext creation and audioContext.currentTime
   }
 
@@ -75,16 +81,18 @@ export class AudioScheduler {
   }
 
   play() {
-    while(
+    while (
       this.eventsIndexNeedle < this.events.length &&
-      typeof this.events[this.eventsIndexNeedle].time === "number" &&
-      (this.events[this.eventsIndexNeedle].time + this.startTimeOffset <
-      this.audioContext.currentTime + (this.scheduleLookahead / 1000))
+      typeof this.events[this.eventsIndexNeedle].time === 'number' &&
+      this.events[this.eventsIndexNeedle].time + this.startTimeOffset <
+        this.audioContext.currentTime + this.scheduleLookahead / 1000
     ) {
       this.callback(this.events[this.eventsIndexNeedle], this.startTimeOffset)
       this.eventsIndexNeedle++
     }
-    this.timerID = window.setTimeout(() => { this.play() }, this.scheduleInterval)
+    this.timerID = window.setTimeout(() => {
+      this.play()
+    }, this.scheduleInterval)
   }
 
   // pause() {
@@ -96,7 +104,11 @@ export class AudioScheduler {
   // }
 }
 
-export function playOnce(audioContext: AudioContext, target: GainNode | AudioDestinationNode, buffer: AudioBuffer) {
+export function playOnce(
+  audioContext: AudioContext,
+  target: GainNode | AudioDestinationNode,
+  buffer: AudioBuffer
+) {
   const soundSource = audioContext.createBufferSource()
   soundSource.buffer = buffer
   soundSource.connect(target)

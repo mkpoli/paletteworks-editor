@@ -43,7 +43,12 @@
 
   $: drawErrorAreas($position, singles, slides)
 
-  function drawErrorArea(position: PositionManager, lane: number, laneR: number, tick: number) {
+  function drawErrorArea(
+    position: PositionManager,
+    lane: number,
+    laneR: number,
+    tick: number
+  ) {
     const MARGIN_X = 10
     const MARGIN_Y = 8
     graphics.drawRoundedRect(
@@ -57,7 +62,8 @@
 
   function drawErrorAreas(
     position: PositionManager,
-    singles: Single[], slides: Slide[]
+    singles: Single[],
+    slides: Slide[]
   ) {
     if (!graphics) return
 
@@ -65,16 +71,21 @@
     graphics.clear()
 
     let tickTable = new Map<number, Note[]>()
-    ;[...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
-      .forEach((note) => {
-        tickTable.set(note.tick, [...(tickTable.get(note.tick) ?? []), note])
-      })
-
+    ;[
+      ...singles,
+      ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]),
+    ].forEach((note) => {
+      tickTable.set(note.tick, [...(tickTable.get(note.tick) ?? []), note])
+    })
 
     // Draw multiple point warning
     if ($preferences.multiTapWarningEnabled) {
       for (const [tick, notes] of tickTable) {
-        const judgementNotes = notes.filter((note) => singles.includes(note as Single) || slides.some((slide) => slide.head === note || slide.tail === note))
+        const judgementNotes = notes.filter(
+          (note) =>
+            singles.includes(note as Single) ||
+            slides.some((slide) => slide.head === note || slide.tail === note)
+        )
         if (judgementNotes.length >= 3) {
           for (const note of judgementNotes) {
             graphics.beginFill(COLORS.COLOR_WARNING, COLORS.ALPHA_WARNING)
@@ -101,7 +112,7 @@
       })
 
       const n = area
-        .map((v, i) => v > 1 ? i : undefined)
+        .map((v, i) => (v > 1 ? i : undefined))
         .filter((i): i is number => i !== undefined)
         .reduce((acc, cur) => {
           let lastArray = acc[acc.length - 1]
@@ -120,27 +131,40 @@
         }, [] as number[][])
 
       // Draw
-      n.forEach(([lane, laneR]) => { drawErrorArea(position, lane, laneR, tick) })
+      n.forEach(([lane, laneR]) => {
+        drawErrorArea(position, lane, laneR, tick)
+      })
     })
 
     // Draw invalid steps
-    slides
-      .forEach(({ head, tail, steps }) => {
-        // find duplicated step with the same tick
-        const duplicatedSteps = steps
-          .map((step, i) => [step, i] as [Note, number])
-          .filter(([step, i]) => steps.slice(i + 1).some((step2) => step.tick === step2.tick))
-          .map(([step]) => step)
-        for (const step of duplicatedSteps) {
-          drawErrorArea(position, step.lane, step.lane + step.width - 1, step.tick)
-        }
+    slides.forEach(({ head, tail, steps }) => {
+      // find duplicated step with the same tick
+      const duplicatedSteps = steps
+        .map((step, i) => [step, i] as [Note, number])
+        .filter(([step, i]) =>
+          steps.slice(i + 1).some((step2) => step.tick === step2.tick)
+        )
+        .map(([step]) => step)
+      for (const step of duplicatedSteps) {
+        drawErrorArea(
+          position,
+          step.lane,
+          step.lane + step.width - 1,
+          step.tick
+        )
+      }
 
-        for (const step of steps) {
-          if (step.tick < head.tick || step.tick > tail.tick) {
-            drawErrorArea(position, step.lane, step.lane + step.width - 1, step.tick)
-          }
+      for (const step of steps) {
+        if (step.tick < head.tick || step.tick > tail.tick) {
+          drawErrorArea(
+            position,
+            step.lane,
+            step.lane + step.width - 1,
+            step.tick
+          )
         }
-      })
+      }
+    })
 
     graphics.endFill()
   }

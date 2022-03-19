@@ -1,13 +1,13 @@
 <script lang="ts">
   import LL from '$i18n/i18n-svelte'
 
-  import Modal from "$lib/ui/Modal.svelte"
+  import Modal from '$lib/ui/Modal.svelte'
   import Icon from '@iconify/svelte'
-  import Button from "$lib/ui/Button.svelte"
-  import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
-  import TextInput from "$lib/ui/TextInput.svelte"
+  import Button from '$lib/ui/Button.svelte'
+  import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
+  import TextInput from '$lib/ui/TextInput.svelte'
 
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher()
 
   export let opened: boolean
@@ -17,20 +17,24 @@
   let inputElement: HTMLInputElement
 </script>
 
-<Modal bind:opened on:opened={() => {
-  inputElement.focus()
-  inputElement.select()
-}}>
-  <template slot="activator">
-    
-  </template>
+<Modal
+  bind:opened
+  on:opened={() => {
+    inputElement.focus()
+    inputElement.select()
+  }}
+>
+  <template slot="activator" />
   <div slot="presentation">
     <h2>{$LL.editor.dialog.bpmTitle()}</h2>
     <div class="close">
       <ClickableIcon
         icon="gridicons:cross"
         height="1.5em"
-        on:click={() => { dispatch('cancel'); opened = false }}
+        on:click={() => {
+          dispatch('cancel')
+          opened = false
+        }}
       />
     </div>
     <TextInput
@@ -61,33 +65,39 @@
     <Button
       class="ok"
       icon={!exist ? 'mdi:plus-thick' : 'ic:sharp-edit'}
-      on:click={() => { dispatch('ok'); opened = false }}
+      on:click={() => {
+        dispatch('ok')
+        opened = false
+      }}
     >
-      {!exist ? $LL.editor.dialog.append() : $LL.editor.dialog.change() }
+      {!exist ? $LL.editor.dialog.append() : $LL.editor.dialog.change()}
     </Button>
     {#if exist}
       <Button
         class="delete text"
         icon="mdi:delete"
-        on:click={() => { dispatch('delete'); opened = false }}
+        on:click={() => {
+          dispatch('delete')
+          opened = false
+        }}
       >
         {$LL.editor.dialog.delete()}
       </Button>
     {/if}
-  </div> 
+  </div>
 </Modal>
 
 <style>
-  [slot=presentation] {
+  [slot='presentation'] {
     padding: 1em;
     display: grid;
     gap: 2em;
     /* grid-template: 1fr auto / auto 1fr auto ; */
     grid-template-columns: repeat(5, 3em);
     grid-template-areas:
-      "h h . . x"
-      "t t t t t"
-      "d d . o o"
+      'h h . . x'
+      't t t t t'
+      'd d . o o';
   }
 
   .close {
@@ -101,24 +111,24 @@
     margin: 0;
   }
 
-  [slot=presentation] :global(.ok) {
+  [slot='presentation'] :global(.ok) {
     grid-area: o;
 
-    background: linear-gradient(180deg, #009C70 0%, #008080 100%);
+    background: linear-gradient(180deg, #009c70 0%, #008080 100%);
   }
 
-  [slot=presentation] :global(.delete) {
+  [slot='presentation'] :global(.delete) {
     grid-area: d;
 
     background: transparent;
-    color: #FF003D;
+    color: #ff003d;
   }
 
-  [slot=presentation] :global(.input-container) {
+  [slot='presentation'] :global(.input-container) {
     grid-area: t;
   }
 
-  [slot=presentation] [slot=head] {
+  [slot='presentation'] [slot='head'] {
     display: flex;
     align-items: center;
     gap: 0.3em;

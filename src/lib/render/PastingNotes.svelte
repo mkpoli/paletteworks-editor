@@ -17,12 +17,11 @@
   let pastedSlides: SlideType[]
 
   // Reactive
-  $: ({ singles: pastedSingles, slides: pastedSlides } = !$altKey ? pasted($cursor) : flippasted($cursor))
+  $: ({ singles: pastedSingles, slides: pastedSlides } = !$altKey
+    ? pasted($cursor)
+    : flippasted($cursor))
 </script>
 
 {#if $ctrlKey && $clipboardOffsets.size > 0}
-  <FloatingNotes
-    singles={pastedSingles}
-    slides={pastedSlides}
-  />  
+  <FloatingNotes singles={pastedSingles} slides={pastedSlides} />
 {/if}

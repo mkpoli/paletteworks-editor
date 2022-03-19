@@ -11,7 +11,7 @@
   export let history: Writable<Mutation<unknown>[]>
   export let mutation: Mutation<unknown>
   export let undone: boolean
-  
+
   $: done = $history.includes(mutation)
 </script>
 

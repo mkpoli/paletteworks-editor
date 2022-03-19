@@ -1,11 +1,7 @@
 <script lang="ts">
   import { clamp } from '$lib/basic/math'
 
-  import {
-    COLORS,
-    MARGIN_BOTTOM,
-    SCROLLBAR_WIDTH,
-  } from '$lib/consts'
+  import { COLORS, MARGIN_BOTTOM, SCROLLBAR_WIDTH } from '$lib/consts'
   import { calcScrollTick } from '$lib/editing/scrolling'
   import { pointer, position } from '$lib/position'
   import { scrollY } from '$lib/editing/scrolling'
@@ -76,8 +72,7 @@
         calcScrollTick(
           $position.containerHeight -
             MARGIN_BOTTOM -
-            (containerHeight * containerHeight) /
-              ($pointer.y + pointerOffset),
+            (containerHeight * containerHeight) / ($pointer.y + pointerOffset),
           $position.zoom
         )
       )
@@ -111,10 +106,11 @@
           'scroll',
           calcScrollTick(
             $position.containerHeight -
-            MARGIN_BOTTOM -
-            (containerHeight * containerHeight) /
-              ($pointer.y + thumbHeight / 2),
-          $position.zoom)
+              MARGIN_BOTTOM -
+              (containerHeight * containerHeight) /
+                ($pointer.y + thumbHeight / 2),
+            $position.zoom
+          )
         )
       }
     })

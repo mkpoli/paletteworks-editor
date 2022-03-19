@@ -15,11 +15,11 @@
 
 {#if href}
   <a {href} target="_blank">
-    <Icon icon={icon} height={height} width={width} />
+    <Icon {icon} {height} {width} />
   </a>
 {:else}
   <button on:click on:keydown={handleKeydown}>
-    <Icon icon={icon} height={height} width={width} />
+    <Icon {icon} {height} {width} />
   </button>
 {/if}
 

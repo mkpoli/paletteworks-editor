@@ -28,7 +28,11 @@ body {
   box-sizing: border-box;
 }
 
-button, label, audio, select, input {
+button,
+label,
+audio,
+select,
+input {
   cursor: inherit;
   font-size: inherit;
   font-family: inherit;

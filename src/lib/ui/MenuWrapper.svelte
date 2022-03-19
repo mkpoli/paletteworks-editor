@@ -7,16 +7,9 @@
 </script>
 
 {#if wrap}
-  <Menu 
-    bind:menu
-    {...$$props}
-  >
+  <Menu bind:menu {...$$props}>
     <svelte:fragment slot="trigger">
-      <MenuTrigger
-        {menu}
-        sub={true}
-        bind:opened={submenuOpened}
-      >
+      <MenuTrigger {menu} sub={true} bind:opened={submenuOpened}>
         <slot />
       </MenuTrigger>
     </svelte:fragment>

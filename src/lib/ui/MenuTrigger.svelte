@@ -56,7 +56,10 @@
   let trap: FocusTrap
 
   $: if (menu) {
-    trap = focusTrap.createFocusTrap(menu, { fallbackFocus: menu, clickOutsideDeactivates: true })
+    trap = focusTrap.createFocusTrap(menu, {
+      fallbackFocus: menu,
+      clickOutsideDeactivates: true,
+    })
   }
 
   import hotkeys from 'hotkeys-js'
@@ -67,23 +70,46 @@
     }
   })
   hotkeys('right', (event) => {
-    if (instance && opened && !menuInfo.submenuOpened && document.activeElement && menuInfo.items.some(({ element, hasSubMenu }) => hasSubMenu && element === document.activeElement)) {
+    if (
+      instance &&
+      opened &&
+      !menuInfo.submenuOpened &&
+      document.activeElement &&
+      menuInfo.items.some(
+        ({ element, hasSubMenu }) =>
+          hasSubMenu && element === document.activeElement
+      )
+    ) {
       event.preventDefault()
       ;(document.activeElement as HTMLButtonElement).click()
     }
   })
   hotkeys('up,down', (event, handler) => {
-    if (instance && opened && !menuInfo.submenuOpened && document.activeElement && menu.contains(document.activeElement)) {
+    if (
+      instance &&
+      opened &&
+      !menuInfo.submenuOpened &&
+      document.activeElement &&
+      menu.contains(document.activeElement)
+    ) {
       event.preventDefault()
       event.stopPropagation()
 
       const elements = menuInfo.items.map(({ element }) => element)
       switch (handler.key) {
         case 'up':
-          elements.rotatePrev(document.activeElement as HTMLButtonElement | HTMLAnchorElement).focus()
+          elements
+            .rotatePrev(
+              document.activeElement as HTMLButtonElement | HTMLAnchorElement
+            )
+            .focus()
           break
         case 'down':
-          elements.rotateNext(document.activeElement as HTMLButtonElement | HTMLAnchorElement).focus()
+          elements
+            .rotateNext(
+              document.activeElement as HTMLButtonElement | HTMLAnchorElement
+            )
+            .focus()
           break
       }
     }
@@ -124,7 +150,7 @@
       onHidden,
       onHide() {
         dispatch('hidden')
-      }
+      },
     })
 
     contextArea.addEventListener('contextmenu', (event: MouseEvent) => {
@@ -138,7 +164,7 @@
 
       const mouseRect = new DOMRect(event.clientX, event.clientY, 0, 0)
       instance.setProps({
-        getReferenceClientRect: () => mouseRect
+        getReferenceClientRect: () => mouseRect,
       })
 
       instance.show()
@@ -148,7 +174,7 @@
 
 {#if !contextArea}
   <div bind:this={trigger} class={$$props.class}>
-    <slot/>
+    <slot />
   </div>
 {/if}
 

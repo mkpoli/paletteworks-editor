@@ -5,7 +5,12 @@ export function getSlideNotes({ head, tail, steps }: Slide): SlideNote[] {
   return [head, ...steps, tail]
 }
 
-export function combineSlides(slides: Slide[], a: Slide, b: Slide, target: INote): AddRemoveSlides {
+export function combineSlides(
+  slides: Slide[],
+  a: Slide,
+  b: Slide,
+  target: INote
+): AddRemoveSlides {
   const slide = {
     head: a.head,
     tail: b.tail,
@@ -17,13 +22,11 @@ export function combineSlides(slides: Slide[], a: Slide, b: Slide, target: INote
         width: target.width,
         diamond: false,
         ignored: false,
-        easeType: b.head.easeType
+        easeType: b.head.easeType,
       },
-      ...b.steps
+      ...b.steps,
     ],
     critical: a.critical || b.critical,
   }
-  return new AddRemoveSlides(
-    slides, [slide], [a, b], 1, 'combine'
-  )
+  return new AddRemoveSlides(slides, [slide], [a, b], 1, 'combine')
 }

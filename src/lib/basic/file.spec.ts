@@ -1,4 +1,4 @@
-import { formatFilename } from "./file"
+import { formatFilename } from './file'
 
 describe('formatFilename', () => {
   beforeAll(() => {
@@ -14,15 +14,21 @@ describe('formatFilename', () => {
   }
 
   it('should replace {keyword} with real data', () => {
-    expect(formatFilename('{artist}-{title}.txt', formatData)).toBe('artist-title.txt')
+    expect(formatFilename('{artist}-{title}.txt', formatData)).toBe(
+      'artist-title.txt'
+    )
   })
 
   it('should replace {date} with real date', () => {
-    expect(formatFilename('{project}_{date}.sus', formatData)).toBe('project_2020-01-01.sus')
+    expect(formatFilename('{project}_{date}.sus', formatData)).toBe(
+      'project_2020-01-01.sus'
+    )
   })
 
   it('should replace {datetime} with filename-safe time', () => {
-    expect(formatFilename('{title}_{datetime}.sus', formatData)).toBe('title_2020-01-01T00-00-00.000Z.sus')
+    expect(formatFilename('{title}_{datetime}.sus', formatData)).toBe(
+      'title_2020-01-01T00-00-00.000Z.sus'
+    )
   })
 
   it('should keep unknown {keyword} as is', () => {

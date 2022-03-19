@@ -1,17 +1,43 @@
-import type { Note, Single, Slide, SlideNote, SlideStep } from '$lib/score/beatmap'
+import type {
+  Note,
+  Single,
+  Slide,
+  SlideNote,
+  SlideStep,
+} from '$lib/score/beatmap'
 
 import { LL } from '$i18n/i18n-svelte'
 
 type TargetType = 'slide' | 'slidenote' | 'note' | 'bpm' | 'timeSignature'
-type Operation = 'append' | 'delete' | 'update' | 'set' | 'cut' | 'flip' | 'move' | 'resize' | 'paste' | 'divide' | 'combine' | 'convert'
+type Operation =
+  | 'append'
+  | 'delete'
+  | 'update'
+  | 'set'
+  | 'cut'
+  | 'flip'
+  | 'move'
+  | 'resize'
+  | 'paste'
+  | 'divide'
+  | 'combine'
+  | 'convert'
 
-type Stringify = (amount: number, type: TargetType, operation: Operation) => string
+type Stringify = (
+  amount: number,
+  type: TargetType,
+  operation: Operation
+) => string
 
 let stringify: Stringify
 
 LL.subscribe((T) => {
   stringify = (amount, type, operation) =>
-    T.editor.mutation.message({ amount: amount, type: T.editor.mutation.target[type](), operation: T.editor.mutation[operation]() })
+    T.editor.mutation.message({
+      amount: amount,
+      type: T.editor.mutation.target[type](),
+      operation: T.editor.mutation[operation](),
+    })
 })
 
 export abstract class Mutation<T> {
@@ -49,7 +75,7 @@ export class AddBPM extends BPMMutation {
     this.newValue = value
   }
 
-  exec(): Map<number, number>  {
+  exec(): Map<number, number> {
     return this.bpms.set(this.tick, this.newValue)
   }
 
@@ -117,7 +143,10 @@ export class AddSingles extends SingleMutation {
   }
 
   exec() {
-    return [...this.singles, ...this.newNotes.filter((note) => !this.singles.includes(note))]
+    return [
+      ...this.singles,
+      ...this.newNotes.filter((note) => !this.singles.includes(note)),
+    ]
   }
 
   undo() {
@@ -133,7 +162,12 @@ export class UpdateSingle extends SingleMutation {
     super(singles, 'update', 1)
     this.note = note
     this.modification = modification
-    this.oldNote = Object.fromEntries(Object.keys(modification).map((key) => [key, this.note[key as keyof Single]]))
+    this.oldNote = Object.fromEntries(
+      Object.keys(modification).map((key) => [
+        key,
+        this.note[key as keyof Single],
+      ])
+    )
   }
 
   exec() {
@@ -150,11 +184,20 @@ export class UpdateSingle extends SingleMutation {
 export class UpdateSingles extends SingleMutation {
   modifications: Map<Single, Partial<Single>>
   originaldatas: Map<Single, Partial<Single>>
-  constructor(singles: Single[], modifications: Map<Single, Partial<Single>>, operation: Operation) {
+  constructor(
+    singles: Single[],
+    modifications: Map<Single, Partial<Single>>,
+    operation: Operation
+  ) {
     super(singles, operation, modifications.size)
     this.modifications = modifications
-    this.originaldatas = new Map([...modifications].map(([note, data]) =>
-      [note, Object.fromEntries(Object.keys(data).map((key) => [key, note[key as keyof Single]]))])
+    this.originaldatas = new Map(
+      [...modifications].map(([note, data]) => [
+        note,
+        Object.fromEntries(
+          Object.keys(data).map((key) => [key, note[key as keyof Single]])
+        ),
+      ])
     )
   }
 
@@ -177,7 +220,9 @@ export class RemoveSingles extends SingleMutation {
   }
 
   exec() {
-    this.singles = this.singles.filter((note) => !this.targetNotes.includes(note))
+    this.singles = this.singles.filter(
+      (note) => !this.targetNotes.includes(note)
+    )
     return this.singles
   }
 
@@ -192,7 +237,12 @@ export class RemoveSingles extends SingleMutation {
 
 export abstract class SlideMutation extends Mutation<Slide[]> {
   slides: Slide[]
-  constructor(slides: Slide[], operation: Operation, amount: number, target: TargetType) {
+  constructor(
+    slides: Slide[],
+    operation: Operation,
+    amount: number,
+    target: TargetType
+  ) {
     super(operation, amount, target)
     this.slides = slides
   }
@@ -209,7 +259,10 @@ export class AddSlides extends SlideMutation {
   }
 
   exec() {
-    return [...this.slides, ...this.newSlides.filter((slide) => !this.slides.includes(slide))]
+    return [
+      ...this.slides,
+      ...this.newSlides.filter((slide) => !this.slides.includes(slide)),
+    ]
   }
 
   undo() {
@@ -225,7 +278,9 @@ export class RemoveSlides extends SlideMutation {
   }
 
   exec() {
-    this.slides = this.slides.filter((slide) => !this.targetSlides.includes(slide))
+    this.slides = this.slides.filter(
+      (slide) => !this.targetSlides.includes(slide)
+    )
     return this.slides
   }
 
@@ -238,7 +293,13 @@ export class AddRemoveSlides extends SlideMutation {
   additions: Slide[]
   deletions: Slide[]
 
-  constructor(slides: Slide[], additions: Slide[], deletions: Slide[], amount: number, operation: Operation) {
+  constructor(
+    slides: Slide[],
+    additions: Slide[],
+    deletions: Slide[],
+    amount: number,
+    operation: Operation
+  ) {
     super(slides, operation, amount, 'slide')
     this.additions = additions
     this.deletions = deletions
@@ -247,14 +308,14 @@ export class AddRemoveSlides extends SlideMutation {
   exec() {
     return [
       ...this.slides.filter((predicate) => !this.deletions.includes(predicate)),
-      ...this.additions.filter(predicate => !this.slides.includes(predicate))
+      ...this.additions.filter((predicate) => !this.slides.includes(predicate)),
     ]
   }
 
   undo() {
     return [
       ...this.slides.filter((predicate) => !this.additions.includes(predicate)),
-      ...this.deletions.filter(predicate => !this.slides.includes(predicate))
+      ...this.deletions.filter((predicate) => !this.slides.includes(predicate)),
     ]
   }
 }
@@ -263,11 +324,20 @@ export class UpdateSlideNote extends SlideMutation {
   targetNote: SlideNote
   modification: Partial<SlideNote>
   originalData: Partial<SlideNote>
-  constructor(slides: Slide[], targetNote: SlideNote, modification: Partial<SlideNote>) {
+  constructor(
+    slides: Slide[],
+    targetNote: SlideNote,
+    modification: Partial<SlideNote>
+  ) {
     super(slides, 'update', 1, 'slidenote')
     this.targetNote = targetNote
     this.modification = modification
-    this.originalData = Object.fromEntries(Object.keys(modification).map((key) => [key, this.targetNote[key as keyof SlideNote]]))
+    this.originalData = Object.fromEntries(
+      Object.keys(modification).map((key) => [
+        key,
+        this.targetNote[key as keyof SlideNote],
+      ])
+    )
   }
 
   exec() {
@@ -284,12 +354,23 @@ export class UpdateSlideNote extends SlideMutation {
 export class UpdateSlideNotes extends SlideMutation {
   modifications: Map<SlideNote, Partial<SlideNote>>
   originalDatas: Map<SlideNote, Partial<SlideNote>>
-  constructor(slides: Slide[], modifications: Map<SlideNote, Partial<SlideNote>>) {
+  constructor(
+    slides: Slide[],
+    modifications: Map<SlideNote, Partial<SlideNote>>
+  ) {
     super(slides, 'update', modifications.size, 'slidenote')
     this.modifications = modifications
-    this.originalDatas = new Map([...modifications.entries()].map(([target, modification]) =>
-      [target, Object.fromEntries(Object.keys(modification).map((key) => [key, target[key as keyof SlideNote]]))]
-    ))
+    this.originalDatas = new Map(
+      [...modifications.entries()].map(([target, modification]) => [
+        target,
+        Object.fromEntries(
+          Object.keys(modification).map((key) => [
+            key,
+            target[key as keyof SlideNote],
+          ])
+        ),
+      ])
+    )
   }
 
   exec() {
@@ -311,11 +392,20 @@ export class UpdateSlide extends SlideMutation {
   targetSlide: Slide
   modification: Partial<Slide>
   originalData: Partial<Slide>
-  constructor(slides: Slide[], targetSlide: Slide, modification: Partial<Slide>) {
+  constructor(
+    slides: Slide[],
+    targetSlide: Slide,
+    modification: Partial<Slide>
+  ) {
     super(slides, 'update', 1, 'slide')
     this.targetSlide = targetSlide
     this.modification = modification
-    this.originalData = Object.fromEntries(Object.keys(modification).map((key) => [key, this.targetSlide[key as keyof Slide]]))
+    this.originalData = Object.fromEntries(
+      Object.keys(modification).map((key) => [
+        key,
+        this.targetSlide[key as keyof Slide],
+      ])
+    )
   }
 
   exec() {
@@ -332,7 +422,11 @@ export class UpdateSlide extends SlideMutation {
 export class UpdateSlides extends SlideMutation {
   modifications: Map<Slide, Partial<Slide>>
   originalDatas: Map<Slide, Partial<Slide>>
-  constructor(slides: Slide[], modifications: Map<Slide, Partial<Slide>>, originalDatas: Map<Slide, Partial<Slide>>) {
+  constructor(
+    slides: Slide[],
+    modifications: Map<Slide, Partial<Slide>>,
+    originalDatas: Map<Slide, Partial<Slide>>
+  ) {
     super(slides, 'update', modifications.size, 'slide')
     this.modifications = modifications
     this.originalDatas = originalDatas
@@ -360,7 +454,8 @@ export class RemoveSlideSteps extends SlideMutation {
     this.slideStepsLocation = new Map<SlideStep, Slide>()
     oldSteps.forEach((oldStep) => {
       const slide = this.slides.find(({ steps }) => steps.includes(oldStep))
-      if (!slide) throw new Error(`Unexpected slide not found for step ${oldStep}`)
+      if (!slide)
+        throw new Error(`Unexpected slide not found for step ${oldStep}`)
       this.slideStepsLocation.set(oldStep, slide)
     })
   }
@@ -384,10 +479,19 @@ export class RemoveSlideSteps extends SlideMutation {
 
 // #region Batch-Mutations (Singles & Slides)
 
-export abstract class BatchMutation extends Mutation<{ singles: Single[], slides: Slide[] }> {
+export abstract class BatchMutation extends Mutation<{
   singles: Single[]
   slides: Slide[]
-  constructor(singles: Single[], slides: Slide[], operation: Operation, amount: number, target: TargetType) {
+}> {
+  singles: Single[]
+  slides: Slide[]
+  constructor(
+    singles: Single[],
+    slides: Slide[],
+    operation: Operation,
+    amount: number,
+    target: TargetType
+  ) {
     super(operation, amount, target)
     this.singles = singles
     this.slides = slides
@@ -398,36 +502,47 @@ export class BatchRemove extends BatchMutation {
   removeSingles: RemoveSingles
   removeSlides: RemoveSlides
   removeSlideSteps: RemoveSlideSteps
-  constructor(singles: Single[], slides: Slide[], notes: Note[], operation: Operation) {
+  constructor(
+    singles: Single[],
+    slides: Slide[],
+    notes: Note[],
+    operation: Operation
+  ) {
     super(singles, slides, operation, notes.length, 'note')
 
     const selectedSingles = this.singles.filter((note) => notes.includes(note))
     this.removeSingles = new RemoveSingles(singles, selectedSingles)
 
-    const { markedSlides, slideSteps } = slides.reduce(({ markedSlides, slideSteps }, slide) => {
-      const { head, tail, steps } = slide
+    const { markedSlides, slideSteps } = slides.reduce(
+      ({ markedSlides, slideSteps }, slide) => {
+        const { head, tail, steps } = slide
 
-      if (notes.some((note) => head === note || tail === note)) {
-        markedSlides.push(slide)
+        if (notes.some((note) => head === note || tail === note)) {
+          markedSlides.push(slide)
+        }
+
+        notes
+          .filter((note) => steps.includes(note as SlideStep))
+          .forEach((note) => slideSteps.push(note as SlideStep))
+        return { markedSlides, slideSteps }
+      },
+      { markedSlides: [], slideSteps: [] } as {
+        markedSlides: Slide[]
+        slideSteps: SlideStep[]
       }
-
-      notes
-        .filter(note => steps.includes(note as SlideStep))
-        .forEach(note => slideSteps.push(note as SlideStep))
-      return { markedSlides, slideSteps }
-    }, { markedSlides: [], slideSteps: [] } as { markedSlides: Slide[], slideSteps: SlideStep[] })
+    )
     this.removeSlideSteps = new RemoveSlideSteps(slides, slideSteps)
     this.removeSlides = new RemoveSlides(slides, markedSlides)
   }
 
-  exec(): { singles: Single[], slides: Slide[] } {
+  exec(): { singles: Single[]; slides: Slide[] } {
     this.singles = this.removeSingles.exec()
     this.slides = this.removeSlideSteps.exec()
     this.slides = this.removeSlides.exec()
     return { singles: this.singles, slides: this.slides }
   }
 
-  undo(): { singles: Single[], slides: Slide[] } {
+  undo(): { singles: Single[]; slides: Slide[] } {
     this.slides = this.removeSlides.undo()
     this.slides = this.removeSlideSteps.undo()
     this.singles = this.removeSingles.undo()
@@ -439,19 +554,31 @@ export class BatchAdd extends BatchMutation {
   addSingles: AddSingles
   addSlides: AddSlides
 
-  constructor(singles: Single[], slides: Slide[], newSingles: Single[], newSlides: Slide[], operation: Operation = 'append') {
-    super(singles, slides, operation, newSingles.length + newSlides.length, 'note')
+  constructor(
+    singles: Single[],
+    slides: Slide[],
+    newSingles: Single[],
+    newSlides: Slide[],
+    operation: Operation = 'append'
+  ) {
+    super(
+      singles,
+      slides,
+      operation,
+      newSingles.length + newSlides.length,
+      'note'
+    )
     this.addSingles = new AddSingles(singles, newSingles)
     this.addSlides = new AddSlides(slides, newSlides)
   }
 
-  exec(): { singles: Single[], slides: Slide[] } {
+  exec(): { singles: Single[]; slides: Slide[] } {
     this.singles = this.addSingles.exec()
     this.slides = this.addSlides.exec()
     return { singles: this.singles, slides: this.slides }
   }
 
-  undo(): { singles: Single[], slides: Slide[] } {
+  undo(): { singles: Single[]; slides: Slide[] } {
     this.slides = this.addSlides.undo()
     this.singles = this.addSingles.undo()
     return { singles: this.singles, slides: this.slides }
@@ -462,7 +589,13 @@ export class BatchUpdate extends BatchMutation {
   modifications: Map<Note, Partial<Note>>
   originalDatas: Map<Note, Partial<Note>>
 
-  constructor(singles: Single[], slides: Slide[], modifications: Map<Note, Partial<Note>>, originalDatas: Map<Note, Partial<Note>>, operation: Operation = 'update') {
+  constructor(
+    singles: Single[],
+    slides: Slide[],
+    modifications: Map<Note, Partial<Note>>,
+    originalDatas: Map<Note, Partial<Note>>,
+    operation: Operation = 'update'
+  ) {
     super(singles, slides, operation, modifications.size, 'note')
     this.modifications = modifications
     this.originalDatas = originalDatas
@@ -488,7 +621,16 @@ export class BatchAddRemove extends BatchMutation {
   additionSlides: Slide[]
   deletionSingles: Single[]
   deletionSlides: Slide[]
-  constructor(singles: Single[], slides: Slide[], additionSingles: Single[], additionSlides: Slide[], deletionSingles: Single[], deletionSlides: Slide[], amount: number, operation: Operation) {
+  constructor(
+    singles: Single[],
+    slides: Slide[],
+    additionSingles: Single[],
+    additionSlides: Slide[],
+    deletionSingles: Single[],
+    deletionSlides: Slide[],
+    amount: number,
+    operation: Operation
+  ) {
     super(singles, slides, operation, amount, 'note')
     this.additionSingles = additionSingles
     this.additionSlides = additionSlides
@@ -496,39 +638,70 @@ export class BatchAddRemove extends BatchMutation {
     this.deletionSlides = deletionSlides
   }
 
-  exec(): { singles: Single[], slides: Slide[] } {
-    this.singles = [...this.singles, ...this.additionSingles.filter((single) => !this.singles.includes(single))]
-    this.slides = [...this.slides, ...this.additionSlides.filter((slide) => !this.slides.includes(slide))]
-    this.singles = this.singles.filter((single) => !this.deletionSingles.includes(single))
-    this.slides = this.slides.filter((slide) => !this.deletionSlides.includes(slide))
+  exec(): { singles: Single[]; slides: Slide[] } {
+    this.singles = [
+      ...this.singles,
+      ...this.additionSingles.filter(
+        (single) => !this.singles.includes(single)
+      ),
+    ]
+    this.slides = [
+      ...this.slides,
+      ...this.additionSlides.filter((slide) => !this.slides.includes(slide)),
+    ]
+    this.singles = this.singles.filter(
+      (single) => !this.deletionSingles.includes(single)
+    )
+    this.slides = this.slides.filter(
+      (slide) => !this.deletionSlides.includes(slide)
+    )
     return { singles: this.singles, slides: this.slides }
   }
 
-  undo(): { singles: Single[], slides: Slide[] } {
-    this.singles = this.singles.filter((single) => !this.additionSingles.includes(single))
-    this.slides = this.slides.filter((slide) => !this.additionSlides.includes(slide))
-    this.singles = [...this.singles, ...this.deletionSingles.filter((single) => !this.singles.includes(single))]
-    this.slides = [...this.slides, ...this.deletionSlides.filter((slide) => !this.slides.includes(slide))]
+  undo(): { singles: Single[]; slides: Slide[] } {
+    this.singles = this.singles.filter(
+      (single) => !this.additionSingles.includes(single)
+    )
+    this.slides = this.slides.filter(
+      (slide) => !this.additionSlides.includes(slide)
+    )
+    this.singles = [
+      ...this.singles,
+      ...this.deletionSingles.filter(
+        (single) => !this.singles.includes(single)
+      ),
+    ]
+    this.slides = [
+      ...this.slides,
+      ...this.deletionSlides.filter((slide) => !this.slides.includes(slide)),
+    ]
     return { singles: this.singles, slides: this.slides }
   }
 }
 
 export class CombinedMutation extends BatchMutation {
   mutations: (SingleMutation | SlideMutation | BatchMutation)[]
-  constructor(singles: Single[], slides: Slide[], mutations: (SingleMutation | SlideMutation | BatchMutation)[], target: TargetType, amount: number, operation: Operation) {
+  constructor(
+    singles: Single[],
+    slides: Slide[],
+    mutations: (SingleMutation | SlideMutation | BatchMutation)[],
+    target: TargetType,
+    amount: number,
+    operation: Operation
+  ) {
     super(singles, slides, operation, amount, target)
     this.mutations = mutations
   }
 
-  exec(): { singles: Single[], slides: Slide[] } {
+  exec(): { singles: Single[]; slides: Slide[] } {
     this.mutations.forEach((mutation) => {
       mutation.exec()
     })
     return { singles: this.singles, slides: this.slides }
   }
 
-  undo(): { singles: Single[], slides: Slide[] } {
-    [...this.mutations].reverse().forEach((mutation) => {
+  undo(): { singles: Single[]; slides: Slide[] } {
+    ;[...this.mutations].reverse().forEach((mutation) => {
       mutation.undo()
     })
     return { singles: this.singles, slides: this.slides }
@@ -539,10 +712,16 @@ export class CombinedMutation extends BatchMutation {
 
 // #region TimeSignature Mutations
 
-export abstract class TimeSignatureMutation extends Mutation<Map<number, [number, number]>> {
+export abstract class TimeSignatureMutation extends Mutation<
+  Map<number, [number, number]>
+> {
   timeSignatures: Map<number, [number, number]>
   measure: number
-  constructor(timeSignatures: Map<number, [number, number]>, measure: number, operation: Operation) {
+  constructor(
+    timeSignatures: Map<number, [number, number]>,
+    measure: number,
+    operation: Operation
+  ) {
     super(operation, 1, 'timeSignature')
     this.timeSignatures = timeSignatures
     this.measure = measure
@@ -551,7 +730,12 @@ export abstract class TimeSignatureMutation extends Mutation<Map<number, [number
 
 export class SetTimeSignature extends TimeSignatureMutation {
   value: [number, number]
-  constructor(timeSignatures: Map<number, [number, number]>, measure: number, value: [number, number], operation: Operation) {
+  constructor(
+    timeSignatures: Map<number, [number, number]>,
+    measure: number,
+    value: [number, number],
+    operation: Operation
+  ) {
     super(timeSignatures, measure, operation)
     this.value = value
   }
@@ -569,10 +753,17 @@ export class SetTimeSignature extends TimeSignatureMutation {
 
 export class RemoveTimeSignature extends TimeSignatureMutation {
   oldValue: [number, number]
-  constructor(timeSignatures: Map<number, [number, number]>, measure: number, operation: Operation) {
+  constructor(
+    timeSignatures: Map<number, [number, number]>,
+    measure: number,
+    operation: Operation
+  ) {
     super(timeSignatures, measure, operation)
     const oldValue = timeSignatures.get(measure)
-    if (!oldValue) throw new Error(`Unexpected non-exist timeSignature at measure #${measure}`)
+    if (!oldValue)
+      throw new Error(
+        `Unexpected non-exist timeSignature at measure #${measure}`
+      )
     this.oldValue = oldValue
   }
 

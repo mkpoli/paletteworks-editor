@@ -23,8 +23,8 @@ export interface ICritical {
 }
 
 export interface IDiamond {
-  diamond: boolean,
-  ignored: boolean,
+  diamond: boolean
+  ignored: boolean
 }
 
 export const EASE_TYPES = ['easeIn', 'easeOut', false]
@@ -34,23 +34,22 @@ export const DIAMOND_TYPES = ['ignored', 'visible', 'invisible'] as const
 export type DiamondType = typeof DIAMOND_TYPES[number]
 
 export function toDiamondType({ diamond, ignored }: IDiamond): DiamondType {
-  return ignored
-    ? 'ignored'
-    : diamond
-      ? 'visible'
-      : 'invisible'
+  return ignored ? 'ignored' : diamond ? 'visible' : 'invisible'
 }
 
 export function fromDiamondType(diamondType: DiamondType): IDiamond {
   switch (diamondType) {
-    case 'visible': return { diamond: true, ignored: false }
-    case 'invisible': return { diamond: false, ignored: false }
-    case 'ignored': return { diamond: true, ignored: true }
+    case 'visible':
+      return { diamond: true, ignored: false }
+    case 'invisible':
+      return { diamond: false, ignored: false }
+    case 'ignored':
+      return { diamond: true, ignored: true }
   }
 }
 
 export interface IEase {
-  easeType: EaseType,
+  easeType: EaseType
 }
 
 export type Single = INote & IDirectional & ICritical
@@ -91,9 +90,9 @@ export type Score = {
   singles: Single[]
   slides: Slide[]
   bpms: Map<number, number>
-  fever: Fever,
-  skills: Set<number>,
-  timeSignatures: Map<number, TimeSignature>,
+  fever: Fever
+  skills: Set<number>
+  timeSignatures: Map<number, TimeSignature>
 }
 
 export interface SerialisedScore {
@@ -113,19 +112,20 @@ export function serialiseScore(score: Score): SerialisedScore {
     bpms: [...bpms],
     fever,
     skills: [...skills],
-    timeSignatures: [...timeSignatures]
+    timeSignatures: [...timeSignatures],
   }
 }
 
 export function deserialiseScore(serialisedScore: SerialisedScore): Score {
-  const { singles, slides, bpms, fever, skills, timeSignatures } = serialisedScore
+  const { singles, slides, bpms, fever, skills, timeSignatures } =
+    serialisedScore
   return {
     singles,
     slides,
     bpms: new Map(bpms),
     fever,
     skills: new Set(skills),
-    timeSignatures: new Map(timeSignatures)
+    timeSignatures: new Map(timeSignatures),
   }
 }
 
@@ -136,14 +136,18 @@ export type Beatmap = {
 
 export const NOTE_TYPES = ['tap', 'critical', 'flick', 'slide'] as const
 export type Type = typeof NOTE_TYPES[number]
-export function calcType(critical: boolean, flick: Flick, slide: boolean): Type {
+export function calcType(
+  critical: boolean,
+  flick: Flick,
+  slide: boolean
+): Type {
   return critical
-          ? 'critical'
-          : flick !== 'no'
-            ? 'flick'
-            : slide
-              ? 'slide'
-              : 'tap'
+    ? 'critical'
+    : flick !== 'no'
+    ? 'flick'
+    : slide
+    ? 'slide'
+    : 'tap'
 }
 
 export type Note = Single | SlideNote

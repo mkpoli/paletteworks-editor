@@ -19,20 +19,22 @@ export type Item = {
 const client = new faunadb.Client({ secret: process.env['FAUNA_ADMIN_KEY']! })
 
 export async function list(): Promise<Item[]> {
-  const result = await client.query(q.Map(
-    q.Paginate(q.Match(q.Index('all_items'))),
-    q.Lambda(x => q.Get(x))
+  const result = (await client.query(
+    q.Map(
+      q.Paginate(q.Match(q.Index('all_items'))),
+      q.Lambda((x) => q.Get(x))
     )
-  ) as { data: { data: Item }[] }
+  )) as { data: { data: Item }[] }
   if (!result.data) return []
   return result.data
-    .map(({ data }) => data).filter((data) => data !== undefined)
+    .map(({ data }) => data)
+    .filter((data) => data !== undefined)
 }
 
 export async function create(item: Item) {
   await client.query(
     q.Create(q.Collection('items'), {
-      data: item
+      data: item,
     })
   )
 }

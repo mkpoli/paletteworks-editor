@@ -16,7 +16,7 @@
 
   const dispatch = createEventDispatcher<{
     input: {
-      singles?: Single[],
+      singles?: Single[]
       slides?: Slide[]
     }
   }>()
@@ -27,185 +27,51 @@
   let loading: boolean = false
 </script>
 
-<Modal bind:opened on:opened={async () => {
-  loading = true
-  try {
-    library = await list()
-  } catch (err) {
-    toast.error($LL.editor.messages.library.loadingFailed())
-    console.error(err)
-  } finally {
-    loading = false
-  }
-  // library = [
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   },
-  //   {
-  //     title: {
-  //       ja: "こんにちは",
-  //     },
-  //     description: {
-  //       ja: "こんにちは",
-  //     },
-  //     content: {}
-  //   }
-  // ]
-}}>
+<Modal
+  bind:opened
+  on:opened={async () => {
+    loading = true
+    try {
+      library = await list()
+    } catch (err) {
+      toast.error($LL.editor.messages.library.loadingFailed())
+      console.error(err)
+    } finally {
+      loading = false
+    }
+  }}
+>
   <div slot="presentation">
     <h2>{$LL.editor.dialog.libraryTitle()}</h2>
     <div class="close">
       <ClickableIcon
         icon="gridicons:cross"
         height="1.5em"
-        on:click={() => { opened = false }}
+        on:click={() => {
+          opened = false
+        }}
       />
     </div>
     <div class="items">
       {#if loading}
-        <Icon icon="eos-icons:loading" height="5em" width="5em" class="loading" />
+        <Icon
+          icon="eos-icons:loading"
+          height="5em"
+          width="5em"
+          class="loading"
+        />
       {:else}
         {#each library as item}
           <div class="item-container">
             <h3>{item.title.ja}</h3>
             <p>{item.description.ja}</p>
-            <div class="image-container"></div>
+            <div class="image-container" />
             <Button
               class="add"
               icon="mdi:plus-thick"
-              on:click={() => { dispatch('input', item.content) }}
+              on:click={() => {
+                dispatch('input', item.content)
+              }}
             >
               {$LL.editor.dialog.append()}
             </Button>
@@ -213,19 +79,19 @@
         {/each}
       {/if}
     </div>
-  </div> 
+  </div>
 </Modal>
 
 <style>
-  [slot=presentation] {
+  [slot='presentation'] {
     padding: 1em;
     display: grid;
     gap: 2em;
     grid-template-areas:
-      "h h . . . . x"
-      "t t t t t t t"
-      "t t t t t t t"
-      "t t t t t t t"
+      'h h . . . . x'
+      't t t t t t t'
+      't t t t t t t'
+      't t t t t t t';
   }
 
   .close {
@@ -239,13 +105,13 @@
     margin: 0;
   }
 
-  [slot=presentation] :global(.ok) {
+  [slot='presentation'] :global(.ok) {
     grid-area: o;
 
-    background: linear-gradient(180deg, #009C70 0%, #008080 100%);
+    background: linear-gradient(180deg, #009c70 0%, #008080 100%);
   }
 
-  [slot=presentation] .items {
+  [slot='presentation'] .items {
     grid-area: t;
     width: clamp(50vw, 8em, 100vw);
     height: 50vh;
@@ -270,9 +136,9 @@
     gap: 0.5em;
     min-height: 10em;
     overflow: hidden;
-    min-width: 0
+    min-width: 0;
   }
-  
+
   .item-container p {
     display: block;
     margin: 0;
@@ -292,7 +158,11 @@
     border: none;
     border-radius: 0;
     box-shadow: none;
-    background: linear-gradient(160deg, rgba(255,87,171,1) 0%, rgba(204,54,114,1) 100%);
+    background: linear-gradient(
+      160deg,
+      rgba(255, 87, 171, 1) 0%,
+      rgba(204, 54, 114, 1) 100%
+    );
   }
 
   .image-container {

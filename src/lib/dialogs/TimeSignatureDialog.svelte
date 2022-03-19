@@ -1,12 +1,12 @@
 <script lang="ts">
   import LL from '$i18n/i18n-svelte'
 
-  import Modal from "$lib/ui/Modal.svelte"
+  import Modal from '$lib/ui/Modal.svelte'
   import Icon from '@iconify/svelte'
-  import Button from "$lib/ui/Button.svelte"
-  import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
+  import Button from '$lib/ui/Button.svelte'
+  import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
 
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher()
 
   export let opened: boolean
@@ -34,60 +34,75 @@
   }
 </script>
 
-<Modal bind:opened on:opened={() => {
-  inputElement.focus()
-  inputElement.select()
-}}>
-  <template slot="activator">
-    
-  </template>
+<Modal
+  bind:opened
+  on:opened={() => {
+    inputElement.focus()
+    inputElement.select()
+  }}
+>
+  <template slot="activator" />
   <div slot="presentation">
     <h2>{$LL.editor.dialog.timeSignatureTitle()}</h2>
     <div class="close">
       <ClickableIcon
         icon="gridicons:cross"
         height="1.5em"
-        on:click={() => { dispatch('cancel'); opened = false }}
+        on:click={() => {
+          dispatch('cancel')
+          opened = false
+        }}
       />
     </div>
     <div class="input-container">
       <Icon icon="mdi:music-clef-treble" height="1.5em" />
       <Icon icon="ph:equals-bold" width="1em" />
-      <input type="number" bind:value={p} bind:this={inputElement} on:keydown={onkeydown}>
+      <input
+        type="number"
+        bind:value={p}
+        bind:this={inputElement}
+        on:keydown={onkeydown}
+      />
       <span>/</span>
-      <input type="number" bind:value={q} on:keydown={onkeydown}>
+      <input type="number" bind:value={q} on:keydown={onkeydown} />
       <span>(拍子)</span>
     </div>
     <Button
       class="ok"
       icon={!exist ? 'mdi:plus-thick' : 'ic:sharp-edit'}
-      on:click={() => { dispatch('ok'); opened = false }}
+      on:click={() => {
+        dispatch('ok')
+        opened = false
+      }}
     >
-      {!exist ? $LL.editor.dialog.append() : $LL.editor.dialog.change() }
+      {!exist ? $LL.editor.dialog.append() : $LL.editor.dialog.change()}
     </Button>
     {#if exist}
       <Button
         class="delete text"
         icon="mdi:delete"
-        on:click={() => { dispatch('delete'); opened = false }}
+        on:click={() => {
+          dispatch('delete')
+          opened = false
+        }}
       >
         {$LL.editor.dialog.delete()}
       </Button>
     {/if}
-  </div> 
+  </div>
 </Modal>
 
 <style>
-  [slot=presentation] {
+  [slot='presentation'] {
     padding: 1em;
     display: grid;
     gap: 2em;
     /* grid-template: 1fr auto / auto 1fr auto ; */
     grid-template-columns: repeat(5, 3em);
     grid-template-areas:
-      "h h . . x"
-      "t t t t t"
-      "d d . o o"
+      'h h . . x'
+      't t t t t'
+      'd d . o o';
   }
 
   .close {
@@ -101,17 +116,17 @@
     margin: 0;
   }
 
-  [slot=presentation] :global(.ok) {
+  [slot='presentation'] :global(.ok) {
     grid-area: o;
 
-    background: linear-gradient(180deg, #009C70 0%, #008080 100%);
+    background: linear-gradient(180deg, #009c70 0%, #008080 100%);
   }
 
-  [slot=presentation] :global(.delete) {
+  [slot='presentation'] :global(.delete) {
     grid-area: d;
 
     background: transparent;
-    color: #FF003D;
+    color: #ff003d;
   }
 
   .input-container {
@@ -128,7 +143,7 @@
     display: flex;
     align-items: center;
   }
-  
+
   .input-container:focus-within {
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
     outline: 1px solid #fff;
@@ -143,9 +158,9 @@
   .input-container > :global(svg) {
     flex-shrink: 0;
   }
-  
+
   input:focus {
-    outline: none
+    outline: none;
   }
 
   input {
@@ -153,7 +168,7 @@
     border: none;
     box-shadow: none;
     width: 100%;
-    
+
     text-align: center;
   }
 

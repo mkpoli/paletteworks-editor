@@ -15,7 +15,7 @@
     Type,
     NOTE_TYPES,
   } from '$lib/score/beatmap'
-    
+
   import { hasEaseType, isSlideStep } from '$lib/score/beatmap'
 
   // Stores
@@ -25,8 +25,25 @@
   import '$lib/basic/collections'
 
   // Constants
-  import { createEventDispatcher, getContext, onMount, setContext } from 'svelte'
-  import { ZOOM_MIN, ZOOM_MAX, LANE_MAX, TICK_PER_MEASURE, MEASURE_HEIGHT, ZOOM_STEP, LANE_MIN, LANE_SIDE_MAX, SCROLLBAR_WIDTH, MARGIN, MINIMAP_WIDTH } from '$lib/consts'
+  import {
+    createEventDispatcher,
+    getContext,
+    onMount,
+    setContext,
+  } from 'svelte'
+  import {
+    ZOOM_MIN,
+    ZOOM_MAX,
+    LANE_MAX,
+    TICK_PER_MEASURE,
+    MEASURE_HEIGHT,
+    ZOOM_STEP,
+    LANE_MIN,
+    LANE_SIDE_MAX,
+    SCROLLBAR_WIDTH,
+    MARGIN,
+    MINIMAP_WIDTH,
+  } from '$lib/consts'
 
   // Functions
   import { clamp, snap } from '$lib/basic/math'
@@ -84,7 +101,6 @@
   export let fever: FeverType
   export let skills: Set<number>
 
-    
   // Resize on window resize
   let canvasWidth: number = 0
   let minWidth: number = 700
@@ -92,10 +108,15 @@
 
   // Generate Note Textures
   const noteTextures = writable<Record<Type, PIXI.Texture[]>>()
-  
-  $: if (resourceLoaded) $noteTextures = generateNoteTextures({ width: $preferences.laneWidth, height: $preferences.noteHeight * 25 })
-  
-  const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+
+  $: if (resourceLoaded)
+    $noteTextures = generateNoteTextures({
+      width: $preferences.laneWidth,
+      height: $preferences.noteHeight * 25,
+    })
+
+  const TEXTURES =
+    getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
   const NOTE_TEXTURE: Record<Type, string> = {
     tap: 'noteN.png',
     critical: 'noteC.png',
@@ -103,16 +124,27 @@
     slide: 'noteL.png',
   }
 
-  function generateNoteTextures(unit: { width: number, height: number}): Record<Type, PIXI.Texture[]> {
+  function generateNoteTextures(unit: {
+    width: number
+    height: number
+  }): Record<Type, PIXI.Texture[]> {
     const textures: Record<Type, PIXI.Texture[]> = {
-      'tap': [],
-      'critical': [],
-      'slide': [],
-      'flick': [],
+      tap: [],
+      critical: [],
+      slide: [],
+      flick: [],
     }
     for (const type of NOTE_TYPES) {
       for (let i = 1; i <= 12; i++) {
-        textures[type].push(app.renderer.generateTexture(new NotePlane(TEXTURES[NOTE_TEXTURE[type]], unit.width * i, unit.height)))
+        textures[type].push(
+          app.renderer.generateTexture(
+            new NotePlane(
+              TEXTURES[NOTE_TEXTURE[type]],
+              unit.width * i,
+              unit.height
+            )
+          )
+        )
       }
     }
     return textures
@@ -125,11 +157,17 @@
   setContext('container', app.stage)
   setContext('noteTextures', noteTextures)
 
-  import type { TimeSignatureManager } from './timing';
+  import type { TimeSignatureManager } from './timing'
 
   $: measureHeight = MEASURE_HEIGHT * zoom
 
-  import { PositionManager, position, pointer, cursor, placing } from '$lib/position'
+  import {
+    PositionManager,
+    position,
+    pointer,
+    cursor,
+    placing,
+  } from '$lib/position'
 
   let screenHeight: number
   let screenWidth: number
@@ -139,31 +177,53 @@
     screenHeight = height
   })
 
-  $: $position = new PositionManager(measureHeight, screenHeight, screenWidth, zoom, $preferences.laneWidth)
+  $: $position = new PositionManager(
+    measureHeight,
+    screenHeight,
+    screenWidth,
+    zoom,
+    $preferences.laneWidth
+  )
   $: $cursor = {
     lane: $position.calcLane($pointer.x),
-    tick: timeSignatureManager.snap($position.calcScrolledTick($pointer.y, scrollTick), snapTo),
+    tick: timeSignatureManager.snap(
+      $position.calcScrolledTick($pointer.y, scrollTick),
+      snapTo
+    ),
     laneSide: $position.calcLaneSide($pointer.x),
     rawLane: $position.calcRawLane($pointer.x),
     rawTick: $position.calcRawTick2($pointer.y) + scrollTick,
   }
   $: {
-    const distance = Math.min($cursor.rawLane - LANE_MIN, LANE_SIDE_MAX - $cursor.rawLane)
+    const distance = Math.min(
+      $cursor.rawLane - LANE_MIN,
+      LANE_SIDE_MAX - $cursor.rawLane
+    )
     const width = Math.round(clamp(1, 2 * distance, $resizingLastWidth))
-    const lane = Math.round(clamp(LANE_MIN, $cursor.rawLane - width / 2, LANE_MAX))
+    const lane = Math.round(
+      clamp(LANE_MIN, $cursor.rawLane - width / 2, LANE_MAX)
+    )
     $placing = { lane, width }
   }
   $: dbg('pointer', formatPoint($pointer.x, $pointer.y))
   $: dbg('cursor', formatPoint($cursor.lane, $cursor.tick))
-  $: dbg('shorterDistance', Math.min($cursor.rawLane - LANE_MIN, LANE_SIDE_MAX - $cursor.rawLane))
+  $: dbg(
+    'shorterDistance',
+    Math.min($cursor.rawLane - LANE_MIN, LANE_SIDE_MAX - $cursor.rawLane)
+  )
   $: dbg('cursor.raw', formatPoint($cursor.rawLane, $cursor.rawTick))
   $: dbg('placing', formatPoint($placing.lane, $placing.width))
-  
+
   // -- SCROLLING & ZOOMING --
 
   // Camera follow scroll position
 
-  import { calcScrollY, calcScrollTick, scrollY, SCROLL_FUNCTIONS } from '$lib/editing/scrolling'
+  import {
+    calcScrollY,
+    calcScrollTick,
+    scrollY,
+    SCROLL_FUNCTIONS,
+  } from '$lib/editing/scrolling'
 
   $: $scrollY = calcScrollY(scrollTick, zoom)
   $: mainContainer.pivot.y = $scrollY
@@ -186,7 +246,12 @@
   let selectRect: PIXI.Rectangle
   $: if (pointA && pointB) {
     selectRect = point2rect(pointA, pointB)
-    dbg('selectRect', formatPoint(selectRect.x, selectRect.y) + '\n' + formatPoint(selectRect.right, selectRect.bottom))
+    dbg(
+      'selectRect',
+      formatPoint(selectRect.x, selectRect.y) +
+        '\n' +
+        formatPoint(selectRect.right, selectRect.bottom)
+    )
   }
   function point2rect(pointA: PIXI.Point, pointB: PIXI.Point) {
     const 左 = Math.min(pointA.x, pointB.x)
@@ -194,95 +259,105 @@
     const 上 = Math.min(pointA.y, pointB.y)
     const 下 = Math.max(pointA.y, pointB.y)
 
-    return new PIXI.Rectangle(
-      左, 上, 右 - 左, 下 - 上
-    )
+    return new PIXI.Rectangle(左, 上, 右 - 左, 下 - 上)
   }
   // --
 
   type Events = {
-    changeBPM: { tick: number, bpm: number },
-    changeTimeSignature: { tick: number },
-    playSound: string,
-    delete: { notes: NoteType[] },
-    copy: { notes: NoteType[] },
-    cut: { notes: NoteType[] },
-    paste: void,
-    flippaste: void,
-    resizestart: void,
-    resize: void,
+    changeBPM: { tick: number; bpm: number }
+    changeTimeSignature: { tick: number }
+    playSound: string
+    delete: { notes: NoteType[] }
+    copy: { notes: NoteType[] }
+    cut: { notes: NoteType[] }
+    paste: void
+    flippaste: void
+    resizestart: void
+    resize: void
     changecurve: {
-      note: NoteType | null,
+      note: NoteType | null
       type?: EaseType
-    },
+    }
     changediamond: {
-      note: NoteType | null,
+      note: NoteType | null
       type?: DiamondType
-    },
+    }
     select: {
-      notes: NoteType[],
+      notes: NoteType[]
       overwrite: boolean
     }
     selectsingle: {
       note: NoteType
-    },
-    selectall: void,
+    }
+    selectall: void
     addsingle: {
       note: SingleType
-    },
+    }
     updatesingle: {
-      note: SingleType,
+      note: SingleType
       modification: Partial<SingleType>
-    },
+    }
     addslide: {
       slide: SlideType
-    },
+    }
     updateslide: {
-      slide: SlideType,
+      slide: SlideType
       modification: Partial<SlideType>
-    },
+    }
     updateslidenote: {
-      note: SlideNote,
+      note: SlideNote
       modification: Partial<SlideNote>
-    },
+    }
     duplicate: {
       notes: NoteType[]
-    },
+    }
     flip: {
       notes: NoteType[]
-    },
+    }
     updateflicks: {
-      notes: NoteType[],
+      notes: NoteType[]
       flip: boolean
-    },
+    }
     updatecriticals: {
       notes: NoteType[]
-    },
-    scroll: number,
+    }
+    scroll: number
     movenotes: {
-      movingNotes: NoteType[],
-      movingTargets: Map<NoteType, {
-        lane: number
-        tick: number
-      }>,
-      movingOrigins: Map<NoteType, {
-        lane: number
-        tick: number
-      }>
+      movingNotes: NoteType[]
+      movingTargets: Map<
+        NoteType,
+        {
+          lane: number
+          tick: number
+        }
+      >
+      movingOrigins: Map<
+        NoteType,
+        {
+          lane: number
+          tick: number
+        }
+      >
     }
     resizenotes: {
-      resizingTargets: Map<NoteType, {
-        lane: number
-        width: number
-      }>,
-      resizingOrigins: Map<NoteType, {
-        lane: number
-        width: number
-      }>
-    },
+      resizingTargets: Map<
+        NoteType,
+        {
+          lane: number
+          width: number
+        }
+      >
+      resizingOrigins: Map<
+        NoteType,
+        {
+          lane: number
+          width: number
+        }
+      >
+    }
     goto: {
       tick: number
-    },
+    }
   }
   const dispatch = createEventDispatcher<Events>()
 
@@ -304,7 +379,12 @@
   $: right = $position.calcLeft() + $position.laneAreaWidth + MARGIN
 
   function setMinWidth() {
-    minWidth = ($position.calcLeft() + $position.laneAreaWidth + MINIMAP_WIDTH + SCROLLBAR_WIDTH) / app.renderer.resolution
+    minWidth =
+      ($position.calcLeft() +
+        $position.laneAreaWidth +
+        MINIMAP_WIDTH +
+        SCROLLBAR_WIDTH) /
+      app.renderer.resolution
   }
 
   onMount(() => {
@@ -356,7 +436,7 @@
               tick: $cursor.tick,
               lane: $placing.lane,
               width: $placing.width,
-              easeType: false
+              easeType: false,
             },
             tail: {
               tick: $cursor.tick,
@@ -366,7 +446,7 @@
               critical: false,
             },
             critical: false,
-            steps: []
+            steps: [],
           }
           dispatch('playSound', 'stage')
           break
@@ -376,7 +456,11 @@
 
     app.renderer.view.addEventListener('pointermove', (event: PointerEvent) => {
       const point = new PIXI.Point()
-      app.renderer.events.mapPositionToPoint(point, event.clientX, event.clientY)
+      app.renderer.events.mapPositionToPoint(
+        point,
+        event.clientX,
+        event.clientY
+      )
       const { x, y } = point
       $pointer = { x, y }
     })
@@ -387,7 +471,10 @@
       }
 
       if (grabbing) {
-        scrollTick = calcScrollTick($scrollY - ($pointer.y - grabbingLastY) * 0.5, zoom)
+        scrollTick = calcScrollTick(
+          $scrollY - ($pointer.y - grabbingLastY) * 0.5,
+          zoom
+        )
         grabbingLastY = $pointer.y
         return
       }
@@ -408,14 +495,17 @@
 
     function calcSelection(): NoteType[] {
       return [
-        ...singles
-          .filter((note) =>
-            $visibility.taps && note.flick === 'no' ||
-            $visibility.flicks && note.flick !== 'no'
-          ),
-        ...($visibility.slides ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]) : [])
-      ]
-        .filter(({ lane, width, tick }) => $position.intersectRect(lane, width, tick, selectRect))
+        ...singles.filter(
+          (note) =>
+            ($visibility.taps && note.flick === 'no') ||
+            ($visibility.flicks && note.flick !== 'no')
+        ),
+        ...($visibility.slides
+          ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])
+          : []),
+      ].filter(({ lane, width, tick }) =>
+        $position.intersectRect(lane, width, tick, selectRect)
+      )
     }
 
     app.renderer.view.addEventListener('pointerup', (event: PointerEvent) => {
@@ -427,7 +517,7 @@
       if ($pointer.x > right) {
         return
       }
-     
+
       if (event.button === MOUSE_BUTTON.MIDDLE) {
         grabbing = false
         return
@@ -440,14 +530,14 @@
       if (!$moving && !$resizing) {
         const { lane, width } = $placing
         if (currentMode === 'tap') {
-          dispatch('addsingle', { 
-            note : {
+          dispatch('addsingle', {
+            note: {
               lane,
               tick: $cursor.tick,
               width,
               critical: false,
-              flick: 'no'
-            }
+              flick: 'no',
+            },
           })
           return
         }
@@ -455,7 +545,9 @@
         if (currentMode === 'bpm') {
           dispatch('changeBPM', {
             tick: $cursor.tick,
-            bpm: bpms.get([...bpms.keys()].closest($cursor.tick, true) ?? NaN) ?? 120
+            bpm:
+              bpms.get([...bpms.keys()].closest($cursor.tick, true) ?? NaN) ??
+              120,
           })
           return
         }
@@ -468,37 +560,41 @@
         }
 
         if (!clickedOnNote && currentMode === 'flick') {
-          dispatch('addsingle', { 
-            note : {
+          dispatch('addsingle', {
+            note: {
               lane,
               tick: $cursor.tick,
               width,
               critical: false,
-              flick: 'middle'
-            }
+              flick: 'middle',
+            },
           })
           return
         }
 
         if (!clickedOnNote && currentMode === 'critical') {
-          dispatch('addsingle', { 
-            note : {
+          dispatch('addsingle', {
+            note: {
               lane,
               tick: $cursor.tick,
               width,
               critical: true,
-              flick: 'no'
-            }
+              flick: 'no',
+            },
           })
           return
         }
 
-        if (!clickedOnNote && currentMode === 'mid' && $selectedNotes.length > 0) {
+        if (
+          !clickedOnNote &&
+          currentMode === 'mid' &&
+          $selectedNotes.length > 0
+        ) {
           if (shiftKey && $selectedNotes.some(hasEaseType)) {
             changecurve()
             return
           }
-          
+
           if (!shiftKey && $selectedNotes.some(isSlideStep)) {
             changediamond()
             return
@@ -526,14 +622,14 @@
             tick: draggingSlide.tail.tick,
             lane: draggingSlide.tail.lane,
             width: draggingSlide.tail.width,
-            easeType: false
+            easeType: false,
           }
           draggingSlide.tail = {
             tick,
             lane,
             width,
             flick: 'no',
-            critical: false
+            critical: false,
           }
         } else if (draggingSlide.head.tick == draggingSlide.tail.tick) {
           draggingSlide.tail.tick += TICK_PER_MEASURE / snapTo
@@ -558,7 +654,9 @@
             dispatch('paste')
           }
         } else {
-          dispatch('goto', { tick: snap($cursor.rawTick, TICK_PER_MEASURE / snapTo) })
+          dispatch('goto', {
+            tick: snap($cursor.rawTick, TICK_PER_MEASURE / snapTo),
+          })
         }
       }
     })
@@ -576,7 +674,7 @@
   let canvasContainer: HTMLDivElement
 
   function setCursor(cursor: keyof typeof CURSOR_STYLES) {
-    app.renderer.events.cursorStyles.default =  CURSOR_STYLES[cursor]
+    app.renderer.events.cursorStyles.default = CURSOR_STYLES[cursor]
     app.renderer.events.setCursor(cursor)
   }
 
@@ -614,7 +712,14 @@
   }
 
   // Resizing
-  import { resizing, resizingNotes, resizingLastWidth, resizingTargets, resizingOrigins, resizingOriginNote } from '$lib/editing/resizing'
+  import {
+    resizing,
+    resizingNotes,
+    resizingLastWidth,
+    resizingTargets,
+    resizingOrigins,
+    resizingOriginNote,
+  } from '$lib/editing/resizing'
 
   $: if (!$resizing) {
     onresizeend()
@@ -624,11 +729,19 @@
   $: dbg('$hoveringNote', `(${$hoveringNote?.lane}, ${$hoveringNote?.tick})`)
 
   function onresizeend() {
-    if ($resizingNotes.every((note) => {
-      const target = $resizingTargets.get(note)
-      const origin = $resizingOrigins.get(note)
-      return target && origin && target.lane === origin.lane && target.width === origin.width
-    })) return
+    if (
+      $resizingNotes.every((note) => {
+        const target = $resizingTargets.get(note)
+        const origin = $resizingOrigins.get(note)
+        return (
+          target &&
+          origin &&
+          target.lane === origin.lane &&
+          target.width === origin.width
+        )
+      })
+    )
+      return
     dispatch('resizenotes', {
       resizingTargets: new Map($resizingTargets),
       resizingOrigins: new Map($resizingOrigins),
@@ -651,39 +764,26 @@
   style={`min-width: ${minWidth}px;`}
   bind:clientWidth={canvasWidth}
 >
-  <div
-    bind:this={canvasContainer}
-  >
+  <div bind:this={canvasContainer}>
     {#if resourceLoaded}
       <!-- PLAYHEAD -->
-      <Playhead
-        bind:currentTick
-        bind:paused
-      />
+      <Playhead bind:currentTick bind:paused />
 
       <!-- BACKGROUND -->
-      <Grid
-        {maxMeasure}
-        {maxTick}
-        {snapTo}
-        {timeSignatures}
-      />
+      <Grid {maxMeasure} {maxTick} {snapTo} {timeSignatures} />
 
       <!-- BPM -->
-      <BPM
-        {bpms}
-        {timeSignatures}
-      />
+      <BPM {bpms} {timeSignatures} />
 
       <!-- FEVER -->
       <Fever {fever} />
 
       <!-- SKILL -->
       <Skill {skills} />
-    
+
       <!-- SINGLE NOTES -->
       {#each singles as note (note)}
-        {#if $visibility.flicks && note.flick !== 'no' || $visibility.taps && note.flick === 'no' }
+        {#if ($visibility.flicks && note.flick !== 'no') || ($visibility.taps && note.flick === 'no')}
           <Single
             bind:note
             on:click={() => {
@@ -700,7 +800,7 @@
                 case 'flick': {
                   dispatch('updateflicks', {
                     notes: $selectedNotes.length ? $selectedNotes : [note],
-                    flip: shiftKey
+                    flip: shiftKey,
                   })
                   break
                 }
@@ -710,12 +810,20 @@
                   })
                   return
                 }
-            }
+              }
             }}
-            on:rightclick={(event) => { currentNote = event.detail.note }}
-            on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
-            on:pointerenter={() => { $hoveringNote = note }}
-            on:pointerleave={() => { $hoveringNote = null }}
+            on:rightclick={(event) => {
+              currentNote = event.detail.note
+            }}
+            on:dblclick={(event) => {
+              dispatch('selectsingle', event.detail)
+            }}
+            on:pointerenter={() => {
+              $hoveringNote = note
+            }}
+            on:pointerleave={() => {
+              $hoveringNote = null
+            }}
             moving={isLongPress && $moving && $movingNotes.includes(note)}
             resizing={isLongPress && $resizing && $resizingNotes.includes(note)}
           />
@@ -728,10 +836,14 @@
           <Slide
             bind:slide
             stepsVisible={$visibility.slidesteps}
-            moving={isLongPress && $moving && ($movingNotes.includes(slide.head) || $movingNotes.includes(slide.tail) || slide.steps.some((step) => $movingNotes.includes(step)))}
+            moving={isLongPress &&
+              $moving &&
+              ($movingNotes.includes(slide.head) ||
+                $movingNotes.includes(slide.tail) ||
+                slide.steps.some((step) => $movingNotes.includes(step)))}
             on:headclick={({ detail: { note } }) => {
               currentNote = note
-              switch(currentMode) {
+              switch (currentMode) {
                 case 'select': {
                   if ($ctrlKey) {
                     dispatch('select', { notes: [note], overwrite: false })
@@ -748,8 +860,10 @@
                 }
                 case 'flick': {
                   dispatch('updateflicks', {
-                    notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
-                    flip: shiftKey
+                    notes: $selectedNotes.length
+                      ? $selectedNotes
+                      : [slide.tail],
+                    flip: shiftKey,
                   })
                   break
                 }
@@ -760,9 +874,10 @@
                     })
                   } else {
                     dispatch('updateslide', {
-                      slide, modification: {
-                        critical: !slide.critical
-                      }
+                      slide,
+                      modification: {
+                        critical: !slide.critical,
+                      },
                     })
                   }
                   break
@@ -781,8 +896,10 @@
                 }
                 case 'flick': {
                   dispatch('updateflicks', {
-                    notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
-                    flip: shiftKey
+                    notes: $selectedNotes.length
+                      ? $selectedNotes
+                      : [slide.tail],
+                    flip: shiftKey,
                   })
                   break
                 }
@@ -793,9 +910,10 @@
                     })
                   } else {
                     dispatch('updateslide', {
-                      slide, modification: {
-                        critical: !slide.critical
-                      }
+                      slide,
+                      modification: {
+                        critical: !slide.critical,
+                      },
                     })
                   }
                   break
@@ -824,7 +942,7 @@
                 case 'flick': {
                   dispatch('updateflicks', {
                     notes: $selectedNotes.length ? $selectedNotes : [note],
-                    flip: shiftKey
+                    flip: shiftKey,
                   })
                   break
                 }
@@ -836,7 +954,7 @@
                 }
               }
             }}
-            on:pathclick={({ detail: { slide }}) => {
+            on:pathclick={({ detail: { slide } }) => {
               clickedOnNote = true
               switch (currentMode) {
                 case 'select': {
@@ -847,8 +965,10 @@
                 }
                 case 'flick': {
                   dispatch('updateflicks', {
-                    notes: $selectedNotes.length ? $selectedNotes : [slide.tail],
-                    flip: shiftKey
+                    notes: $selectedNotes.length
+                      ? $selectedNotes
+                      : [slide.tail],
+                    flip: shiftKey,
                   })
                   break
                 }
@@ -859,15 +979,20 @@
                     })
                   } else {
                     dispatch('updateslide', {
-                      slide, modification: {
-                        critical: !slide.critical
-                      }
+                      slide,
+                      modification: {
+                        critical: !slide.critical,
+                      },
                     })
                   }
                   break
                 }
                 case 'mid': {
-                  if ($cursor.tick === slide.tail.tick || $cursor.tick === slide.head.tick) break
+                  if (
+                    $cursor.tick === slide.tail.tick ||
+                    $cursor.tick === slide.head.tick
+                  )
+                    break
                   if (!slide.steps.some(({ tick }) => tick === $cursor.tick)) {
                     const step = {
                       lane: $placing.lane,
@@ -875,66 +1000,69 @@
                       tick: $cursor.tick,
                       diamond: true,
                       easeType: false,
-                      ignored: shiftKey
+                      ignored: shiftKey,
                     }
                     dispatch('updateslide', {
-                      slide, modification: {
-                        steps: [...slide.steps, step].sort(({ tick: a }, { tick: b }) => a - b)
-                      }
+                      slide,
+                      modification: {
+                        steps: [...slide.steps, step].sort(
+                          ({ tick: a }, { tick: b }) => a - b
+                        ),
+                      },
                     })
                   }
                   break
                 }
               }
             }}
-            on:pathrightclick={(event) => { currentSlide = event.detail.slide }}
-            on:rightclick={(event) => { currentNote = event.detail.note }}
-            on:dblclick={(event) => { dispatch('selectsingle', event.detail) }}
-            on:pointerenter={({ detail: { note } }) => { $hoveringNote = note}}
-            on:pointerleave={() => { $hoveringNote = null}}
+            on:pathrightclick={(event) => {
+              currentSlide = event.detail.slide
+            }}
+            on:rightclick={(event) => {
+              currentNote = event.detail.note
+            }}
+            on:dblclick={(event) => {
+              dispatch('selectsingle', event.detail)
+            }}
+            on:pointerenter={({ detail: { note } }) => {
+              $hoveringNote = note
+            }}
+            on:pointerleave={() => {
+              $hoveringNote = null
+            }}
           />
         {/each}
       {/if}
 
       <!-- FLOATING ITEMS -->
-      <Floating
-        {bpms}
-        {currentMode}
-      />
+      <Floating {bpms} {currentMode} />
 
       <!-- STACKED AREAS -->
-      <NoteError
-        {singles}
-        {slides}
-      />
+      <NoteError {singles} {slides} />
 
       <Selection
         dragging={dragging && currentMode === 'select'}
         rect={selectRect}
       />
 
-      <PastingNotes/>
+      <PastingNotes />
       <MovingNotes {singles} {slides} moving={isLongPress && $moving} />
       <ResizingNotes {singles} {slides} resizing={isLongPress && $resizing} />
       <DraggingSlide {draggingSlide} />
       {#if $preferences.minimapEnabled}
-        <Minimap
-          on:scroll
-          {maxMeasure}
-          {singles}
-          {slides}
-          {timeSignatures}
-        />
+        <Minimap on:scroll {maxMeasure} {singles} {slides} {timeSignatures} />
       {/if}
       <Scrollbar
         {currentTick}
         {maxTick}
-        on:scroll={({ detail }) => { dispatch('scroll', detail) }}
+        on:scroll={({ detail }) => {
+          dispatch('scroll', detail)
+        }}
       />
     {/if}
   </div>
   <div class="zoom-indicator-container" style={`right: ${SCROLLBAR_WIDTH}px;`}>
-    <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP}/>
+    <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP} />
   </div>
 </div>
 
@@ -964,11 +1092,7 @@
 />
 
 <!-- EXPORT IMAGE DIALOG -->
-<ImageDialog
-  bind:opened={imageDialogOpened}
-  bind:zoom
-  {maxMeasure}
-/>
+<ImageDialog bind:opened={imageDialogOpened} bind:zoom {maxMeasure} />
 
 <style lang="postcss">
   :global(html) {
@@ -980,21 +1104,25 @@
     min-height: -webkit-fill-available;
   }
 
-  .canvas-container { 
+  .canvas-container {
     height: 100vh;
     overflow-x: hidden;
     overflow-y: hidden;
     display: grid;
     grid-template-columns: 1fr auto;
     position: relative;
-    background: linear-gradient(180deg, rgb(11.24% 0% 29.08%) 0%, rgb(6.27% 0% 14.83%) 100%);
+    background: linear-gradient(
+      180deg,
+      rgb(11.24% 0% 29.08%) 0%,
+      rgb(6.27% 0% 14.83%) 100%
+    );
   }
 
   .zoom-indicator-container {
     position: absolute;
     height: 100%;
     padding: 1em;
-    display: flex;    
+    display: flex;
     flex-direction: column;
     justify-content: flex-end;
   }

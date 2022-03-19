@@ -54,7 +54,7 @@
   import { preferences } from '$lib/preferences'
   import { easeInQuad, easeOutQuad, lerp } from '$lib/basic/math'
   import { calcNoteHeight } from './note'
-  import { MinimapNoteRendererBase, MinimapRendererBase } from './minimap';
+  import { MinimapNoteRendererBase, MinimapRendererBase } from './minimap'
 
   $: minimapRect = new PIXI.Rectangle(
     $position.containerWidth - SCROLLBAR_WIDTH - MINIMAP_WIDTH,
@@ -69,7 +69,9 @@
     container.interactive = true
     container.zIndex = Z_INDEX.MINIMAP
     container.addEventListener('click', (event) => {
-      const tick = $position.calcRawTick2((event.global.y - instance.y) / MINIMAP_RESOLUTION + $scrollY)
+      const tick = $position.calcRawTick2(
+        (event.global.y - instance.y) / MINIMAP_RESOLUTION + $scrollY
+      )
       dispatch('scroll', tick)
     })
 
@@ -84,10 +86,16 @@
   })
 
   class MinimapNoteRenderer extends MinimapNoteRendererBase {
-    drawArrow(position: PositionManager, note: Note & IDirectional & ICritical) {
+    drawArrow(
+      position: PositionManager,
+      note: Note & IDirectional & ICritical
+    ) {
       const x = position.calcFixedMidX(note.lane, note.width)
       const y = position.calcY(note.tick) - calcNoteHeight() / 2
-      this.lineStyle(15, 'critical' in note && note.critical ? 0xf8be3a : 0xee7f9e)
+      this.lineStyle(
+        15,
+        'critical' in note && note.critical ? 0xf8be3a : 0xee7f9e
+      )
 
       switch (note.flick) {
         case 'left':
@@ -155,11 +163,15 @@
     drawPath(notes: SlideNote[], critical: boolean) {
       notes.pairwise().forEach(([origin, target]) => {
         const origin_x_left = $position.calcFixedX(origin.lane)
-        const origin_x_right = $position.calcFixedX(origin.lane) + origin.width * $preferences.laneWidth
+        const origin_x_right =
+          $position.calcFixedX(origin.lane) +
+          origin.width * $preferences.laneWidth
         const origin_y = $position.calcY(origin.tick)
 
         const target_x_left = $position.calcFixedX(target.lane)
-        const target_x_right = $position.calcFixedX(target.lane) + target.width * $preferences.laneWidth
+        const target_x_right =
+          $position.calcFixedX(target.lane) +
+          target.width * $preferences.laneWidth
         const target_y = $position.calcY(target.tick)
 
         const STEPS = Math.ceil((origin_y - target_y) / 10)
@@ -173,12 +185,16 @@
             const xL = lerp(
               target_x_left,
               origin_x_left,
-              ((origin as IEase).easeType === 'easeIn' ? easeOutQuad : easeInQuad)(percentage)
+              ((origin as IEase).easeType === 'easeIn'
+                ? easeOutQuad
+                : easeInQuad)(percentage)
             )
             const xR = lerp(
               target_x_right,
               origin_x_right,
-              ((origin as IEase).easeType === 'easeIn' ? easeOutQuad : easeInQuad)(percentage)
+              ((origin as IEase).easeType === 'easeIn'
+                ? easeOutQuad
+                : easeInQuad)(percentage)
             )
             const y = lerp(target_y, origin_y, percentage)
             pointsL.push([xL, y])
@@ -187,7 +203,10 @@
         }
 
         if (critical) {
-          this.beginFill(COLORS.COLOR_SLIDE_PATH_CRITICAL, COLORS.ALPHA_SLIDE_PATH)
+          this.beginFill(
+            COLORS.COLOR_SLIDE_PATH_CRITICAL,
+            COLORS.ALPHA_SLIDE_PATH
+          )
         } else {
           this.beginFill(COLORS.COLOR_SLIDE_PATH, COLORS.ALPHA_SLIDE_PATH)
         }
@@ -217,21 +236,24 @@
       slides.forEach((slide: Slide) => {
         const { critical, head, tail, steps } = slide
 
-        this.drawPath([head, ...steps.filter((x) => !x.ignored), tail], critical)
+        this.drawPath(
+          [head, ...steps.filter((x) => !x.ignored), tail],
+          critical
+        )
         this.drawNote(position, head, calcType(critical, 'no', true))
-        this.drawNote(position, tail, calcType(critical || tail.critical, tail.flick, true))
+        this.drawNote(
+          position,
+          tail,
+          calcType(critical || tail.critical, tail.flick, true)
+        )
       })
-      this.arrows.forEach(arrow => this.drawArrow(position, arrow))
+      this.arrows.forEach((arrow) => this.drawArrow(position, arrow))
     }
   }
 
   class MinimapRenderer extends MinimapRendererBase {
     constructor() {
-      super(
-        new MinimapNoteRenderer(),
-        new PIXI.Graphics(),
-        new PIXI.Graphics(),
-      )
+      super(new MinimapNoteRenderer(), new PIXI.Graphics(), new PIXI.Graphics())
 
       this.scale.x = MINIMAP_RESOLUTION
       this.scale.y = MINIMAP_RESOLUTION
@@ -263,15 +285,20 @@
 
       this.grid.clear()
       // Draw beat / measures
-      let accumulatedTicks = 0;
-      [...timeSignatures].forEach(([measure, [p, q]], ind, arr) => {
+      let accumulatedTicks = 0
+      ;[...timeSignatures].forEach(([measure, [p, q]], ind, arr) => {
         const beatsPerMeasure = (p / q) * 4
 
         const [nextMeasure] = arr[ind + 1] ?? [maxMeasure + 1]
         const startTick = accumulatedTicks
-        accumulatedTicks += (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT
+        accumulatedTicks +=
+          (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT
 
-        for (let tick = 0; tick < (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT; tick++) {
+        for (
+          let tick = 0;
+          tick < (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT;
+          tick++
+        ) {
           const y = position.calcY(startTick + tick)
           if (tick % (beatsPerMeasure * TICK_PER_BEAT) === 0) {
             this.grid.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
@@ -287,7 +314,10 @@
         if (i % 2 !== 0) {
           this.grid.lineStyle(2, COLORS.COLOR_LANE_PRIMARY, 1, 0.5)
           this.grid.moveTo(x, position.calcY(0) + MARGIN_BOTTOM)
-          this.grid.lineTo(x, position.calcY(maxMeasure * TICK_PER_MEASURE) - MARGIN_BOTTOM)
+          this.grid.lineTo(
+            x,
+            position.calcY(maxMeasure * TICK_PER_MEASURE) - MARGIN_BOTTOM
+          )
         }
       }
     }
@@ -300,5 +330,7 @@
   $: if (instance) instance.pivot.y = $scrollY - MARGIN_BOTTOM + 30
   $: if (instance) instance.drawScreenArea($position, $scrollY)
   $: if (instance) instance.x = $position.containerWidth - MINIMAP_WIDTH
-  $: if (instance) instance.y = $position.containerHeight / 8 - 0.01 * $scrollY * 1 / $position.zoom
+  $: if (instance)
+    instance.y =
+      $position.containerHeight / 8 - (0.01 * $scrollY * 1) / $position.zoom
 </script>

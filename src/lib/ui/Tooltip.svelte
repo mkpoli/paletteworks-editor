@@ -31,7 +31,7 @@
 </script>
 
 <div bind:this={target} class={$$props.class}>
-  <slot/>
+  <slot />
 </div>
 <div class="tooltip-container" bind:this={tooltip}>
   {#if description !== undefined}
@@ -40,7 +40,7 @@
   {#if keys}
     <KeyboardShortcut {keys} />
   {/if}
-  <slot name="description"/>
+  <slot name="description" />
 </div>
 
 <style>
@@ -55,7 +55,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(122deg, rgba(116, 80, 244, 0.65) 0%, rgba(255, 65, 169, 0.65) 100%);
+    background: linear-gradient(
+      122deg,
+      rgba(116, 80, 244, 0.65) 0%,
+      rgba(255, 65, 169, 0.65) 100%
+    );
     box-shadow: 0 3px 12px #402860;
     font-weight: bold;
     padding: 0.4em 0.5em;

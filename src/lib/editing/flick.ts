@@ -9,9 +9,13 @@ export function rotateFlick(flick: Flick): Flick {
 
 export function flipFlick(flick: Flick): Flick {
   switch (flick) {
-    case 'left': return 'right'
-    case 'right': return 'left'
-    case 'middle': return 'middle'
-    case 'no': return 'no'
+    case 'left':
+      return 'right'
+    case 'right':
+      return 'left'
+    case 'middle':
+      return 'middle'
+    case 'no':
+      return 'no'
   }
 }

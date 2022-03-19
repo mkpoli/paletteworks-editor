@@ -1,9 +1,19 @@
 <script lang="ts" context="module">
   import type { EventSystem, FederatedPointerEvent as FPE } from '@pixi/events'
   declare module '@pixi/events' {
-    type PointerEvents = 'pointerdown' | 'pointerup' | 'pointermove' | 'pointerenter' | 'pointerleave' | 'click' | 'pointerupoutside'
+    type PointerEvents =
+      | 'pointerdown'
+      | 'pointerup'
+      | 'pointermove'
+      | 'pointerenter'
+      | 'pointerleave'
+      | 'click'
+      | 'pointerupoutside'
     export interface FederatedEventTarget {
-      addEventListener<T extends PointerEvents>(type: T, listener: (event: FPE) => void): void
+      addEventListener<T extends PointerEvents>(
+        type: T,
+        listener: (event: FPE) => void
+      ): void
     }
   }
 
@@ -49,43 +59,62 @@
   import type PIXI from 'pixi.js'
   import type { Mode, SnapTo } from '$lib/editing/modes'
   import type { ScrollMode } from '$lib/editing/scrolling'
-  import type { Note as NoteType, EaseType, SlideStep, DiamondType, Single, Fever, Slide, IDirectional, ICritical, Metadata, Score, TimeSignature } from '$lib/score/beatmap'
+  import type {
+    Note as NoteType,
+    EaseType,
+    SlideStep,
+    DiamondType,
+    Single,
+    Fever,
+    Slide,
+    IDirectional,
+    ICritical,
+    Metadata,
+    Score,
+    TimeSignature,
+  } from '$lib/score/beatmap'
 
   import { ALLOWED_SNAPPINGS } from '$lib/editing/modes'
-  import { hasEaseType, isSlideStep, toDiamondType, EASE_TYPES, DIAMOND_TYPES } from '$lib/score/beatmap'
+  import {
+    hasEaseType,
+    isSlideStep,
+    toDiamondType,
+    EASE_TYPES,
+    DIAMOND_TYPES,
+  } from '$lib/score/beatmap'
 
   // Icons
   import { addIcon } from '@iconify/svelte'
   addIcon('custom:curve-in', {
     body: '<path d="M28.5 2C29.0523 2 29.5 2.44772 29.5 3C29.5 20.1387 14.9617 30 3.5 30C2.94772 30 2.5 29.5523 2.5 29C2.5 28.4477 2.94772 28 3.5 28C14.0383 28 27.5 18.8613 27.5 3C27.5 2.44772 27.9477 2 28.5 2Z" fill="currentColor"/>',
     width: 32,
-    height: 32
+    height: 32,
   })
   addIcon('custom:curve-out', {
     body: '<path d="M5.19905 26.3298C4.94543 27.3909 4.70894 28.3804 4.46382 29.2666C4.31659 29.7989 3.76572 30.111 3.23342 29.9638C2.70112 29.8166 2.38897 29.2657 2.5362 28.7334C2.7527 27.9507 2.96986 27.0387 3.2091 26.0339C4.11982 22.2092 5.35054 17.0406 8.08288 12.5433C9.82904 9.66915 12.2072 7.02045 15.5387 5.09512C18.8714 3.16914 23.1013 2 28.5 2C29.0523 2 29.5 2.44771 29.5 3C29.5 3.55228 29.0523 4 28.5 4C23.3988 4 19.5244 5.1017 16.5394 6.82676C13.5533 8.55247 11.4001 10.935 9.79214 13.5817C7.24318 17.7772 6.11053 22.5162 5.19905 26.3298Z" fill="currentColor"/>',
     width: 32,
-    height: 32
+    height: 32,
   })
   addIcon('custom:straight', {
     body: '<path d="M29.1931 2.27917C29.5912 2.66196 29.6036 3.29501 29.2208 3.69311L4.22083 29.6931C3.83804 30.0912 3.205 30.1036 2.80689 29.7208C2.40879 29.338 2.39637 28.705 2.77917 28.3069L27.7792 2.30689C28.162 1.90879 28.795 1.89637 29.1931 2.27917Z" fill="currentColor"/>',
     width: 32,
-    height: 32
+    height: 32,
   })
 
   addIcon('custom:diamond-visible', {
     body: '<path d="M16 0L31.1266 15.1266L15.859 21.7671V21.6025L15.859 21.6025V3.17182L2.90595 16.1333L15.859 21.7671V23.1894L5.13615 18.5007L15.859 29.2305V23.1894L31.7662 16.2338L16 32L0.452843 16.4528L0 16L0.78792 15.2121L16 0Z" fill="currentColor"/>',
     width: 32,
-    height: 32
+    height: 32,
   })
   addIcon('custom:diamond-invisible', {
     body: '<path d="M1.77883 14.2406L0 16.0064L1.77883 17.7723L2.66099 16.8966L1.76431 16.0064L2.66099 15.1163L1.77883 14.2406ZM4.45435 13.336L3.57219 12.4603L5.36555 10.6801L6.2477 11.5558L4.45435 13.336ZM8.04106 9.77551L9.83442 7.99524L8.95227 7.11953L7.15891 8.8998L8.04106 9.77551ZM11.6278 6.21498L10.7456 5.33926L12.539 3.559L13.4211 4.43471L11.6278 6.21498ZM18.7619 4.47372L19.6569 3.61089L21.424 5.41716L20.5291 6.27999L18.7619 4.47372ZM22.2963 8.08626L23.1912 7.22343L24.9584 9.0297L24.0634 9.89253L22.2963 8.08626ZM25.8306 11.6988L26.7255 10.836L28.4927 12.6422L27.5977 13.5051L25.8306 11.6988ZM27.5977 18.8459L28.4799 19.7216L26.7127 21.4758L25.8306 20.6001L27.5977 18.8459ZM24.0634 22.3544L24.9456 23.2301L23.1784 24.9844L22.2963 24.1087L24.0634 22.3544ZM20.5291 25.8629L21.4112 26.7386L19.6441 28.4929L18.7619 27.6172L20.5291 25.8629ZM13.4211 27.5782L11.6278 25.7979L10.7456 26.6736L12.539 28.4539L13.4211 27.5782ZM9.83442 24.0176L8.04106 22.2374L7.15891 23.1131L8.95227 24.8934L9.83442 24.0176ZM6.24771 20.4571L5.36555 21.3328L3.57219 19.5526L4.45435 18.6768L6.24771 20.4571ZM15.2145 29.3584L16.1112 30.2486L16.9948 29.3714L17.8769 30.2472L16.1112 32L14.3323 30.2342L15.2145 29.3584ZM29.3649 17.0916L30.2471 17.9673L32 16.2272L30.2598 14.4485L29.3649 15.3113L30.2485 16.2145L29.3649 17.0916ZM16.9948 2.66745L17.8897 1.80462L16.1242 0L14.3323 1.77873L15.2145 2.65444L16.1112 1.76431L16.9948 2.66745Z" fill="currentColor"/>',
     width: 32,
-    height: 32
+    height: 32,
   })
   addIcon('custom:diamond-ignored', {
     body: '<path d="M31.1266 15.1266L16 0L9.12132 6.87868L4.18198 1.93934C3.59619 1.35355 2.64645 1.35355 2.06066 1.93934C1.47487 2.52513 1.47487 3.47487 2.06066 4.06066L6.99999 9L0.78792 15.2121L0 16L0.452843 16.4528L16 32L23 25L27.9393 29.9393C28.5251 30.5251 29.4749 30.5251 30.0607 29.9393C30.6464 29.3536 30.6464 28.4038 30.0607 27.818L25.1213 22.8787L31.7662 16.2338L22.5196 20.277L21.5392 19.2966L31.1266 15.1266ZM15.859 13.6164V3.17182L10.6384 8.39579L15.859 13.6164ZM8.5178 10.5178L15.859 17.859V21.6025L15.859 21.6025V21.7671L2.90595 16.1333L8.5178 10.5178ZM15.859 23.1894V21.7671L18.5825 20.5825L19.5677 21.5677L15.859 23.1894ZM15.859 23.1894V29.2305L5.13615 18.5007L15.859 23.1894Z" fill="currentColor"/>',
     width: 32,
-    height: 32
+    height: 32,
   })
 
   // Constants
@@ -104,8 +133,20 @@
   import { onMount, setContext, tick } from 'svelte'
   import { dbg } from '$lib/basic/debug'
   import { dumpSUS, loadSUS } from '$lib/score/susIO'
-  import { average, clamp, easeInQuad, easeOutQuad, lerp, snap } from '$lib/basic/math'
-  import { download, toBlob, dropHandlerMultiple, formatFilename } from '$lib/basic/file'
+  import {
+    average,
+    clamp,
+    easeInQuad,
+    easeOutQuad,
+    lerp,
+    snap,
+  } from '$lib/basic/math'
+  import {
+    download,
+    toBlob,
+    dropHandlerMultiple,
+    formatFilename,
+  } from '$lib/basic/file'
   import { fromDiamondType } from '$lib/score/beatmap'
   import { flipFlick, rotateFlick } from '$lib/editing/flick'
   import { flipNotes, vflipNotes } from '$lib/editing/flip'
@@ -113,7 +154,7 @@
   import '$lib/basic/collections'
 
   // Score Data
-  const emptySUSData = loadSUS("#00002: 4\n#BPM01: 120\n#00008: 01")
+  const emptySUSData = loadSUS('#00002: 4\n#BPM01: 120\n#00008: 01')
 
   let metadata: Metadata
   let singles: Single[]
@@ -130,7 +171,13 @@
 
   // Stores
   import { hoveringNote, selectedNotes } from '$lib/editing/selection'
-  import { clipboardSlides, clipboardSingles, clipboardOffsets, pasted, flippasted } from '$lib/editing/clipboard'
+  import {
+    clipboardSlides,
+    clipboardSingles,
+    clipboardOffsets,
+    pasted,
+    flippasted,
+  } from '$lib/editing/clipboard'
 
   // Sound
   let soundQueue: string[] = []
@@ -151,30 +198,39 @@
   let innerHeight: number
 
   function allNotes() {
-    return [...singles, ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])]
+    return [
+      ...singles,
+      ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]),
+    ]
   }
 
   // Timing (BPM / Measures / Ticks)
-  $: $sortedBPMs = [...bpms].sort(([tickA,], [tickB,]) => tickA - tickB)
+  $: $sortedBPMs = [...bpms].sort(([tickA], [tickB]) => tickA - tickB)
   $: currentMeasure = Math.floor(scrollTick / TICK_PER_MEASURE) + 1
   $: if (isNaN(currentMeasure)) currentMeasure = 1
 
-
-  function calcMaxMeasure(bpms: Map<number, number>, duration: number = 3 * 60) {
-    const bpmEntries = [...bpms.entries()]
-      .sort(([tickA,], [tickB,]) => tickA - tickB)
+  function calcMaxMeasure(
+    bpms: Map<number, number>,
+    duration: number = 3 * 60
+  ) {
+    const bpmEntries = [...bpms.entries()].sort(
+      ([tickA], [tickB]) => tickA - tickB
+    )
     const [lastTick, lastBPM] = at(bpmEntries, -1) ?? [0, 120]
-    const durationToLastBPM = bpmEntries
-      .reduce((acc, [tick, bpm], ind, arr) => {
+    const durationToLastBPM = bpmEntries.reduce(
+      (acc, [tick, bpm], ind, arr) => {
         const nextElement = arr[ind + 1]
         if (nextElement) {
-          const [nextTick, ] = nextElement
-          return acc + (nextTick - tick) / TICK_PER_BEAT / bpm * 60
+          const [nextTick] = nextElement
+          return acc + ((nextTick - tick) / TICK_PER_BEAT / bpm) * 60
         }
         return acc
-      }, 0)
+      },
+      0
+    )
     const durationFromLastBPM = Math.max(duration - durationToLastBPM, 0)
-    const maxTick = lastTick + durationFromLastBPM / 60 * lastBPM * TICK_PER_BEAT
+    const maxTick =
+      lastTick + (durationFromLastBPM / 60) * lastBPM * TICK_PER_BEAT
     return Math.ceil(maxTick / TICK_PER_MEASURE)
   }
   $: maxMeasure = calcMaxMeasure(bpms, musicDuration)
@@ -236,9 +292,12 @@
     app = new PIXI.Application({
       antialias: true,
       resolution: window.devicePixelRatio || RESOLUTION,
-      backgroundAlpha: 0
+      backgroundAlpha: 0,
     })
-    ;(app.renderer as PIXI.Renderer).addSystem(EventSystem as unknown as PIXI.ISystemConstructor<PIXI.Renderer>, 'events')
+    ;(app.renderer as PIXI.Renderer).addSystem(
+      EventSystem as unknown as PIXI.ISystemConstructor<PIXI.Renderer>,
+      'events'
+    )
 
     const loader = new PIXI.Loader()
     loader
@@ -268,7 +327,8 @@
 
     app.ticker.add(() => {
       if (!paused) {
-        currentTick += app.ticker.elapsedMS * TICK_PER_BEAT * currentBPM / 1000 / 60
+        currentTick +=
+          (app.ticker.elapsedMS * TICK_PER_BEAT * currentBPM) / 1000 / 60
         if (currentTick >= maxTick) {
           currentTick = maxTick
           paused = true
@@ -295,7 +355,6 @@
 
   $: dbg('scrollTick', scrollTick)
 
-
   $: nearestBPMTick = [...bpms.keys()].closest(currentTick)
   $: currentBPM = bpms.get(nearestBPMTick ?? NaN) ?? 120
 
@@ -310,20 +369,30 @@
       return
     }
 
-    const sus = dumpSUS(metadata, { singles, slides, bpms, fever, skills, timeSignatures })
+    const sus = dumpSUS(metadata, {
+      singles,
+      slides,
+      bpms,
+      fever,
+      skills,
+      timeSignatures,
+    })
     const formatData = {
       project: currentProject.name ?? 'Untitled',
       title: metadata.title,
       artist: metadata.artist,
       author: metadata.author,
     }
-    await download(toBlob(sus), formatFilename($preferences.fileSaveName, formatData))
+    await download(
+      toBlob(sus),
+      formatFilename($preferences.fileSaveName, formatData)
+    )
   }
 
   let imageDialogOpened: boolean = false
 
   function deleteNotes(notes: NoteType[], cut = false) {
-    $selectedNotes = $selectedNotes.filter(note => !notes.includes(note))
+    $selectedNotes = $selectedNotes.filter((note) => !notes.includes(note))
     exec(new BatchRemove(singles, slides, notes, !cut ? 'delete' : 'cut'))
   }
 
@@ -335,35 +404,43 @@
       return
     }
 
-    $clipboardSingles = singles
-      .filter((single) => notes.includes(single))
+    $clipboardSingles = singles.filter((single) => notes.includes(single))
 
-    $clipboardSlides = slides
-      .filter(({ head, tail, steps }) => (
-        notes.includes(head) || notes.includes(tail)
-        || steps.some((step) => notes.includes(step))
-      ))
+    $clipboardSlides = slides.filter(
+      ({ head, tail, steps }) =>
+        notes.includes(head) ||
+        notes.includes(tail) ||
+        steps.some((step) => notes.includes(step))
+    )
 
     const [lane, tick] = average<2>(
       [
-        ...$clipboardSlides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]),
-        ...$clipboardSingles
-      ].map(
-        ({ tick, lane, width }) => [lane + width / 2, tick]
-      )
+        ...$clipboardSlides.flatMap(({ head, tail, steps }) => [
+          head,
+          tail,
+          ...steps,
+        ]),
+        ...$clipboardSingles,
+      ].map(({ tick, lane, width }) => [lane + width / 2, tick])
     )
-    const center = { lane: Math.round(lane), tick: timeSignatureManager.snap(tick, snapTo) }
+    const center = {
+      lane: Math.round(lane),
+      tick: timeSignatureManager.snap(tick, snapTo),
+    }
 
     ;[
       ...$clipboardSingles,
-      ...$clipboardSlides
-        .flatMap(({ head, tail, steps }) => [head, tail, ...steps])
+      ...$clipboardSlides.flatMap(({ head, tail, steps }) => [
+        head,
+        tail,
+        ...steps,
+      ]),
     ].forEach((note) => {
-        $clipboardOffsets.set(note, {
-          lane: center.lane - note.lane,
-          tick: center.tick - note.tick
-        })
+      $clipboardOffsets.set(note, {
+        lane: center.lane - note.lane,
+        tick: center.tick - note.tick,
       })
+    })
   }
 
   function cutNotes(notes: NoteType[]) {
@@ -379,18 +456,35 @@
 
     $selectedNotes = [
       ...pastedSingles,
-      ...pastedSlides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])
+      ...pastedSlides.flatMap(({ head, tail, steps }) => [
+        head,
+        tail,
+        ...steps,
+      ]),
     ]
   }
 
   function onflippaste() {
-    const { singles: flippastedSingles, slides: flippastedSlides } = flippasted($cursor)
+    const { singles: flippastedSingles, slides: flippastedSlides } =
+      flippasted($cursor)
 
-    exec(new BatchAdd(singles, slides, flippastedSingles, flippastedSlides, 'paste'))
+    exec(
+      new BatchAdd(
+        singles,
+        slides,
+        flippastedSingles,
+        flippastedSlides,
+        'paste'
+      )
+    )
 
     $selectedNotes = [
       ...flippastedSingles,
-      ...flippastedSlides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])
+      ...flippastedSlides.flatMap(({ head, tail, steps }) => [
+        head,
+        tail,
+        ...steps,
+      ]),
     ]
   }
 
@@ -428,7 +522,7 @@
     UpdateSlides,
   } from '$lib/editing/mutations'
 
-  import { mutationHistory, undoneHistory } from '$lib/editing/history';
+  import { mutationHistory, undoneHistory } from '$lib/editing/history'
 
   function onundo() {
     const mutation = $mutationHistory.pop()
@@ -450,7 +544,7 @@
     exec(mutation)
   }
 
-  function exec(mutation: Mutation<unknown>　| null) {
+  function exec(mutation: Mutation<unknown> | null) {
     if (mutation === null || mutation.amount === 0) return
     $undoneHistory = $undoneHistory.filter((mut) => mut !== mutation)
     if (mutation instanceof SingleMutation) {
@@ -458,7 +552,7 @@
     } else if (mutation instanceof SlideMutation) {
       slides = mutation.exec()
     } else if (mutation instanceof BatchMutation) {
-      ({ singles, slides } = mutation.exec())
+      ;({ singles, slides } = mutation.exec())
     } else if (mutation instanceof BPMMutation) {
       bpms = mutation.exec()
     } else if (mutation instanceof TimeSignatureMutation) {
@@ -468,7 +562,15 @@
     }
     $mutationHistory.push(mutation)
     $mutationHistory = $mutationHistory
-    toast.undo(mutation, undoneHistory, $LL.editor.panel.undo(), () => { undo(mutation) }, false)
+    toast.undo(
+      mutation,
+      undoneHistory,
+      $LL.editor.panel.undo(),
+      () => {
+        undo(mutation)
+      },
+      false
+    )
     playSound('stage')
   }
 
@@ -479,7 +581,7 @@
     } else if (mutation instanceof SlideMutation) {
       slides = mutation.undo()
     } else if (mutation instanceof BatchMutation) {
-      ({ singles, slides } = mutation.undo())
+      ;({ singles, slides } = mutation.undo())
     } else if (mutation instanceof BPMMutation) {
       bpms = mutation.undo()
     } else if (mutation instanceof TimeSignatureMutation) {
@@ -489,37 +591,74 @@
     }
     $undoneHistory.push(mutation)
     $undoneHistory = $undoneHistory
-    toast.undo(mutation, mutationHistory, $LL.editor.panel.redo(), () => { exec(mutation) }, true)
+    toast.undo(
+      mutation,
+      mutationHistory,
+      $LL.editor.panel.redo(),
+      () => {
+        exec(mutation)
+      },
+      true
+    )
     playSound('stage')
   }
 
-  function onchangecurve({ detail: { note, type } }: CustomEvent<{ note: NoteType | null, type?: EaseType}>) {
-    let notes = ($selectedNotes.length ? $selectedNotes : (note ? [note] : [])).filter(hasEaseType)
-    let nextType = type ?? EASE_TYPES.rotateNext((note && hasEaseType(note) ? note.easeType : undefined) ?? notes[0].easeType)
-    exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, { easeType: nextType }]))))
+  function onchangecurve({
+    detail: { note, type },
+  }: CustomEvent<{ note: NoteType | null; type?: EaseType }>) {
+    let notes = (
+      $selectedNotes.length ? $selectedNotes : note ? [note] : []
+    ).filter(hasEaseType)
+    let nextType =
+      type ??
+      EASE_TYPES.rotateNext(
+        (note && hasEaseType(note) ? note.easeType : undefined) ??
+          notes[0].easeType
+      )
+    exec(
+      new UpdateSlideNotes(
+        slides,
+        new Map(notes.map((note) => [note, { easeType: nextType }]))
+      )
+    )
   }
 
-  function onchangediamond({ detail: { note, type } }: CustomEvent<{ note: NoteType | null, type?: DiamondType }>) {
-    let notes = ($selectedNotes.length ? $selectedNotes : (note ? [note] : [])).filter(isSlideStep)
-    let nextType = type ?? DIAMOND_TYPES.rotateNext((note && isSlideStep(note) ? toDiamondType(note) : undefined) ?? toDiamondType(notes[0]))
-    exec(new UpdateSlideNotes(slides, new Map(notes.map((note) => [note, fromDiamondType(nextType)]))))
+  function onchangediamond({
+    detail: { note, type },
+  }: CustomEvent<{ note: NoteType | null; type?: DiamondType }>) {
+    let notes = (
+      $selectedNotes.length ? $selectedNotes : note ? [note] : []
+    ).filter(isSlideStep)
+    let nextType =
+      type ??
+      DIAMOND_TYPES.rotateNext(
+        (note && isSlideStep(note) ? toDiamondType(note) : undefined) ??
+          toDiamondType(notes[0])
+      )
+    exec(
+      new UpdateSlideNotes(
+        slides,
+        new Map(notes.map((note) => [note, fromDiamondType(nextType)]))
+      )
+    )
   }
 
   async function savecurrent(message: string) {
     if (!currentProject) throw new Error('Saving without current project')
     db.projects.update(currentProject.id!, {
       updated: new Date(),
-      metadata, score: {
+      metadata,
+      score: {
         singles,
         slides,
         bpms,
         fever,
         skills,
-        timeSignatures
+        timeSignatures,
       },
       music,
       name: (currentProject.name ?? metadata.title) || null,
-      preview: await renderPreview()
+      preview: await renderPreview(),
     })
     updated = false
     toast.success(message)
@@ -528,7 +667,10 @@
   initScore()
 
   function initScore() {
-    ({ metadata, score: { singles, slides, bpms, fever, skills, timeSignatures }} = emptySUSData)
+    ;({
+      metadata,
+      score: { singles, slides, bpms, fever, skills, timeSignatures },
+    } = emptySUSData)
     music = null
     $mutationHistory = []
     $undoneHistory = []
@@ -550,7 +692,11 @@
 
   async function onnewproject() {
     if (currentProject) {
-      savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name ?? 'Untitled' }))
+      savecurrent(
+        $LL.editor.messages.projectSavedAs({
+          project: currentProject.name ?? 'Untitled',
+        })
+      )
     }
     initScore()
     await tick()
@@ -565,30 +711,41 @@
         bpms,
         fever,
         skills,
-        timeSignatures
+        timeSignatures,
       },
       music,
-      preview: await renderPreview()
+      preview: await renderPreview(),
     }
     const id = await db.projects.add(project)
-    currentProject = await db.projects.get(id) ?? null
+    currentProject = (await db.projects.get(id)) ?? null
     await tick()
     projectsDialogOpened = false
   }
 
   async function openProject(project: Project): Promise<void> {
     if (currentProject) {
-      savecurrent($LL.editor.messages.projectSavedAs({ project: currentProject.name ?? 'Untitled' }))
+      savecurrent(
+        $LL.editor.messages.projectSavedAs({
+          project: currentProject.name ?? 'Untitled',
+        })
+      )
     }
 
     initScore()
 
-    metadata = Object.fromEntries(Object.entries(emptySUSData.metadata).map(
-      ([key, value]) => [key, project.metadata[key as keyof Metadata] ?? value]
-    )) as unknown as Metadata
-    ;({ bpms, singles, slides, fever, skills, timeSignatures } = Object.fromEntries(Object.entries(emptySUSData.score).map(
-      ([key, value]) => [key, project.score[key as keyof Score] ?? value]
-    )) as Score)
+    metadata = Object.fromEntries(
+      Object.entries(emptySUSData.metadata).map(([key, value]) => [
+        key,
+        project.metadata[key as keyof Metadata] ?? value,
+      ])
+    ) as unknown as Metadata
+    ;({ bpms, singles, slides, fever, skills, timeSignatures } =
+      Object.fromEntries(
+        Object.entries(emptySUSData.score).map(([key, value]) => [
+          key,
+          project.score[key as keyof Score] ?? value,
+        ])
+      ) as Score)
     music = project.music ?? null
 
     currentProject = project
@@ -627,7 +784,10 @@
     initScore()
 
     try {
-      ({ metadata, score: { singles, slides, bpms, fever, skills, timeSignatures } } = loadSUS(text))
+      ;({
+        metadata,
+        score: { singles, slides, bpms, fever, skills, timeSignatures },
+      } = loadSUS(text))
     } catch (e) {
       toast.error($LL.editor.messages.loadingSUSError())
       console.error(e)
@@ -647,13 +807,13 @@
         bpms,
         fever,
         skills,
-        timeSignatures
+        timeSignatures,
       },
       music: null,
-      preview: await renderPreview()
+      preview: await renderPreview(),
     }
     const id = await db.projects.add(project)
-    currentProject = await db.projects.get(id) ?? null
+    currentProject = (await db.projects.get(id)) ?? null
 
     await tick()
     projectsDialogOpened = false
@@ -663,7 +823,11 @@
     try {
       const project = await deserialiseProject(file)
       await importProject(project)
-      toast.success($LL.editor.messages.project.importSuccess({ name: project.name ?? 'Untitled'}))
+      toast.success(
+        $LL.editor.messages.project.importSuccess({
+          name: project.name ?? 'Untitled',
+        })
+      )
     } catch (err) {
       toast.error($LL.editor.messages.project.importFailed())
     }
@@ -687,99 +851,143 @@
     }
     const newSingles = singles
       .filter((single) => notes.includes(single))
-      .map((single) => ({...single}))
+      .map((single) => ({ ...single }))
 
-    const oldSlides = slides
-    .filter(({ head, tail, steps }) => (
-        notes.includes(head) || notes.includes(tail)
-        || steps.some((step) => notes.includes(step))
-      ))
+    const oldSlides = slides.filter(
+      ({ head, tail, steps }) =>
+        notes.includes(head) ||
+        notes.includes(tail) ||
+        steps.some((step) => notes.includes(step))
+    )
 
     if (newSingles.length === 0 && oldSlides.length === 1) {
       const slide = oldSlides[0]
       if (notes.every((note) => slide.steps.includes(note as SlideStep))) {
         const steps = notes as SlideStep[]
-        exec(new UpdateSlide(slides, slide, {
-          steps: [
-            ...slide.steps,
-            ...steps.map((step) => ({...step})),
-          ]
-        }))
+        exec(
+          new UpdateSlide(slides, slide, {
+            steps: [...slide.steps, ...steps.map((step) => ({ ...step }))],
+          })
+        )
         return
       }
     }
 
     const newSlides = slides
-      .filter(({ head, tail, steps }) => (
-        notes.includes(head) || notes.includes(tail)
-        || steps.some((step) => notes.includes(step))
-      ))
+      .filter(
+        ({ head, tail, steps }) =>
+          notes.includes(head) ||
+          notes.includes(tail) ||
+          steps.some((step) => notes.includes(step))
+      )
       .map(({ head, tail, steps, critical }) => ({
-          head: { ...head },
-          tail: { ...tail },
-          steps: steps.map((step) => ({...step})),
-          critical
-        }
-      ))
+        head: { ...head },
+        tail: { ...tail },
+        steps: steps.map((step) => ({ ...step })),
+        critical,
+      }))
 
     exec(new BatchAdd(singles, slides, newSingles, newSlides))
   }
 
-  function onupdateflicks({ detail: { notes, flip } }: CustomEvent<{ notes: NoteType[], flip: boolean }>) {
-    const flickNotes = notes.filter((note) => 'flick' in note) as (NoteType & IDirectional)[]
+  function onupdateflicks({
+    detail: { notes, flip },
+  }: CustomEvent<{ notes: NoteType[]; flip: boolean }>) {
+    const flickNotes = notes.filter((note) => 'flick' in note) as (NoteType &
+      IDirectional)[]
     if (flickNotes.length === 0) return
     let oldFlick = flickNotes[0].flick
-    exec(new BatchUpdate(
-      singles, slides,
-      new Map(flickNotes.map((note) => [note, { flick: flip ? flipFlick(oldFlick) : rotateFlick(oldFlick) }])),
-      new Map(flickNotes.map((note) => [note, { flick: note.flick }])),
-      'update'
-    ))
+    exec(
+      new BatchUpdate(
+        singles,
+        slides,
+        new Map(
+          flickNotes.map((note) => [
+            note,
+            { flick: flip ? flipFlick(oldFlick) : rotateFlick(oldFlick) },
+          ])
+        ),
+        new Map(flickNotes.map((note) => [note, { flick: note.flick }])),
+        'update'
+      )
+    )
   }
 
-  function onupdatecriticals({ detail: { notes }}: CustomEvent<{ notes: NoteType[] }>) {
+  function onupdatecriticals({
+    detail: { notes },
+  }: CustomEvent<{ notes: NoteType[] }>) {
     let criticalNotes = new Array<NoteType & ICritical>()
     const criticalSlideSet = new Set<Slide>()
     notes.forEach((note) => {
       if ('critical' in note) {
         criticalNotes.push(note)
       } else {
-        const slide = slides.find((slide) => slide.head === note || slide.steps.includes(note as SlideStep))
+        const slide = slides.find(
+          (slide) =>
+            slide.head === note || slide.steps.includes(note as SlideStep)
+        )
         if (slide) criticalSlideSet.add(slide)
       }
     })
     const criticalSlides = [...criticalSlideSet]
     if (criticalNotes.length === 0 && criticalSlides.length === 0) return
-    let oldcritical = criticalNotes[0]?.critical ?? criticalSlides[0].critical ?? false
+    let oldcritical =
+      criticalNotes[0]?.critical ?? criticalSlides[0].critical ?? false
 
     // -- Exclude SlideTails if the head is also selected (because in this case user probably rather want to make the whole slide critical) --
-    const headSelectedSlides = criticalSlides.filter(({ head }) => notes.includes(head as NoteType))
-    headSelectedSlides.forEach(({ tail }) => criticalNotes = criticalNotes.filter((note) => note !== tail))
+    const headSelectedSlides = criticalSlides.filter(({ head }) =>
+      notes.includes(head as NoteType)
+    )
+    headSelectedSlides.forEach(
+      ({ tail }) =>
+        (criticalNotes = criticalNotes.filter((note) => note !== tail))
+    )
 
-    exec(new CombinedMutation(
-      singles, slides,
-      [
-        new BatchUpdate(singles, slides,
-          new Map(criticalNotes.map((note) => [note, { critical: !oldcritical }])),
-          new Map(criticalNotes.map((note) => [note, { critical: note.critical }])),
-        ),
-        new UpdateSlides(slides,
-          new Map(criticalSlides.map((slide) => [slide, { critical: !oldcritical }])),
-          new Map(criticalSlides.map((slide) => [slide, { critical: slide.critical }])),
-        ),
-      ], 'note', criticalNotes.length + criticalSlides.length, 'update')
+    exec(
+      new CombinedMutation(
+        singles,
+        slides,
+        [
+          new BatchUpdate(
+            singles,
+            slides,
+            new Map(
+              criticalNotes.map((note) => [note, { critical: !oldcritical }])
+            ),
+            new Map(
+              criticalNotes.map((note) => [note, { critical: note.critical }])
+            )
+          ),
+          new UpdateSlides(
+            slides,
+            new Map(
+              criticalSlides.map((slide) => [slide, { critical: !oldcritical }])
+            ),
+            new Map(
+              criticalSlides.map((slide) => [
+                slide,
+                { critical: slide.critical },
+              ])
+            )
+          ),
+        ],
+        'note',
+        criticalNotes.length + criticalSlides.length,
+        'update'
+      )
     )
   }
 
   function onselectall() {
     $selectedNotes = [
-      ...singles
-        .filter((note) =>
-          $visibility.taps && note.flick === 'no' ||
-          $visibility.flicks && note.flick !== 'no'
-        )
-      ,
-      ...($visibility.slides ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]) : [])
+      ...singles.filter(
+        (note) =>
+          ($visibility.taps && note.flick === 'no') ||
+          ($visibility.flicks && note.flick !== 'no')
+      ),
+      ...($visibility.slides
+        ? slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps])
+        : []),
     ]
   }
 
@@ -805,13 +1013,21 @@
     const renderTexture = PIXI.RenderTexture.create({
       width: $position.laneAreaWidth + 2 * MARGIN,
       height: $position.containerHeight,
-      resolution: 0.5
+      resolution: 0.5,
     })
     app.renderer.render(app.stage, {
-      renderTexture, transform: new PIXI.Matrix(undefined, undefined, undefined, undefined, - $position.calcLeft() + MARGIN, 0)
+      renderTexture,
+      transform: new PIXI.Matrix(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        -$position.calcLeft() + MARGIN,
+        0
+      ),
     })
     const canvas = app.renderer.plugins.extract.canvas(renderTexture)
-    return await new Promise(resolve => canvas.toBlob(resolve))
+    return await new Promise((resolve) => canvas.toBlob(resolve))
   }
 
   import { preferences } from '$lib/preferences'
@@ -821,7 +1037,10 @@
   let autosaveIntervalTimer: number | undefined = undefined
   $: if (browser && $preferences.autosaveInterval !== 0) {
     clearAutosave()
-    autosaveIntervalTimer = window.setInterval(autosave, $preferences.autosaveInterval * 1000)
+    autosaveIntervalTimer = window.setInterval(
+      autosave,
+      $preferences.autosaveInterval * 1000
+    )
   }
   function autosave() {
     if (currentProject && updated) {
@@ -840,7 +1059,9 @@
 
   function shrinkNotes(notes: NoteType[]) {
     const [prev, next] = notes
-    exec(new UpdateSlideNotes(slides, new Map([[prev, { tick: next.tick - 1 }]])))
+    exec(
+      new UpdateSlideNotes(slides, new Map([[prev, { tick: next.tick - 1 }]]))
+    )
   }
 
   let loop: boolean = false
@@ -883,22 +1104,23 @@
     const { head, tail, steps, critical } = slide
     const { tick } = lastCursosr
 
-    const { lane, width, easeType } = [...steps]
-      .sort((a, b) => a.tick - b.tick)
-      .reverse()
-      .find((step) => step.tick < tick) ?? head
+    const { lane, width, easeType } =
+      [...steps]
+        .sort((a, b) => a.tick - b.tick)
+        .reverse()
+        .find((step) => step.tick < tick) ?? head
 
     const slideA: Slide = {
-      head: {...head},
+      head: { ...head },
       steps: steps.filter((step) => step.tick <= tick),
       tail: {
         tick,
         width,
         lane,
         critical: false,
-        flick: 'no'
+        flick: 'no',
       },
-      critical
+      critical,
     }
 
     const slideB: Slide = {
@@ -909,13 +1131,11 @@
         easeType,
       },
       steps: steps.filter((step) => step.tick > tick),
-      tail: {...tail},
-      critical
+      tail: { ...tail },
+      critical,
     }
 
-    exec(new AddRemoveSlides(
-      slides, [slideA, slideB], [slide], 1, 'divide'
-    ))
+    exec(new AddRemoveSlides(slides, [slideA, slideB], [slide], 1, 'divide'))
   }
 
   function toSlide(notes: Single[]) {
@@ -926,24 +1146,33 @@
     const newSlide: Slide = {
       head: {
         ...sorted.shift()!,
-        easeType: false
+        easeType: false,
       },
       tail: {
         ...sorted.pop()!,
         flick: 'no',
-        critical: false
+        critical: false,
       },
       steps: sorted.map((note) => ({
         ...note,
         diamond: false,
         ignored: false,
-        easeType: false
+        easeType: false,
       })),
-      critical: false
+      critical: false,
     }
-    exec(new BatchAddRemove(
-      singles, slides, [], [newSlide], notes, [], 1, 'convert'
-    ))
+    exec(
+      new BatchAddRemove(
+        singles,
+        slides,
+        [],
+        [newSlide],
+        notes,
+        [],
+        1,
+        'convert'
+      )
+    )
   }
 
   function toStream(slide: Slide) {
@@ -953,47 +1182,71 @@
 
     const stream: Single[] = []
 
-    timeSignatureManager.getTickRanges()
-      .forEach(([from, to], ind) => {
-        if (head.tick > to || tail.tick < from) {
-          return
+    timeSignatureManager.getTickRanges().forEach(([from, to], ind) => {
+      if (head.tick > to || tail.tick < from) {
+        return
+      }
+
+      const range = [Math.max(head.tick, from), Math.min(tail.tick, to)]
+
+      for (
+        let i = range[0];
+        i <= range[1];
+        i +=
+          (timeSignatureManager.timeSignatureInfos[ind].beatsPerMeasure *
+            TICK_PER_BEAT) /
+          snapTo
+      ) {
+        const [a, b] = noteSections.find(
+          ([a, b]) => a.tick <= i && b.tick >= i
+        ) ?? [head, tail]
+
+        const ease = (x: number) => {
+          if (!('easeType' in a) || !a.easeType) return x
+          switch (a.easeType) {
+            case 'easeIn':
+              return easeInQuad(x)
+            case 'easeOut':
+              return easeOutQuad(x)
+            default:
+              return x
+          }
         }
 
-        const range = [
-          Math.max(head.tick, from),
-          Math.min(tail.tick, to)
-        ]
-
-        for (let i = range[0]; i <= range[1]; i += timeSignatureManager.timeSignatureInfos[ind].beatsPerMeasure * TICK_PER_BEAT / snapTo) {
-          const [a, b] = noteSections.find(([a, b]) => a.tick <= i && b.tick >= i) ?? [head, tail]
-
-          const ease = (x: number) => {
-            if (!('easeType' in a) || !a.easeType ) return x
-            switch (a.easeType) {
-              case 'easeIn': return easeInQuad(x)
-              case 'easeOut': return easeOutQuad(x)
-              default: return x
-            }
-          }
-
-          const left = Math.round(lerp(a.lane, b.lane, ease((i - a.tick) / (b.tick - a.tick))))
-          const right = Math.round(lerp(a.lane + a.width, b.lane + b.width, ease((i - a.tick) / (b.tick - a.tick))))
-          const note = {
-            tick: i,
-            lane: left,
-            width: right - left,
-            critical,
-            flick: 'no' as const
-          }
-          stream.push(note)
+        const left = Math.round(
+          lerp(a.lane, b.lane, ease((i - a.tick) / (b.tick - a.tick)))
+        )
+        const right = Math.round(
+          lerp(
+            a.lane + a.width,
+            b.lane + b.width,
+            ease((i - a.tick) / (b.tick - a.tick))
+          )
+        )
+        const note = {
+          tick: i,
+          lane: left,
+          width: right - left,
+          critical,
+          flick: 'no' as const,
         }
+        stream.push(note)
+      }
 
-        exec(new BatchAddRemove(
-          singles, slides, stream, [], [], [slide], 1, 'convert'
-        ))
-      })
+      exec(
+        new BatchAddRemove(
+          singles,
+          slides,
+          stream,
+          [],
+          [],
+          [slide],
+          1,
+          'convert'
+        )
+      )
+    })
   }
-
 
   import { create } from '$lib/api/library'
 
@@ -1008,19 +1261,33 @@
   <title>PaletteWorks Editor</title>
 </svelte:head>
 
-<input type="file" bind:files={scoreFiles} style="display: none" bind:this={fileInput} accept=".sus,.pws" />
+<input
+  type="file"
+  bind:files={scoreFiles}
+  style="display: none"
+  bind:this={fileInput}
+  accept=".sus,.pws"
+/>
 
 <main class="cursor-select">
   {#if app}
     <ToolBox
       bind:currentMode
       bind:snapTo
-      bind:openMainMenu={openMainMenu}
-      on:about={() => {aboutDialogOpened = true }}
+      bind:openMainMenu
+      on:about={() => {
+        aboutDialogOpened = true
+      }}
       on:export={onexport}
-      on:image={() => { imageDialogOpened = true }}
-      on:copy={() => { copyNotes($selectedNotes) }}
-      on:cut={() => { cutNotes($selectedNotes) }}
+      on:image={() => {
+        imageDialogOpened = true
+      }}
+      on:copy={() => {
+        copyNotes($selectedNotes)
+      }}
+      on:cut={() => {
+        cutNotes($selectedNotes)
+      }}
       on:paste={onpaste}
       on:undo={onundo}
       on:redo={onredo}
@@ -1028,41 +1295,59 @@
       on:open={onopen}
       on:selectall={onselectall}
       on:unselectall={unselectall}
-      on:preferences={() => { preferencesDialogOpened = true }}
+      on:preferences={() => {
+        preferencesDialogOpened = true
+      }}
       on:upload={async () => {
         if (!$selectedNotes.length) {
           toast.error($LL.editor.messages.library.uploadNotSelectedError())
           return
         }
-        if ($selectedNotes.length > 20 && !(await confirm($LL.editor.messages.library.uploadTooLongConfirm()))) {
+        if (
+          $selectedNotes.length > 20 &&
+          !(await confirm($LL.editor.messages.library.uploadTooLongConfirm()))
+        ) {
           return
         }
-        const selectedSingles = singles.filter((note) => $selectedNotes.includes(note))
-        const selectedSlides = slides.filter(({ head, tail, steps }) => $selectedNotes.includes(head) || $selectedNotes.includes(tail) || steps.some((step) => $selectedNotes.includes(step)))
-        const minTick = Math.min(...[
-          ...selectedSingles.map((single) => single.tick),
-          ...selectedSlides.flatMap(({ head, tail, steps }) => [head.tick, tail.tick, ...steps.map((step) => step.tick)])
-        ])
+        const selectedSingles = singles.filter((note) =>
+          $selectedNotes.includes(note)
+        )
+        const selectedSlides = slides.filter(
+          ({ head, tail, steps }) =>
+            $selectedNotes.includes(head) ||
+            $selectedNotes.includes(tail) ||
+            steps.some((step) => $selectedNotes.includes(step))
+        )
+        const minTick = Math.min(
+          ...[
+            ...selectedSingles.map((single) => single.tick),
+            ...selectedSlides.flatMap(({ head, tail, steps }) => [
+              head.tick,
+              tail.tick,
+              ...steps.map((step) => step.tick),
+            ]),
+          ]
+        )
         const content = {
           singles: selectedSingles.map((note) => ({
             ...note,
-            tick: note.tick - minTick
+            tick: note.tick - minTick,
           })),
           slides: selectedSlides.map((slide) => ({
             ...slide,
             head: {
               ...slide.head,
-              tick: slide.head.tick - minTick
+              tick: slide.head.tick - minTick,
             },
             tail: {
               ...slide.tail,
-              tick: slide.tail.tick - minTick
+              tick: slide.tail.tick - minTick,
             },
             steps: slide.steps.map((step) => ({
               ...step,
-              tick: step.tick - minTick
-            }))
-          }))
+              tick: step.tick - minTick,
+            })),
+          })),
         }
         const title = prompt($LL.editor.messages.inputTitlePrompt())
         const description = prompt($LL.editor.messages.inputDescriptionPrompt())
@@ -1074,12 +1359,12 @@
         try {
           await create({
             title: {
-              ja: title
+              ja: title,
             },
             description: {
-              ja: description
+              ja: description,
             },
-            content
+            content,
           })
           toast.success($LL.editor.messages.library.uploadSuccess())
         } catch (error) {
@@ -1087,7 +1372,9 @@
           console.error(error)
         }
       }}
-      on:openlibrary={() => { libraryDialogOpened = true }}
+      on:openlibrary={() => {
+        libraryDialogOpened = true
+      }}
     />
     <Canvas
       {PIXI}
@@ -1113,14 +1400,16 @@
       bind:fever
       bind:skills
       bind:imageDialogOpened
-      on:scroll={({ detail }) => { scrollTick = detail }}
+      on:scroll={({ detail }) => {
+        scrollTick = detail
+      }}
       on:changeBPM={async (event) => {
-        ({ tick: lastPointerTick, bpm: bpmDialogValue} = event.detail)
+        ;({ tick: lastPointerTick, bpm: bpmDialogValue } = event.detail)
         await tick()
         bpmDialogOpened = true
       }}
       on:changeTimeSignature={async (event) => {
-        ({ tick: lastPointerTick } = event.detail)
+        ;({ tick: lastPointerTick } = event.detail)
         await tick()
         timeSignatureDialogValue = [4, 4]
         timeSignatureDialogOpened = true
@@ -1129,25 +1418,44 @@
         soundQueue.push(event.detail)
         soundQueue = soundQueue
       }}
-      on:goto={({ detail: { tick }}) => {
+      on:goto={({ detail: { tick } }) => {
         gotoTick(tick)
       }}
-      on:delete={(event) => { deleteNotes(event.detail.notes) }}
-      on:copy={(event) => { copyNotes(event.detail.notes) }}
-      on:cut={(event) => { cutNotes(event.detail.notes) }}
+      on:delete={(event) => {
+        deleteNotes(event.detail.notes)
+      }}
+      on:copy={(event) => {
+        copyNotes(event.detail.notes)
+      }}
+      on:cut={(event) => {
+        cutNotes(event.detail.notes)
+      }}
       on:paste={onpaste}
-      on:combine={({ detail: { slides: [slideA, slideB] }}) => { exec(combineSlides(slides, slideA, slideB, slideA.tail)) }}
-      on:movenotes={() => { exec(moveNotes(singles, slides)) }}
-      on:resizenotes={({ detail: { resizingTargets, resizingOrigins }}) => {
-        exec(new BatchUpdate(singles, slides, resizingTargets, resizingOrigins, 'resize'))
+      on:combine={({
+        detail: {
+          slides: [slideA, slideB],
+        },
+      }) => {
+        exec(combineSlides(slides, slideA, slideB, slideA.tail))
+      }}
+      on:movenotes={() => {
+        exec(moveNotes(singles, slides))
+      }}
+      on:resizenotes={({ detail: { resizingTargets, resizingOrigins } }) => {
+        exec(
+          new BatchUpdate(
+            singles,
+            slides,
+            resizingTargets,
+            resizingOrigins,
+            'resize'
+          )
+        )
       }}
       on:changecurve={onchangecurve}
       on:changediamond={onchangediamond}
       on:select={({ detail: { notes, overwrite } }) => {
-        $selectedNotes = [
-          ...(overwrite ? [] : $selectedNotes),
-          ...notes
-        ]
+        $selectedNotes = [...(overwrite ? [] : $selectedNotes), ...notes]
       }}
       on:selectsingle={(event) => {
         if (currentMode !== 'select') return
@@ -1157,36 +1465,50 @@
         $selectedNotes = slide ?? [event.detail.note]
       }}
       on:selectall={onselectall}
-      on:addsingle={({ detail: { note }}) => {
+      on:addsingle={({ detail: { note } }) => {
         exec(new AddSingles(singles, [note]))
       }}
-      on:updatesingle={({ detail: { note, modification }}) => {
+      on:updatesingle={({ detail: { note, modification } }) => {
         exec(new UpdateSingle(singles, note, modification))
       }}
-      on:addslide={({ detail: { slide }}) => {
-        exec(new AddSlides(slides, [ slide ]))
+      on:addslide={({ detail: { slide } }) => {
+        exec(new AddSlides(slides, [slide]))
       }}
-      on:updateslidenote={({ detail: { note, modification }}) => {
+      on:updateslidenote={({ detail: { note, modification } }) => {
         exec(new UpdateSlideNote(slides, note, modification))
       }}
-      on:updateslide={({ detail: { slide, modification }}) => {
+      on:updateslide={({ detail: { slide, modification } }) => {
         exec(new UpdateSlide(slides, slide, modification))
       }}
       on:updateflicks={onupdateflicks}
       on:updatecriticals={onupdatecriticals}
-      on:flip={({ detail: { notes }}) => { exec(flipNotes(singles, slides, notes)) }}
-      on:vflip={({ detail: { notes }}) => { console.log('vflipping'); exec(vflipNotes(singles, slides, notes)) }}
+      on:flip={({ detail: { notes } }) => {
+        exec(flipNotes(singles, slides, notes))
+      }}
+      on:vflip={({ detail: { notes } }) => {
+        console.log('vflipping')
+        exec(vflipNotes(singles, slides, notes))
+      }}
       on:flippaste={onflippaste}
-      on:duplicate={({ detail: { notes }}) => duplicateNotes(notes)}
-      on:shrink={({ detail: { notes }}) => { shrinkNotes(notes) }}
-      on:divide={({ detail: { slide, lastCursor} }) => { divideSlide(slide, lastCursor) }}
-      on:toslide={({ detail: { notes }}) => { toSlide(notes) }}
-      on:tostream={({ detail: { slide }}) => { toStream(slide) }}
+      on:duplicate={({ detail: { notes } }) => duplicateNotes(notes)}
+      on:shrink={({ detail: { notes } }) => {
+        shrinkNotes(notes)
+      }}
+      on:divide={({ detail: { slide, lastCursor } }) => {
+        divideSlide(slide, lastCursor)
+      }}
+      on:toslide={({ detail: { notes } }) => {
+        toSlide(notes)
+      }}
+      on:tostream={({ detail: { slide } }) => {
+        toStream(slide)
+      }}
     />
     <PropertyBox
       bind:currentMeasure
       on:goto={() => {
-        scrollTick = (clamp(1, currentMeasure, maxMeasure + 1) - 1) * TICK_PER_MEASURE
+        scrollTick =
+          (clamp(1, currentMeasure, maxMeasure + 1) - 1) * TICK_PER_MEASURE
       }}
       on:undo={onundo}
       on:redo={onredo}
@@ -1196,7 +1518,9 @@
         taps: singles.filter((x) => x.flick === 'no').length,
         flicks: singles.filter((x) => x.flick !== 'no').length,
         slides: slides.length,
-        slidesteps: slides.map(({steps}) => steps).reduce((acc, ele) => acc += ele.length, 0),
+        slidesteps: slides
+          .map(({ steps }) => steps)
+          .reduce((acc, ele) => (acc += ele.length), 0),
         all: allNotes().length,
       }}
       bind:paused
@@ -1208,8 +1532,7 @@
       bind:sfxVolume
       bind:sfxEnabled
       {bgmLoading}
-      totalCombo={
-        singles.length +
+      totalCombo={singles.length +
         slides.reduce((sum, { head, tail, steps }) => {
           const TICK_PER_HALF_BEAT = TICK_PER_BEAT / 2
           // head + tail
@@ -1219,12 +1542,11 @@
           // hidden combo
           sum += Math.floor((tail.tick - head.tick) / TICK_PER_HALF_BEAT - 0.5)
           return sum
-        }, 0)
-      }
+        }, 0)}
       {musicDuration}
     />
     {#if import.meta.env.DEV}
-      <DebugInfo/>
+      <DebugInfo />
     {/if}
   {/if}
 </main>
@@ -1271,28 +1593,34 @@
       const exist = timeSignatureManager.has(lastPointerTick)
 
       // if (last !== timeSignatureDialogValue) {
-      exec(new SetTimeSignature(
-        timeSignatures,
-        timeSignatureManager.tick2measure(lastPointerTick),
-        timeSignatureDialogValue,
-        exist ? 'update' : 'append'
-      ))
+      exec(
+        new SetTimeSignature(
+          timeSignatures,
+          timeSignatureManager.tick2measure(lastPointerTick),
+          timeSignatureDialogValue,
+          exist ? 'update' : 'append'
+        )
+      )
       // }
     }
   }}
   on:delete={() => {
-    exec(new RemoveTimeSignature(
-      timeSignatures,
-      timeSignatureManager.tick2measure(lastPointerTick),
-      'delete'
-    ))
+    exec(
+      new RemoveTimeSignature(
+        timeSignatures,
+        timeSignatureManager.tick2measure(lastPointerTick),
+        'delete'
+      )
+    )
   }}
 />
 
 <ProjectsDialog
   {currentProject}
   bind:opened={projectsDialogOpened}
-  on:open={async ({ detail: { project }}) => { await openProject(project) }}
+  on:open={async ({ detail: { project } }) => {
+    await openProject(project)
+  }}
   on:openfile={onopenfile}
   on:new={onnewproject}
   on:delete={({ detail: { id, name } }) => {
@@ -1301,40 +1629,49 @@
       currentProject = null
       initScore()
     }
-    toast.success($LL.editor.messages.projectDeleted({ name: name ?? 'Untitled' }))
+    toast.success(
+      $LL.editor.messages.projectDeleted({ name: name ?? 'Untitled' })
+    )
   }}
 />
 
 <LibraryDialog
   bind:opened={libraryDialogOpened}
   on:input={({ detail: content }) => {
-    const maxTick = Math.max(...[
-      ...singles.map((single) => single.tick),
-      ...slides.flatMap(({ head, tail, steps }) => [head.tick, tail.tick, ...steps.map((step) => step.tick)])
-    ])
-    const endTick = snap(isFinite(maxTick) ? maxTick : 0, TICK_PER_MEASURE / snapTo) + TICK_PER_MEASURE / snapTo
-    const newSingles = (content.singles ?? []).map((single) => ({ ...single, tick: endTick + single.tick }))
+    const maxTick = Math.max(
+      ...[
+        ...singles.map((single) => single.tick),
+        ...slides.flatMap(({ head, tail, steps }) => [
+          head.tick,
+          tail.tick,
+          ...steps.map((step) => step.tick),
+        ]),
+      ]
+    )
+    const endTick =
+      snap(isFinite(maxTick) ? maxTick : 0, TICK_PER_MEASURE / snapTo) +
+      TICK_PER_MEASURE / snapTo
+    const newSingles = (content.singles ?? []).map((single) => ({
+      ...single,
+      tick: endTick + single.tick,
+    }))
     const newSlides = (content.slides ?? []).map((slide) => ({
-        ...slide,
-        head: {
-          ...slide.head,
-          tick: endTick + slide.head.tick,
-        },
-        tail: {
-          ...slide.tail,
-          tick: endTick + slide.tail.tick,
-        },
-        steps: slide.steps.map((step) => ({
-          ...step,
-          tick: endTick + step.tick,
-        })),
-      }))
+      ...slide,
+      head: {
+        ...slide.head,
+        tick: endTick + slide.head.tick,
+      },
+      tail: {
+        ...slide.tail,
+        tick: endTick + slide.tail.tick,
+      },
+      steps: slide.steps.map((step) => ({
+        ...step,
+        tick: endTick + step.tick,
+      })),
+    }))
 
-    exec(new BatchAdd(
-      singles, slides,
-      newSingles,
-      newSlides
-    ))
+    exec(new BatchAdd(singles, slides, newSingles, newSlides))
     $selectedNotes = [
       ...newSingles,
       ...newSlides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]),
@@ -1342,9 +1679,7 @@
   }}
 />
 
-<PreferencesDialog
-  bind:opened={preferencesDialogOpened}
-/>
+<PreferencesDialog bind:opened={preferencesDialogOpened} />
 
 <ControlHandler
   bind:zoom
@@ -1352,10 +1687,14 @@
   on:undo={onundo}
   on:redo={onredo}
   on:export={onexport}
-  on:save={() => { savecurrent($LL.editor.messages.saved()) }}
+  on:save={() => {
+    savecurrent($LL.editor.messages.saved())
+  }}
   on:open={onopen}
   on:new={onnewproject}
-  on:switch={({ detail: mode }) => { currentMode = mode }}
+  on:switch={({ detail: mode }) => {
+    currentMode = mode
+  }}
   on:delete={() => {
     if ($selectedNotes.length > 0) {
       deleteNotes($selectedNotes)
@@ -1363,27 +1702,59 @@
       deleteNotes([$hoveringNote])
     }
   }}
-  on:copy={() => { copyNotes($selectedNotes) }}
-  on:cut={() => { cutNotes($selectedNotes) }}
+  on:copy={() => {
+    copyNotes($selectedNotes)
+  }}
+  on:cut={() => {
+    cutNotes($selectedNotes)
+  }}
   on:paste={onpaste}
-  on:image={() => { imageDialogOpened = true }}
+  on:image={() => {
+    imageDialogOpened = true
+  }}
   on:skipback={onskipback}
   on:skipstart={onskipstart}
   on:playpause={onplaypause}
-  on:duplicate={() => { duplicateNotes($selectedNotes) }}
-  on:flip={() => { exec(flipNotes(singles, slides, $selectedNotes)) }}
-  on:vflip={() => { exec(vflipNotes(singles, slides, $selectedNotes)) }}
+  on:duplicate={() => {
+    duplicateNotes($selectedNotes)
+  }}
+  on:flip={() => {
+    exec(flipNotes(singles, slides, $selectedNotes))
+  }}
+  on:vflip={() => {
+    exec(vflipNotes(singles, slides, $selectedNotes))
+  }}
   on:flippaste={onflippaste}
   on:selectall={onselectall}
   on:unselectall={unselectall}
-  on:increaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotateNext(snapTo) ?? SNAPTO_DEFAULT }}
-  on:decreaseSnapTo={() => { snapTo = ALLOWED_SNAPPINGS.rotatePrev(snapTo) ?? SNAPTO_DEFAULT }}
-  on:pageup={() => { scrollTick += innerHeight / MEASURE_HEIGHT * zoom * TICK_PER_MEASURE }}
-  on:pagedown={() => { scrollTick -= innerHeight / MEASURE_HEIGHT * zoom * TICK_PER_MEASURE }}
-  on:gotoup={() => { goto(snap(currentTick, TICK_PER_MEASURE / snapTo) + TICK_PER_MEASURE / snapTo) }}
-  on:gotodown={() => { goto(snap(currentTick, TICK_PER_MEASURE / snapTo) - TICK_PER_MEASURE / snapTo) }}
-  on:gotoupfast={() => { goto(snap(currentTick, TICK_PER_MEASURE) + TICK_PER_MEASURE) }}
-  on:gotodownfast={() => { goto(snap(currentTick, TICK_PER_MEASURE) - TICK_PER_MEASURE) }}
+  on:increaseSnapTo={() => {
+    snapTo = ALLOWED_SNAPPINGS.rotateNext(snapTo) ?? SNAPTO_DEFAULT
+  }}
+  on:decreaseSnapTo={() => {
+    snapTo = ALLOWED_SNAPPINGS.rotatePrev(snapTo) ?? SNAPTO_DEFAULT
+  }}
+  on:pageup={() => {
+    scrollTick += (innerHeight / MEASURE_HEIGHT) * zoom * TICK_PER_MEASURE
+  }}
+  on:pagedown={() => {
+    scrollTick -= (innerHeight / MEASURE_HEIGHT) * zoom * TICK_PER_MEASURE
+  }}
+  on:gotoup={() => {
+    goto(
+      snap(currentTick, TICK_PER_MEASURE / snapTo) + TICK_PER_MEASURE / snapTo
+    )
+  }}
+  on:gotodown={() => {
+    goto(
+      snap(currentTick, TICK_PER_MEASURE / snapTo) - TICK_PER_MEASURE / snapTo
+    )
+  }}
+  on:gotoupfast={() => {
+    goto(snap(currentTick, TICK_PER_MEASURE) + TICK_PER_MEASURE)
+  }}
+  on:gotodownfast={() => {
+    goto(snap(currentTick, TICK_PER_MEASURE) - TICK_PER_MEASURE)
+  }}
   on:openmainmenu={openMainMenu}
 />
 
@@ -1418,33 +1789,54 @@
 
 <svelte:window
   bind:innerHeight
-  on:beforeunload={(event) => { if (updated) {
-    event.preventDefault()
-    event.returnValue = $LL.editor.messages.exitConfirm()
-    return $LL.editor.messages.exitConfirm()
-  }}}
+  on:beforeunload={(event) => {
+    if (updated) {
+      event.preventDefault()
+      event.returnValue = $LL.editor.messages.exitConfirm()
+      return $LL.editor.messages.exitConfirm()
+    }
+  }}
   on:dragover|preventDefault
-  on:drop|preventDefault={dropHandlerMultiple([
-    { accept: '.sus', callback(file) { loadSUSFile(file) } },
-    { accept: PROJECT_FILE_EXTENSION, callback(file) { loadPWSFile(file) } },
-    { accept: 'audio/*', callback(file) {
-      musicLoadedFromFile = true
-      if (currentProject) {
-        music = file
-      } else {
-        onnewproject()
-        tick().then(() => {
-          music = file
-        })
-      }
-    }}],
-    () => { toast.error($LL.editor.messages.unknownFileType()) }
+  on:drop|preventDefault={dropHandlerMultiple(
+    [
+      {
+        accept: '.sus',
+        callback(file) {
+          loadSUSFile(file)
+        },
+      },
+      {
+        accept: PROJECT_FILE_EXTENSION,
+        callback(file) {
+          loadPWSFile(file)
+        },
+      },
+      {
+        accept: 'audio/*',
+        callback(file) {
+          musicLoadedFromFile = true
+          if (currentProject) {
+            music = file
+          } else {
+            onnewproject()
+            tick().then(() => {
+              music = file
+            })
+          }
+        },
+      },
+    ],
+    () => {
+      toast.error($LL.editor.messages.unknownFileType())
+    }
   )}
 />
 
 <AboutDialog bind:opened={aboutDialogOpened} />
 
-<SvelteToast/>
+<SvelteToast />
+
+<slot />
 
 <style>
   /* Global Styles */
@@ -1468,8 +1860,6 @@
   }
 
   .cursor-select {
-    cursor: url('$assets/cursor/select-cursor.png') 6 4, auto
+    cursor: url('$assets/cursor/select-cursor.png') 6 4, auto;
   }
 </style>
-
-<slot></slot>

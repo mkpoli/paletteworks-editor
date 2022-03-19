@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ClickableIcon from "./ClickableIcon.svelte"
+  import ClickableIcon from './ClickableIcon.svelte'
 
   export let value: string | number
   export let inputElement: HTMLInputElement | undefined = undefined
@@ -11,12 +11,17 @@
   }
 </script>
 
-<div class={[$$props.class, "input-container"].join(' ')} on:click={() => { inputElement?.focus() }}>
+<div
+  class={[$$props.class, 'input-container'].join(' ')}
+  on:click={() => {
+    inputElement?.focus()
+  }}
+>
   <slot name="head" />
   {#if type === 'number'}
     <input
       type="number"
-      bind:value={value}
+      bind:value
       bind:this={inputElement}
       on:keydown
       {disabled}
@@ -24,7 +29,7 @@
   {:else if type === 'text'}
     <input
       type="text"
-      bind:value={value}
+      bind:value
       bind:this={inputElement}
       on:keydown
       {disabled}
@@ -32,20 +37,17 @@
   {:else if type === 'search'}
     <input
       type="search"
-      bind:value={value}
+      bind:value
       bind:this={inputElement}
       on:keydown
       {disabled}
     />
     {#if value !== ''}
-      <ClickableIcon
-        icon="icon-park-outline:close"
-        on:click={clearValue}
-      />
+      <ClickableIcon icon="icon-park-outline:close" on:click={clearValue} />
     {/if}
   {/if}
-  <slot name="tail"/>
-  <slot name="action"></slot>
+  <slot name="tail" />
+  <slot name="action" />
 </div>
 
 <style>
@@ -80,15 +82,15 @@
   .input-container :global(*) {
     flex-grow: 0;
   }
-  
+
   input:focus {
-    outline: none
+    outline: none;
   }
 
-  input[type="search"]::-webkit-search-decoration,
-  input[type="search"]::-webkit-search-cancel-button,
-  input[type="search"]::-webkit-search-results-button,
-  input[type="search"]::-webkit-search-results-decoration {
+  input[type='search']::-webkit-search-decoration,
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-results-button,
+  input[type='search']::-webkit-search-results-decoration {
     display: none;
   }
 </style>

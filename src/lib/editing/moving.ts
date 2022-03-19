@@ -1,11 +1,18 @@
 import { writable, get } from 'svelte/store'
 import { hasCritical, hasFlick, isSlideHead } from '$lib/score/beatmap'
 import type { Note, Single, Slide, INote } from '$lib/score/beatmap'
-import { AddRemoveSlides, CombinedMutation, UpdateSingles, UpdateSlides } from '$lib/editing/mutations'
+import {
+  AddRemoveSlides,
+  CombinedMutation,
+  UpdateSingles,
+  UpdateSlides,
+} from '$lib/editing/mutations'
 import { combineSlides, getSlideNotes } from '$lib/editing/slides'
 
 export type MoveEvent = CustomEvent<{
-  lane: number, tick: number, note: Note
+  lane: number
+  tick: number
+  note: Note
 }>
 
 import type { LaneTick } from '$lib/position'
@@ -16,7 +23,10 @@ export const movingTargets = writable(new Map<Note, LaneTick>())
 export const movingOrigins = writable(new Map<Note, LaneTick>())
 export const movingOffsets = writable(new Map<Note, LaneTick>())
 
-export function moveNotes(singles: Single[], slides: Slide[]): CombinedMutation | AddRemoveSlides | null {
+export function moveNotes(
+  singles: Single[],
+  slides: Slide[]
+): CombinedMutation | AddRemoveSlides | null {
   const notes = [...get(movingNotes)]
   movingNotes.set([])
   const targets: Map<Note, LaneTick> = new Map(get(movingTargets))
@@ -33,9 +43,19 @@ export function moveNotes(singles: Single[], slides: Slide[]): CombinedMutation 
 
     if (hasCritical(note) && hasFlick(note)) {
       slideA = slides.find(({ tail }) => tail === note)
-      slideB = slides.find(({ head }) => head.tick === target.tick && head.lane === target.lane && head.width === target.width)
+      slideB = slides.find(
+        ({ head }) =>
+          head.tick === target.tick &&
+          head.lane === target.lane &&
+          head.width === target.width
+      )
     } else if (isSlideHead(note)) {
-      slideA = slides.find(({ tail }) => tail.tick === target.tick && tail.lane === target.lane && tail.width === target.width)
+      slideA = slides.find(
+        ({ tail }) =>
+          tail.tick === target.tick &&
+          tail.lane === target.lane &&
+          tail.width === target.width
+      )
       slideB = slides.find(({ head }) => head === note)
     }
 
@@ -45,7 +65,11 @@ export function moveNotes(singles: Single[], slides: Slide[]): CombinedMutation 
   }
 
   // -- Check if anything changes position --
-  if ([...targets].every(([note, target]) => note.lane === target.lane && note.tick === target.tick)) {
+  if (
+    [...targets].every(
+      ([note, target]) => note.lane === target.lane && note.tick === target.tick
+    )
+  ) {
     return null
   }
 
@@ -59,31 +83,59 @@ export function moveNotes(singles: Single[], slides: Slide[]): CombinedMutation 
         ...slide,
         head: { ...slide.head, ...(targets.get(slide.head) ?? []) },
         tail: { ...slide.tail, ...(targets.get(slide.tail) ?? []) },
-        steps: slide.steps.map((step) => ({
-          ...step,
-          ...(targets.get(step) ?? [])
-        })).sort((a, b) => a.tick - b.tick)
+        steps: slide.steps
+          .map((step) => ({
+            ...step,
+            ...(targets.get(step) ?? []),
+          }))
+          .sort((a, b) => a.tick - b.tick),
       }
 
-      const pickINote = ({ lane, tick, width }: INote) => ({ lane, tick, width })
+      const pickINote = ({ lane, tick, width }: INote) => ({
+        lane,
+        tick,
+        width,
+      })
 
-      return [slide, {
-        head: head.tick > tail.tick ? { ...head, ...pickINote(tail) } : head,
-        tail: head.tick > tail.tick ? { ...tail, ...pickINote(head) } : tail,
-        steps
-      }]
+      return [
+        slide,
+        {
+          head: head.tick > tail.tick ? { ...head, ...pickINote(tail) } : head,
+          tail: head.tick > tail.tick ? { ...tail, ...pickINote(head) } : tail,
+          steps,
+        },
+      ]
     })
   )
   const slideOriginaldatas: Map<Slide, Partial<Slide>> = new Map(
-    [...slideModifications].map(([slide]) => [slide, {
-      head: slide.head,
-      tail: slide.tail,
-      steps: slide.steps
-    }])
+    [...slideModifications].map(([slide]) => [
+      slide,
+      {
+        head: slide.head,
+        tail: slide.tail,
+        steps: slide.steps,
+      },
+    ])
   )
 
-  return new CombinedMutation(singles, slides, [
-    new UpdateSingles(singles, new Map([...targets].filter(([note]) => singles.includes(note as Single)) as [Single, Partial<Single>][]), 'move'),
-    new UpdateSlides(slides, slideModifications, slideOriginaldatas)
-  ], 'note', notes.length, 'move')
+  return new CombinedMutation(
+    singles,
+    slides,
+    [
+      new UpdateSingles(
+        singles,
+        new Map(
+          [...targets].filter(([note]) => singles.includes(note as Single)) as [
+            Single,
+            Partial<Single>
+          ][]
+        ),
+        'move'
+      ),
+      new UpdateSlides(slides, slideModifications, slideOriginaldatas),
+    ],
+    'note',
+    notes.length,
+    'move'
+  )
 }

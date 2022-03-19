@@ -13,7 +13,7 @@ export default {
     toast.push(message, {
       theme: {
         '--toastBackground': '#48BB78',
-        '--toastBarBackground': '#2F855A'
+        '--toastBarBackground': '#2F855A',
       },
       pausable: true,
     })
@@ -22,45 +22,53 @@ export default {
     toast.push(message, {
       theme: {
         '--toastBackground': '#F56565',
-        '--toastBarBackground': '#C53030'
+        '--toastBarBackground': '#C53030',
       },
       pausable: true,
-    }
-    )
+    })
   },
   warn: (message: string) => {
     toast.push(message, {
       theme: {
         '--toastBackground': '#FFC107',
-        '--toastBarBackground': '#C79100'
+        '--toastBarBackground': '#C79100',
       },
       pausable: true,
     })
   },
-  undo: (mutation: Mutation<unknown>, history: Writable<Mutation<unknown>[]>, button: string, undo: () => void, undone: boolean) => {
+  undo: (
+    mutation: Mutation<unknown>,
+    history: Writable<Mutation<unknown>[]>,
+    button: string,
+    undo: () => void,
+    undone: boolean
+  ) => {
     if (lastUndoToastId) {
-      toast.pop(lastUndoToastId) 
+      toast.pop(lastUndoToastId)
     }
 
-    setTimeout(() => {
-      lastUndoToastId = toast.push({
-        component: {
-          src: UndoToast as unknown as typeof SvelteComponent,
-          props: {
-            text: mutation.toString(),
-            button,
-            undo,
-            mutation,
-            history,
-            undone
+    setTimeout(
+      () => {
+        lastUndoToastId = toast.push({
+          component: {
+            src: UndoToast as unknown as typeof SvelteComponent,
+            props: {
+              text: mutation.toString(),
+              button,
+              undo,
+              mutation,
+              history,
+              undone,
+            },
           },
-        },
-        theme: {
-          '--toastWidth': '20rem'
-        },
-        duration: 8000,
-        pausable: true,
-      })
-    }, lastUndoToastId ? 400 : 0)
-  }
+          theme: {
+            '--toastWidth': '20rem',
+          },
+          duration: 8000,
+          pausable: true,
+        })
+      },
+      lastUndoToastId ? 400 : 0
+    )
+  },
 }

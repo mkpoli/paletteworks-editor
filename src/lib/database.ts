@@ -25,7 +25,7 @@ class Database extends Dexie {
     super('PaletteWorks')
     this.version(2).stores({
       projects: '++id,name,created,updated,metadata,score,music,preview',
-      preferences: 'key,value'
+      preferences: 'key,value',
     })
     this.projects = this.table('projects')
     this.preferences = this.table('preferences')
@@ -34,23 +34,19 @@ class Database extends Dexie {
 
 export const db = new Database()
 
-export const projects = liveQuery(async () => (await db.projects.toArray()).reverse())
-export const preferences = liveQuery(async () => 
-  Object.fromEntries((await db.preferences.toArray()).map(({ key, value }) => [key, value]))
+export const projects = liveQuery(async () =>
+  (await db.projects.toArray()).reverse()
+)
+export const preferences = liveQuery(async () =>
+  Object.fromEntries(
+    (await db.preferences.toArray()).map(({ key, value }) => [key, value])
+  )
 )
 
 import msgpack from 'msgpack-lite'
 
 export async function seriliseProject(project: Project): Promise<Blob> {
-  const {
-    name,
-    created,
-    updated,
-    metadata,
-    score,
-    preview,
-    music
-  } = project
+  const { name, created, updated, metadata, score, preview, music } = project
   const data = msgpack.encode({
     version: 1,
     name,
@@ -59,28 +55,22 @@ export async function seriliseProject(project: Project): Promise<Blob> {
     metadata,
     score: serialiseScore(score),
     preview: await preview.arrayBuffer(),
-    music: music ? {
-      data: await music.arrayBuffer(),
-      name: music.name,
-      type: music.type,
-      lastModified: music.lastModified,
-    } : null
+    music: music
+      ? {
+          data: await music.arrayBuffer(),
+          name: music.name,
+          type: music.type,
+          lastModified: music.lastModified,
+        }
+      : null,
   })
   return new Blob([data.buffer], { type: 'application/octet-binary' })
 }
 
 export async function deserialiseProject(blob: Blob): Promise<Project> {
   const data = msgpack.decode(new Uint8Array(await blob.arrayBuffer()))
-  const {
-    version,
-    name,
-    created,
-    updated,
-    metadata,
-    score,
-    preview,
-    music
-  } = data
+  const { version, name, created, updated, metadata, score, preview, music } =
+    data
   if (version !== 1) throw new Error('Unsupported version')
   return {
     name,
@@ -89,7 +79,12 @@ export async function deserialiseProject(blob: Blob): Promise<Project> {
     metadata,
     score: deserialiseScore(score),
     preview: new Blob([preview], { type: 'application/octet-binary' }),
-    music: music ? new File([music.data], music.name, { type: music.type, lastModified: music.lastModified }) : null
+    music: music
+      ? new File([music.data], music.name, {
+          type: music.type,
+          lastModified: music.lastModified,
+        })
+      : null,
   }
 }
 

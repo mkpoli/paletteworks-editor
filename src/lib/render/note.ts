@@ -28,10 +28,12 @@ export class NotePlane extends SimplePlane {
   constructor(texture: Texture<Resource>, width: number, height: number) {
     super(texture, 4, 4)
 
-    this.uvCoords = new Float32Array(cartesianProduct([
-      [0, SLICE_RATIO_X, 1 - SLICE_RATIO_X, 1],
-      [0, SLICE_RATIO_T, 1 - SLICE_RATIO_B, 1]
-    ]).flat())
+    this.uvCoords = new Float32Array(
+      cartesianProduct([
+        [0, SLICE_RATIO_X, 1 - SLICE_RATIO_X, 1],
+        [0, SLICE_RATIO_T, 1 - SLICE_RATIO_B, 1],
+      ]).flat()
+    )
 
     this.update(0, 0, width, height)
   }
@@ -66,9 +68,9 @@ export class NotePlane extends SimplePlane {
 
     const sideX = BASE_WIDTH * SIDE_RATIO_X
     const sliceX = BASE_WIDTH * SLICE_RATIO_X
-  
+
     const middleX = sliceX - sideX
-    
+
     const BASE_HEIGHT = 60
 
     const sideY = BASE_HEIGHT * SIDE_RATIO_Y
@@ -78,9 +80,21 @@ export class NotePlane extends SimplePlane {
     const middleT = sliceT - sideY
     const middleB = sliceB - sideY
 
-    this.vertices = new Float32Array(cartesianProduct([
-      [borderL - sideX, borderL + middleX, borderR - middleX, borderR + sideX],
-      [borderT - sideY, borderT + middleT, borderB - middleB, borderB + sideY]
-    ]).flat())
+    this.vertices = new Float32Array(
+      cartesianProduct([
+        [
+          borderL - sideX,
+          borderL + middleX,
+          borderR - middleX,
+          borderR + sideX,
+        ],
+        [
+          borderT - sideY,
+          borderT + middleT,
+          borderB - middleB,
+          borderB + sideY,
+        ],
+      ]).flat()
+    )
   }
 }

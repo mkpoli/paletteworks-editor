@@ -1,18 +1,27 @@
-export const KEYBOARD_SHORTCUTS  = {
+export const KEYBOARD_SHORTCUTS = {
   skipstart: [['backspace'], ['home'], ['shift', '`']],
   skipback: [['`'], ['\\']],
   playpause: [['space']],
   duplicate: [['ctrl', 'd']],
-  flip: [['ctrl', 'h'], ['shift', 'h']],
+  flip: [
+    ['ctrl', 'h'],
+    ['shift', 'h'],
+  ],
   vflip: [['shift', 'v']],
   copy: [['ctrl', 'c']],
   cut: [['ctrl', 'x']],
   paste: [['ctrl', 'v']],
   flippaste: [['ctrl', 'alt', 'v']],
   undo: [['ctrl', 'z']],
-  redo: [['ctrl', 'y'], ['ctrl', 'shift', 'z']],
+  redo: [
+    ['ctrl', 'y'],
+    ['ctrl', 'shift', 'z'],
+  ],
   save: [['ctrl', 's']],
-  export: [['ctrl', 'e'], ['ctrl', 'shift', 's']],
+  export: [
+    ['ctrl', 'e'],
+    ['ctrl', 'shift', 's'],
+  ],
   open: [['ctrl', 'o']],
   image: [['ctrl', 'i']],
   new: [['ctrl', 'n']],

@@ -18,8 +18,8 @@
     },
     selectTab(index: number) {
       currentTab.update(() => index)
-    }
+    },
   })
 </script>
 
-<slot></slot>
+<slot />

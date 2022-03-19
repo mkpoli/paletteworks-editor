@@ -1,4 +1,4 @@
-import { between, clamp, snap } from "./basic/math"
+import { between, clamp, snap } from './basic/math'
 import {
   LANE_MAX,
   LANE_MIN,
@@ -7,18 +7,18 @@ import {
   MARGIN_BOTTOM,
   TICK_PER_MEASURE,
   TICK_HEIGHT,
-} from "./consts"
+} from './consts'
 import { writable } from 'svelte/store'
 
 interface IRect {
-  top: number,
-  bottom: number,
-  left: number,
-  right: number,
-  height: number,
-  width: number,
-  x: number,
-  y: number,
+  top: number
+  bottom: number
+  left: number
+  right: number
+  height: number
+  width: number
+  x: number
+  y: number
 }
 
 export class PositionManager {
@@ -30,7 +30,13 @@ export class PositionManager {
   containerWidth: number
   contanierLeft: number
 
-  constructor(measureHeight: number, containerHeight: number, containerWidth: number, zoom: number, laneWidth: number) {
+  constructor(
+    measureHeight: number,
+    containerHeight: number,
+    containerWidth: number,
+    zoom: number,
+    laneWidth: number
+  ) {
     this.measureHeight = measureHeight
     this.containerHeight = containerHeight
     this.containerWidth = containerWidth
@@ -38,15 +44,16 @@ export class PositionManager {
     this.laneWidth = laneWidth
     this.laneAreaWidth = laneWidth * LANE_COUNT
 
-    this.contanierLeft = (this.containerWidth / 2 - (this.laneAreaWidth + 2 * MARGIN) / 2)
+    this.contanierLeft =
+      this.containerWidth / 2 - (this.laneAreaWidth + 2 * MARGIN) / 2
   }
 
   calcX(lane: number): number {
     return MARGIN + this.contanierLeft + (lane - 1) * this.laneWidth
   }
-  
+
   calcMidX(lane: number, width: number): number {
-    return this.calcX(lane) + this.laneWidth * width / 2
+    return this.calcX(lane) + (this.laneWidth * width) / 2
   }
 
   calcFixedX(lane: number): number {
@@ -54,7 +61,7 @@ export class PositionManager {
   }
 
   calcFixedMidX(lane: number, width: number): number {
-    return this.calcFixedX(lane) + this.laneWidth * width / 2
+    return this.calcFixedX(lane) + (this.laneWidth * width) / 2
   }
 
   calcLeft(): number {
@@ -70,7 +77,9 @@ export class PositionManager {
   }
 
   calcY(tick: number): number {
-    return this.containerHeight - (MARGIN_BOTTOM + tick * TICK_HEIGHT * this.zoom)
+    return (
+      this.containerHeight - (MARGIN_BOTTOM + tick * TICK_HEIGHT * this.zoom)
+    )
   }
 
   calcRawLane(x: number): number {
@@ -86,12 +95,16 @@ export class PositionManager {
   }
 
   calcRawTick(y: number): number {
-    const rawTick = (this.containerHeight - y - MARGIN_BOTTOM) / this.measureHeight * TICK_PER_MEASURE
+    const rawTick =
+      ((this.containerHeight - y - MARGIN_BOTTOM) / this.measureHeight) *
+      TICK_PER_MEASURE
     return Math.max(0, rawTick)
   }
-  
+
   calcRawTick2(y: number): number {
-    const rawTick = (this.containerHeight - y - 2 * MARGIN_BOTTOM) / this.measureHeight * TICK_PER_MEASURE
+    const rawTick =
+      ((this.containerHeight - y - 2 * MARGIN_BOTTOM) / this.measureHeight) *
+      TICK_PER_MEASURE
     return Math.max(0, rawTick)
   }
 
@@ -103,7 +116,12 @@ export class PositionManager {
     return snap(this.calcRawTick(y) + scrollTick, TICK_PER_MEASURE / snapTo)
   }
 
-  intersectRect(lane: number, width: number, tick: number, rect: IRect): boolean {
+  intersectRect(
+    lane: number,
+    width: number,
+    tick: number,
+    rect: IRect
+  ): boolean {
     const laneR = lane + width
     const top = this.calcRawTick(rect.top)
     const bottom = this.calcRawTick(rect.bottom)
@@ -116,19 +134,30 @@ export class PositionManager {
 export const position = writable<PositionManager>()
 
 export type LaneTick = {
-  lane: number,
-  tick: number,
+  lane: number
+  tick: number
 }
 
 export type Point = {
-  x: number,
+  x: number
   y: number
 }
 
-export type Cursor = LaneTick & { laneSide: number, rawTick: number, rawLane: number }
+export type Cursor = LaneTick & {
+  laneSide: number
+  rawTick: number
+  rawLane: number
+}
 export const cursor = writable<Cursor>({
-  lane: 0, tick: 0, laneSide: 0, rawTick: 0, rawLane: 0
+  lane: 0,
+  tick: 0,
+  laneSide: 0,
+  rawTick: 0,
+  rawLane: 0,
 })
-export const placing = writable<{ lane: number, width: number }>({ lane: 0, width: 0})
+export const placing = writable<{ lane: number; width: number }>({
+  lane: 0,
+  width: 0,
+})
 export const inside = writable<boolean>(false)
 export const pointer = writable<Point>({ x: 0, y: 0 })

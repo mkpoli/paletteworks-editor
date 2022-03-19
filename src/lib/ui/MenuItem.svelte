@@ -15,12 +15,14 @@
   export let disabled: boolean = false
   export let checked: boolean | undefined = undefined
   export let indeterminate: boolean | undefined = undefined
-  export let tooltip: {
-    placement: Placement
-    offset?: [number, number]
-    description?: string
-    keys?: Readonly<Readonly<string[]>[]> 
-  } | undefined = undefined
+  export let tooltip:
+    | {
+        placement: Placement
+        offset?: [number, number]
+        description?: string
+        keys?: Readonly<Readonly<string[]>[]>
+      }
+    | undefined = undefined
 
   // Functions
   import hotkeys from 'hotkeys-js'
@@ -31,10 +33,10 @@
   let subMenu: HTMLDivElement
 
   let altPressed: boolean
-  
-  import { createEventDispatcher } from "svelte"
+
+  import { createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher()
-  
+
   onMount(() => {
     menuInfo.items.push({ element, hasSubMenu })
   })
@@ -86,10 +88,7 @@
   menu={subMenu}
   bind:submenuOpened={menuInfo.submenuOpened}
 >
-  <div
-    class="menu-item"
-    role="menuitem"
-  >
+  <div class="menu-item" role="menuitem">
     <Button
       {icon}
       {disabled}
@@ -99,30 +98,44 @@
       {tooltip}
       bind:element
     >
-      <div>{@html text.replace(/&([A-Za-z])/, `<span style="text-decoration: ${altPressed ? 'underline' : 'none'};">$1</span>`)}</div>
+      <div>
+        {@html text.replace(
+          /&([A-Za-z])/,
+          `<span style="text-decoration: ${
+            altPressed ? 'underline' : 'none'
+          };">$1</span>`
+        )}
+      </div>
       {#if hasSubMenu}
         <Icon icon="ic:round-chevron-right" width="1.5em" class="chevron" />
       {/if}
       {#if checked !== undefined}
         {#if checked}
-          <Icon icon="mdi:checkbox-marked-circle" width="1.5em" class="chevron" />
+          <Icon
+            icon="mdi:checkbox-marked-circle"
+            width="1.5em"
+            class="chevron"
+          />
+        {:else if indeterminate}
+          <Icon
+            icon="mdi:checkbox-marked-circle-outline"
+            width="1.5em"
+            class="chevron"
+          />
         {:else}
-          {#if indeterminate}
-            <Icon icon="mdi:checkbox-marked-circle-outline" width="1.5em" class="chevron" />
-          {:else}
-            <Icon icon="mdi:checkbox-blank-circle-outline" width="1.5em" class="chevron" />
-          {/if}
+          <Icon
+            icon="mdi:checkbox-blank-circle-outline"
+            width="1.5em"
+            class="chevron"
+          />
         {/if}
       {/if}
     </Button>
   </div>
-  <slot slot="menu"/>
+  <slot slot="menu" />
 </MenuWrapper>
 
-<svelte:window
-  on:keydown={onkeydown}
-  on:keyup={onkeyup}
-/>
+<svelte:window on:keydown={onkeydown} on:keyup={onkeyup} />
 
 <style>
   .menu-item :global(button),
@@ -134,16 +147,12 @@
 
   .menu-item :global(button:hover:not([disabled])),
   .menu-item :global(a:hover:not(.disabled)) {
-    filter:
-      brightness(1.25)
-      drop-shadow(0 0 0.5em rgba(255, 255, 255, 1));
-    }
-    
+    filter: brightness(1.25) drop-shadow(0 0 0.5em rgba(255, 255, 255, 1));
+  }
+
   .menu-item :global(button:focus-visible:not([disabled])),
   .menu-item :global(a:focus-visible:not(.disabled)) {
-    filter:
-      brightness(1.25)
-      drop-shadow(0 0 0.5em rgba(255, 255, 255, 0.85));
+    filter: brightness(1.25) drop-shadow(0 0 0.5em rgba(255, 255, 255, 0.85));
     color: #000;
     outline: 2px solid #ffffff;
     background: linear-gradient(122deg, #ffc107, #ff8b00);
@@ -151,9 +160,7 @@
 
   .menu-item :global(button[disabled]),
   .menu-item :global(a.disabled) {
-    filter:
-      blur(0.5px)
-      brightness(.85);
+    filter: blur(0.5px) brightness(0.85);
   }
 
   .menu-item :global(.chevron) {

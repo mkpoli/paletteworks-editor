@@ -6,16 +6,16 @@
   import { createEventDispatcher, onMount, tick } from 'svelte'
 
   // UI Components
-  import Menu from "$lib/ui/Menu.svelte"
-  import MenuDivider from "$lib/ui/MenuDivider.svelte"
-  import MenuItem from "$lib/ui/MenuItem.svelte"
-  import MenuTrigger from "$lib/ui/MenuTrigger.svelte"
+  import Menu from '$lib/ui/Menu.svelte'
+  import MenuDivider from '$lib/ui/MenuDivider.svelte'
+  import MenuItem from '$lib/ui/MenuItem.svelte'
+  import MenuTrigger from '$lib/ui/MenuTrigger.svelte'
 
   const dispatch = createEventDispatcher<{
     rename: { name: string }
-    delete: void,
-    open: void,
-    select: void,
+    delete: void
+    open: void
+    select: void
     export: void
   }>()
 
@@ -48,18 +48,26 @@
       theme: 'meta',
       delay: [0, 0],
       followCursor: true,
-      plugins: [followCursor]
+      plugins: [followCursor],
     })
   })
 </script>
 
 <div
   class="project"
-  on:focus={() => { dispatch('select') }}
-  tabIndex=0
+  on:focus={() => {
+    dispatch('select')
+  }}
+  tabIndex="0"
   bind:this={container}
 >
-  <div class="preview" on:dblclick={() => { dispatch('open') }} bind:this={tooltipTarget}>
+  <div
+    class="preview"
+    on:dblclick={() => {
+      dispatch('open')
+    }}
+    bind:this={tooltipTarget}
+  >
     {#if project.preview}
       <img src={URL.createObjectURL(project.preview)} alt="Preview" />
     {/if}
@@ -74,7 +82,12 @@
       <dd>{project.updated}</dd>
     </dl>
   </div>
-  <div class="name" on:dblclick={() => { renaming = true }}>
+  <div
+    class="name"
+    on:dblclick={() => {
+      renaming = true
+    }}
+  >
     {#if renaming && selected}
       <input
         type="text"
@@ -94,29 +107,39 @@
 </div>
 
 <Menu bind:menu>
-  <MenuTrigger contextArea={container} menu={menu} />
+  <MenuTrigger contextArea={container} {menu} />
   <MenuItem
     icon="mdi:open-in-new"
     text={$LL.editor.menu.open()}
-    on:click={() => { dispatch('open') }}
+    on:click={() => {
+      dispatch('open')
+    }}
   />
-  <MenuDivider/>
+  <MenuDivider />
   <MenuItem
     icon="ic:sharp-edit"
     text={$LL.editor.menu.rename()}
-    on:click={async () => { renaming = true; await tick(); renameInput.focus() }}
+    on:click={async () => {
+      renaming = true
+      await tick()
+      renameInput.focus()
+    }}
   />
-  <MenuDivider/>
+  <MenuDivider />
   <MenuItem
     icon="mdi:export"
     text={$LL.editor.menu.export()}
-    on:click={() => { dispatch('export') }}
+    on:click={() => {
+      dispatch('export')
+    }}
   />
-  <MenuDivider/>
+  <MenuDivider />
   <MenuItem
     icon="ic:delete"
     text={$LL.editor.menu.delete()}
-    on:click={() => { dispatch('delete') }}
+    on:click={() => {
+      dispatch('delete')
+    }}
   />
 </Menu>
 
@@ -132,7 +155,7 @@
     color: var(--color-text-darker);
     flex-shrink: 0;
 
-    --color-selected: #007BF8;
+    --color-selected: #007bf8;
   }
 
   .project:hover {
@@ -179,7 +202,11 @@
     align-items: center;
     justify-content: center;
 
-    background: linear-gradient(122deg, rgba(116, 80, 244, 0.65) 0%, rgba(65, 78, 255, 0.65) 100%);
+    background: linear-gradient(
+      122deg,
+      rgba(116, 80, 244, 0.65) 0%,
+      rgba(65, 78, 255, 0.65) 100%
+    );
     padding: 0.5em 1em;
     color: var(--color-text-darker);
 

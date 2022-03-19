@@ -6,8 +6,11 @@
   const tabIndex = registerContent()
 </script>
 
-<div class={`tab-content ${$$props.class ?? ' '}`} class:hidden={$currentTab !== tabIndex}>
-  <slot></slot>
+<div
+  class={`tab-content ${$$props.class ?? ' '}`}
+  class:hidden={$currentTab !== tabIndex}
+>
+  <slot />
 </div>
 
 <style>

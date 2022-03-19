@@ -12,7 +12,13 @@
   import type PIXI from 'pixi.js'
 
   // Constants
-  import { MARGIN_BOTTOM, RESOLUTION, ZOOM_MIN, ZOOM_MAX, ZOOM_STEP } from '$lib/consts'
+  import {
+    MARGIN_BOTTOM,
+    RESOLUTION,
+    ZOOM_MIN,
+    ZOOM_MAX,
+    ZOOM_STEP,
+  } from '$lib/consts'
 
   // Functions
   import { getContext } from 'svelte'
@@ -26,7 +32,6 @@
   export let maxMeasure: number
   export let zoom: number
 
-
   // Contexts
   const app = getContext<PIXI.Application>('app')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
@@ -37,24 +42,41 @@
 
   function generateCanvas(resolution: number): HTMLCanvasElement {
     const measureHeight = $position.measureHeight
-    const fullHeight = MARGIN_BOTTOM + maxMeasure * measureHeight + measureHeight
+    const fullHeight =
+      MARGIN_BOTTOM + maxMeasure * measureHeight + measureHeight
     // const COLUMN_HEIGHT = snap(8192, measureHeight * RESOLUTION)
-    const COLUMN_HEIGHT = clamp(8192, snap(measureHeight * RESOLUTION, 8192), Infinity)
+    const COLUMN_HEIGHT = clamp(
+      8192,
+      snap(measureHeight * RESOLUTION, 8192),
+      Infinity
+    )
     // const COLUMN_HEIGHT = 8192
-    const columns = Math.ceil(fullHeight * RESOLUTION / COLUMN_HEIGHT) + 2
+    const columns = Math.ceil((fullHeight * RESOLUTION) / COLUMN_HEIGHT) + 2
     const COLUMN_WIDTH = app.renderer.width * 0.9
     const renderTexture = PIXI.RenderTexture.create({
-      width: COLUMN_WIDTH * columns, height: COLUMN_HEIGHT,
-      resolution
+      width: COLUMN_WIDTH * columns,
+      height: COLUMN_HEIGHT,
+      resolution,
     })
 
     for (let i = 0; i < columns; i++) {
       app.renderer.render(mainContainer, {
-        renderTexture, clear: false,
+        renderTexture,
+        clear: false,
         transform: new PIXI.Matrix(
-          RESOLUTION, 0, 0, RESOLUTION,
+          RESOLUTION,
+          0,
+          0,
+          RESOLUTION,
           i * COLUMN_WIDTH,
-          snap((i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION) + $scrollY * RESOLUTION, measureHeight * RESOLUTION) + measureHeight * RESOLUTION - innerHeight * RESOLUTION) //fullHeight - 2 * innerHeight
+          snap(
+            (i + 1) * (COLUMN_HEIGHT - measureHeight * RESOLUTION) +
+              $scrollY * RESOLUTION,
+            measureHeight * RESOLUTION
+          ) +
+            measureHeight * RESOLUTION -
+            innerHeight * RESOLUTION
+        ), //fullHeight - 2 * innerHeight
       })
     }
     const canvas = app.renderer.plugins.extract.canvas(renderTexture)
@@ -83,31 +105,29 @@
 </script>
 
 <Modal bind:opened>
-  <template slot="activator">
-
-  </template>
+  <template slot="activator" />
   <div slot="presentation">
     <h2>{$LL.editor.dialog.imageTitle()}</h2>
     <div class="close">
       <ClickableIcon
         icon="gridicons:cross"
         height="1.5em"
-        on:click={() => { opened = false }}
+        on:click={() => {
+          opened = false
+        }}
       />
     </div>
-    <div class="canvas-container" bind:this={container}></div>
+    <div class="canvas-container" bind:this={container} />
     <div class="zoom-container">
-      <ZoomIndicator
-        bind:zoom
-        min={ZOOM_MIN}
-        max={ZOOM_MAX}
-        step={ZOOM_STEP}
-      />
+      <ZoomIndicator bind:zoom min={ZOOM_MIN} max={ZOOM_MAX} step={ZOOM_STEP} />
     </div>
     <Button
       class="ok"
-      icon='ic:baseline-photo-camera'
-      on:click={async () => { downloadImage(); opened = false }}
+      icon="ic:baseline-photo-camera"
+      on:click={async () => {
+        downloadImage()
+        opened = false
+      }}
     >
       {$LL.editor.dialog.export()}
     </Button>
@@ -115,16 +135,16 @@
 </Modal>
 
 <style>
-  [slot=presentation] {
+  [slot='presentation'] {
     padding: 1em;
     display: grid;
     gap: 2em;
     grid-template-columns: repeat(7, 3em);
     grid-template-areas:
-      "h h h h . . x"
-      "t t t t t t z"
-      "t t t t t t z"
-      ". o o o o o ."
+      'h h h h . . x'
+      't t t t t t z'
+      't t t t t t z'
+      '. o o o o o .';
   }
 
   .close {
@@ -138,13 +158,13 @@
     margin: 0;
   }
 
-  [slot=presentation] :global(.ok) {
+  [slot='presentation'] :global(.ok) {
     grid-area: o;
 
-    background: linear-gradient(180deg, #009C70 0%, #008080 100%);
+    background: linear-gradient(180deg, #009c70 0%, #008080 100%);
   }
 
-  [slot=presentation] .canvas-container {
+  [slot='presentation'] .canvas-container {
     grid-area: t;
     height: 50vh;
     overflow-x: auto;

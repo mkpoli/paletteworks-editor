@@ -5,15 +5,12 @@
   import { getContext, onMount } from 'svelte'
 
   // Types
-  import type PIXI from 'pixi.js' 
+  import type PIXI from 'pixi.js'
   import type { Mode } from '$lib/editing/modes'
 
   // Consts
   import COLORS from '$lib/colors'
-  import {
-    TEXT_MARGIN,
-    Z_INDEX,
-  } from '$lib/consts'
+  import { TEXT_MARGIN, Z_INDEX } from '$lib/consts'
   import { FLICK_TYPES } from '$lib/score/beatmap'
   import { MODE_FLOATING_TEXTURES } from '$lib/editing/modes'
   import { drawDashedLine } from './renderer'
@@ -33,7 +30,8 @@
   import { hasFlick } from '$lib/score/beatmap'
 
   // Contexts
-  const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+  const TEXTURES =
+    getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
   const mainContainer = getContext<PIXI.Container>('mainContainer')
 
@@ -85,14 +83,13 @@
   // Draw BPM
   $: if (graphics && PIXI && PIXI.BitmapFont.available['Font']) {
     drawFloatingBPM(
-      currentMode, $position.calcY($cursor.tick),
+      currentMode,
+      $position.calcY($cursor.tick),
       bpms.has($cursor.tick)
     )
   }
 
-  function drawFloatingBPM(
-    currentMode: Mode, y: number, hasBPM: boolean
-  ) {
+  function drawFloatingBPM(currentMode: Mode, y: number, hasBPM: boolean) {
     graphics.clear()
     graphics.removeChildren()
 
@@ -105,7 +102,10 @@
           tint: COLORS.COLOR_BPM,
         })
         text.anchor.set(0.5, 0.5)
-        text.setTransform(x + $position.laneAreaWidth + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
+        text.setTransform(
+          x + $position.laneAreaWidth + 3 * TEXT_MARGIN,
+          hasBPM ? y + 25 : y
+        )
         graphics.addChild(text)
 
         if (!hasBPM) {
@@ -120,7 +120,10 @@
           tint: COLORS.COLOR_TIME_SIGNATURE,
         })
         text.anchor.set(0.5, 0.5)
-        text.setTransform($position.calcX(1) + $position.laneAreaWidth + 3 * TEXT_MARGIN, hasBPM ? y + 25 : y)
+        text.setTransform(
+          $position.calcX(1) + $position.laneAreaWidth + 3 * TEXT_MARGIN,
+          hasBPM ? y + 25 : y
+        )
         graphics.addChild(text)
 
         if (!hasBPM) {
@@ -136,10 +139,12 @@
   $: width = $hoveringNote ? $hoveringNote.width : $placing.width
   $: tick = $hoveringNote ? $hoveringNote.tick : $cursor.tick
 
-  $: hoveringNoteFlick = $hoveringNote && hasFlick($hoveringNote) ? $hoveringNote.flick : 'no'
-  $: flick = currentMode === 'flick'
-          ? FLICK_TYPES.rotateNext(hoveringNoteFlick)
-          : hoveringNoteFlick
+  $: hoveringNoteFlick =
+    $hoveringNote && hasFlick($hoveringNote) ? $hoveringNote.flick : 'no'
+  $: flick =
+    currentMode === 'flick'
+      ? FLICK_TYPES.rotateNext(hoveringNoteFlick)
+      : hoveringNoteFlick
 </script>
 
 {#if isMounted}

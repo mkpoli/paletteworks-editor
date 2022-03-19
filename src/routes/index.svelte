@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
+  import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
   import Icon from '@iconify/svelte'
 
   import screenshot from '$assets/homepage/screenshot.png'
@@ -13,52 +13,61 @@
 </svelte:head>
 
 <header>
-  <h1><img src="/favicon.png" alt="Logo" class="logo"/>PaletteWorks Editor</h1>
+  <h1><img src="/favicon.png" alt="Logo" class="logo" />PaletteWorks Editor</h1>
   <nav>
     <a href="/edit">CREATE NOW</a>
     <a href="#functionality">FEATURES</a>
-    <a href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks">COMMUNITY</a>
+    <a
+      href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks"
+    >COMMUNITY</a
+    >
   </nav>
 </header>
 <main>
-<section class="description">
-  <div class="container">
-    <h2>PaletteWorks Editor とは</h2>
-    <p>PaletteWorks Editor とは創作譜面ファンの中から生まれた新世代の譜面エディター。使いやすさを第一の目標として職人が手掛けたツール。編集を自由自在に行えるこのツールで、スムーズで一流な譜面制作体験を提供します。</p>
-    <a class="button" href="/edit">今すぐ始める</a>
-    <img src={screenshot} alt="screenshot"/>
-  </div>
-</section>
+  <section class="description">
+    <div class="container">
+      <h2>PaletteWorks Editor とは</h2>
+      <p>
+        PaletteWorks Editor
+        とは創作譜面ファンの中から生まれた新世代の譜面エディター。使いやすさを第一の目標として職人が手掛けたツール。編集を自由自在に行えるこのツールで、スムーズで一流な譜面制作体験を提供します。
+      </p>
+      <a class="button" href="/edit">今すぐ始める</a>
+      <img src={screenshot} alt="screenshot" />
+    </div>
+  </section>
 
-<section id="functionality">
-  <div class="container">
-    <h2><Icon icon="mdi:draw"/>編集機能</h2>
-    <img src={editing} alt="editing"/>
-    <p>基本な編集機能を直感的にリニューアル！多種多様なノーツをシンプルに配置・削除・変更できるのみならず、コピーペースト機能・選択機能・ミラー機能などの便利機能も備えており、効率を倍増できます。</p>
+  <section id="functionality">
+    <div class="container">
+      <h2><Icon icon="mdi:draw" />編集機能</h2>
+      <img src={editing} alt="editing" />
+      <p>
+        基本な編集機能を直感的にリニューアル！多種多様なノーツをシンプルに配置・削除・変更できるのみならず、コピーペースト機能・選択機能・ミラー機能などの便利機能も備えており、効率を倍増できます。
+      </p>
 
-    <h2><Icon icon="mdi:file-chart"/>SUS譜面の入出力</h2>
-    <img src={filesupport} alt="filesupport"/>
-    <p>SUS (Sliding Universal Score) ファイルの入出力を最初からファーストクラスとし、そのまま Sonolus などでプレイ可能。更に譜面を画像として出力することもでき、譜面制作者コミュニティで簡単にシェアや交流が可能。</p>
+      <h2><Icon icon="mdi:file-chart" />SUS譜面の入出力</h2>
+      <img src={filesupport} alt="filesupport" />
+      <p>
+        SUS (Sliding Universal Score)
+        ファイルの入出力を最初からファーストクラスとし、そのまま Sonolus
+        などでプレイ可能。更に譜面を画像として出力することもでき、譜面制作者コミュニティで簡単にシェアや交流が可能。
+      </p>
 
-    <h2><Icon icon="mdi:headphones"/>音声の同時視聴</h2>
-    <img src={soundeffects} alt="soundeffects"/>
-    <p>BGMの音楽を聞きながら編集することができるだけではなく、SE付きの音声によってまるでゲームをプレイしながらの制作が可能。</p>
-  </div>
-</section>
+      <h2><Icon icon="mdi:headphones" />音声の同時視聴</h2>
+      <img src={soundeffects} alt="soundeffects" />
+      <p>
+        BGMの音楽を聞きながら編集することができるだけではなく、SE付きの音声によってまるでゲームをプレイしながらの制作が可能。
+      </p>
+    </div>
+  </section>
 
-<section class="contact">
-
-</section>
+  <section class="contact" />
 </main>
-
 
 <footer>
   <div class="container">
-    <div class="copyright">
-      🄫 mkpoli
-    </div>
+    <div class="copyright">🄫 mkpoli</div>
     <div class="social">
-      <ClickableIcon icon="logos:twitter" href="https://twitter.com/_mkpoli/"/>
+      <ClickableIcon icon="logos:twitter" href="https://twitter.com/_mkpoli/" />
     </div>
   </div>
 </footer>
@@ -91,7 +100,7 @@
   }
 
   h1 {
-    gap: .5em;
+    gap: 0.5em;
     font-family: 'Jura';
     font-size: 2em;
     display: flex;
@@ -105,7 +114,7 @@
     font-family: 'Jura';
     font-size: 1.5em;
     font-weight: bolder;
-    transition: color .2s ease-in-out;
+    transition: color 0.2s ease-in-out;
   }
 
   nav a:visited {
@@ -206,7 +215,7 @@
     height: 15em;
     border-radius: 1em;
     box-shadow: 0 0 10px #2980d7;
-    transition: transform .2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
   }
 
   section#functionality > .container > img:hover {
@@ -250,7 +259,7 @@
   }
 
   footer :global(a) {
-    transition: .2s;
+    transition: 0.2s;
   }
 
   footer :global(a:hover) {

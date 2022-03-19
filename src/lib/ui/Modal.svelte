@@ -1,8 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher, onMount, tick } from 'svelte'
   const dispatch = createEventDispatcher<{
-    opened: void,
-    closed: void,
+    opened: void
+    closed: void
   }>()
 
   import * as focusTrap from 'focus-trap'
@@ -10,8 +10,10 @@
   import type { FocusTrap } from 'focus-trap'
 
   import hotkeys from 'hotkeys-js'
-  hotkeys('esc', () => { opened = false })
- 
+  hotkeys('esc', () => {
+    opened = false
+  })
+
   export let opened: boolean
   $: if (opened) {
     tick().then(() => {
@@ -35,16 +37,27 @@
   })
 </script>
 
-<div class="modal-container" class:hidden={!opened} bind:this={container} tabindex="-1">
-  <div class="modal-overlay" aria-hidden={true} on:click={() => { opened = false }}></div>
+<div
+  class="modal-container"
+  class:hidden={!opened}
+  bind:this={container}
+  tabindex="-1"
+>
+  <div
+    class="modal-overlay"
+    aria-hidden={true}
+    on:click={() => {
+      opened = false
+    }}
+  />
   <div class="modal-dialog">
     {#if opened}
-      <slot name="presentation"></slot>
+      <slot name="presentation" />
     {/if}
   </div>
 </div>
 
-<slot name="activator"></slot>
+<slot name="activator" />
 
 <style>
   .modal-container {

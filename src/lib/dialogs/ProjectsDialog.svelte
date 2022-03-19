@@ -3,39 +3,44 @@
   import LL from '$i18n/i18n-svelte'
 
   // UI Components
-  import Button from "$lib/ui/Button.svelte"
-  import ClickableIcon from "$lib/ui/ClickableIcon.svelte"
-  import Icon from "@iconify/svelte"
+  import Button from '$lib/ui/Button.svelte'
+  import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
+  import Icon from '@iconify/svelte'
 
-  import Modal from "$lib/ui/Modal.svelte"
-  import TextInput from "$lib/ui/TextInput.svelte"
+  import Modal from '$lib/ui/Modal.svelte'
+  import TextInput from '$lib/ui/TextInput.svelte'
   import ProjectCard from '$lib/dialogs/ProjectCard.svelte'
 
   import { confirm } from '$lib/dialogs'
 
   // Events
-  import { createEventDispatcher, tick } from "svelte"
+  import { createEventDispatcher, tick } from 'svelte'
   const dispatch = createEventDispatcher<{
-    open: { project: Project },
-    new: void,
-    openfile: void,
-    cancel: void,
+    open: { project: Project }
+    new: void
+    openfile: void
+    cancel: void
     delete: {
-      id: number,
-      name: string | null,
+      id: number
+      name: string | null
     }
   }>()
 
   export let opened: boolean
   export let currentProject: Project | null
 
-  import { db, projects as projectObservable, PROJECT_FILE_EXTENSION, seriliseProject } from '$lib/database'
+  import {
+    db,
+    projects as projectObservable,
+    PROJECT_FILE_EXTENSION,
+    seriliseProject,
+  } from '$lib/database'
   import type { Project } from '$lib/database'
 
   import { download } from '$lib/basic/file'
 
   let projects: Project[] = []
-  $: projects = ($projectObservable as Project[] ?? [])
+  $: projects = ($projectObservable as Project[]) ?? []
 
   $: if ($projectObservable) {
     if (projects.length == 0) {
@@ -49,7 +54,11 @@
   import hotkeys from 'hotkeys-js'
 
   hotkeys('enter', (event) => {
-    if (opened && selected !== null && container.contains(document.activeElement)) {
+    if (
+      opened &&
+      selected !== null &&
+      container.contains(document.activeElement)
+    ) {
       event.preventDefault()
       dispatch('open', { project: selected })
       opened = false
@@ -73,7 +82,14 @@
   })
 
   async function ondelete() {
-    if (selected && await confirm($LL.editor?.messages?.deleteConfirm() + '\n\n' + (selected.name ?? 'Untitled'))) {
+    if (
+      selected &&
+      (await confirm(
+        $LL.editor?.messages?.deleteConfirm() +
+          '\n\n' +
+          (selected.name ?? 'Untitled')
+      ))
+    ) {
       const { id, name } = selected
       if (id) dispatch('delete', { id, name })
     }
@@ -81,7 +97,7 @@
 
   let selected: Project | null = null
 
-  let searchKeyword: string = ""
+  let searchKeyword: string = ''
 
   const elements: HTMLDivElement[] = []
 
@@ -97,7 +113,8 @@
   }
 
   async function ondialogopened() {
-    const project = projects.find(project => project.id === currentProject?.id) ?? null
+    const project =
+      projects.find((project) => project.id === currentProject?.id) ?? null
     if (project) {
       elements[projects.indexOf(project)]?.focus()
     } else {
@@ -105,8 +122,12 @@
     }
   }
 
-  $: filtered = projects.filter(({ name }) => searchKeyword ? (name?.toLocaleLowerCase().includes(searchKeyword.toLocaleLowerCase()) ?? 'Untitled') : true)
-
+  $: filtered = projects.filter(({ name }) =>
+    searchKeyword
+      ? name?.toLocaleLowerCase().includes(searchKeyword.toLocaleLowerCase()) ??
+        'Untitled'
+      : true
+  )
 </script>
 
 <Modal
@@ -125,16 +146,15 @@
         <ClickableIcon
           icon="gridicons:cross"
           height="1.5em"
-          on:click={() => { dispatch('cancel'); opened = false }}
+          on:click={() => {
+            dispatch('cancel')
+            opened = false
+          }}
         />
       {/if}
     </div>
-    <TextInput
-      class="search"
-      type="search"
-      bind:value={searchKeyword}
-    >
-      <Icon slot="head" icon="ic:outline-search"/>
+    <TextInput class="search" type="search" bind:value={searchKeyword}>
+      <Icon slot="head" icon="ic:outline-search" />
       <span slot="tail">{filtered?.length ?? 0}/{projects?.length ?? 0}</span>
     </TextInput>
     <div class="project-container" bind:this={container}>
@@ -154,7 +174,10 @@
             selected = project
           }}
           on:export={async () => {
-            await download(await seriliseProject(project), project.name + PROJECT_FILE_EXTENSION)
+            await download(
+              await seriliseProject(project),
+              project.name + PROJECT_FILE_EXTENSION
+            )
           }}
           bind:container={elements[index]}
         />
@@ -178,13 +201,13 @@
         opened = false
       }}
     >
-    {$LL.editor.dialog.new()}
+      {$LL.editor.dialog.new()}
     </Button>
   </div>
 </Modal>
 
 <style>
-  [slot=presentation] {
+  [slot='presentation'] {
     padding: 1em;
     display: grid;
     gap: 2em;
@@ -192,12 +215,12 @@
     grid-template-columns: repeat(6, 3.2em);
     grid-template-rows: repeat(5, 3.2em);
     grid-template-areas:
-      "h h h . . x"
-      "s s s s s s"
-      "t t t t t t"
-      "t t t t t t"
-      "t t t t t t"
-      "p p p o o o"
+      'h h h . . x'
+      's s s s s s'
+      't t t t t t'
+      't t t t t t'
+      't t t t t t'
+      'p p p o o o';
   }
 
   .close {
@@ -211,14 +234,14 @@
     margin: 0;
   }
 
-  [slot=presentation] :global(.open) {
+  [slot='presentation'] :global(.open) {
     grid-area: p;
   }
-  [slot=presentation] :global(.search) {
+  [slot='presentation'] :global(.search) {
     grid-area: s;
   }
 
-  [slot=presentation] :global(.new) {
+  [slot='presentation'] :global(.new) {
     grid-area: o;
   }
 

@@ -9,7 +9,7 @@ export const DEFAULT_PREFERENCES = {
   minimapEnabled: true,
   laneWidth: 26,
   multiTapWarningEnabled: true,
-  fileSaveName: '{project}-{datetime}.sus'
+  fileSaveName: '{project}-{datetime}.sus',
 }
 
 export type Preferences = typeof DEFAULT_PREFERENCES
@@ -19,6 +19,6 @@ export const preferences = writable<Preferences>(DEFAULT_PREFERENCES)
 preferencesFromDatabase.subscribe((value) => {
   preferences.set({
     ...DEFAULT_PREFERENCES,
-    ...value
+    ...value,
   })
 })

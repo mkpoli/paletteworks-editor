@@ -14,8 +14,11 @@
 </script>
 
 <div
-  class="debug-display" class:hidden
-  on:dblclick={() => { hidden = true }}
+  class="debug-display"
+  class:hidden
+  on:dblclick={() => {
+    hidden = true
+  }}
   on:pointerdown={(e) => {
     if (e.button === 0) {
       const { left, top } = debugDisplay.getBoundingClientRect()
@@ -29,8 +32,8 @@
   }}
   bind:this={debugDisplay}
 >
-  {#each [...$debugInfo.entries()] as [title, value] }
-    <span class="title" title={title}>{title}</span>
+  {#each [...$debugInfo.entries()] as [title, value]}
+    <span class="title" {title}>{title}</span>
     <span class="value">{value}</span>
   {/each}
 </div>

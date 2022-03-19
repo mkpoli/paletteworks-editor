@@ -1,6 +1,6 @@
 # PaletteWorks Editor
 
-This is a score editor for *Project Sekai: Colorful Stage feat. Hatsune Miku*. It aims to provide a better user experience to create custom maps.
+This is a score editor for _Project Sekai: Colorful Stage feat. Hatsune Miku_. It aims to provide a better user experience to create custom maps.
 
 「プロジェクトセカイ カラフルステージ！ feat. 初音ミク」の譜面エディターです。創作譜面をより作りやすくすることを目指しているものであります。
 
@@ -18,6 +18,7 @@ pnpm run typesafe-i18n
 ```
 
 ### Tauri Build
+
 ```bash
 pnpm run tauri dev
 ```
@@ -40,9 +41,11 @@ pnpm run tauri dev
 ## Acknowledgements / 謝辞 / 致謝 / 사사(謝辭)
 
 ### Inspiration / インスピレーション / 啓發 / 영감(靈感)
+
 - [Ched](https://github.com/paralleltree/Ched)
 
 ### Special Thanks / スペシャルサンクス / 特別感謝 / 특별히 감사 (特別히 感謝)
+
 - ![Avatar of Burrito](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/47196038?v=4&h=50&w=50&fit=cover&mask=circle&maxage=7d) [Burrito](https://github.com/NonSpicyBurrito) ![IBWT](https://cdn.discordapp.com/emojis/710979426623422594.png?size=128)
 - ![Avatar of 紫式部](https://images.weserv.nl/?url=user-images.githubusercontent.com/3502597/147320524-2e62a933-5423-4467-b65d-393286b89fcd.png&h=50&w=50&fit=cover&mask=circle&maxage=7d) [紫式部](https://twitter.com/purplepalettech)
 - ![Avatar of お窓](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/17107514?v=4&h=50&w=50&fit=cover&mask=circle&maxage=7d) [お窓](https://github.com/Dosugamea)
@@ -55,6 +58,7 @@ pnpm run tauri dev
 and many others from 紫式部 / Sonolus Discord ...
 
 ### Contributors / コントリビューター / 貢獻者 / 기여자(寄與者)
+
 <a href="https://github.com/mkpoli/paletteworks-editor/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=mkpoli/paletteworks-editor" />
 </a>

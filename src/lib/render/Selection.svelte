@@ -23,7 +23,11 @@
     mainContainer.removeChild(graphics)
   })
 
-  function draw(graphics: PIXI.Graphics, rect: PIXI.Rectangle, dragging: boolean) {
+  function draw(
+    graphics: PIXI.Graphics,
+    rect: PIXI.Rectangle,
+    dragging: boolean
+  ) {
     graphics.clear()
 
     if (dragging) {

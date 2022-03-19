@@ -1,23 +1,29 @@
 <script lang="ts">
   // Types
-  import type { Slide as SlideType, SlideStep, Note as NoteType, SlideTail, SlideHead } from "$lib/score/beatmap"
+  import type {
+    Slide as SlideType,
+    SlideStep,
+    Note as NoteType,
+    SlideTail,
+    SlideHead,
+  } from '$lib/score/beatmap'
 
   // Components
   import Single from '$lib/render/Single.svelte'
   import SlidePath from '$lib/render/SlidePath.svelte'
   import SlideSteps from '$lib/render/SlideSteps.svelte'
-  
+
   // Events
-  import { createEventDispatcher } from "svelte"
+  import { createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher<{
     pathclick: { slide: SlideType }
     pathrightclick: { slide: SlideType }
-    stepclick: { note: SlideStep, slide: SlideType },
-    dblclick: { note: NoteType },
-    tailclick: { note: SlideTail },
-    headclick: { note: SlideHead },
-    pointerenter: { note: NoteType },
-    pointerleave: void,
+    stepclick: { note: SlideStep; slide: SlideType }
+    dblclick: { note: NoteType }
+    tailclick: { note: SlideTail }
+    headclick: { note: SlideHead }
+    pointerenter: { note: NoteType }
+    pointerleave: void
   }>()
 
   // Props
@@ -25,11 +31,11 @@
   export let stepsVisible: boolean
   export let moving: boolean = false
   export let floating: boolean = false
-  
+
   $: ({ head, tail, critical, steps } = slide)
 
   function onstepclick(event: CustomEvent<{ note: NoteType }>) {
-    dispatch('stepclick', { note: event.detail.note as SlideStep, slide  }) 
+    dispatch('stepclick', { note: event.detail.note as SlideStep, slide })
   }
 </script>
 
@@ -39,9 +45,15 @@
   {critical}
   {floating}
   {moving}
-  on:click={() => { dispatch('pathclick', { slide }) }}
-  on:rightclick={() => { dispatch('pathrightclick', { slide }) }}
-  on:dblclick={() => { dispatch('dblclick', { note: slide.head })}}
+  on:click={() => {
+    dispatch('pathclick', { slide })
+  }}
+  on:rightclick={() => {
+    dispatch('pathrightclick', { slide })
+  }}
+  on:dblclick={() => {
+    dispatch('dblclick', { note: slide.head })
+  }}
 />
 
 <!-- SLIDE HEAD -->
@@ -51,11 +63,17 @@
   {critical}
   {floating}
   {moving}
-  on:click={() => { dispatch('headclick', { note: head }) }}
+  on:click={() => {
+    dispatch('headclick', { note: head })
+  }}
   on:rightclick
   on:dblclick
-  on:pointerenter={() => { dispatch('pointerenter', { note: head })}}
-  on:pointerleave={() => { dispatch('pointerleave') }}
+  on:pointerenter={() => {
+    dispatch('pointerenter', { note: head })
+  }}
+  on:pointerleave={() => {
+    dispatch('pointerleave')
+  }}
 />
 
 <!-- SLIDE STEPS -->
@@ -66,7 +84,9 @@
   {moving}
   on:rightclick
   on:dblclick
-  on:click={(event) => { onstepclick(event) }}
+  on:click={(event) => {
+    onstepclick(event)
+  }}
 />
 
 <!-- SLIDE END -->
@@ -76,9 +96,15 @@
   {critical}
   {floating}
   {moving}
-  on:click={() => { dispatch('tailclick', { note: tail }) }}
+  on:click={() => {
+    dispatch('tailclick', { note: tail })
+  }}
   on:dblclick
   on:rightclick
-  on:pointerenter={() => { dispatch('pointerenter', { note: tail })}}
-  on:pointerleave={() => { dispatch('pointerleave') }}
+  on:pointerenter={() => {
+    dispatch('pointerenter', { note: tail })
+  }}
+  on:pointerleave={() => {
+    dispatch('pointerleave')
+  }}
 />

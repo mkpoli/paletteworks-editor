@@ -4,7 +4,7 @@
 
   // Stores
   import { cursor, position } from '$lib/position'
-  import { dragging } from "$lib/editing/playhead"
+  import { dragging } from '$lib/editing/playhead'
 
   // Functions
   import { getContext, onDestroy, onMount } from 'svelte'
@@ -51,7 +51,7 @@
   $: graphics && drawPlayhead($position.calcX(1), $position.calcY(currentTick))
 
   import playheadImage from '$assets/playhead.png'
-  import { drawDashedLine } from "./renderer"
+  import { drawDashedLine } from './renderer'
   function drawPlayhead(x: number, y: number) {
     graphics.clear()
     graphics.removeChildren()
@@ -61,6 +61,6 @@
     playhead.setTransform(x, y)
     graphics.addChild(playhead)
     drawDashedLine(graphics, x, y, x + $position.laneAreaWidth, y, 2, 2)
-    return 
+    return
   }
 </script>

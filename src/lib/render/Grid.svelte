@@ -5,7 +5,7 @@
     TEXT_MARGIN,
     TICK_PER_BEAT,
     TICK_PER_MEASURE,
-    Z_INDEX
+    Z_INDEX,
   } from '$lib/consts'
 
   // Functions
@@ -61,7 +61,7 @@
     let accumulatedTicks = 0
     let accumulatedMeasures = 0
     ;[...timeSignatures].forEach(([measure, [p, q]], ind, arr) => {
-      const beatsPerMeasure = p / q * 4
+      const beatsPerMeasure = (p / q) * 4
       const tickPerMeasure = beatsPerMeasure * TICK_PER_BEAT
 
       const [nextMeasure] = arr[ind + 1] ?? [maxMeasure + 1]
@@ -70,7 +70,8 @@
       const intervalTicks = (nextMeasure - measure) * tickPerMeasure
       accumulatedTicks += intervalTicks
 
-      const maxT = Math.ceil((maxTick - startTick) / tickPerMeasure) * tickPerMeasure
+      const maxT =
+        Math.ceil((maxTick - startTick) / tickPerMeasure) * tickPerMeasure
 
       for (let tick = 0; tick < intervalTicks; tick++) {
         const y = position.calcY(startTick + tick)
@@ -82,7 +83,7 @@
           // const number = (accumulatedBeats + i) / beatsPerMeasure
           const text = new PIXI.BitmapText(`#${accumulatedMeasures + 1}`, {
             fontName: 'Font',
-            tint: 0xFFFFFF,
+            tint: 0xffffff,
           })
           accumulatedMeasures += 1
           text.x = left - TEXT_MARGIN
@@ -93,11 +94,21 @@
         } else if (tick < maxT && tick % (tickPerMeasure / p) === 0) {
           graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
           graphics.moveTo(left + $preferences.laneWidth, y)
-          graphics.lineTo(left + position.laneAreaWidth - $preferences.laneWidth, y)
-        } else if (tick < maxT && snapTo < 192 && tick % (tickPerMeasure / p / snapTo * 4) === 0) {
+          graphics.lineTo(
+            left + position.laneAreaWidth - $preferences.laneWidth,
+            y
+          )
+        } else if (
+          tick < maxT &&
+          snapTo < 192 &&
+          tick % ((tickPerMeasure / p / snapTo) * 4) === 0
+        ) {
           graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
           graphics.moveTo(left + $preferences.laneWidth, y)
-          graphics.lineTo(left + position.laneAreaWidth - $preferences.laneWidth, y)
+          graphics.lineTo(
+            left + position.laneAreaWidth - $preferences.laneWidth,
+            y
+          )
         }
       }
     })
@@ -113,7 +124,10 @@
         graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
       }
       graphics.moveTo(x, innerHeight)
-      graphics.lineTo(x, position.calcY(accumulatedTicks - TICK_PER_MEASURE) - MARGIN_BOTTOM)
+      graphics.lineTo(
+        x,
+        position.calcY(accumulatedTicks - TICK_PER_MEASURE) - MARGIN_BOTTOM
+      )
     }
   }
 </script>

@@ -4,7 +4,7 @@ import { initAcceptLanguageHeaderDetector } from 'typesafe-i18n/detectors'
 
 const getHeaders = (event: RequestEvent) => {
   const headers: Record<string, string> = {}
-  event.request.headers.forEach((value, key) => headers[key] = value)
+  event.request.headers.forEach((value, key) => { headers[key] = value })
 
   return headers
 }

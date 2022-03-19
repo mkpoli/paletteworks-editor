@@ -26,7 +26,7 @@
   $: skills && drawSkills(skills, $position)
 
   function drawSkills(skills: Set<number>, position: PositionManager) {
-    [...skillSprites.entries()].forEach(([skill, sprite]) => {
+    ;[...skillSprites.entries()].forEach(([skill, sprite]) => {
       if (!skills.has(skill)) {
         mainContainer.removeChild(sprite)
         skillSprites.delete(skill)
@@ -36,7 +36,9 @@
     const left = position.calcLeft()
 
     skills.forEach((skill) => {
-      const sprite = skillSprites.get(skill) ?? skillSprites.set(skill, new PIXI.Sprite(TEXTURE)).get(skill)!
+      const sprite =
+        skillSprites.get(skill) ??
+        skillSprites.set(skill, new PIXI.Sprite(TEXTURE)).get(skill)!
       sprite.scale.set(0.5)
       sprite.anchor.set(0, 0.5)
       sprite.zIndex = Z_INDEX.GAMESCRIPT

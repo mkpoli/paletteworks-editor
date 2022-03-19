@@ -1,11 +1,6 @@
 <script lang="ts">
   // Constants
-  import {
-    COLORS,
-    TEXT_MARGIN,
-    TICK_PER_BEAT,
-    Z_INDEX
-  } from '$lib/consts'
+  import { COLORS, TEXT_MARGIN, TICK_PER_BEAT, Z_INDEX } from '$lib/consts'
 
   // Functions
   import { position, PositionManager } from '$lib/position'
@@ -36,9 +31,16 @@
     mainContainer.removeChild(graphics)
   })
 
-  $: graphics && PIXI && PIXI.BitmapFont.available['Font'] && drawBPMs($position, bpms, timeSignatures)
+  $: graphics &&
+    PIXI &&
+    PIXI.BitmapFont.available['Font'] &&
+    drawBPMs($position, bpms, timeSignatures)
 
-  function drawBPMs(position: PositionManager, bpms: Map<number, number>, timeSignatures: Map<number, [number, number]>) {
+  function drawBPMs(
+    position: PositionManager,
+    bpms: Map<number, number>,
+    timeSignatures: Map<number, [number, number]>
+  ) {
     graphics.clear()
     graphics.removeChildren()
 
@@ -54,34 +56,46 @@
       graphics.lineTo(left + position.laneAreaWidth, newY)
 
       // Draw BPM Texts
-      const text = graphics.addChild(new PIXI.BitmapText(`♩=${bpm}`, {
-        tint: COLORS.COLOR_BPM,
-        fontName: 'Font',
-      }))
+      const text = graphics.addChild(
+        new PIXI.BitmapText(`♩=${bpm}`, {
+          tint: COLORS.COLOR_BPM,
+          fontName: 'Font',
+        })
+      )
       text.anchor.set(0.5, 0.5)
 
-      text.setTransform(left + position.laneAreaWidth + $preferences.laneWidth + TEXT_MARGIN, newY)
+      text.setTransform(
+        left + position.laneAreaWidth + $preferences.laneWidth + TEXT_MARGIN,
+        newY
+      )
     })
 
     graphics.lineStyle(1, COLORS.COLOR_TIME_SIGNATURE, 0.95)
     let accumulatedTicks = 0
     // Draw Time Signatures
-    ;[...timeSignatures].forEach(([measure, [beatPerMeasure, beatLength]], ind, arr) => {
-      const [nextMeasure] = arr[ind + 1] ?? [Infinity]
+    ;[...timeSignatures].forEach(
+      ([measure, [beatPerMeasure, beatLength]], ind, arr) => {
+        const [nextMeasure] = arr[ind + 1] ?? [Infinity]
 
-      const newY = position.calcY(accumulatedTicks)
-      accumulatedTicks += (nextMeasure - measure) * (beatPerMeasure / beatLength * 4) * TICK_PER_BEAT
+        const newY = position.calcY(accumulatedTicks)
+        accumulatedTicks +=
+          (nextMeasure - measure) *
+          ((beatPerMeasure / beatLength) * 4) *
+          TICK_PER_BEAT
 
-      // Draw Time Signature LINES
-      graphics.moveTo(left, newY)
-      graphics.lineTo(left + position.laneAreaWidth, newY)
-      // Draw Time Signature Texts
-      const text = graphics.addChild(new PIXI.BitmapText(`${beatPerMeasure}/${beatLength}`, {
-        tint: COLORS.COLOR_TIME_SIGNATURE,
-        fontName: 'Font',
-      }))
-      text.anchor.set(0.5, 0.5)
-      text.setTransform(left - 2 * TEXT_MARGIN, newY - 30)
-    })
+        // Draw Time Signature LINES
+        graphics.moveTo(left, newY)
+        graphics.lineTo(left + position.laneAreaWidth, newY)
+        // Draw Time Signature Texts
+        const text = graphics.addChild(
+          new PIXI.BitmapText(`${beatPerMeasure}/${beatLength}`, {
+            tint: COLORS.COLOR_TIME_SIGNATURE,
+            fontName: 'Font',
+          })
+        )
+        text.anchor.set(0.5, 0.5)
+        text.setTransform(left - 2 * TEXT_MARGIN, newY - 30)
+      }
+    )
   }
 </script>

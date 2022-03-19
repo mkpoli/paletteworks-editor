@@ -10,7 +10,7 @@ declare global {
   interface Array<T = number> {
     closest(num: T, smaller?: boolean): T | undefined
   }
-  
+
   interface ReadonlyArray<T> {
     pairwise(): [T, T][]
     rotateNext(cur: T): T
@@ -30,7 +30,12 @@ Array.prototype.rotatePrev = function rotatePrev<T>(cur: T): T {
   return this[(this.indexOf(cur) - 1 + this.length) % this.length]
 }
 
-Array.prototype.closest = function closest(num: number, smaller = true): number | undefined {
+Array.prototype.closest = function closest(
+  num: number,
+  smaller = true
+): number | undefined {
   const sorted = [...this].sort((a, b) => a - b)
-  return (smaller ? sorted.reverse() : sorted).find(e => (smaller ? e <= num : e >= num))
+  return (smaller ? sorted.reverse() : sorted).find((e) =>
+    smaller ? e <= num : e >= num
+  )
 }

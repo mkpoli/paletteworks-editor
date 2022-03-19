@@ -9,7 +9,11 @@
   import Tooltip from '$lib/ui/Tooltip.svelte'
 
   // Constants
-  import { MODE_SHORTCUTS, MODE_SHORTCUTS_NUMERAL, MODE_TEXTURES } from '$lib/editing/modes'
+  import {
+    MODE_SHORTCUTS,
+    MODE_SHORTCUTS_NUMERAL,
+    MODE_TEXTURES,
+  } from '$lib/editing/modes'
 
   // Props
   export let mode: Mode
@@ -28,16 +32,24 @@
   offset={[0, -15]}
   description={$LL.editor.modes[mode]()}
   class="tool-button"
-  keys={[...MODE_SHORTCUTS_NUMERAL[mode], ...MODE_SHORTCUTS[mode]].map((key) => [key])}
+  keys={[...MODE_SHORTCUTS_NUMERAL[mode], ...MODE_SHORTCUTS[mode]].map(
+    (key) => [key]
+  )}
 >
-  <button on:click={() => { currentMode = mode }} class:current={currentMode === mode} bind:this={button}>
+  <button
+    on:click={() => {
+      currentMode = mode
+    }}
+    class:current={currentMode === mode}
+    bind:this={button}
+  >
     <img src={MODE_TEXTURES[mode]} alt={`${$LL.editor.modes[mode]()} Mode`} />
   </button>
 </Tooltip>
 
 <style>
   button {
-    box-shadow: none;    
+    box-shadow: none;
     background: transparent;
     width: 100%;
     height: 5em;
@@ -52,7 +64,7 @@
   }
 
   button > :global(img) {
-    transition: transform .2s;
+    transition: transform 0.2s;
   }
 
   button:focus {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { NOTE_HEIGHT, Z_INDEX } from '$lib/consts'
-  import { getContext, onDestroy, onMount } from "svelte"
+  import { getContext, onDestroy, onMount } from 'svelte'
   import { position } from '$lib/position'
   import { preferences } from '$lib/preferences'
 
@@ -15,12 +15,14 @@
   export let flick: Flick
   export let slide: boolean
   export let alpha: number = 1
-  export let tint: number = 0xFFFFFF
+  export let tint: number = 0xffffff
   export let floating: boolean = false
 
   // Contexts
-  const TEXTURES = getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
-  const noteTextures = getContext<Writable<Record<Type, PIXI.Texture[]>>>('noteTextures')
+  const TEXTURES =
+    getContext<PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>>>('TEXTURES')
+  const noteTextures =
+    getContext<Writable<Record<Type, PIXI.Texture[]>>>('noteTextures')
   const PIXI = getContext<typeof import('pixi.js')>('PIXI')
   const mainContainer = getContext<PIXI.Container>('mainContainer')
 
@@ -45,7 +47,7 @@
     mainContainer.removeChild(note)
     mainContainer.removeChild(arrow)
   })
-  
+
   $: x = $position.calcMidX(lane, width)
   $: y = $position.calcY(tick)
   $: if (note) note.position.set(x, y)
@@ -66,8 +68,13 @@
   $: if (arrow) arrow.x = x
   $: if (arrow) arrow.y = y - NOTE_HEIGHT * $preferences.noteHeight - 10
   $: if (arrow) arrow.visible = flick !== 'no'
-  $: if (arrow) arrow.texture = TEXTURES[
-      `notes_flick_arrow${ type === 'critical' ? '_crtcl' : ''}_0${ Math.min(width, 6) }${(flick === 'left' || flick === 'right') ? '_diagonal': ''}.png`
-    ]
+  $: if (arrow)
+    arrow.texture =
+      TEXTURES[
+        `notes_flick_arrow${type === 'critical' ? '_crtcl' : ''}_0${Math.min(
+          width,
+          6
+        )}${flick === 'left' || flick === 'right' ? '_diagonal' : ''}.png`
+      ]
   $: if (arrow) arrow.scale.x = 0.25 * (flick === 'left' ? 1 : -1)
 </script>

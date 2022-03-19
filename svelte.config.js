@@ -13,20 +13,20 @@ const config = {
     // hydrate the <div id="svelte"> element in src/app.html
     adapter: process.env.TAURI_CONFIG ? static_() : vercel(),
     vite: {
-      assetsInclude: [
-        '**/*.fnt',
-      ],
+      assetsInclude: ['**/*.fnt'],
       resolve: {
         alias: {
-          '$assets': path.resolve('./src/assets'),
-          '$i18n': path.resolve('./src/i18n'),
-        }
+          $assets: path.resolve('./src/assets'),
+          $i18n: path.resolve('./src/i18n'),
+        },
       },
       define: {
-        'process.env.PACKAGE_VERSION': JSON.stringify(process.env.npm_package_version)
-      }
-    }
-  }
+        'process.env.PACKAGE_VERSION': JSON.stringify(
+          process.env.npm_package_version
+        ),
+      },
+    },
+  },
 }
 
 export default config

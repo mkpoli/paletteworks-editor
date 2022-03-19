@@ -6,8 +6,14 @@
   const tabIndex = registerTab()
 </script>
 
-<button class="tab-item" class:active={$currentTab === tabIndex} on:click={() => { selectTab(tabIndex) }}>
-  <slot></slot>
+<button
+  class="tab-item"
+  class:active={$currentTab === tabIndex}
+  on:click={() => {
+    selectTab(tabIndex)
+  }}
+>
+  <slot />
 </button>
 
 <style>
@@ -22,8 +28,8 @@
   }
 
   .active::after {
-    content: "";
-    
+    content: '';
+
     position: absolute;
     bottom: 0;
     left: 0;
@@ -34,5 +40,4 @@
     pointer-events: none;
     background-color: currentColor;
   }
-
 </style>
