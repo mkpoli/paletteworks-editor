@@ -143,34 +143,41 @@
   function generateEvents(from: number, to: number, bpm: number, fromTime: number): AudioEvent[] {
     const tick2time = (tick: number) => fromTime + tick2secs(tick - from, TICK_PER_BEAT, bpm)
 
-    return [
-      ...singles
-        .filter((single) => single.tick >= from && single.tick <= to)
-        .map(({ tick, critical, flick }) => ({
-          time: tick2time(tick),
-          sound: flick !== 'no'
-                  ? (critical ? 'flickCritical' : 'flick')
-                  : (critical ? 'tapCritical' : 'tapPerfect')
-        } as AudioEvent)),
-      ...slides
-        .filter(({ head, tail }) => tail.tick >= from && head.tick <= to)
-        .flatMap(({ head, tail, steps, critical }) => [
-          head.tick >= from ? { time: tick2time(head.tick), sound: 'tapPerfect' } : undefined,
-          ...steps
-            .filter(({ tick, diamond }) => tick >= from && tick <= to && diamond)
-            .map(({ tick }) => ({ time: tick2time(tick), sound: critical ? 'tickCritical' : 'tick' })),
-          tail.tick <= to
-            ? { time: tick2time(tail.tick),
-                sound: tail.flick !== 'no'
-                  ? (critical || tail.critical ? 'flickCritical' : 'flick')
-                  : 'tapPerfect'
-              }
-            : undefined
-        ])
-        .filter((event): event is AudioEvent => event !== undefined)
-    ]
+    return Array.from(
+        new Set(
+          [
+            ...singles
+              .filter((single) => single.tick >= from && single.tick <= to)
+              .map(({ tick, critical, flick }) => {
+                const time = tick2time(tick)
+                const sound = flick !== 'no'
+                        ? (critical ? 'flickCritical' : 'flick')
+                        : (critical ? 'tapCritical' : 'tapPerfect')
+                return `${time}-${sound}-single`
+              }),
+            ...slides
+              .filter(({ head, tail }) => tail.tick >= from && head.tick <= to)
+              .flatMap(({ head, tail, steps, critical }) => [
+                head.tick >= from ? `${tick2time(head.tick)}-tapPerfect-slide` : undefined,
+                ...steps
+                  .filter(({ tick, diamond }) => tick >= from && tick <= to && diamond)
+                  .map(({ tick }) => (`${tick2time(tick)}-${critical ? 'tickCritical' : 'tick'}-slide`)),
+                tail.tick <= to
+                  ? `${tick2time(tail.tick)}-${
+                      tail.flick !== 'no'
+                          ? (critical || tail.critical ? 'flickCritical' : 'flick')
+                          : 'tapPerfect'
+                    }-slide`
+                  : undefined
+              ])
+              .filter((event): event is string => event !== undefined)
+        ]
+      )
+    ).map((event) => {
+      const [time, sound] = event.split('-')
+      return { time: parseFloat(time), sound } as AudioEvent
+    })
   }
-
 
   function newSchedular(): AudioScheduler {
     const accumulatedDuration = accumulateDuration(currentTick, $sortedBPMs, TICK_PER_BEAT)
