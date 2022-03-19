@@ -1,0 +1,12 @@
+.github/**
+.svelte-kit/**
+.vercel/**
+.vscode/**
+.vercel_build_output
+static/**
+build/**
+coverage/**
+node_modules/**
+static/**
+temp/**
+src-tauri/**

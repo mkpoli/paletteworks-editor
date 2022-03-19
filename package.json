@@ -21,6 +21,7 @@
     "beforeRelease": "run-s check lint test",
     "tag": "taggit",
     "release": "run-s beforeRelease version tag",
+    "format": "prettier --write --plugin-search-dir=. .",
     "release:patch": "run-s beforeRelease version:patch tag",
     "release:minor": "run-s beforeRelease version:minor tag",
     "release:major": "run-s beforeRelease version:major tag"
@@ -60,6 +61,8 @@
     "npm-run-all": "^4.1.5",
     "pixi.js": "~6.2.2",
     "postcss-viewport-height-correction": "^1.1.1",
+    "prettier": "^2.6.0",
+    "prettier-plugin-svelte": "^2.6.0",
     "rimraf": "^3.0.2",
     "sus-analyzer": "^2.2.4",
     "sus-io": "^1.0.6",
