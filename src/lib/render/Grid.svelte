@@ -10,7 +10,7 @@
 
   // Functions
   import { position, PositionManager } from '$lib/position'
-  import { getContext, onMount } from 'svelte'
+  import { getContext, onDestroy, onMount } from 'svelte'
 
   // Types
   import type PIXI from 'pixi.js'
@@ -37,6 +37,10 @@
     mainContainer.addChild(graphics)
   })
 
+  onDestroy(() => {
+    mainContainer.removeChild(graphics)
+  })
+
   $: if (graphics) {
     drawBackground($position, maxMeasure, snapTo, timeSignatures)
   }
@@ -58,17 +62,19 @@
     let accumulatedMeasures = 0
     ;[...timeSignatures].forEach(([measure, [p, q]], ind, arr) => {
       const beatsPerMeasure = p / q * 4
+      const tickPerMeasure = beatsPerMeasure * TICK_PER_BEAT
 
       const [nextMeasure] = arr[ind + 1] ?? [maxMeasure + 1]
       const startTick = accumulatedTicks
-      accumulatedTicks += (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT
 
-      const maxT = maxTick - startTick
+      const intervalTicks = (nextMeasure - measure) * tickPerMeasure
+      accumulatedTicks += intervalTicks
 
+      const maxT = Math.ceil((maxTick - startTick) / tickPerMeasure) * tickPerMeasure
 
-      for (let tick = 0; tick < (nextMeasure - measure) * beatsPerMeasure * TICK_PER_BEAT; tick++) {
+      for (let tick = 0; tick < intervalTicks; tick++) {
         const y = position.calcY(startTick + tick)
-        if (tick % (beatsPerMeasure * TICK_PER_BEAT) === 0) {
+        if (tick % tickPerMeasure === 0) {
           graphics.lineStyle(2, COLORS.COLOR_BAR_PRIMARY, 1, 0.5)
           graphics.moveTo(left, y)
           graphics.lineTo(left + position.laneAreaWidth, y)
@@ -84,11 +90,11 @@
           text.anchor.x = 1
           text.anchor.y = 0.5
           graphics.addChild(text)
-        } else if (tick < maxT && tick % (TICK_PER_BEAT * beatsPerMeasure / p) === 0) {
+        } else if (tick < maxT && tick % (tickPerMeasure / p) === 0) {
           graphics.lineStyle(1, COLORS.COLOR_BAR_SECONDARY, 1, 0.5)
           graphics.moveTo(left + $preferences.laneWidth, y)
           graphics.lineTo(left + position.laneAreaWidth - $preferences.laneWidth, y)
-        } else if (tick < maxT && snapTo < 192 && tick % (TICK_PER_BEAT * beatsPerMeasure / p / snapTo * 4) === 0) {
+        } else if (tick < maxT && snapTo < 192 && tick % (tickPerMeasure / p / snapTo * 4) === 0) {
           graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
           graphics.moveTo(left + $preferences.laneWidth, y)
           graphics.lineTo(left + position.laneAreaWidth - $preferences.laneWidth, y)
@@ -107,7 +113,7 @@
         graphics.lineStyle(1, COLORS.COLOR_LANE_SECONDARY, 1, 0.5)
       }
       graphics.moveTo(x, innerHeight)
-      graphics.lineTo(x, position.calcY(maxMeasure * TICK_PER_MEASURE) - MARGIN_BOTTOM)
+      graphics.lineTo(x, position.calcY(accumulatedTicks - TICK_PER_MEASURE) - MARGIN_BOTTOM)
     }
   }
 </script>
