@@ -5,4 +5,9 @@ module.exports = {
       tsconfig: './tsconfig.spec.json',
     },
   },
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/build/',
+    '<rootDir>/temp',
+  ]
 }

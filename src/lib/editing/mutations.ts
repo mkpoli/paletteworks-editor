@@ -701,7 +701,7 @@ export class CombinedMutation extends BatchMutation {
   }
 
   undo(): { singles: Single[]; slides: Slide[] } {
-    ;[...this.mutations].reverse().forEach((mutation) => {
+    [...this.mutations].reverse().forEach((mutation) => {
       mutation.undo()
     })
     return { singles: this.singles, slides: this.slides }
