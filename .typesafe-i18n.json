@@ -1,6 +1,7 @@
 {
+  "$schema": "https://unpkg.com/typesafe-i18n@4.2.1/schema/typesafe-i18n.json",
   "baseLocale": "ja",
   "adapter": "svelte",
   "outputPath": "./src/i18n",
-  "$schema": "https://unpkg.com/typesafe-i18n@4.2.1/schema/typesafe-i18n.json"
+  "runAfterGenerator": "prettier --write src/i18n"
 }
