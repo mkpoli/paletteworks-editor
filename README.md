@@ -9,35 +9,6 @@ This is a score editor for _Project Sekai: Colorful Stage feat. Hatsune Miku_. I
 “프로젝트 세카이 컬러풀 스테이지! feat.하츠네 미쿠” 의 자작채보 에디터입니다. 채보를 더 만들기 쉽게 하는 것을 목표로 하고 있습니다.
 (“프로젝트 세카이 컬러풀 스테이지! feat.하츠네 미쿠” 의 自作採譜 에디터입니다. 採譜를 더 만들기 쉽게 하는 것을 目標로 하고 있습니다.)
 
-## Developing / 開発 / 開發 / 개발(開發)
-
-```bash
-pnpm install
-pnpm run dev -- --open
-pnpm run typesafe-i18n
-```
-
-### Tauri Build
-
-```bash
-pnpm run tauri dev
-```
-
-### Commit Message Naming Convention / コミットメッセージ命名規則 / 提交消息命名规则 / 커밋 메시지 명명 규칙 (커밋 메시지 命名 規則)
-
-```regex
-(F|R|D|S|V|I): <Verb Phrase>
-```
-
-- **F** for **F**eature (Additions, Fixes, Ajustments of functionalities, etc.)
-- **T** for **T**esting (New tests / specs, Test refactoring, etc.)
-- **R** for **R**efactor (Adjustments of code structure, naming, typing, comments, etc.)
-- **D** for **D**ocumentation (Documentation, README, etc.)
-- **S** for **S**tyle (Styling, Visual Design Adjustments, etc.)
-- **V** for **V**ersion (Versioning, Dependencies, Licensing, etc.)
-- **C** for **C**onfiguration (Building, Linting, CLI Tooling, etc.)
-- **I** for **I**18n (Translation, Localisation, etc.)
-
 ## Acknowledgements / 謝辞 / 致謝 / 사사(謝辭)
 
 ### Inspiration / インスピレーション / 啓發 / 영감(靈感)
@@ -64,6 +35,8 @@ and many others from 紫式部 / Sonolus Discord ...
 </a>
 
 Made with [contrib.rocks](https://contrib.rocks).
+
+## [Contribution Guide / コントリビュート方法 / 貢獻指南 / 기여하는 방법 (寄與하는 方法)](docs/CONTRIBUTE.md)
 
 ## LICENSE / ライセンス / 授權 / 사용권(使用權)
 
