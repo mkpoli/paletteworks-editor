@@ -677,6 +677,10 @@ type RootTranslation = {
        * 現在サポートされているキーワードは以下の通りです
        */
       fileSaveNameTooltip: string
+      /**
+       * 楽曲のBPMを自動検出する
+       */
+      autoDetectBPM: string
     }
     modes: {
       /**
@@ -1374,6 +1378,10 @@ export type TranslationFunctions = {
        * 現在サポートされているキーワードは以下の通りです
        */
       fileSaveNameTooltip: () => LocalizedString
+      /**
+       * 楽曲のBPMを自動検出する
+       */
+      autoDetectBPM: () => LocalizedString
     }
     modes: {
       /**

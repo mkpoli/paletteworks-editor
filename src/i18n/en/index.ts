@@ -187,6 +187,7 @@ const en: Translation = {
       multiTapWarningEnabled: 'Enable multiple-tap (3 or above) warning',
       fileSaveName: 'File Save Name',
       fileSaveNameTooltip: 'Currently supported keywords:',
+      autoDetectBPM: 'Auto-detect BPM',
     },
     modes: {
       select: 'Select',

@@ -193,6 +193,12 @@
           >
             {$LL.editor.preferences.multiTapWarningEnabled()}
           </Checkbox>
+          <Checkbox
+            name="auto-detect-bpm"
+            bind:value={preferences.autoDetectBPM}
+          >
+            {$LL.editor.preferences.autoDetectBPM()}
+          </Checkbox>
         </div>
       </div>
       <Button

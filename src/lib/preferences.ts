@@ -10,6 +10,7 @@ export const DEFAULT_PREFERENCES = {
   laneWidth: 26,
   multiTapWarningEnabled: true,
   fileSaveName: '{project}-{datetime}.sus',
+  autoDetectBPM: true
 }
 
 export type Preferences = typeof DEFAULT_PREFERENCES

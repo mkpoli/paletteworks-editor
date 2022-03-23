@@ -188,6 +188,7 @@ const ja: BaseTranslation = {
       multiTapWarningEnabled: '三つ以上同時押し警告を表示する',
       fileSaveName: '譜面ファイルの保存名',
       fileSaveNameTooltip: '現在サポートされているキーワードは以下の通りです',
+      autoDetectBPM: '楽曲のBPMを自動検出する',
     },
     modes: {
       select: '選択',

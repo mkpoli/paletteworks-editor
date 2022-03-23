@@ -185,6 +185,7 @@ const zh: Translation = {
       multiTapWarningEnabled: '啓用三點以上同時點擊警告',
       fileSaveName: '譜面文件名',
       fileSaveNameTooltip: '目前可以使用的關鍵字如下',
+      autoDetectBPM: '自動檢測 BPM',
     },
     modes: {
       select: '選擇',

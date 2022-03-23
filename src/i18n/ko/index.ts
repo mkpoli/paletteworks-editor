@@ -187,6 +187,7 @@ const ko: Translation = {
       multiTapWarningEnabled: '3점 이상의 동시치기 알림 활성화',
       fileSaveName: '파일 저장 시 이름',
       fileSaveNameTooltip: '현재 지원되는 키워드는 다음과 같습니다.',
+      autoDetectBPM: 'BPM 자동 감지',
     },
     modes: {
       select: '선택',

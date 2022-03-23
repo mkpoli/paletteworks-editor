@@ -1775,6 +1775,7 @@
   bind:gotoTick
   bind:soundQueue
   on:bpmdetected={async ({ detail: bpm }) => {
+    if (!$preferences.autoDetectBPM) return
     if (!musicLoadedFromFile) return
     if (isNaN(bpm)) return
     if (bpms.get(0) === bpm) return
