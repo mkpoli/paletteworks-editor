@@ -109,7 +109,7 @@ const ja: BaseTranslation = {
       preferencesSaved: '設定を保存しました',
       deleteConfirm: '本当に削除しますか？',
       confirmBPMDetected:
-        '楽曲のBPMが検出されました。BPMを{bpm:number}に変更しますか？',
+        '楽曲のBPMが検出されました。BPMを{bpm:number}に変更しますか？\n\n※ BPM の自動検知は 90-180 が範囲であり、正確でない場合があります。また、BPM の変化も考慮されていないため、あくまで参考にしてください。',
       nothingToUndo: '元に戻す操作はもうありません',
       nothingToRedo: 'やり直す操作はもうありません',
       projectDeleted: '譜面 {name:string} を削除しました',

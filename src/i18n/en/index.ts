@@ -108,7 +108,7 @@ const en: Translation = {
       preferencesSaved: 'Preferences saved',
       deleteConfirm: 'Do you want to delete it?',
       confirmBPMDetected:
-        'The BPM of the audio file is {bpm} BPM. Do you want to use it?',
+        'The BPM of the audio file is {bpm} BPM. Do you want to use it?\n\n※ BPM auto-detectio only works with 90-180 BPM range, and it may not be accurate. Also, varied tempo is not considered, so please take it only as a reference.',
       nothingToUndo: 'Nothing to undo',
       nothingToRedo: 'Nothing to redo',
       projectDeleted: 'Project {name} is deleted',

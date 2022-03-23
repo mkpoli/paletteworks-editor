@@ -107,7 +107,8 @@ const zh: Translation = {
       unknownFileType: '未知的文檔類型',
       preferencesSaved: '設定已保存',
       deleteConfirm: '您確定要刪除嗎？',
-      confirmBPMDetected: '檢測到樂曲的BPM。是否要把BPM改爲{bpm}？',
+      confirmBPMDetected:
+        '檢測到樂曲的BPM。是否要把BPM改爲{bpm}？\n\n※ BPM 自動檢測只會檢測 90-180 範圍內的 BPM，且可能不準確。同時，也沒有考慮 BPM 變化，因此僅供參考。',
       nothingToUndo: '沒有可撤銷的操作',
       nothingToRedo: '沒有可重做的操作',
       projectDeleted: '譜面 {name} 已刪除',

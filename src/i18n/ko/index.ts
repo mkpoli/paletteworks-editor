@@ -108,7 +108,7 @@ const ko: Translation = {
       preferencesSaved: '설정이 저장되었습니다.',
       deleteConfirm: '삭제하시겠습니까?',
       confirmBPMDetected:
-        'BPM이 감지되었습니다. BPM를 {bpm}(으)로 변경하시겠습니까?',
+        'BPM이 감지되었습니다. BPM를 {bpm}(으)로 변경하시겠습니까?\n\n※ BPM 자동 감지는 90-180 범위에 있으며 정확하지 않습니다. 또한, 다양한 템포는 고려되지 않았으므로, 참고로만 사용하시기 바랍니다.',
       nothingToUndo: '실행 취소할 작업이 없습니다.',
       nothingToRedo: '다시 실행할 작업이 없습니다.',
       projectDeleted: '채보 {name} 가 삭제되었습니다.',

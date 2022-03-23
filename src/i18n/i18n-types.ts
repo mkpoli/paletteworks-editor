@@ -408,9 +408,11 @@ type RootTranslation = {
        */
       deleteConfirm: string
       /**
-       * 楽曲のBPMが検出されました。BPMを{bpm}に変更しますか？
-       * @param {number} bpm
-       */
+			 * 楽曲のBPMが検出されました。BPMを{bpm}に変更しますか？
+	
+		※ BPM の自動検知は 90-180 が範囲であり、正確でない場合があります。また、BPM の変化も考慮されていないため、あくまで参考にしてください。
+			 * @param {number} bpm
+			 */
       confirmBPMDetected: RequiredParams1<'bpm'>
       /**
        * 元に戻す操作はもうありません
@@ -1116,8 +1118,10 @@ export type TranslationFunctions = {
        */
       deleteConfirm: () => LocalizedString
       /**
-       * 楽曲のBPMが検出されました。BPMを{bpm}に変更しますか？
-       */
+			 * 楽曲のBPMが検出されました。BPMを{bpm}に変更しますか？
+	
+		※ BPM の自動検知は 90-180 が範囲であり、正確でない場合があります。また、BPM の変化も考慮されていないため、あくまで参考にしてください。
+			 */
       confirmBPMDetected: (arg: { bpm: number }) => LocalizedString
       /**
        * 元に戻す操作はもうありません
