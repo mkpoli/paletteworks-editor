@@ -21,19 +21,23 @@ pnpm run tauri dev
    pnpm run beforeRelease   
    ```
 3. Bump version numbers
-  ```bash
-  pnpx @rstacruz/bump-cli package.json src-tauri/Cargo.toml src-tauri/tauri.conf.json # -M / -m / -p
-  cargo update --manifest-path=src-tauri/Cargo.toml
-  ```
+   ```bash
+   pnpx @rstacruz/bump-cli package.json src-tauri/Cargo.toml src-tauri/tauri.conf.json # -M / -m / -p
+   cargo update --manifest-path=src-tauri/Cargo.toml
+   ```
 3. Commit ``V: Release v<version>``
-4. Tag the commit above
-  ```
-  pnpm run tag
-  ```
+   ```bash
+   git add package.json src-tauri/Cargo.toml src-tauri/Cargo.lock src-tauri/tauri.conf.json
+   git commit -m "V: Release v<version>"
+   ```
+5. Tag the commit above
+   ```
+   pnpm run tag
+   ```
 5. Push to Remote
-  ```
-  git push --follow-tags
-  ```
+   ```
+   git push --follow-tags
+   ```
 
 ### Commit Message Naming Convention / コミットメッセージ命名規則 / 提交消息命名规则 / 커밋 메시지 명명 규칙 (커밋 메시지 命名 規則)
 
