@@ -96,6 +96,7 @@
         if (file) await download(file, file.name)
       }}
     />
+    <slot name="menu" />
     <MenuDivider />
     <MenuItem
       text={$LL.editor.menu.delete()}

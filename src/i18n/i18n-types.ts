@@ -177,6 +177,10 @@ type RootTranslation = {
        * エクスポート (&E)
        */
       export: string
+      /**
+       * BPM 検出 (&B)
+       */
+      detectBPM: string
     }
     menuDescription: {
       /**
@@ -882,6 +886,10 @@ export type TranslationFunctions = {
        * エクスポート (&E)
        */
       export: () => LocalizedString
+      /**
+       * BPM 検出 (&B)
+       */
+      detectBPM: () => LocalizedString
     }
     menuDescription: {
       /**

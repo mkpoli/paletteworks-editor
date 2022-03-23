@@ -43,6 +43,7 @@ const ja: BaseTranslation = {
       tostream: 'ストリームに変換 (&T)',
       about: 'バージョン情報 (&A)',
       export: 'エクスポート (&E)',
+      detectBPM: 'BPM 検出 (&B)',
     },
     menuDescription: {
       new: '新規譜面を作成',

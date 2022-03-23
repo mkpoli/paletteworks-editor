@@ -43,6 +43,7 @@ const en: Translation = {
       tostream: 'To S&tream',
       about: '&About',
       export: '&Export',
+      detectBPM: 'Detect &BPM',
     },
     menuDescription: {
       new: 'Create a new score',

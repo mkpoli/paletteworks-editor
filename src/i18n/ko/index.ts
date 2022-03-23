@@ -43,6 +43,7 @@ const ko: Translation = {
       tostream: '스트림로 변환(&T)',
       about: '정보(&A)',
       export: '내보내기(&E)',
+      detectBPM: 'BPM 감지(&B)',
     },
     menuDescription: {
       new: '새로운 채보를 만듭니다',

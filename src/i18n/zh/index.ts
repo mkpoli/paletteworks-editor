@@ -43,6 +43,7 @@ const zh: Translation = {
       tostream: '轉換爲連打 (&T)',
       about: '關於 (&A)',
       export: '導出 (&E)',
+      detectBPM: '檢測 BPM (&B)',
     },
     menuDescription: {
       new: '創建新譜面',

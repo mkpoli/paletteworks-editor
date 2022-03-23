@@ -9,6 +9,7 @@
     redo: void
     skipstart: void
     skipback: void
+    detectBPM: void
   }>()
 
   // UI Components
@@ -38,6 +39,8 @@
     visibilitys,
     VisibilityType,
   } from '$lib/editing/visibility'
+  import MenuDivider from './ui/MenuDivider.svelte'
+  import MenuItem from './ui/MenuItem.svelte'
 
   export let currentMeasure: number
   export let statistics: Record<VisibilityType, number>
@@ -263,7 +266,18 @@
         fileIcon="mdi:file-music-outline"
         text={$LL.editor.panel.open()}
         loading={bgmLoading}
-      />
+      >
+        <svelte:fragment slot="menu">
+          <MenuDivider />
+          <MenuItem
+            icon="mdi:music-note-quarter"
+            text={$LL.editor.menu.detectBPM()}
+            on:click={() => {
+              dispatch('detectBPM')
+            }}
+          />
+        </svelte:fragment>
+      </FileInput>
     </label>
     <label for="offset">
       {$LL.editor.panel.offset()}

@@ -256,6 +256,8 @@
     }
   }
 
+  let detectBPM: () => void
+
   // Textures
   import { cursor, position } from '$lib/position'
 
@@ -337,7 +339,7 @@
     })
   })
 
-  let musicLoadedFromFile: boolean = false
+  let musicLoadedFromFile: boolean = false // Music loaded from file and is bpm detected the first time
   let music: File | null = null
   let bgmLoading: boolean = false
   let musicDuration: number | undefined = undefined
@@ -1514,6 +1516,7 @@
       on:redo={onredo}
       on:skipstart={onskipstart}
       on:skipback={onskipback}
+      on:detectBPM={detectBPM}
       statistics={{
         taps: singles.filter((x) => x.flick === 'no').length,
         flicks: singles.filter((x) => x.flick !== 'no').length,
@@ -1771,20 +1774,22 @@
   {volume}
   {sfxVolume}
   {sfxEnabled}
+  {musicLoadedFromFile}
   offset={metadata.offset}
   bind:gotoTick
   bind:soundQueue
+  bind:detectBPM
   on:bpmdetected={async ({ detail: bpm }) => {
     if (!$preferences.autoDetectBPM) return
-    if (!musicLoadedFromFile) return
     if (isNaN(bpm)) return
     if (bpms.get(0) === bpm) return
 
     if (await confirm($LL.editor.messages.confirmBPMDetected({ bpm }))) {
       exec(new SetBPM(bpms, 0, bpm))
     }
-
-    musicLoadedFromFile = false
+    if (musicLoadedFromFile) {
+      musicLoadedFromFile = false
+    }
   }}
 />
 

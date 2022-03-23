@@ -17,10 +17,12 @@
   export let sfxVolume: number
   export let sfxEnabled: boolean
   export let gotoTick: (tick: number) => void
+  export let detectBPM: () => void
   export let lastTick: number
   export let bgmLoading: boolean
   export let musicDuration: number | undefined = undefined
   export let offset: number
+  export let musicLoadedFromFile: boolean
 
   const dispatch = createEventDispatcher<{
     bpmdetected: number
@@ -68,6 +70,18 @@
   }
 
   import detect from 'bpm-detective'
+  detectBPM = () => {
+    console.log('detecting BPM')
+    if (bgmBuffer) {
+      try {
+        const bpm = detect(bgmBuffer)
+        dispatch('bpmdetected', bpm)
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+
   $: onchangemusic(music)
   function onchangemusic(music: File | null) {
     stopScheduler()
@@ -81,11 +95,8 @@
         bgmLoading = false
         musicDuration = buffer.duration + offset
 
-        try {
-          const bpm = detect(buffer)
-          dispatch('bpmdetected', bpm)
-        } catch (e) {
-          console.error(e)
+        if (musicLoadedFromFile) {
+          detectBPM()
         }
 
         if (!paused) {
