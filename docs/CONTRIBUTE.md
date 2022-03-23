@@ -16,7 +16,11 @@ pnpm run tauri dev
 ## Releasing / 發佈
 
 1. Clear current tree (commit changes)
-2. Bump version numbers
+2. Run pre-release check
+   ```bash
+   pnpm run beforeRelease   
+   ```
+3. Bump version numbers
   ```bash
   pnpx @rstacruz/bump-cli package.json src-tauri/Cargo.toml src-tauri/tauri.conf.json # -M / -m / -p
   cargo update --manifest-path=src-tauri/Cargo.toml
