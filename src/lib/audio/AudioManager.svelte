@@ -183,8 +183,8 @@
                   : 'flick'
                 : critical
                   ? 'tapCritical'
-                  : 'tapPerfect'
-            return `${time}-${sound}-single`
+                  : 'tapPerfect-single'
+            return `${time}-${sound}`
           }),
         ...slides
           .filter(({ head, tail }) => tail.tick >= from && head.tick <= to)
@@ -200,7 +200,7 @@
                 ({ tick }) =>
                   `${tick2time(tick)}-${
                     critical ? 'tickCritical' : 'tick'
-                  }-slide`
+                  }`
               ),
             tail.tick <= to
               ? `${tick2time(tail.tick)}-${
@@ -208,8 +208,8 @@
                     ? critical || tail.critical
                       ? 'flickCritical'
                       : 'flick'
-                    : 'tapPerfect'
-                }-slide`
+                    : 'tapPerfect-slide'
+                }`
               : undefined,
           ])
           .filter((event): event is string => event !== undefined),
