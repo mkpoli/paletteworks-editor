@@ -5,6 +5,7 @@
     MODES,
     MODE_SHORTCUTS,
     MODE_SHORTCUTS_NUMERAL,
+    SnapTo,
   } from '$lib/editing/modes'
   import { KEYBOARD_SHORTCUTS } from '$lib/control/keyboard'
 
@@ -13,6 +14,7 @@
   // Stores
   import { inside } from '$lib/position'
   import { preferences } from '$lib/preferences'
+  import { resizingLastWidth } from '$lib/editing/resizing'
 
   type KeyboardEvents = {
     [K in KeyboardAction]: void
@@ -26,12 +28,25 @@
 
   export let zoom: number
   export let scrollTick: number
+  export let snappingSelect: HTMLSelectElement
+  export let snapTo: SnapTo
 
   function mousewheel(event: WheelEvent) {
     if (!$inside) return
     event.preventDefault()
     if (event.ctrlKey) {
       zoom -= (event.deltaY > 0 ? 0.1 : -0.1) * (event.shiftKey ? 10 : 1)
+    } else if (event.altKey && event.shiftKey) {
+      snappingSelect.selectedIndex = Math.min(
+        Math.max(snappingSelect.selectedIndex + (event.deltaY > 0 ? 1 : -1), 0),
+        snappingSelect.options.length - 2
+      )
+      snapTo = parseInt(snappingSelect.options[snappingSelect.selectedIndex].value)
+    } else if (event.altKey) {
+      $resizingLastWidth = Math.min(
+        Math.max($resizingLastWidth + (event.deltaY > 0 ? -1 : 1), 1),
+        12
+      )
     } else {
       scrollTick -=
         (event.deltaY *
