@@ -354,6 +354,7 @@
 
   let currentMode: Mode = 'select'
   let snapTo: SnapTo = SNAPTO_DEFAULT
+  let snappingSelect: HTMLSelectElement
 
   $: dbg('scrollTick', scrollTick)
 
@@ -1277,6 +1278,7 @@
       bind:currentMode
       bind:snapTo
       bind:openMainMenu
+      bind:snappingSelect
       on:about={() => {
         aboutDialogOpened = true
       }}
@@ -1687,6 +1689,8 @@
 <ControlHandler
   bind:zoom
   bind:scrollTick
+  bind:snapTo
+  bind:snappingSelect
   on:undo={onundo}
   on:redo={onredo}
   on:export={onexport}
