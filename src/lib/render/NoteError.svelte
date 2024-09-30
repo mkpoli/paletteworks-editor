@@ -47,7 +47,7 @@
     position: PositionManager,
     lane: number,
     laneR: number,
-    tick: number
+    tick: number,
   ) {
     const MARGIN_X = 10
     const MARGIN_Y = 8
@@ -56,14 +56,14 @@
       position.calcY(tick) - 0.5 * NOTE_HEIGHT - 0.5 * MARGIN_Y,
       ((laneR ?? lane) - lane + 1) * $preferences.laneWidth + MARGIN_X,
       NOTE_HEIGHT + MARGIN_Y,
-      5
+      5,
     )
   }
 
   function drawErrorAreas(
     position: PositionManager,
     singles: Single[],
-    slides: Slide[]
+    slides: Slide[],
   ) {
     if (!graphics) return
 
@@ -84,7 +84,7 @@
         const judgementNotes = notes.filter(
           (note) =>
             singles.includes(note as Single) ||
-            slides.some((slide) => slide.head === note || slide.tail === note)
+            slides.some((slide) => slide.head === note || slide.tail === note),
         )
         if (judgementNotes.length >= 3) {
           for (const note of judgementNotes) {
@@ -142,7 +142,7 @@
       const duplicatedSteps = steps
         .map((step, i) => [step, i] as [Note, number])
         .filter(([step, i]) =>
-          steps.slice(i + 1).some((step2) => step.tick === step2.tick)
+          steps.slice(i + 1).some((step2) => step.tick === step2.tick),
         )
         .map(([step]) => step)
       for (const step of duplicatedSteps) {
@@ -150,7 +150,7 @@
           position,
           step.lane,
           step.lane + step.width - 1,
-          step.tick
+          step.tick,
         )
       }
 
@@ -165,6 +165,19 @@
         }
       }
     })
+
+    graphics.endFill()
+
+    graphics.beginFill(COLORS.COLOR_CORRUPUTED, COLORS.ALPHA_CORRUPUTED)
+
+    // Draw invalid ticks (non-integer)
+    for (const [tick, notes] of tickTable) {
+      if (!Number.isInteger(tick)) {
+        for (const note of notes) {
+          drawErrorArea(position, note.lane, note.lane + note.width - 1, tick)
+        }
+      }
+    }
 
     graphics.endFill()
   }
