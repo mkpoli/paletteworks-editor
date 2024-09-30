@@ -41,7 +41,14 @@
     graphics.alpha = 0.85 * Math.max(0, Math.sin(time) + 0.38196601125)
   }
 
-  $: drawErrorAreas($position, singles, slides)
+
+  type ErrorAreaType = 'warning' | 'stacked' | 'corrupted'
+  type ErrorArea = { type: ErrorAreaType; lane: number; laneR: number; tick: number }
+  $: errorAreas = calcErrorAreas($position, singles, slides)
+  $: if (dev) {
+    console.info('[NoteError] errorAreas', errorAreas);
+  }
+  $: drawErrorAreas($position, errorAreas)
 
   function drawErrorArea(
     position: PositionManager,
@@ -64,8 +71,8 @@
     position: PositionManager,
     singles: Single[],
     slides: Slide[],
-  ): { type: string; lane: number; laneR: number; tick: number }[] {
-    const errorAreas: { type: string; lane: number; laneR: number; tick: number }[] = [];
+  ): ErrorArea[] {
+    const errorAreas: ErrorArea[] = [];
 
     let tickTable = new Map<number, Note[]>();
     [
@@ -180,15 +187,12 @@
 
   function drawErrorAreas(
     position: PositionManager,
-    singles: Single[],
-    slides: Slide[],
+    errorAreas: ErrorArea[]
   ) {
     if (!graphics) return;
 
     graphics.removeChildren();
     graphics.clear();
-
-    const errorAreas = calcErrorAreas(position, singles, slides);
 
     for (const { type, lane, laneR, tick } of errorAreas) {
       switch (type) {
