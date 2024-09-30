@@ -60,125 +60,150 @@
     )
   }
 
-  function drawErrorAreas(
+  function calcErrorAreas(
     position: PositionManager,
     singles: Single[],
     slides: Slide[],
-  ) {
-    if (!graphics) return
+  ): { type: string; lane: number; laneR: number; tick: number }[] {
+    const errorAreas: { type: string; lane: number; laneR: number; tick: number }[] = [];
 
-    graphics.removeChildren()
-    graphics.clear()
-
-    let tickTable = new Map<number, Note[]>()
-    ;[
+    let tickTable = new Map<number, Note[]>();
+    [
       ...singles,
       ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]),
     ].forEach((note) => {
-      tickTable.set(note.tick, [...(tickTable.get(note.tick) ?? []), note])
-    })
+      tickTable.set(note.tick, [...(tickTable.get(note.tick) ?? []), note]);
+    });
 
-    // Draw multiple point warning
+    // Multiple point warning
     if ($preferences.multiTapWarningEnabled) {
       for (const [tick, notes] of tickTable) {
         const judgementNotes = notes.filter(
           (note) =>
             singles.includes(note as Single) ||
             slides.some((slide) => slide.head === note || slide.tail === note),
-        )
+        );
         if (judgementNotes.length >= 3) {
           for (const note of judgementNotes) {
-            graphics.beginFill(COLORS.COLOR_WARNING, COLORS.ALPHA_WARNING)
-            drawErrorArea(position, note.lane, note.lane + note.width - 1, tick)
-            graphics.endFill()
+            errorAreas.push({
+              type: 'warning',
+              lane: note.lane,
+              laneR: note.lane + note.width - 1,
+              tick,
+            });
           }
         }
       }
     }
 
-    graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED)
-
-    // Draw duplication and outside
-    ;[...tickTable.entries()].forEach(([tick, notes]) => {
-      const area: number[] = new Array(16).fill(0)
-      area[0] = area[1] = area[14] = area[15] = 1 // Default 1 to outside area so if note exist it gets to 2 > 1
+    // Duplication and outside
+    for (const [tick, notes] of tickTable) {
+      const area: number[] = new Array(16).fill(0);
+      area[0] = area[1] = area[14] = area[15] = 1;
       notes.forEach(({ lane: laneL, width }) => {
-        const laneR = laneL + width - 1
+        const laneR = laneL + width - 1;
         for (let i = 0; i < 16; i++) {
           if (i >= laneL && i <= laneR) {
-            area[i] += 1
+            area[i] += 1;
           }
         }
-      })
+      });
 
-      const n = area
+      const stackedAreas = area
         .map((v, i) => (v > 1 ? i : undefined))
         .filter((i): i is number => i !== undefined)
         .reduce((acc, cur) => {
-          let lastArray = acc[acc.length - 1]
+          let lastArray = acc[acc.length - 1];
           if (!lastArray || lastArray[lastArray.length - 1] + 1 !== cur) {
-            lastArray = []
-            acc.push(lastArray)
+            lastArray = [];
+            acc.push(lastArray);
           }
-
           if (lastArray.length >= 2) {
-            lastArray[1] = cur
+            lastArray[1] = cur;
           } else {
-            lastArray.push(cur)
+            lastArray.push(cur);
           }
+          return acc;
+        }, [] as number[][]);
 
-          return acc
-        }, [] as number[][])
+      stackedAreas.forEach(([lane, laneR]) => {
+        errorAreas.push({ type: 'stacked', lane, laneR: laneR ?? lane, tick });
+      });
+    }
 
-      // Draw
-      n.forEach(([lane, laneR]) => {
-        drawErrorArea(position, lane, laneR, tick)
-      })
-    })
-
-    // Draw invalid steps
+    // Invalid steps
     slides.forEach(({ head, tail, steps }) => {
-      // find duplicated step with the same tick
       const duplicatedSteps = steps
         .map((step, i) => [step, i] as [Note, number])
         .filter(([step, i]) =>
           steps.slice(i + 1).some((step2) => step.tick === step2.tick),
         )
-        .map(([step]) => step)
+        .map(([step]) => step);
+
       for (const step of duplicatedSteps) {
-        drawErrorArea(
-          position,
-          step.lane,
-          step.lane + step.width - 1,
-          step.tick,
-        )
+        errorAreas.push({
+          type: 'stacked',
+          lane: step.lane,
+          laneR: step.lane + step.width - 1,
+          tick: step.tick,
+        });
       }
 
       for (const step of steps) {
         if (step.tick < head.tick || step.tick > tail.tick) {
-          drawErrorArea(
-            position,
-            step.lane,
-            step.lane + step.width - 1,
-            step.tick
-          )
+          errorAreas.push({
+            type: 'stacked',
+            lane: step.lane,
+            laneR: step.lane + step.width - 1,
+            tick: step.tick,
+          });
         }
       }
-    })
+    });
 
-    graphics.endFill()
-
-    graphics.beginFill(COLORS.COLOR_CORRUPUTED, COLORS.ALPHA_CORRUPUTED)
-
-    // Draw invalid ticks (non-integer)
+    // Invalid ticks (non-integer)
     for (const [tick, notes] of tickTable) {
       if (!Number.isInteger(tick)) {
         for (const note of notes) {
-          drawErrorArea(position, note.lane, note.lane + note.width - 1, tick)
+          errorAreas.push({
+            type: 'corrupted',
+            lane: note.lane,
+            laneR: note.lane + note.width - 1,
+            tick,
+          });
         }
       }
     }
 
-    graphics.endFill()
+    return errorAreas;
+  }
+
+  function drawErrorAreas(
+    position: PositionManager,
+    singles: Single[],
+    slides: Slide[],
+  ) {
+    if (!graphics) return;
+
+    graphics.removeChildren();
+    graphics.clear();
+
+    const errorAreas = calcErrorAreas(position, singles, slides);
+
+    for (const { type, lane, laneR, tick } of errorAreas) {
+      switch (type) {
+        case 'warning':
+          graphics.beginFill(COLORS.COLOR_WARNING, COLORS.ALPHA_WARNING);
+          break;
+        case 'stacked':
+          graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED);
+          break;
+        case 'corrupted':
+          graphics.beginFill(COLORS.COLOR_CORRUPUTED, COLORS.ALPHA_CORRUPUTED);
+          break;
+      }
+      drawErrorArea(position, lane, laneR, tick);
+      graphics.endFill();
+    }
   }
 </script>
