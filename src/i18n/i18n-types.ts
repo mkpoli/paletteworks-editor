@@ -493,6 +493,20 @@ type RootTranslation = {
          */
         importFailed: string
       }
+      noteError: {
+        /**
+         * 同じティックのノーツが重なっています。選択して「縮める」を使ってください。
+         */
+        stacked: string
+        /**
+         * ノーツは正しい位置にありません。位置を調整してください。
+         */
+        warning: string
+        /**
+         * ノーツは非整数ティックで壊れています。選択して「ティック修正」を使ってください。
+         */
+        corrupted: string
+      }
     }
     snapTo: {
       /**
@@ -1199,6 +1213,20 @@ export type TranslationFunctions = {
          * 譜面のインポートに失敗しました
          */
         importFailed: () => LocalizedString
+      }
+      noteError: {
+        /**
+         * 同じティックのノーツが重なっています。選択して「縮める」を使ってください。
+         */
+        stacked: () => LocalizedString
+        /**
+         * ノーツは正しい位置にありません。位置を調整してください。
+         */
+        warning: () => LocalizedString
+        /**
+         * ノーツは非整数ティックで壊れています。選択して「ティック修正」を使ってください。
+         */
+        corrupted: () => LocalizedString
       }
     }
     snapTo: {

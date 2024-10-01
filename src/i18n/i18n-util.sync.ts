@@ -11,21 +11,21 @@ import ko from './ko'
 import zh from './zh'
 
 const localeTranslations = {
-  en,
-  ja,
-  ko,
-  zh,
+	en,
+	ja,
+	ko,
+	zh,
 }
 
 export const loadLocale = (locale: Locales) => {
-  if (loadedLocales[locale]) return
+	if (loadedLocales[locale]) return
 
-  loadedLocales[locale] = localeTranslations[locale] as unknown as Translations
-  loadFormatters(locale)
+	loadedLocales[locale] = localeTranslations[locale] as unknown as Translations
+	loadFormatters(locale)
 }
 
 export const loadAllLocales = () => locales.forEach(loadLocale)
 
 export const loadFormatters = (locale: Locales) => {
-  loadedFormatters[locale] = initFormatters(locale)
+	loadedFormatters[locale] = initFormatters(locale)
 }

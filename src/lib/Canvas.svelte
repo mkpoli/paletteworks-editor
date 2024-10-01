@@ -1037,8 +1037,8 @@
       <!-- FLOATING ITEMS -->
       <Floating {bpms} {currentMode} />
 
-      <!-- STACKED AREAS -->
-      <NoteError {singles} {slides} />
+      <!-- INVALID NOTE INDICATORS -->
+      <NoteError {singles} {slides} tooltipArea={canvasContainer} />
 
       <Selection
         dragging={dragging && currentMode === 'select'}

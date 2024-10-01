@@ -134,6 +134,13 @@ const en: Translation = {
         importSuccess: '{name} imported.',
         importFailed: 'Import failed',
       },
+      noteError: {
+        stacked:
+          'Note stacking with the same tick, consider select them then and use "Shrink"',
+        warning: 'Note are in incorrect position, consider adjust them',
+        corrupted:
+          'Note is corrupted by non-integer tick, consider select them and use "Fix tick"',
+      },
     },
     mutation: {
       update: 'updated',

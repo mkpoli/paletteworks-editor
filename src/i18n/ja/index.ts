@@ -135,6 +135,15 @@ const ja: BaseTranslation = {
         importSuccess: '譜面「{name:string}」をインポートしました',
         importFailed: '譜面のインポートに失敗しました',
       },
+      noteError: {
+        stacked:
+          // 'Note stacking with the same tick, consider select them then and use "Shrink"',
+          '同じティックのノーツが重なっています。選択して「縮める」を使ってください。',
+        // 'Note are in incorrect position, consider adjust them',
+        warning: 'ノーツは正しい位置にありません。位置を調整してください。',
+        corrupted:
+          'ノーツは非整数ティックで壊れています。選択して「ティック修正」を使ってください。',
+      },
     },
     snapTo: {
       snap: '{n:number}分音符',

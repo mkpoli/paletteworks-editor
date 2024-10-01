@@ -2,20 +2,10 @@
 /* eslint-disable */
 
 import { initI18nSvelte } from 'typesafe-i18n/adapters/adapter-svelte'
-import type {
-  Locales,
-  Translations,
-  TranslationFunctions,
-  Formatters,
-} from './i18n-types'
+import type { Locales, Translations, TranslationFunctions, Formatters } from './i18n-types'
 import { loadedLocales, loadedFormatters } from './i18n-util'
 
-const { locale, LL, setLocale } = initI18nSvelte<
-  Locales,
-  Translations,
-  TranslationFunctions,
-  Formatters
->(loadedLocales, loadedFormatters)
+const { locale, LL, setLocale } = initI18nSvelte<Locales, Translations, TranslationFunctions, Formatters>(loadedLocales, loadedFormatters)
 
 export { locale, LL, setLocale }
 

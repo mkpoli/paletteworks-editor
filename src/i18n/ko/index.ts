@@ -134,6 +134,13 @@ const ko: Translation = {
         importSuccess: '채보 {name} 를 가져왔습니다.',
         importFailed: '채보 가져오기에 실패했습니다.',
       },
+      noteError: {
+        stacked:
+          '같은 틱의 노트가 겹쳐져 있습니다. 선택하고 "축소"를 사용하세요',
+        warning: '노트는 잘못된 위치에 있습니다. 위치를 조정하세요.',
+        corrupted:
+          '노트는 비정수 틱으로 손상되었습니다. 선택하고 "틱 수정"을 사용하세요',
+      },
     },
     mutation: {
       update: '업데이트',

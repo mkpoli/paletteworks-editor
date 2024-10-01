@@ -133,6 +133,11 @@ const zh: Translation = {
         importSuccess: '譜面「{name}」導入成功',
         importFailed: '譜面導入失敗',
       },
+      noteError: {
+        stacked: '音符在同一個時刻上重疊，請選擇它們然後使用「縮短」',
+        warning: '音符位置不正確，請調整它們',
+        corrupted: '音符被非整數時刻損壞，請選擇它們然後使用「修正時刻」',
+      },
     },
     mutation: {
       update: '更新',
