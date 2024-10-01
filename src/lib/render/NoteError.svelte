@@ -159,7 +159,7 @@
       for (const step of steps) {
         if (step.tick < head.tick || step.tick > tail.tick) {
           errorAreas.push({
-            type: 'stacked',
+            type: 'warning',
             lane: step.lane,
             laneR: step.lane + step.width - 1,
             tick: step.tick,
