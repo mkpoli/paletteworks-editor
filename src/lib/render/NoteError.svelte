@@ -287,7 +287,7 @@
           graphics.beginFill(COLORS.COLOR_STACKED, COLORS.ALPHA_STACKED)
           break
         case 'corrupted':
-          graphics.beginFill(COLORS.COLOR_CORRUPUTED, COLORS.ALPHA_CORRUPUTED)
+          graphics.beginFill(COLORS.COLOR_CORRUPTED, COLORS.ALPHA_CORRUPTED)
           break
       }
 
