@@ -83,7 +83,7 @@ export function isSingleNote(singles: Single[], note: Note): note is Single {
   return singles.some((single) => single === note)
 }
 
-export function isSlideNote(slides: Slide[], note: Note): note is Slide {
+export function isSlideNote(slides: Slide[], note: Note): note is SlideNote {
   return slides.some(({ head, tail, steps }) => head === note || tail === note || steps.includes(note as SlideStep))
 }
 
