@@ -53,9 +53,7 @@
         x: tooltipArea.getBoundingClientRect().x,
         y: tooltipArea.getBoundingClientRect().y,
       }
-      console.log('errorAreas', errorAreas)
       for (const errorArea of errorAreas) {
-        console.log('errorArea', errorArea)
         const rect = getErrorAreaRectLocal(
           $position,
           errorArea.lane,
