@@ -750,6 +750,24 @@
       ) as Score)
     music = project.music ?? null
 
+    const corruptedNotes = [
+      ...singles,
+      ...slides.flatMap(({ head, tail, steps }) => [head, tail, ...steps]),
+    ].filter((note) => !Number.isInteger(note.tick)).map((note) => ({
+      ...note,
+      measure: Math.floor(note.tick / TICK_PER_MEASURE) + 1
+    }))
+
+    const corruptedMeasures = [...new Set(corruptedNotes.map(({measure}) => measure))]
+
+    if (corruptedNotes.length > 0) {
+      toast.warn(
+        `Some notes has corrupted non-integer tick value near measure #${corruptedMeasures.join(', #')}. To fix them, select the black blinking notes and choose "Fix ticks" in right-click menu.`
+      )
+
+      console.info('Corrupted notes with non-integer tick values:', corruptedNotes)
+    }
+
     currentProject = project
   }
 
