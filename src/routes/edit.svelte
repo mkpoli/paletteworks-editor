@@ -72,6 +72,7 @@
     Metadata,
     Score,
     TimeSignature,
+    SlideNote,
   } from '$lib/score/beatmap'
 
   import { ALLOWED_SNAPPINGS } from '$lib/editing/modes'
@@ -81,6 +82,8 @@
     toDiamondType,
     EASE_TYPES,
     DIAMOND_TYPES,
+    isSingleNote,
+    isSlideNote,
   } from '$lib/score/beatmap'
 
   // Icons
@@ -518,6 +521,7 @@
     SlideMutation,
     TimeSignatureMutation,
     UpdateSingle,
+    UpdateSingles,
     UpdateSlide,
     UpdateSlideNote,
     UpdateSlideNotes,
@@ -1084,6 +1088,44 @@
     )
   }
 
+  function fixTick(notes: NoteType[]) {
+    const corruptedNotes = notes.filter(({tick}) => !Number.isInteger(tick))
+
+    const singleNotes = corruptedNotes.filter((note) => isSingleNote(singles, note))
+    const slideNotes = corruptedNotes.filter((note) => isSlideNote(slides, note))
+
+    const allSingleTicks = new Set(singleNotes.map(note => Math.round(note.tick)));
+
+    const singleNoteModifications = singleNotes.map((note) => {
+      let newTick = Math.round(note.tick)
+
+      while (allSingleTicks.has(newTick)) {
+        newTick -= 1
+      }
+
+      allSingleTicks.add(newTick)
+
+      return [note, { tick: newTick }] as [Single, Partial<Single>];
+    });
+
+    const allSlideTicks = new Set(slideNotes.map(note => Math.round(note.tick)));
+
+    const slideNoteModifications = slideNotes.map((note) => {
+      let newTick = Math.round(note.tick)
+
+      while (allSlideTicks.has(newTick)) {
+        newTick -= 1
+      }
+
+      allSlideTicks.add(newTick)
+
+      return [note, { tick: newTick }] as [SlideNote, Partial<SlideNote>];
+    })
+
+    exec(new UpdateSingles(singles, new Map(singleNoteModifications), 'update'))
+    exec(new UpdateSlideNotes(slides, new Map(slideNoteModifications)))
+  }
+
   let loop: boolean = false
   let loopFrom: number = 0
   let loopTo: number = 0
@@ -1513,6 +1555,9 @@
       on:duplicate={({ detail: { notes } }) => duplicateNotes(notes)}
       on:shrink={({ detail: { notes } }) => {
         shrinkNotes(notes)
+      }}
+      on:fix={({ detail: { notes } }) => {
+        fixTick(notes)
       }}
       on:divide={({ detail: { slide, lastCursor } }) => {
         divideSlide(slide, lastCursor)

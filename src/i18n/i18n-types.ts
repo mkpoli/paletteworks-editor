@@ -181,6 +181,10 @@ type RootTranslation = {
        * BPM 検出 (&B)
        */
       detectBPM: string
+      /**
+       * ティック修正 (&F)
+       */
+      fixTick: string
     }
     menuDescription: {
       /**
@@ -911,6 +915,10 @@ export type TranslationFunctions = {
        * BPM 検出 (&B)
        */
       detectBPM: () => LocalizedString
+      /**
+       * ティック修正 (&F)
+       */
+      fixTick: () => LocalizedString
     }
     menuDescription: {
       /**

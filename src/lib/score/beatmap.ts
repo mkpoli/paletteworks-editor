@@ -75,6 +75,18 @@ export function isSlideHead(note: Note): note is SlideHead {
   return 'easeType' in note && !('diamond' in note)
 }
 
+export function isSingleOrSlideTail(note: Note): note is Single | SlideTail {
+  return 'flick' in note && 'critical' in note
+}
+
+export function isSingleNote(singles: Single[], note: Note): note is Single {
+  return singles.some((single) => single === note)
+}
+
+export function isSlideNote(slides: Slide[], note: Note): note is Slide {
+  return slides.some(({ head, tail, steps }) => head === note || tail === note || steps.includes(note as SlideStep))
+}
+
 export function hasFlick(note: Note): note is Note & IDirectional {
   return 'flick' in note
 }

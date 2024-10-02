@@ -44,6 +44,7 @@ const en: Translation = {
       about: '&About',
       export: '&Export',
       detectBPM: 'Detect &BPM',
+      fixTick: 'Fix &Ticks',
     },
     menuDescription: {
       new: 'Create a new score',

@@ -44,6 +44,7 @@ const ja: BaseTranslation = {
       about: 'バージョン情報 (&A)',
       export: 'エクスポート (&E)',
       detectBPM: 'BPM 検出 (&B)',
+      fixTick: 'ティック修正 (&F)',
     },
     menuDescription: {
       new: '新規譜面を作成',

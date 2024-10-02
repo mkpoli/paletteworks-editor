@@ -1089,6 +1089,7 @@
   on:combine
   on:toslide
   on:tostream
+  on:fix
 />
 
 <!-- EXPORT IMAGE DIALOG -->

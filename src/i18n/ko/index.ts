@@ -44,6 +44,7 @@ const ko: Translation = {
       about: '정보(&A)',
       export: '내보내기(&E)',
       detectBPM: 'BPM 감지(&B)',
+      fixTick: '틱 수정(&F)',
     },
     menuDescription: {
       new: '새로운 채보를 만듭니다',

@@ -44,6 +44,7 @@ const zh: Translation = {
       about: '關於 (&A)',
       export: '導出 (&E)',
       detectBPM: '檢測 BPM (&B)',
+      fixTick: '修正時刻 (&F)',
     },
     menuDescription: {
       new: '創建新譜面',

@@ -68,6 +68,9 @@
     tostream: {
       slide: Slide
     }
+    fix: {
+      notes: Note[]
+    }
   }
 
   const dispatch = createEventDispatcher<Events>()
@@ -453,6 +456,16 @@
       text={$LL.editor.menu.shrink()}
       on:click={() => {
         dispatch('shrink', { notes: $selectedNotes })
+      }}
+    />
+  {/if}
+  {#if $selectedNotes.some((note) => !Number.isInteger(note.tick))}
+    <MenuDivider />
+    <MenuItem
+      icon="ph:number-square-one"
+      text={$LL.editor.menu.fixTick()}
+      on:click={() => {
+        dispatch('fix', { notes: $selectedNotes })
       }}
     />
   {/if}
