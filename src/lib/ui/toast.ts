@@ -32,8 +32,8 @@ export default {
   warn: (message: string, options?: SvelteToastOptions) => {
     toast.push(message, {
       theme: {
-        '--toastBackground': '#FFC107',
-        '--toastBarBackground': '#C79100',
+        '--toastBackground': '#F0B400',
+        '--toastBarBackground': '#A67C00',
       },
       pausable: true,
       ...options,
