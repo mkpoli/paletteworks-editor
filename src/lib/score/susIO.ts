@@ -394,6 +394,13 @@ export function exportScoreData(score: Score): SusScoreData {
     )
     .sort((a, b) => a[0] - b[0])
 
+  // Round all tick values to the nearest integer
+  for (const notes of [tapNotes, directionalNotes, ...slideNotes]) {
+    for (const note of notes) {
+      note.tick = Math.round(note.tick)
+    }
+  }
+
   return {
     taps: tapNotes,
     directionals: directionalNotes,
