@@ -1,4 +1,4 @@
-import { toast } from '@zerodevx/svelte-toast'
+import { SvelteToastOptions, toast } from '@zerodevx/svelte-toast'
 
 import UndoToast from '$lib/ui/UndoToast.svelte'
 
@@ -9,31 +9,34 @@ import type { Writable } from 'svelte/store'
 let lastUndoToastId = 0
 
 export default {
-  success: (message: string) => {
+  success: (message: string, options?: SvelteToastOptions) => {
     toast.push(message, {
       theme: {
         '--toastBackground': '#48BB78',
         '--toastBarBackground': '#2F855A',
       },
       pausable: true,
+      ...options,
     })
   },
-  error: (message: string) => {
+  error: (message: string, options?: SvelteToastOptions) => {
     toast.push(message, {
       theme: {
         '--toastBackground': '#F56565',
         '--toastBarBackground': '#C53030',
       },
       pausable: true,
+      ...options,
     })
   },
-  warn: (message: string) => {
+  warn: (message: string, options?: SvelteToastOptions) => {
     toast.push(message, {
       theme: {
         '--toastBackground': '#FFC107',
         '--toastBarBackground': '#C79100',
       },
       pausable: true,
+      ...options,
     })
   },
   undo: (
