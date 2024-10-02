@@ -762,7 +762,7 @@
 
     if (corruptedNotes.length > 0) {
       toast.warn(
-        `Some notes has corrupted non-integer tick value near measure #${corruptedMeasures.join(', #')}. To fix them, select the black blinking notes and choose "Fix ticks" in right-click menu.`
+        $LL.editor.messages.corruptedNotes({measures: '#' +  corruptedMeasures.join(', #')})
       )
 
       console.info('Corrupted notes with non-integer tick values:', corruptedNotes)

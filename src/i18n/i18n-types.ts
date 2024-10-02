@@ -507,6 +507,11 @@ type RootTranslation = {
          */
         corrupted: string
       }
+      /**
+       * 破損した非正数ティックのノーツが小節 {measures} 付近にあります。修正するには、黒く点滅するノーツを選択して「ティック修正」を使ってください。
+       * @param {unknown} measures
+       */
+      corruptedNotes: RequiredParams1<'measures'>
     }
     snapTo: {
       /**
@@ -1228,6 +1233,10 @@ export type TranslationFunctions = {
          */
         corrupted: () => LocalizedString
       }
+      /**
+       * 破損した非正数ティックのノーツが小節 {measures} 付近にあります。修正するには、黒く点滅するノーツを選択して「ティック修正」を使ってください。
+       */
+      corruptedNotes: (arg: { measures: unknown }) => LocalizedString
     }
     snapTo: {
       /**

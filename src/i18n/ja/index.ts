@@ -144,6 +144,8 @@ const ja: BaseTranslation = {
         corrupted:
           'ノーツは非整数ティックで壊れています。選択して「ティック修正」を使ってください。',
       },
+      corruptedNotes:
+        '破損した非正数ティックのノーツが小節 {measures} 付近にあります。修正するには、黒く点滅するノーツを選択して「ティック修正」を使ってください。',
     },
     snapTo: {
       snap: '{n:number}分音符',

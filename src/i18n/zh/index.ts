@@ -138,6 +138,8 @@ const zh: Translation = {
         warning: '音符位置不正確，請調整它們',
         corrupted: '音符被非整數時刻損壞，請選擇它們然後使用「修正時刻」',
       },
+      corruptedNotes:
+        '{measures} 小節附近有損壞的非整數時刻音符，請選擇它們然後使用「修正時刻」',
     },
     mutation: {
       update: '更新',

@@ -141,6 +141,10 @@ const ko: Translation = {
         corrupted:
           '노트는 비정수 틱으로 손상되었습니다. 선택하고 "틱 수정"을 사용하세요',
       },
+      corruptedNotes:
+        // 'Some notes has corrupted non-integer tick value near measure {measures}. To fix them, select the black blinking notes and choose "Fix ticks" in right-click menu.'
+        // '破損した非正数ティックのノーツが小節 {measures} 付近にあります。修正するには、黒く点滅するノーツを選択して「ティック修正」を使ってください。'
+        '{measures} 소절 근처에 비정수 틱으로 손상된 노트가 있습니다. 선택하고 "틱 수정"을 사용하세요',
     },
     mutation: {
       update: '업데이트',

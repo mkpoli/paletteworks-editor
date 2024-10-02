@@ -139,8 +139,10 @@ const en: Translation = {
           'Note stacking with the same tick, consider select them then and use "Shrink"',
         warning: 'Note are in incorrect position, consider adjust them',
         corrupted:
-          'Note is corrupted by non-integer tick, consider select them and use "Fix tick"',
+          'Note is corrupted by non-integer tick, consider select them and use "Fix ticks"',
       },
+      corruptedNotes:
+        'Some notes has corrupted non-integer tick value near measure {measures}. To fix them, select the black blinking notes and choose "Fix ticks" in right-click menu.',
     },
     mutation: {
       update: 'updated',
