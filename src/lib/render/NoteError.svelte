@@ -132,7 +132,7 @@
 
   type ErrorAreaType = 'warning' | 'stacked' | 'corrupted'
   type ErrorArea = { type: ErrorAreaType; lane: number; laneR: number; tick: number }
-  $: errorAreas = calcErrorAreas($position, singles, slides)
+  $: errorAreas = calcErrorAreas(singles, slides)
   $: if (dev) {
     console.info('[NoteError] errorAreas', errorAreas)
   }
@@ -155,7 +155,6 @@
   }
 
   function calcErrorAreas(
-    position: PositionManager,
     singles: Single[],
     slides: Slide[],
   ): ErrorArea[] {
