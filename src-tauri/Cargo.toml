@@ -1,6 +1,6 @@
 [package]
 name = "paletteworks"
-version = "1.10.0"
+version = "1.11.0"
 description = "A score editor for Project Sekai: Colourful Stage feat. Hatsune Miku"
 authors = ["mkpoli <mkpoli@mkpo.li>"]
 license = "MIT"

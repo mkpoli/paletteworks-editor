@@ -1,7 +1,7 @@
 {
   "name": "paletteworks",
   "private": true,
-  "version": "1.10.0",
+  "version": "1.11.0",
   "scripts": {
     "dev": "svelte-kit dev",
     "clean": "rimraf build",
