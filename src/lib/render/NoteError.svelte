@@ -102,6 +102,7 @@
             stacked: $LL.editor.messages.noteError.stacked(),
             warning: $LL.editor.messages.noteError.warning(),
             corrupted: $LL.editor.messages.noteError.corrupted(),
+            'multi-tap': $LL.editor.messages.noteError.multiTap(),
           }[errorArea.type],
         )
         instance.show()
@@ -130,8 +131,13 @@
     graphics.alpha = 0.85 * Math.max(0, Math.sin(time) + 0.38196601125)
   }
 
-  type ErrorAreaType = 'warning' | 'stacked' | 'corrupted'
-  type ErrorArea = { type: ErrorAreaType; lane: number; laneR: number; tick: number }
+  type ErrorAreaType = 'warning' | 'stacked' | 'corrupted' | 'multi-tap'
+  type ErrorArea = {
+    type: ErrorAreaType
+    lane: number
+    laneR: number
+    tick: number
+  }
   $: errorAreas = calcErrorAreas(singles, slides, $preferences)
   $: if (dev) {
     console.info('[NoteError] errorAreas', errorAreas)
@@ -180,7 +186,7 @@
         if (judgementNotes.length >= 3) {
           for (const note of judgementNotes) {
             errorAreas.push({
-              type: 'warning',
+              type: 'multi-tap',
               lane: note.lane,
               laneR: note.lane + note.width - 1,
               tick,
@@ -288,6 +294,9 @@
           break
         case 'corrupted':
           graphics.beginFill(COLORS.COLOR_CORRUPTED, COLORS.ALPHA_CORRUPTED)
+          break
+        case 'multi-tap':
+          graphics.beginFill(COLORS.COLOR_MULTI_TAP, COLORS.ALPHA_MULTI_TAP)
           break
       }
 

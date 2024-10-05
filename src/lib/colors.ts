@@ -21,6 +21,8 @@ export default {
   ALPHA_CORRUPTED: 0.5, // TODO: fix typo
   COLOR_WARNING: 0xffb943,
   ALPHA_WARNING: 0.4,
+  COLOR_MULTI_TAP: 0x00e5ea,
+  ALPHA_MULTI_TAP: 0.3,
   COLOR_MOVING_TINT: 0xced3e4,
   ALPHA_FLOATING: 0.5,
 }

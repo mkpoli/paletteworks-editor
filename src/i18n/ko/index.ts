@@ -141,6 +141,8 @@ const ko: Translation = {
         warning: '노트는 잘못된 위치에 있습니다. 위치를 조정하세요.',
         corrupted:
           '노트는 비정수 틱으로 손상되었습니다. 선택하고 "틱 수정"을 사용하세요',
+        multiTap:
+          '세 개 이상의 노트가 동시치기로 감지되었습니다. 조정하거나 설정에서 동시치기 경고를 끄세요',
       },
       corruptedNotes:
         // 'Some notes has corrupted non-integer tick value near measure {measures}. To fix them, select the black blinking notes and choose "Fix ticks" in right-click menu.'
