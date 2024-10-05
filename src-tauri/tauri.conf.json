@@ -29,13 +29,11 @@
       "shortDescription": "A score editor for Project Sekai: Colourful Stage feat. Hatsune Miku",
       "longDescription": "This is a score editor for Project Sekai: Colorful Stage feat. Hatsune Miku. It aims to provide a better user experience to create custom maps.",
       "deb": {
-        "depends": [],
-        "useBootstrapper": false
+        "depends": []
       },
       "macOS": {
         "frameworks": [],
         "minimumSystemVersion": "",
-        "useBootstrapper": false,
         "exceptionDomain": "",
         "signingIdentity": null,
         "providerShortName": null,

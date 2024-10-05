@@ -27,7 +27,7 @@
     "@sveltejs/adapter-static": "1.0.0-next.28",
     "@sveltejs/adapter-vercel": "1.0.0-next.43",
     "@sveltejs/kit": "1.0.0-next.278",
-    "@tauri-apps/cli": "1.0.0-rc.5",
+    "@tauri-apps/cli": "1.0.0",
     "@types/core-js": "2.5.5",
     "@types/jest": "27.4.1",
     "@types/msgpack-lite": "0.1.8",
