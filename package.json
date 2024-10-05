@@ -15,7 +15,8 @@
     "typesafe-i18n": "typesafe-i18n",
     "beforeRelease": "run-s check lint test",
     "tag": "taggit",
-    "format": "prettier --write --plugin-search-dir=. ."
+    "format": "prettier --write --plugin-search-dir=. .",
+    "tauri": "tauri"
   },
   "license": "MIT",
   "devDependencies": {
