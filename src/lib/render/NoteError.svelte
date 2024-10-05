@@ -6,7 +6,7 @@
   import { getContext, onDestroy, onMount } from 'svelte'
   import type PIXI from 'pixi.js'
   import type { Note, Single, Slide } from '$lib/score/beatmap'
-  import { preferences } from '$lib/preferences'
+  import { Preferences, preferences } from '$lib/preferences'
   import { dev } from '$app/env'
   import tippy, { type Instance as TippyInstance } from 'tippy.js'
 
@@ -132,7 +132,7 @@
 
   type ErrorAreaType = 'warning' | 'stacked' | 'corrupted'
   type ErrorArea = { type: ErrorAreaType; lane: number; laneR: number; tick: number }
-  $: errorAreas = calcErrorAreas(singles, slides)
+  $: errorAreas = calcErrorAreas(singles, slides, $preferences)
   $: if (dev) {
     console.info('[NoteError] errorAreas', errorAreas)
   }
@@ -157,6 +157,7 @@
   function calcErrorAreas(
     singles: Single[],
     slides: Slide[],
+    preferences: Preferences,
   ): ErrorArea[] {
     const errorAreas: ErrorArea[] = []
 
@@ -169,7 +170,7 @@
     })
 
     // Multiple point warning
-    if ($preferences.multiTapWarningEnabled) {
+    if (preferences.multiTapWarningEnabled) {
       for (const [tick, notes] of tickTable) {
         const judgementNotes = notes.filter(
           (note) =>
