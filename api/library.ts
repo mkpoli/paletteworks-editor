@@ -1,6 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import faunadb from 'faunadb'
-
 import { list, create } from './api'
 
 export default async (request: VercelRequest, response: VercelResponse) => {
@@ -15,10 +13,7 @@ export default async (request: VercelRequest, response: VercelResponse) => {
       response.status(405).end()
     }
   } catch (error) {
-    if (error instanceof faunadb.errors.FaunaHTTPError) {
-      response.status(error.requestResult.statusCode).json(error)
-    } else {
-      response.status(500).end()
-    }
+    console.error('❌ API error:', error)
+    response.status(500).json({ message: 'Internal Server Error' })
   }
 }

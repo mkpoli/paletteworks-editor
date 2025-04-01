@@ -1,11 +1,7 @@
+import { createClient } from '@libsql/client/web'
 import type { Single, Slide } from '$lib/score/beatmap'
-import faunadb from 'faunadb'
 
-const q = faunadb.query
-
-type LocaleStrings = {
-  [key: string]: string
-}
+type LocaleStrings = { [key: string]: string }
 
 export type Item = {
   title: LocaleStrings
@@ -16,25 +12,37 @@ export type Item = {
   }
 }
 
-const client = new faunadb.Client({ secret: process.env['FAUNA_ADMIN_KEY']! })
+const client = createClient({
+  url: process.env['TURSO_DATABASE_URL']!,
+  authToken: process.env['TURSO_AUTH_TOKEN']!,
+})
 
 export async function list(): Promise<Item[]> {
-  const result = (await client.query(
-    q.Map(
-      q.Paginate(q.Match(q.Index('all_items'))),
-      q.Lambda((x) => q.Get(x))
-    )
-  )) as { data: { data: Item }[] }
-  if (!result.data) return []
-  return result.data
-    .map(({ data }) => data)
-    .filter((data) => data !== undefined)
+  const res = await client.execute(
+    'SELECT title_ja, description_ja, content_json FROM items'
+  )
+
+  return res.rows.map((row) => ({
+    title: { ja: row.title_ja as string },
+    description: { ja: row.description_ja as string },
+    content: JSON.parse(row.content_json as string),
+  }))
 }
 
 export async function create(item: Item) {
-  await client.query(
-    q.Create(q.Collection('items'), {
-      data: item,
-    })
-  )
+  await client.execute({
+    sql: `
+      INSERT INTO items (
+        id, collection, ts_iso, title_ja, description_ja, content_json
+      ) VALUES (?, ?, ?, ?, ?, ?)
+    `,
+    args: [
+      crypto.randomUUID(),
+      'items',
+      new Date().toISOString(),
+      item.title?.ja ?? null,
+      item.description?.ja ?? null,
+      JSON.stringify(item.content),
+    ],
+  })
 }
