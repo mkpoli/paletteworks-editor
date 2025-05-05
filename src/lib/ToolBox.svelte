@@ -56,7 +56,7 @@
   let customSnappingDialogOpened: boolean = false
   let customSnappingDialogValue: number = 0
   $: customSnappingDialogValue = snapTo
-  let snappingSelect: HTMLSelectElement
+  export let snappingSelect: HTMLSelectElement
 </script>
 
 <div class="toolbox-container">
