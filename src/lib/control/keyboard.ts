@@ -24,7 +24,7 @@ export const KEYBOARD_SHORTCUTS = {
   ],
   open: [['ctrl', 'o']],
   image: [['ctrl', 'i']],
-  new: [['ctrl', 'n']],
+
   selectall: [['ctrl', 'a']],
   unselectall: [['ctrl', 'shift', 'a']],
   delete: [['delete']],

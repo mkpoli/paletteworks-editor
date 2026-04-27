@@ -1,11 +1,5 @@
 <script lang="ts">
   import ClickableIcon from '$lib/ui/ClickableIcon.svelte'
-  import Icon from '@iconify/svelte'
-
-  import screenshot from '$assets/homepage/screenshot.png'
-  import editing from '$assets/homepage/editing.png'
-  import soundeffects from '$assets/homepage/soundeffects.png'
-  import filesupport from '$assets/homepage/filesupport.png'
 </script>
 
 <svelte:head>
@@ -15,52 +9,71 @@
 <header>
   <h1><img src="/favicon.png" alt="Logo" class="logo" />PaletteWorks Editor</h1>
   <nav>
-    <a href="/edit">CREATE NOW</a>
-    <a href="#functionality">FEATURES</a>
+    <a href="/edit">EXPORT DATA</a>
     <a
       href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks"
-    >COMMUNITY</a
+      >COMMUNITY</a
     >
   </nav>
 </header>
 <main>
-  <section class="description">
-    <div class="container">
-      <h2>PaletteWorks Editor とは</h2>
-      <p>
-        PaletteWorks Editor
-        とは創作譜面ファンの中から生まれた新世代の譜面エディター。使いやすさを第一の目標として職人が手掛けたツール。編集を自由自在に行えるこのツールで、スムーズで一流な譜面制作体験を提供します。
+  <section class="description notice">
+    <div class="container" style="display: block;">
+      <h2 style="color: #ff6a75; text-shadow: 2px 2px 30px #ff6a75;">
+        ⚠️ Project Discontinued / プロジェクト終了のお知らせ
+      </h2>
+      <p style="font-size: 1.2em; line-height: 1.5; margin-bottom: 2em;">
+        Due to officials now explicitly discouraging the use of external
+        unofficial apps, including official assets on external servers, we are
+        discontinuing this project.<br />
+        You can still export all your existing data to any format you want, but you
+        cannot create new scores anymore.<br />
+        <br />
+        <a
+          href="https://x.com/pj_sekai/status/2048729214900461995?s=20"
+          target="_blank"
+          rel="noreferrer"
+          style="color: #55acee; text-decoration: underline;">Official Tweet</a
+        ><br />
+        <a
+          href="https://youtu.be/yGUiG-CcS1E?t=4455"
+          target="_blank"
+          rel="noreferrer"
+          style="color: #ff6a75; text-decoration: underline;"
+          >Official Broadcast</a
+        ><br />
       </p>
-      <a class="button" href="/edit">今すぐ始める</a>
-      <img src={screenshot} alt="screenshot" />
+      <div
+        style="background: rgba(0, 0, 0, 0.3); padding: 1.5em; border-radius: 10px; border-left: 5px solid #ff6a75; font-size: 1.1em; line-height: 1.6;"
+      >
+        <strong>【お知らせ】</strong><br />
+        5月5日以降に、SNS等で外部非公式アプリの利用が確認された場合は公式大会・公式イベントへの参加禁止などのペナルティ措置を実施いたします。<br
+        />
+        ご理解とご協力のほど、よろしくお願いいたします。<br />
+        <br />
+        <a
+          href="https://x.com/_mkpoli/status/2048756597833552109?s=20"
+          target="_blank"
+          rel="noreferrer"
+          style="color: #55acee; text-decoration: underline;"
+          >Our Statement (JP)</a
+        ><br />
+        <a
+          href="https://x.com/_mkpoli/status/2048757400262615485?s=20"
+          target="_blank"
+          rel="noreferrer"
+          style="color: #55acee; text-decoration: underline;"
+          >Our Statement (EN)</a
+        >
+      </div>
+      <a
+        class="button"
+        href="/edit"
+        style="margin-top: 2em; background: #555555; color: #cccccc; box-shadow: none;"
+        >GO TO EXPORT</a
+      >
     </div>
   </section>
-
-  <section id="functionality">
-    <div class="container">
-      <h2><Icon icon="mdi:draw" />編集機能</h2>
-      <img src={editing} alt="editing" />
-      <p>
-        基本な編集機能を直感的にリニューアル！多種多様なノーツをシンプルに配置・削除・変更できるのみならず、コピーペースト機能・選択機能・ミラー機能などの便利機能も備えており、効率を倍増できます。
-      </p>
-
-      <h2><Icon icon="mdi:file-chart" />SUS譜面の入出力</h2>
-      <img src={filesupport} alt="filesupport" />
-      <p>
-        SUS (Sliding Universal Score)
-        ファイルの入出力を最初からファーストクラスとし、そのまま Sonolus
-        などでプレイ可能。更に譜面を画像として出力することもでき、譜面制作者コミュニティで簡単にシェアや交流が可能。
-      </p>
-
-      <h2><Icon icon="mdi:headphones" />音声の同時視聴</h2>
-      <img src={soundeffects} alt="soundeffects" />
-      <p>
-        BGMの音楽を聞きながら編集することができるだけではなく、SE付きの音声によってまるでゲームをプレイしながらの制作が可能。
-      </p>
-    </div>
-  </section>
-
-  <section class="contact" />
 </main>
 
 <footer>

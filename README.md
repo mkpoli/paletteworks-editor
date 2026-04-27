@@ -1,5 +1,20 @@
 # PaletteWorks Editor
 
+> [!WARNING]
+> ## ⚠️ Project Discontinued / プロジェクト終了のお知らせ
+> 
+> Due to officials now explicitly discouraging the use of external unofficial apps, including official assets on external servers, we are discontinuing this project. You can still export all your existing data to any format, but you cannot create new scores anymore.
+> - [Our Statement (JP)](https://x.com/_mkpoli/status/2048756597833552109?s=20)
+> - [Our Statement (EN)](https://x.com/_mkpoli/status/2048757400262615485?s=20)
+> 
+> 【お知らせ】
+> 5月5日以降に、SNS等で外部非公式アプリの利用が確認された場合は公式大会・公式イベントへの参加禁止などのペナルティ措置を実施いたします。
+> ご理解とご協力のほど、よろしくお願いいたします。
+> 
+> - [Official Announcement (Tweet)](https://x.com/pj_sekai/status/2048729214900461995?s=20)
+> - [Official Announcement (Broadcast)](https://youtu.be/yGUiG-CcS1E?t=4455)
+
+
 This is a score editor for _Project Sekai: Colorful Stage feat. Hatsune Miku_. It aims to provide a better user experience to create custom maps.
 
 「プロジェクトセカイ カラフルステージ！ feat. 初音ミク」の譜面エディターです。創作譜面をより作りやすくすることを目指しているものであります。

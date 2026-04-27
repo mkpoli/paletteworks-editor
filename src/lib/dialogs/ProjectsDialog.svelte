@@ -44,8 +44,8 @@
 
   $: if ($projectObservable) {
     if (projects.length == 0) {
-      dispatch('new')
-      opened = false
+      // dispatch('new')
+      // opened = false
     }
   }
 
@@ -193,16 +193,6 @@
     >
       {$LL.editor.dialog.openscore()}
     </Button>
-    <Button
-      class="new"
-      icon="mdi:plus-thick"
-      on:click={() => {
-        dispatch('new')
-        opened = false
-      }}
-    >
-      {$LL.editor.dialog.new()}
-    </Button>
   </div>
 </Modal>
 
@@ -220,7 +210,7 @@
       't t t t t t'
       't t t t t t'
       't t t t t t'
-      'p p p o o o';
+      'p p p p p p';
   }
 
   .close {
@@ -241,9 +231,6 @@
     grid-area: s;
   }
 
-  [slot='presentation'] :global(.new) {
-    grid-area: o;
-  }
 
   .close {
     grid-area: x;

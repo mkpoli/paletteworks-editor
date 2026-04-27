@@ -70,17 +70,7 @@
     </MenuTrigger>
 
     <MenuItem icon="ic:outline-insert-drive-file" text={$LL.editor.menu.file()}>
-      <MenuItem
-        icon="eos-icons:content-new"
-        text={$LL.editor.menu.new()}
-        on:click={() => dispatch('new')}
-        tooltip={{
-          description: $LL.editor.menuDescription.new(),
-          keys: KEYBOARD_SHORTCUTS.new,
-          placement: 'right',
-        }}
-      />
-      <MenuDivider />
+
       <MenuItem
         icon="ic:baseline-folder-open"
         text={$LL.editor.menu.open()}
