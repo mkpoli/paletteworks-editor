@@ -10,10 +10,6 @@
   <h1><img src="/favicon.png" alt="Logo" class="logo" />PaletteWorks Editor</h1>
   <nav>
     <a href="/edit">EXPORT DATA</a>
-    <a
-      href="https://wiki.purplepalette.net/create-charts/steps/create-chart/paletteworks"
-      >COMMUNITY</a
-    >
   </nav>
 </header>
 <main>
