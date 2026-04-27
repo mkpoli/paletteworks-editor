@@ -14,10 +14,10 @@ export type Item = {
   }
 }
 
-let fetch: (
-  input: RequestInfo,
-  init?: RequestInit | undefined
-) => Promise<Response>
+// let fetch: (
+//   input: RequestInfo,
+//   init?: RequestInit | undefined
+// ) => Promise<Response>
 
 const PREFIX = 'https://paletteworks.mkpo.li/'
 const LIBRARY_URL = '/api/library'

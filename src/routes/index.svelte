@@ -30,28 +30,6 @@
         cannot create new scores anymore.<br />
         <br />
         <a
-          href="https://x.com/pj_sekai/status/2048729214900461995?s=20"
-          target="_blank"
-          rel="noreferrer"
-          style="color: #55acee; text-decoration: underline;">Official Tweet</a
-        ><br />
-        <a
-          href="https://youtu.be/yGUiG-CcS1E?t=4455"
-          target="_blank"
-          rel="noreferrer"
-          style="color: #ff6a75; text-decoration: underline;"
-          >Official Broadcast</a
-        ><br />
-      </p>
-      <div
-        style="background: rgba(0, 0, 0, 0.3); padding: 1.5em; border-radius: 10px; border-left: 5px solid #ff6a75; font-size: 1.1em; line-height: 1.6;"
-      >
-        <strong>【お知らせ】</strong><br />
-        5月5日以降に、SNS等で外部非公式アプリの利用が確認された場合は公式大会・公式イベントへの参加禁止などのペナルティ措置を実施いたします。<br
-        />
-        ご理解とご協力のほど、よろしくお願いいたします。<br />
-        <br />
-        <a
           href="https://x.com/_mkpoli/status/2048756597833552109?s=20"
           target="_blank"
           rel="noreferrer"
@@ -65,11 +43,33 @@
           style="color: #55acee; text-decoration: underline;"
           >Our Statement (EN)</a
         >
+      </p>
+      <div
+        style="background: rgba(0, 0, 0, 0.3); padding: 1.5em; border-radius: 10px; border-left: 5px solid #ff6a75; font-size: 1.1em; line-height: 1.6;"
+      >
+        <strong>【お知らせ】</strong><br />
+        5月5日以降に、SNS等で外部非公式アプリの利用が確認された場合は公式大会・公式イベントへの参加禁止などのペナルティ措置を実施いたします。<br
+        />
+        ご理解とご協力のほど、よろしくお願いいたします。<br />
+        <br />
+        <a
+          href="https://x.com/pj_sekai/status/2048729214900461995?s=20"
+          target="_blank"
+          rel="noreferrer"
+          style="color: #55acee; text-decoration: underline;">Official Tweet</a
+        ><br />
+        <a
+          href="https://youtu.be/yGUiG-CcS1E?t=4455"
+          target="_blank"
+          rel="noreferrer"
+          style="color: #ff6a75; text-decoration: underline;"
+          >Official Broadcast</a
+        >
       </div>
       <a
         class="button"
         href="/edit"
-        style="margin-top: 2em; background: #555555; color: #cccccc; box-shadow: none;"
+        style="margin-top: 2em;"
         >GO TO EXPORT</a
       >
     </div>

@@ -13,6 +13,20 @@
 > 
 > - [Official Announcement (Tweet)](https://x.com/pj_sekai/status/2048729214900461995?s=20)
 > - [Official Announcement (Broadcast)](https://youtu.be/yGUiG-CcS1E?t=4455)
+>
+> 2026-04-27
+
+> [!IMPORTANT]  
+> ✋ ~~Hi! I am *mkpoli*, the author of **PaletteWorks Editor**. I'm really sorry for not communicating for such a long time — life took over with various responsibilities, including academic work and some health challenges.~~
+>
+> ~~⏳ This project has been inactive since 2022, but it's not fully abandoned. I may occasionally update it when I am motivated and well enough.~~
+> 
+> ~~🙏 I genuinely appreciate everyone who’s shown interest, and I’m always open to feedback, discussions, or pull requests — as long as I’m feeling healthy and capable enough to respond.~~
+> 
+> ~~🤝 If someone is motivated to continue developing PaletteWorks Editor, I’d be more than happy and honored to see it live on, and I’d gladly support however I can.~~
+> ~~🔄 If you’re looking for similar tools or more actively maintained projects, there are modern alternative softwares such as [**MikuMikuWorld4CC**](https://github.com/sevenc-nanashi/MikuMikuWorld4CC).~~
+>
+> 2025-04-01
 
 
 This is a score editor for _Project Sekai: Colorful Stage feat. Hatsune Miku_. It aims to provide a better user experience to create custom maps.
