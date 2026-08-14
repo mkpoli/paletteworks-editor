@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "paletteworks-editor",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-08-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": { "directory": "build", "binding": "ASSETS" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "paletteworks-library",
+      "database_id": "6822daf8-adc3-4a42-b326-8ac5c772873d"
+    }
+  ],
+  "routes": [{ "pattern": "paletteworks.mkpo.li/*", "zone_name": "mkpo.li" }],
+  "observability": { "enabled": true }
+}

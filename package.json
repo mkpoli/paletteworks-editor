@@ -25,7 +25,6 @@
     "@pixi/events": "6.2.2",
     "@rstacruz/bump-cli": "2.0.1",
     "@sveltejs/adapter-static": "1.0.0-next.28",
-    "@sveltejs/adapter-vercel": "1.0.0-next.43",
     "@sveltejs/kit": "1.0.0-next.278",
     "@tauri-apps/cli": "1.0.0",
     "@types/core-js": "2.5.5",
@@ -34,7 +33,6 @@
     "@types/throttle-debounce": "2.1.0",
     "@typescript-eslint/eslint-plugin": "5.12.1",
     "@typescript-eslint/parser": "5.12.1",
-    "@vercel/node": "1.13.0",
     "@zerodevx/svelte-toast": "0.7.0",
     "attr-accept": "2.2.2",
     "autoprefixer": "10.4.2",
@@ -71,7 +69,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@libsql/client": "^0.15.1",
     "@sveltejs/vite-plugin-svelte": "1.0.0-next.32",
     "@tauri-apps/api": "1.0.0-rc.1"
   },
