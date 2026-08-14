@@ -13,6 +13,6 @@
       "database_id": "6822daf8-adc3-4a42-b326-8ac5c772873d"
     }
   ],
-  "routes": [{ "pattern": "paletteworks.mkpo.li/*", "zone_name": "mkpo.li" }],
+  "routes": [{ "pattern": "paletteworks.mkpo.li", "custom_domain": true }],
   "observability": { "enabled": true }
 }
