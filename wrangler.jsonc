@@ -13,6 +13,13 @@
       "database_id": "6822daf8-adc3-4a42-b326-8ac5c772873d"
     }
   ],
+  "ratelimits": [
+    {
+      "name": "LIBRARY_WRITE_RATE_LIMITER",
+      "namespace_id": "24082",
+      "simple": { "limit": 5, "period": 60 }
+    }
+  ],
   "routes": [{ "pattern": "paletteworks.mkpo.li", "custom_domain": true }],
   "observability": { "enabled": true }
 }
